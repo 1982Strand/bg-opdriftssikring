@@ -1,6 +1,6 @@
 # Opdriftssikring
 
-Beregning af opdriftssikring af rør og liggende tanke med X-GRID geonet i React, TypeScript, Vite og shadcn/ui. Appen er søsterapp til MSL Dimensionering og har samme udseende. Beregninger og PDF-rapporter dannes i browseren.
+Beregning af opdriftssikring af rør med X-GRID geonet i React, TypeScript, Vite og shadcn/ui. Appen er søsterapp til MSL Dimensionering og har samme udseende. Beregninger og PDF-rapporter dannes i browseren.
 
 Appen er under opbygning. Planen står i [docs/PLAN.md](docs/PLAN.md).
 

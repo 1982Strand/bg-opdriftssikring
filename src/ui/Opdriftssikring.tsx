@@ -152,9 +152,9 @@ function Talraekke({ raekker }: { raekker: [string, string, (Status | null)?][] 
 }
 
 const losningTitel: Record<Losning, string> = {
-  A: 'Uden omslag',
+  A: 'Uden omslag, én ledning',
   B: 'Uden omslag, to ledninger',
-  C: 'Med omslag',
+  C: 'Med omslag, én ledning',
   D: 'Med omslag, to ledninger',
 };
 
@@ -162,15 +162,13 @@ function LosningKort({
   r,
   input,
   losning,
-  tank,
 }: {
   r: OpdriftResultat;
   input: ReturnType<typeof tilMotorInput>;
   losning: Losning;
-  tank: boolean;
 }) {
   const { A, B, C, D } = r.losninger;
-  const titel = tank ? losningTitel[losning].replace('ledninger', 'tanke') : losningTitel[losning];
+  const titel = losningTitel[losning];
   const d = input.d;
   const faelles = (x: { La: number; Ltot: number }): [string, string][] => [
     ['Samlet bredde L_{a}', `${tal(x.La)} m`],
@@ -192,7 +190,7 @@ function LosningKort({
         : [
             ['Forankring yderst L_{geonet}', `${tal(r.losninger[losning].L)} m`],
             [
-              `Mellem ${tank ? 'tankene' : 'ledningerne'} 2 · L_{geonet}`,
+              'Mellem ledningerne 2 · L_{geonet}',
               `${tal(losning === 'B' ? B.toLMellem : D.toLMellem)} m`,
             ],
             ...faelles(r.losninger[losning]),
@@ -236,7 +234,8 @@ function LosningKort({
         <Talraekke raekker={raekker} />
         {(losning === 'B' || losning === 'D') && (
           <p className="calc-note">
-            Regnearket har ingen opdriftskontrol for to {tank ? 'tanke' : 'ledninger'}.
+            Regnearket har ingen opdriftskontrol for to ledninger. Ved to forskellige ledninger
+            angives den største diameter og den mindste egenvægt, som regnearket forudsætter.
           </p>
         )}
         <Udfold titel="Mellemregninger">
@@ -255,9 +254,6 @@ export function Opdriftssikring() {
   const fejl = (felt: string) =>
     beregning.ok ? undefined : beregning.fejl.find((f) => f.felt === felt)?.tekst;
   const i = session.inddata;
-  const tank = session.konstruktion === 'tank';
-  const navn = tank ? 'tank' : 'rør';
-  const flertal = tank ? 'tanke' : 'ledninger';
   const saet = (aendring: Partial<Session['inddata']>) =>
     update({ ...session, inddata: { ...i, ...aendring } });
   const talfelt = (
@@ -280,7 +276,7 @@ export function Opdriftssikring() {
       change={(v) => saet({ [key]: Number(v) })}
     />
   );
-  const losninger: Losning[] = session.antal === 1 ? ['A', 'C'] : ['B', 'D'];
+  const losninger: Losning[] = ['A', 'C', 'B', 'D'];
   const ikkeNoedvendig = r?.S1Status === 'OK';
   const pk = r?.partialkoefficienter;
 
@@ -289,7 +285,7 @@ export function Opdriftssikring() {
       <PageHeader
         page="opdriftssikring"
         title="Opdriftssikring"
-        intro="Opdrift og ballast for rør og liggende tanke, nødvendigt geonet og forankringslængder. Beregningen følger regnearket for X-GRID."
+        intro="Opdrift og ballast for rør, nødvendigt geonet og forankringslængder. Beregningen følger regnearket for X-GRID."
         status={<SaveState />}
       />
       <div className="settings-start">
@@ -308,34 +304,6 @@ export function Opdriftssikring() {
         )}
       </div>
       <div className="calc-mode">
-        <SettingField
-          field={{
-            key: 'konstruktion',
-            label: 'Konstruktion',
-            kind: 'radio',
-            segmented: true,
-            options: [
-              { value: 'roer', label: 'Rør' },
-              { value: 'tank', label: 'Liggende tank' },
-            ],
-          }}
-          value={session.konstruktion}
-          change={(v) => update({ ...session, konstruktion: v as Session['konstruktion'] })}
-        />
-        <SettingField
-          field={{
-            key: 'antal',
-            label: tank ? 'Antal tanke' : 'Antal ledninger',
-            kind: 'radio',
-            segmented: true,
-            options: [
-              { value: 1, label: '1' },
-              { value: 2, label: '2' },
-            ],
-          }}
-          value={session.antal}
-          change={(v) => update({ ...session, antal: Number(v) as Session['antal'] })}
-        />
         <Button variant="outline" onClick={() => update(nulstilBeregning(session))}>
           <RotateCcw aria-hidden="true" />
           Nulstil beregning
@@ -349,11 +317,11 @@ export function Opdriftssikring() {
       >
         <div className="calc-grid">
           <div className="calc-fields">
-            {talfelt('d', `${tank ? 'Tankdiameter' : 'Rørdiameter'} d (m)`, 'Udvendig diameter.')}
+            {talfelt('d', 'Rørdiameter d (m)', 'Udvendig diameter.')}
             {talfelt(
               'h1',
               'Jorddækning h₁ (m)',
-              `Fra terræn til ${tank ? 'tankens' : 'rørets'} top. Midten ligger i T₃ = h₁ + d/2.`,
+              'Fra terræn til rørets top. Midten ligger i T₃ = h₁ + d/2.',
             )}
             <SettingField
               field={{
@@ -374,17 +342,11 @@ export function Opdriftssikring() {
           </div>
           {r && (
             <Figur
-              svg={tvaersnitSvg(r, input, navn)}
-              label={`Tværsnit: ${navn} med diameter ${tal(i.d)} m, jorddækning ${tal(i.h1)} m og GVS ${tal(input.gvs)} m under terræn`}
+              svg={tvaersnitSvg(r, input)}
+              label={`Tværsnit: rør med diameter ${tal(i.d)} m, jorddækning ${tal(i.h1)} m og GVS ${tal(input.gvs)} m under terræn`}
             />
           )}
         </div>
-        {session.antal === 2 && (
-          <Notice>
-            Ved to {flertal} angives den største diameter og den mindste egenvægt, som regnearket
-            forudsætter.
-          </Notice>
-        )}
       </Trin>
 
       <Trin
@@ -395,7 +357,7 @@ export function Opdriftssikring() {
         <div className="calc-fields calc-fields-4">
           {talfelt(
             'roervaegt',
-            `${tank ? 'Tankens' : 'Rørets'} egenvægt E_{k} (kg/m)`,
+            'Rørets egenvægt E_{k} (kg/m)',
             'Karakteristisk egenvægt pr. meter. Den regnes til gunst med faktoren 0,9. 0 kg/m giver den største sikkerhed.',
             { step: 1 },
           )}
@@ -689,7 +651,7 @@ export function Opdriftssikring() {
             </Udfold>
             <div className="solutions">
               {losninger.map((l) => (
-                <LosningKort key={l} r={r} input={input} losning={l} tank={tank} />
+                <LosningKort key={l} r={r} input={input} losning={l} />
               ))}
             </div>
           </Trin>
@@ -704,7 +666,7 @@ export function Opdriftssikring() {
                 Fund fra regnearket, der påvirker denne beregning. Tallene er regnet som i
                 regnearket. Kontrolpunkterne indgår ikke i rapporten.
               </p>
-              {kontrolpunktTekster(r, tank).map(({ kode, tekst }) => (
+              {kontrolpunktTekster(r).map(({ kode, tekst }) => (
                 <Notice kind="warning" key={kode}>
                   <Fmt text={tekst} />
                 </Notice>

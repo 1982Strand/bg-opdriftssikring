@@ -32,10 +32,10 @@ test('case 1 er standard og vises som i regnearket', async ({ page }) => {
   );
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,50');
   await expect(
-    losning(page, 'Uden omslag').getByRole('row', { name: /Forankring pr. side/ }),
+    losning(page, 'Uden omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
   ).toContainText('1,70 m');
   await expect(
-    losning(page, 'Med omslag').getByRole('row', { name: /Forankring pr. side/ }),
+    losning(page, 'Med omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
   ).toContainText('1,36 m');
   await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
 });
@@ -85,17 +85,24 @@ test('GVS under terræn, kontrolpunkter og S₁ over 1,0', async ({ page }) => {
   await expect(flise(page, 'Sikkerhed Ptill').locator('.m9-badge')).toHaveText('EJ OK');
 });
 
-test('to ledninger og liggende tank skifter løsninger og tekster', async ({ page }) => {
+test('alle fire løsninger vises, og der er ingen valg af antal eller konstruktion', async ({
+  page,
+}) => {
   await start(page);
-  await page.getByRole('radio', { name: '2', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Uden omslag, to ledninger' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Med omslag, to ledninger' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Uden omslag', exact: true })).toHaveCount(0);
-  await page.getByRole('radio', { name: 'Liggende tank' }).click();
-  await expect(page.getByRole('spinbutton', { name: 'Tankdiameter d (m)' })).toBeVisible();
-  await expect(page.getByRole('spinbutton', { name: /Tankens egenvægt/ })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Uden omslag, to tanke' })).toBeVisible();
-  await expect(page.getByText(/Ved to tanke angives den største diameter/)).toBeVisible();
+  await expect(page.locator('.solution-card > h3')).toHaveText([
+    'Uden omslag, én ledning',
+    'Med omslag, én ledning',
+    'Uden omslag, to ledninger',
+    'Med omslag, to ledninger',
+  ]);
+  await expect(
+    losning(page, 'Uden omslag, to ledninger').getByRole('row', { name: /Mellem ledningerne/ }),
+  ).toBeVisible();
+  await expect(
+    losning(page, 'Med omslag, to ledninger').getByText(/den største diameter/),
+  ).toBeVisible();
+  await expect(page.getByRole('radio')).toHaveCount(0);
+  await expect(page.getByText(/tank/i)).toHaveCount(0);
 });
 
 test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
@@ -113,7 +120,7 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
     'Udnyttelse af Ptill: 80 % · krav > 1,01',
   );
   await expect(
-    losning(page, 'Uden omslag').getByRole('row', { name: /Forankring pr. side/ }),
+    losning(page, 'Uden omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
   ).toContainText('7,40 m');
   // Der regnes altid med 2 lag; antallet kan ikke vælges.
   await expect(page.getByRole('spinbutton', { name: /lag/ })).toHaveCount(0);

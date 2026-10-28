@@ -22,8 +22,6 @@ test('validerer og falder tilbage felt for felt', () => {
   const p = parseSession(
     JSON.stringify({
       inddata: { d: -2, h1: 0.8, gvs: 2, gvsITerraen: false, phi: 95, produkt: 12, lag: 0 },
-      antal: 2,
-      konstruktion: 'tank',
       konsekvensklasse: 'CC3',
     }),
   );
@@ -31,8 +29,18 @@ test('validerer og falder tilbage felt for felt', () => {
   assert.equal(p.session.inddata.h1, 0.8);
   assert.equal(p.session.inddata.phi, 35);
   assert.equal(p.session.inddata.produkt, 150);
-  assert.equal(p.session.antal, 2);
   assert.equal(p.session.konsekvensklasse, 'CC3');
+});
+test('alle produkter i listen kan gemmes som manuelt valg', () => {
+  for (const uts of [35, 55, 80, 110, 130, 150, 200])
+    assert.equal(
+      parseSession(JSON.stringify({ inddata: { produkt: uts } })).session.inddata.produkt,
+      uts,
+    );
+});
+test('gemte valg af antal ledninger og konstruktion fra før ignoreres', () => {
+  const s = parseSession(JSON.stringify({ inddata: {}, antal: 2, konstruktion: 'tank' })).session;
+  assert.deepEqual(Object.keys(s).sort(), ['inddata', 'konsekvensklasse']);
 });
 test('ugyldigt dokument giver standarder og fejl', () => {
   assert.equal(parseSession('{').error, true);

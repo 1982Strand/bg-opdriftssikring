@@ -26,8 +26,13 @@ export function Indstillinger() {
   const standard = beregn(STANDARD);
   const aktuel = beregn(valgt);
   const KFI = standarder.KFI[valgt];
-  const losninger = session.antal === 1 ? (['A', 'C'] as const) : (['B', 'D'] as const);
-  const navn = { A: 'uden omslag', B: 'uden omslag', C: 'med omslag', D: 'med omslag' };
+  const losninger = ['A', 'C', 'B', 'D'] as const;
+  const navn = {
+    A: 'uden omslag, én ledning',
+    B: 'uden omslag, to ledninger',
+    C: 'med omslag, én ledning',
+    D: 'med omslag, to ledninger',
+  };
   const raekker: [string, (r: OpdriftResultat) => string][] = [
     ['Opdrift O', (r) => `${tal(r.O)} kN/m`],
     ['Sikkerhed S₁', (r) => `${tal(r.S1)} · ${r.S1Status}`],
@@ -41,7 +46,7 @@ export function Indstillinger() {
       (r) => (r.geonet.status ? `${tal(r.geonet.sikkerhed)} · ${r.geonet.status}` : '–'),
     ],
     ...losninger.map((l): [string, (r: OpdriftResultat) => string] => [
-      `L_{geonet} pr. side, ${navn[l]}`,
+      `L_{geonet}, ${navn[l]}`,
       (r) => `${tal(r.losninger[l].L)} m`,
     ]),
   ];

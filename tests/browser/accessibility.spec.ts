@@ -32,8 +32,6 @@ for (const width of [1440, 390]) {
             produkt: 150,
             lag: 2,
           },
-          konstruktion: 'roer',
-          antal: 1,
           konsekvensklasse: 'CC2',
         }),
       ),

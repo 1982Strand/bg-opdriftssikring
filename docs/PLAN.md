@@ -46,18 +46,17 @@ Menuens fod viser »BG Byggros A/S« og versionsnummeret, som i MSL.
 
 Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«, »Nulstil beregning« og nummererede kort. Alt regnes straks ved indtastning. Mellemregninger vises i udfoldelige felter med formel og indsatte tal.
 
-1. **Konstruktion og grundvand.**
-   - Valg mellem rør og liggende tank. Formlerne er de samme; kun tekster og figurer skifter.
-   - Antal ledninger eller tanke: 1 eller 2. For 2 vises arkets forudsætninger: største diameter og mindste vægt.
+1. **Geometri og grundvand.**
+   - Der regnes på rør. Der er hverken valg af konstruktion eller antal ledninger.
    - Diameter d, jorddækning h₁ og GVS-dybde, med valget »GVS i terræn«.
    - Et levende tværsnit med T₁, T₂, T₃, h₁, h₂ og d.
    - T₁ = 0 er fast (K-18). Felterne afviser kun værdier uden fysisk mening, fx diameter ≤ 0. Ellers er der ingen grænser, som i arket.
-2. **Egenvægt og fyldmateriale.** Rør- eller tankvægt i kg/m, γ, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier og de anvendte partialkoefficienter.
+2. **Egenvægt og fyldmateriale.** Rørets egenvægt i kg/m, γ, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier og de anvendte partialkoefficienter.
 3. **Opdrift uden geonet.** O, B og S₁ med statusmærke og arkets konklusionstekst.
 4. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
 5. **Forankring.**
    - F_bund, F_top og K vises.
-   - De to løsninger for det valgte antal ledninger vises under hinanden: uden og med omslag, dvs. A og C for 1 ledning eller B og D for 2.
+   - Alle fire løsninger vises under hinanden: uden og med omslag for én ledning (A og C) og derefter for to ledninger (B og D). Kortene for to ledninger viser arkets forudsætninger: største diameter og mindste egenvægt.
    - Hver løsning har en målsat figur til venstre og til højre L pr. side, afstand mellem ledninger, L_a, L_geonet,tot, arkets kontrol, hvor arket har en, og mellemregningerne.
 
 Er S₁ > 1, tones kort 4–5 ned i gråtoner, så kontrasten bevares, men tallene vises som i arket.
@@ -109,9 +108,9 @@ Rapportens indhold følger arkets afsnit og tal:
 6. Nødvendig trækstyrke, med note om tovkraft
 7. Regningsmæssig designtrækstyrke og eftervisning, med en eventuel manuel overstyring af geonettet
 8. Kraftoverførsel i sand
-9. Løsningerne for det valgte antal ledninger. Begge kommer med som udgangspunkt, og den ene kan fravælges på rapportsiden.
+9. Løsningerne. Hvilke af de fire løsninger rapporten tager med, og om nogle kan fravælges, afklares i fase 4.
 
-Teksterne følger valget mellem rør og liggende tank. Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden får sagsbehandleren fra kartoteket i stedet for »Bruger«.
+Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden får sagsbehandleren fra kartoteket i stedet for »Bruger«.
 
 ## 7. Test og kontrol
 
@@ -140,10 +139,10 @@ Teksterne følger valget mellem rør og liggende tank. Formlerne sættes som mat
 | 4 | Rapport, firmaprofil og kartotek | Delvist |
 | 5 | Opslag og hjælp | Tekst og tabeller |
 | 6 | Hosting, efter godkendelse | – |
-| 7 | Ændringer fra fundlisten og mængdeberegning for tanke, efter beslutning | – |
+| 7 | Ændringer fra fundlisten og mængdeberegning, efter beslutning | – |
 
 ## 10. Senere udvidelser
 
-- **Mængdeberegning.** Ud fra ledningens eller tankens længde: antal strimler, strimmellængde, m² geonet og antal ruller. Det kræver rulledata pr. produkt.
+- **Mængdeberegning.** Ud fra ledningens længde: antal strimler, strimmellængde, m² geonet og antal ruller. Det kræver rulledata pr. produkt.
 - **Stående tanke og brønde.** Kræver en volumenbaseret model uden for arket og eget fagligt grundlag.
 - **Geoteknisk kategori.** Valg på Indstillinger, hvor kategori 1 ganger partialkoefficienterne for jordparametre med γ_s = 1,25 (DK NA:2021, A.3.1(6)P). Udskudt 28. oktober 2026.

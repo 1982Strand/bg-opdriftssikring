@@ -39,7 +39,7 @@ Browsertestene dækker:
 - standardresultatet for case 1;
 - feltfejl, nulstilling og genindlæsning;
 - GVS under terræn med kontrolpunkter og nedtoning;
-- to ledninger og liggende tank;
+- alle fire løsninger uden valg af antal eller konstruktion;
 - manuelt valg af 2 lag X-GRID 150;
 - konsekvensklasse CC3;
 - navigationen;

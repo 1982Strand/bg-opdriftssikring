@@ -15,8 +15,6 @@ export interface Session {
     /** UTS pr. lag ved manuelt valg; der regnes altid med 2 lag. */
     produkt: number;
   };
-  konstruktion: 'roer' | 'tank';
-  antal: 1 | 2;
   konsekvensklasse: Konsekvensklasse;
 }
 export const STORAGE_KEY = 'opdrift.session';
@@ -33,8 +31,6 @@ export const standardSession = (): Session => ({
     overstyringAktiv: false,
     produkt: 150,
   },
-  konstruktion: 'roer',
-  antal: 1,
   konsekvensklasse: 'CC2',
 });
 export function tilMotorInput(s: Session): OpdriftInput {
@@ -87,10 +83,8 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
               ? i.phi
               : 35,
           overstyringAktiv: typeof i.overstyringAktiv === 'boolean' ? i.overstyringAktiv : false,
-          produkt: [35, 55, 80, 110, 150].includes(i.produkt) ? i.produkt : 150,
+          produkt: standarder.geonet.produkter.some((p) => p.uts === i.produkt) ? i.produkt : 150,
         },
-        konstruktion: x.konstruktion === 'tank' ? 'tank' : 'roer',
-        antal: x.antal === 2 ? 2 : 1,
         konsekvensklasse: ['CC1', 'CC2', 'CC3'].includes(x.konsekvensklasse)
           ? x.konsekvensklasse
           : 'CC2',
