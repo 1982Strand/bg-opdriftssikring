@@ -1,0 +1,45 @@
+# Beslutninger
+
+## 28. oktober 2026 — opgaven
+
+Regnearket til opdriftssikring med X-GRID skal gøres til en app. Den skal have samme stil og design som MSL Dimensionering og kunne danne en PDF-rapport efter beregningerne. Koden skal ligge i et offentligt GitHub-repo med navnet `bg-opdriftssikring`. Før bygningen skal arket kortlægges fuldstændigt, og appens opbygning skal planlægges.
+
+Brugerens ord: »Pointen er, de to værktøjer skal ligne hinanden for brugeren, så det er tydeligt det er fra samme firma.« og »Det kan godt være der skal optimeres på noget henad vejen, men i første omgang skal vi finde ud af hvordan appen skal opbygges og fungere.«
+
+## 28. oktober 2026 — svar på planens spørgsmål
+
+Brugerens svar: »1,2 og 3: I første omgang skal appen regne præcist som excel-arket. Alle fund skal dog noteres ligesom her med eksempler, så jeg kan tage stilling til mulighederne for ændring senere. 4:b. 5: OPDRIFT | Sikring med geonet 6:b. 7:b«
+
+1. **Beregning.** Første version regner præcist som arket, også netvalget med grænsen 78,9 og kravet 1,01, π = 3,14 og g = 9,82. Fundene er beskrevet med eksempler og muligheder i `docs/FUND.md` (K-01 til K-19). De ændres kun efter særskilt beslutning.
+2. **GVS.** Som arket. GVS under rørtoppen og rørmidten afvises ikke (K-05).
+3. **Geonet.** Det automatiske valg er som i arket med ét lag og »kontakt leverandør for råd« over grænsen (K-04).
+4. **Løsninger i rapporten.** Antallet af ledninger (1 eller 2) vælges på beregningssiden. Rapporten tager de to relevante løsninger med, uden og med omslag. Den ene kan fravælges på rapportsiden.
+5. **Navn.** Topbjælken viser **OPDRIFT** | Sikring med geonet.
+6. **Hosting.** Kun lokal brug i første omgang. Den delte udgave forberedes, og Cloudflare sættes først op efter godkendelse.
+7. **Rør og tanke.** Der vælges mellem rør og liggende tank. Formlerne er de samme, og teksterne tilpasses. Mængdeberegning samt stående tanke og brønde er senere udvidelser.
+
+Følgende er valgt af Claude og kan ændres:
+- Ikonet i topbjælken er `Waves`.
+- Produkt og antal lag kan overstyres manuelt, sådan som case 2 er regnet i arket.
+- Under Kontrolpunkter vises en oplysning, når fund K-02, K-03, K-05, K-12 eller K-13 er aktivt. Beregningen påvirkes ikke, og oplysningen kommer ikke med i rapporten.
+- Rapporten viser γ_f som den anvendte værdi i stedet for arkets tekst 1,05 (K-01).
+- T₁ = 0 er fast (K-18).
+- Felterne afviser kun værdier uden fysisk mening.
+- Ved S₁ > 1 tones kortene om geonet og forankring ned på beregningssiden. Tallene vises som i arket.
+
+## 28. oktober 2026 — side med indstillinger
+
+Brugerens ønske: »Der skal også laves en 'indstillinger' side, hvor man bl.a kan indstille konsekvensklasse og kontrolklasse, der påvirker partialkoefficienterne.« og »kig i pdf'en med det danske anneks til EC7, der kan du se det«.
+
+Appen får siden Indstillinger under menugruppen Opsætning.
+
+**Konsekvensklasse.** Klassen vælges blandt CC1, CC2 og CC3 med CC2 som standard. Standarden giver arkets resultater. Efter DS/EN 1997-1 DK NA:2021, A.1 (side 13) er K_FI = 1,0 i CC1 og CC2 og 1,1 i CC3. I tabel A.4-1 NA (UPL, side 22) indgår K_FI kun i den ugunstige last: γ_G;dst = 1,1 · K_FI. Opdriften regnes derfor med γ_f = 1,1 · K_FI, dvs. 1,1 eller 1,21. γ_G;stb = 0,9 og γ_φ = 1,2 er uafhængige af klassen. Beslutningen afgør K-01 i `docs/FUND.md`.
+
+**Kontrolklasse afventer afklaring.** Ordet »kontrolklasse« forekommer ikke i DS/EN 1997-1 DK NA:2021. Annekset regulerer partialkoefficienterne med:
+- konsekvensklasse (K_FI, A.1);
+- geoteknisk kategori: i kategori 1 ganges partialkoefficienterne for jordparametre og modstandsevne med modelfaktoren γ_s = 1,25 (A.3.1(6)P, side 15). Bestemmelsen står under STR/GEO (A.3), ikke under UPL (A.4);
+- faktoren α for midlertidige konstruktioner under udførelse (A.3.1(7)–(9)).
+
+Brugerens svar: »Med kontrolklasse mente jeg geoteknisk kategori. Tag den med på indstillingssiden, så kategori 1 ganger partialkoefficienterne for jordparametre med 1,25.« Kort efter: »nej vent. Drop i første omgang dette og tag bare den del med konsekvensklassen med«.
+
+Indstillingssiden får derfor kun konsekvensklassen i første omgang. Geoteknisk kategori er noteret som senere udvidelse i `docs/PLAN.md`.
