@@ -20,9 +20,7 @@ test('case 1 er standard og vises som i regnearket', async ({ page }) => {
   await start(page);
   await expect(page.getByRole('status').filter({ hasText: 'Standarddata' })).toBeVisible();
   await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('53,97');
-  await expect(flise(page, 'Opdrift O').locator('p')).toHaveText(
-    'γf = 1,1 · KFI = 1,10 (CC2, DK NA tabel A.4-1)',
-  );
+  await expect(flise(page, 'Opdrift O').locator('p')).toHaveText('γf = 1,10');
   await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('26,44');
   await expect(flise(page, 'Sikkerhed S₁').locator('strong')).toHaveText('0,49');
   await expect(flise(page, 'Sikkerhed S₁').locator('.m9-badge')).toHaveText('EJ OK');
@@ -121,9 +119,7 @@ test('konsekvensklasse CC3 på Indstillinger bruges på beregningssiden', async 
   await expect(page.getByRole('row', { name: /Opdrift O/ })).toContainText('59,37 kN/m');
   await page.goto('/#opdriftssikring');
   await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('59,37');
-  await expect(flise(page, 'Opdrift O').locator('p')).toHaveText(
-    'γf = 1,1 · KFI = 1,21 (CC3, DK NA tabel A.4-1)',
-  );
+  await expect(flise(page, 'Opdrift O').locator('p')).toHaveText('γf = 1,21');
   await page.goto('/#indstillinger');
   await page.getByRole('button', { name: 'Nulstil indstillinger' }).click();
   await expect(page.getByRole('radio', { name: 'CC2' })).toBeChecked();

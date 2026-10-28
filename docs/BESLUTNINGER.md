@@ -107,5 +107,5 @@ Følgende er valgt af Claude og kan ændres:
 
 Brugerens spørgsmål: »koefficienten der står under opdriften (gamma_f = 1,1) hvor kommer den fra og hvad afhænger den af?« Svaret var γ_G;dst = 1,1 · K_FI fra DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som kun afhænger af konsekvensklassen. Brugerens ønske: »skriv kilden og konsekvensklassen ind ved γ_f på siden, fx i flisen og i mellemregningerne.«
 
-- Flisen for opdriften viser fx »γf = 1,1 · KFI = 1,10 (CC2, DK NA tabel A.4-1)«.
+- Flisen for opdriften viser kun γ_f, fx »γf = 1,10«. Brugeren ønskede efterfølgende: »bare skriv det som før oppe i flisen (gamma_f = 1,1), men behold beregningen og forklaringen nede i mellemregninger-boksen«.
 - Mellemregningerne har linjen γ_f = γ_G;dst = 1,1 · K_FI med den valgte klasse og en note om tabel A.4-1 NA, afsnit A.1 og valget under Indstillinger.

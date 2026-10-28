@@ -486,7 +486,7 @@ export function Opdriftssikring() {
                 label="Opdrift O"
                 vaerdi={tal(r.O)}
                 enhed="kN/m"
-                note={`γ_{f} = 1,1 · K_{FI} = ${tal(pk.gammaF)} (${session.konsekvensklasse}, DK NA tabel A.4-1)`}
+                note={`γ_{f} = ${tal(pk.gammaF)}`}
               />
               <Flise label="Ballast B" vaerdi={tal(r.B)} enhed="kN/m" note="Fyld og egenvægt" />
               <Flise
