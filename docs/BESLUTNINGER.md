@@ -20,7 +20,7 @@ Brugerens svar: »1,2 og 3: I første omgang skal appen regne præcist som excel
 
 Følgende er valgt af Claude og kan ændres:
 - Ikonet i topbjælken er `Waves`.
-- Produkt og antal lag kan overstyres manuelt, sådan som case 2 er regnet i arket.
+- Produkt og antal lag kan overstyres manuelt, sådan som case 2 er regnet i arket. Ændret samme dag: altid 2 lag, se nedenfor.
 - Under Kontrolpunkter vises en oplysning, når fund K-02, K-03, K-05, K-12 eller K-13 er aktivt. Beregningen påvirkes ikke, og oplysningen kommer ikke med i rapporten.
 - Rapporten viser γ_f som den anvendte værdi i stedet for arkets tekst 1,05 (K-01).
 - T₁ = 0 er fast (K-18).
@@ -72,3 +72,12 @@ Følgende er valgt af Claude og kan ændres:
 - **Lagring.** Konstruktion, antal, inddata og konsekvensklasse gemmes samlet i browseren.
 
 Under arbejdet er fund K-20 tilføjet: arket bruger h₁ og h₂ i tre forskellige betydninger.
+
+## 28. oktober 2026 — manuelt valg af geonet er altid 2 lag
+
+Brugerens ord: »Først og fremmest, så skal man ikke kunne vælge hvor mange lag geonet i den manuelle funktion, det er ALTID 2 lag der tages udgangspunkt i, hvis ikke den automatiske beregning giver tilstrækkelig resultat. Det giver ikke mening med 3 eller flere lag, da nettet i midten ikke kan udnyttes.«
+
+- Feltet »Antal lag« er fjernet. Ved manuelt valg vælges produktet, og der regnes med 2 lag. Valget hedder »Vælg geonet manuelt i 2 lag«, og produktlisten viser den samlede UTS for 2 lag.
+- Motoren afviser mere end 2 lag. Antallet står som `lagVedManueltValg` i `defaults.json`.
+- Motoren tillader stadig 1 lag i en overstyring, fordi en af kontrolcasene fra regnearket er overstyret til 1 lag X-GRID 110. Siden bruger det ikke.
+- Det automatiske valg er fortsat som i arket: ét lag, og over grænsen »kontakt leverandør for råd« (K-04).

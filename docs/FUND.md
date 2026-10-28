@@ -112,12 +112,12 @@ Grænsetabellens UTS for det største produkt er 200 (K22), men produktlisten ha
 Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af lag ændrer kun valget af net.
 
 **Muligheder.**
-- a) Automatisk valg af samme produkt i flere lag: færrest lag, derefter mindste produkt, højst fx 3 lag (her 2 × 150).
+- a) Automatisk valg af samme produkt i 2 lag, når ét lag ikke er nok (her 2 × 150). Flere end 2 lag udnyttes ikke (beslutning 28. oktober 2026).
 - b) Automatisk valg med blandede produkter og laveste samlede UTS (her 150 + 110).
 - c) Uændret, med manuelt valg.
 - Teksten om ét lag tilpasses ved a og b.
 
-**Første version.** Det automatiske valg er som i arket. Produkt og antal lag kan overstyres manuelt, sådan som case 2 er regnet i arket. Overstyringen vises i rapporten.
+**Første version.** Det automatiske valg er som i arket. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, sådan som case 2 er regnet i arket. Overstyringen vises i rapporten.
 
 ## K-05 GVS under rørtoppen
 

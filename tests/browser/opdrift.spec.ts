@@ -98,16 +98,17 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
   await saet(page, 'Rørdiameter d (m)', '4');
   await saet(page, 'Jorddækning h₁ (m)', '0.6');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('Kontakt leverandør');
-  await page.getByRole('checkbox', { name: 'Vælg geonet manuelt' }).click();
-  await page.getByRole('combobox', { name: 'Produkt' }).click();
-  await page.getByRole('option', { name: 'X-GRID 150' }).click();
-  await saet(page, 'Antal lag', '2');
+  await page.getByRole('checkbox', { name: 'Vælg geonet manuelt i 2 lag' }).click();
+  await page.getByRole('combobox', { name: 'Produkt i 2 lag' }).click();
+  await page.getByRole('option', { name: 'X-GRID 150 · UTS 300 kN/m' }).click();
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 150 (2 lag)');
   await expect(flise(page, 'Tilladelig last').locator('strong')).toHaveText('142,41');
   await expect(flise(page, 'Udnyttelse').locator('strong')).toHaveText('1,26');
   await expect(
     losning(page, 'Uden omslag').getByRole('row', { name: /Forankring pr. side/ }),
   ).toContainText('7,40 m');
+  // Der regnes altid med 2 lag; antallet kan ikke vælges.
+  await expect(page.getByRole('spinbutton', { name: /lag/ })).toHaveCount(0);
 });
 
 test('konsekvensklasse CC3 på Indstillinger bruges på beregningssiden', async ({ page }) => {

@@ -261,10 +261,10 @@ export function Opdriftssikring() {
   const saet = (aendring: Partial<Session['inddata']>) =>
     update({ ...session, inddata: { ...i, ...aendring } });
   const talfelt = (
-    key: 'd' | 'h1' | 'gvs' | 'roervaegt' | 'gamma' | 'gammaTor' | 'phi' | 'lag',
+    key: 'd' | 'h1' | 'gvs' | 'roervaegt' | 'gamma' | 'gammaTor' | 'phi',
     label: string,
     help: string,
-    ekstra: { disabled?: boolean; step?: number; min?: number; integer?: boolean } = {},
+    ekstra: { disabled?: boolean; step?: number } = {},
   ) => (
     <SettingField
       field={{
@@ -273,12 +273,10 @@ export function Opdriftssikring() {
         kind: 'number',
         help,
         step: ekstra.step ?? 0.01,
-        min: ekstra.min,
-        integer: ekstra.integer,
       }}
       disabled={ekstra.disabled}
       value={i[key]}
-      error={fejl(key === 'lag' ? 'overstyring' : key)}
+      error={fejl(key)}
       change={(v) => saet({ [key]: Number(v) })}
     />
   );
@@ -564,9 +562,9 @@ export function Opdriftssikring() {
               <SettingField
                 field={{
                   key: 'input-overstyring',
-                  label: 'Vælg geonet manuelt',
+                  label: `Vælg geonet manuelt i ${standarder.geonet.lagVedManueltValg} lag`,
                   kind: 'checkbox',
-                  help: 'Fx flere lag oven på hinanden, når ét lag ikke er nok. Forankringslængderne afhænger ikke af nettet.',
+                  help: `Når ét lag ikke er nok, lægges ${standarder.geonet.lagVedManueltValg} net af samme produkt oven på hinanden. Flere lag kan ikke udnyttes, fordi et net i midten ikke kan optage kraft. Forankringslængderne afhænger ikke af nettet.`,
                 }}
                 value={i.overstyringAktiv}
                 change={(v) => saet({ overstyringAktiv: Boolean(v) })}
@@ -574,20 +572,18 @@ export function Opdriftssikring() {
               <SettingField
                 field={{
                   key: 'input-produkt',
-                  label: 'Produkt',
+                  label: `Produkt i ${standarder.geonet.lagVedManueltValg} lag`,
                   kind: 'select',
-                  options: geonetProdukter.map((p) => ({ value: p.uts, label: `X-GRID ${p.uts}` })),
+                  options: geonetProdukter.map((p) => ({
+                    value: p.uts,
+                    label: `X-GRID ${p.uts} · UTS ${p.uts * standarder.geonet.lagVedManueltValg} kN/m`,
+                  })),
                 }}
                 disabled={!i.overstyringAktiv}
                 value={i.produkt}
+                error={fejl('overstyring')}
                 change={(v) => saet({ produkt: Number(v) })}
               />
-              {talfelt('lag', 'Antal lag', 'Antal net oven på hinanden.', {
-                disabled: !i.overstyringAktiv,
-                step: 1,
-                min: 1,
-                integer: true,
-              })}
             </div>
             <Udfold titel="Mellemregninger">
               <Formler

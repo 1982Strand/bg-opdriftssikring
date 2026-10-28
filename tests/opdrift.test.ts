@@ -53,6 +53,21 @@ test('samler fejl fra flere felter og fra overstyringen', () => {
   ]);
 });
 
+test('manuelt valg tillader 1 eller 2 lag, aldrig flere', () => {
+  assert.equal(beregnOpdrift({ ...basis, overstyring: { uts: 150, lag: 1 } }).ok, true);
+  assert.equal(beregnOpdrift({ ...basis, overstyring: { uts: 150, lag: 2 } }).ok, true);
+  const tre = beregnOpdrift({ ...basis, overstyring: { uts: 150, lag: 3 } });
+  assert.equal(tre.ok, false);
+  if (!tre.ok)
+    assert.deepEqual(tre.fejl, [
+      {
+        felt: 'overstyring',
+        tekst:
+          'Antallet af lag skal være 1 eller 2. Et net i midten af flere lag kan ikke udnyttes.',
+      },
+    ]);
+});
+
 test('fejlteksterne er danske og nævner feltet', () => {
   const resultat = beregnOpdrift({ ...basis, d: Number.NaN, gamma: 10 });
   assert.equal(resultat.ok, false);

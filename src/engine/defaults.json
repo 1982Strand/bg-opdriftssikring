@@ -23,6 +23,7 @@
     "fM": 1.05,
     "fD": 1.15,
     "fE": 1.22,
+    "lagVedManueltValg": 2,
     "produkter": [
       { "uts": 35 },
       { "uts": 55 },

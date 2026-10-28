@@ -1,4 +1,5 @@
 import type { Konsekvensklasse, OpdriftInput } from '../engine/opdrift.ts';
+import standarder from '../engine/defaults.json' with { type: 'json' };
 
 export interface Session {
   inddata: {
@@ -11,8 +12,8 @@ export interface Session {
     gammaTor: number;
     phi: number;
     overstyringAktiv: boolean;
+    /** UTS pr. lag ved manuelt valg; der regnes altid med 2 lag. */
     produkt: number;
-    lag: number;
   };
   konstruktion: 'roer' | 'tank';
   antal: 1 | 2;
@@ -31,7 +32,6 @@ export const standardSession = (): Session => ({
     phi: 35,
     overstyringAktiv: false,
     produkt: 150,
-    lag: 2,
   },
   konstruktion: 'roer',
   antal: 1,
@@ -48,7 +48,9 @@ export function tilMotorInput(s: Session): OpdriftInput {
     gammaTor: i.gammaTor,
     phi: i.phi,
     konsekvensklasse: s.konsekvensklasse,
-    overstyring: i.overstyringAktiv ? { uts: i.produkt, lag: i.lag } : null,
+    overstyring: i.overstyringAktiv
+      ? { uts: i.produkt, lag: standarder.geonet.lagVedManueltValg }
+      : null,
   };
 }
 const num = (v: unknown, d: number, min = -Infinity, max = Infinity) =>
@@ -86,7 +88,6 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
               : 35,
           overstyringAktiv: typeof i.overstyringAktiv === 'boolean' ? i.overstyringAktiv : false,
           produkt: [35, 55, 80, 110, 150].includes(i.produkt) ? i.produkt : 150,
-          lag: Number.isInteger(i.lag) && i.lag >= 1 && i.lag <= 100 ? i.lag : 2,
         },
         konstruktion: x.konstruktion === 'tank' ? 'tank' : 'roer',
         antal: x.antal === 2 ? 2 : 1,
