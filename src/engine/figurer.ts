@@ -258,12 +258,12 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   // beregnede værdier.
   const afstand = Math.max(OMSLAG * t.s, 16);
   const yTop = px(yBund - afstand);
-  const bue = px(afstand / 2);
   const over = (cx: number) =>
     ` L ${px(t.X(cx) - radius)} ${yBund} A ${px(radius)} ${px(radius)} 0 0 1 ${px(t.X(cx) + radius)} ${yBund}`;
-  // Vending ved en ende: fra toplaget ned til bundlaget eller omvendt, buet ud mod enden.
-  const ned = (x: number) => ` H ${px(x)} A ${bue} ${bue} 0 0 0 ${px(x)} ${yBund}`;
-  const op = (x: number) => ` L ${px(x)} ${yBund} A ${bue} ${bue} 0 0 0 ${px(x)} ${yTop}`;
+  // Vending ved en ende: lodret fra toplaget ned til bundlaget eller omvendt, med skarpe hjørner
+  // som i regnearkets figur.
+  const ned = (x: number) => ` H ${px(x)} V ${yBund}`;
+  const op = (x: number) => ` L ${px(x)} ${yBund} V ${yTop}`;
   const xVenstre = t.X(-ydre);
   const xHoejre = t.X(ydre);
   const tilbage = TOPLAG * L * t.s;
@@ -274,7 +274,7 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   else {
     // Ét net pr. rør. I midten vender de to net mod hinanden med et lille mellemrum.
     const xMidt = t.X(0);
-    const g = bue + 3;
+    const g = 5;
     const tilbageMidt = Math.max(0, TOPLAG * (mellem / 2) * t.s - g);
     sti =
       `M ${px(xVenstre + tilbage)} ${yTop}${ned(xVenstre)}${over(centre[0])}` +
@@ -284,7 +284,7 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
       `${op(xHoejre)} H ${px(xHoejre - tilbage)}`;
   }
   t.dele.push(
-    `<path d="${sti}" fill="none" stroke="${farve.net}" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round"/>`,
+    `<path d="${sti}" fill="none" stroke="${farve.net}" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="miter"/>`,
   );
 
   // L_a over terræn.
