@@ -160,3 +160,19 @@ Valgt af Claude og kan ændres: rækkefølgen A, C, B, D, så løsningerne for �
 Åbent til fase 4: hvilke af de fire løsninger rapporten tager med, og om nogle kan fravælges på rapportsiden.
 
 Under arbejdet er en fejl rettet: et gemt manuelt valg af X-GRID 130 eller 200 blev ved genindlæsning sat tilbage til X-GRID 150. Gyldige produkter læses nu fra produktlisten.
+
+## 28. oktober 2026 — forudsætninger og partialkoefficienter først på beregningssiden
+
+Brugerens ønske: »jeg vil gerne have indsat afsnittet med generelle beregningsforudsætninger fra regnearket, hvor det med betingelser og projekteringsansvar altså skal stå som første afsnit. derefter vil jeg gerne have et afsnit med partialkoefficienter ind lige efter, hvor de ting omkring konsekvensklasse flyttes fra indstillingerne og ind på dimensioneringssiden«. Undervejs: »indstillinger-siden skal ikke fjernes, der kommer noget senere«.
+
+- Kort 1 **Generelle beregningsforudsætninger** viser arkets Betingelser og Projekteringsansvar (Rapporten A39:A69). Teksterne står i `src/ui/forudsaetninger.ts`, så rapporten kan bruge dem.
+- Kort 2 **Partialkoefficienter** har valget af konsekvensklasse, koefficienterne fra tabel A.4-1 NA og i et udfoldeligt felt sammenligningen med standarden CC2. Det svarer til det, der stod på Indstillinger.
+- De øvrige kort er rykket to numre: Geometri og grundvand er nu 3, Forankring 7.
+- Siden Indstillinger bliver i menuen som pladsholder til senere indstillinger og henviser til kort 2.
+
+Valgt af Claude og kan ændres:
+- Betingelserne vises som punktliste, og projekteringsansvaret som to afsnit.
+- Teksterne er rettet for stavning og tegnsætning: »konsekvenssklasse«, »indgåes«, »verificereret«, »Såfremt der indgået«, »med mindre« og »Partial koefficienter«. »British Board of Agreement« er rettet til det officielle navn British Board of Agrément. Standarden skrives DS/EN 1997-1 DK NA:2021 (Eurocode 7) som i resten af appen.
+- Linjen om konsekvensklasse nævner den valgte klasse, fx »konsekvensklasse CC2 (middel konsekvensklasse)«, i stedet for arkets faste »middel konsekvenssklasse«. Det er besluttet for rapporten i planen.
+- Opsummeringen i kort 1 er »DS/EN 1997-1 DK NA:2021 · levetid 120 år«. Kort 2 viser klasse, K_FI og γ_f.
+- »Nulstil beregning« sætter nu også konsekvensklassen tilbage til CC2, fordi klassen står på beregningssiden. Knappen »Nulstil indstillinger« er udgået.

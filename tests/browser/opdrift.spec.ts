@@ -72,11 +72,11 @@ test('GVS under terræn, kontrolpunkter og S₁ over 1,0', async ({ page }) => {
     ),
   ).toBeVisible();
   const kort = page.locator('section.calc-card');
-  await expect(kort.filter({ has: page.getByRole('heading', { name: '4 Geonet' }) })).toHaveClass(
+  await expect(kort.filter({ has: page.getByRole('heading', { name: '6 Geonet' }) })).toHaveClass(
     /is-dimmed/,
   );
   await expect(
-    kort.filter({ has: page.getByRole('heading', { name: '5 Forankring' }) }),
+    kort.filter({ has: page.getByRole('heading', { name: '7 Forankring' }) }),
   ).toHaveClass(/is-dimmed/);
   await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
   await saet(page, 'Rørdiameter d (m)', '2.601');
@@ -101,7 +101,7 @@ test('alle fire løsninger vises, og der er ingen valg af antal eller konstrukti
   await expect(
     losning(page, 'Med omslag, to ledninger').getByText(/den største diameter/),
   ).toBeVisible();
-  await expect(page.getByRole('radio')).toHaveCount(0);
+  await expect(page.getByRole('radio')).toHaveText(['CC1', 'CC2', 'CC3']);
   await expect(page.getByText(/tank/i)).toHaveCount(0);
 });
 
@@ -126,17 +126,30 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
   await expect(page.getByRole('spinbutton', { name: /lag/ })).toHaveCount(0);
 });
 
-test('konsekvensklasse CC3 på Indstillinger bruges på beregningssiden', async ({ page }) => {
+test('forudsætninger og konsekvensklasse står først på beregningssiden', async ({ page }) => {
   await start(page);
-  await page.goto('/#indstillinger');
+  await expect(page.locator('section.calc-card h2')).toHaveText([
+    '1 Generelle beregningsforudsætninger',
+    '2 Partialkoefficienter',
+    '3 Geometri og grundvand',
+    '4 Egenvægt og fyldmateriale',
+    '5 Opdrift uden geonet',
+    '6 Geonet',
+    '7 Forankring',
+  ]);
+  await expect(page.getByRole('heading', { name: 'Projekteringsansvar' })).toBeVisible();
+  await expect(page.getByText('Analysen sker i konsekvensklasse CC2 (middel')).toBeVisible();
   await page.getByRole('radio', { name: 'CC3' }).click();
-  await expect(page.getByRole('row', { name: /Opdrift O/ })).toContainText('59,37 kN/m');
-  await page.goto('/#opdriftssikring');
+  await expect(page.getByText('Analysen sker i konsekvensklasse CC3 (høj')).toBeVisible();
   await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('59,37');
   await expect(flise(page, 'Opdrift O').locator('p')).toHaveText('γf = 1,21');
-  await page.goto('/#indstillinger');
-  await page.getByRole('button', { name: 'Nulstil indstillinger' }).click();
+  await page.getByRole('button', { name: 'Konsekvens for den aktuelle beregning' }).click();
+  await expect(page.getByRole('row', { name: /Opdrift O/ })).toContainText('59,37 kN/m');
+  await page.getByRole('button', { name: 'Nulstil beregning' }).click();
   await expect(page.getByRole('radio', { name: 'CC2' })).toBeChecked();
+  await page.goto('/#indstillinger');
+  await expect(page.getByText(/Konsekvensklassen vælges i afsnit 2/)).toBeVisible();
+  await expect(page.getByRole('radio')).toHaveCount(0);
 });
 
 test('X-GRID 200 vælges automatisk over X-GRID 150 (K-21)', async ({ page }) => {

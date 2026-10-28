@@ -1,4 +1,4 @@
-/** Den aktuelle beregning og indstillingerne, delt mellem siderne og gemt i browseren. */
+/** Den aktuelle beregning, delt mellem siderne og gemt i browseren. */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { loadSession, saveSession, standardSession, STORAGE_KEY, type Session } from './state';
 

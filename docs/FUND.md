@@ -52,7 +52,7 @@ Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kont
 | S₁ | 0,49 | 0,51 |
 | F_opdrift | 27,53 kN/m | 25,07 kN/m |
 
-**Afgjort.** γ_f = 1,1 · K_FI følger konsekvensklassen under Indstillinger (beslutning 28. oktober 2026). CC1 og CC2 giver arkets 1,1, CC3 giver 1,21. Rapportteksten viser den anvendte værdi, så tekst og tal stemmer.
+**Afgjort.** γ_f = 1,1 · K_FI følger konsekvensklassen, som vælges i kort 2 Partialkoefficienter på beregningssiden (beslutning 28. oktober 2026). CC1 og CC2 giver arkets 1,1, CC3 giver 1,21. Rapportteksten viser den anvendte værdi, så tekst og tal stemmer.
 
 ## K-02 Forkert grænse for X-GRID 150
 

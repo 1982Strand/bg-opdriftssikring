@@ -27,7 +27,6 @@ import {
 } from './navigation';
 import { RestartApp } from './RestartApp';
 import { Opdriftssikring } from './Opdriftssikring';
-import { Indstillinger } from './Indstillinger';
 import { SessionProvider } from './SessionContext';
 
 const pages: Record<PageKey, { intro: string; notice: string }> = {
@@ -46,7 +45,8 @@ const pages: Record<PageKey, { intro: string; notice: string }> = {
   },
   indstillinger: {
     intro: 'Indstillinger for beregningen.',
-    notice: 'Valg af konsekvensklasse bygges i fase 3.',
+    notice:
+      'Der er endnu ingen indstillinger. Konsekvensklassen vælges i afsnit 2 Partialkoefficienter på siden Opdriftssikring.',
   },
 };
 
@@ -159,8 +159,6 @@ export function App() {
             <main>
               {page === 'opdriftssikring' ? (
                 <Opdriftssikring />
-              ) : page === 'indstillinger' ? (
-                <Indstillinger />
               ) : (
                 <>
                   <PageHeader page={page} title={pageName(page)} intro={pages[page].intro} />
