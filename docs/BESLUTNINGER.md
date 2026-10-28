@@ -54,3 +54,21 @@ Følgende er valgt af Claude og kan ændres:
 - **Tolerance.** Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Den dækker kun afrundingsstøj i kommatal. Valgt geonet, OK/EJ OK og tekster skal stemme præcist. Brugeren godkendte tolerancen: »Tolerancen 1e-9 er godkendt.«
 - **Fysisk mening.** γ · 0,9 skal være større end γ_w = 10 kN/m³. Ellers er den effektive rumvægt under vand ikke positiv, og arket ville dividere med 0 eller give negative forankringslængder.
 - **Kontrolpunkter.** De følger betingelserne i `docs/BEREGNINGSMOTOR.md`. K-02 gælder produktet med den indtastede grænse 78,9, når F_opdrift ≥ P_till.
+
+## 28. oktober 2026 — siderne Opdriftssikring og Indstillinger (fase 3)
+
+Brugerens ord: »Start fase 3: siden Opdriftssikring med figurer og kontrolpunkter samt Indstillinger med konsekvensklasse.«
+
+Siderne er bygget efter planens afsnit 4 og »Indstillinger« med MSL's komponenter, tema, resultatfliser og udfoldelige kort.
+
+Følgende er valgt af Claude og kan ændres:
+- **Løsninger.** De to løsninger står under hinanden med figuren til venstre i fuld størrelse og tal og mellemregninger til højre. Ved siden af hinanden blev figurernes tekst for lille.
+- **Kontrolpunkter.** De står åbent i et eget kort under kort 5, når der er aktive fund. De er ikke foldet sammen.
+- **Nedtoning.** Ved S₁ > 1 tones kort 4–5 ned med gråtoner i stedet for gennemsigtighed, så tekstens kontrast overholder WCAG.
+- **Figurer.** Figurerne er i rigtig skala. Gravens hældning og bundlaget er illustration. Grundvand vises med en dæmpet blå, som ikke findes i MSL's palet.
+- **Notation.** Sænket skrift bruges i felter, fliser, formler og figurer, fx L_geonet. Negative tal vises med rigtigt minustegn, fx −6,60.
+- **Felter.** Hjælpeteksterne bygger på arkets noter, fx at 0 kg/m egenvægt giver den største sikkerhed (A150).
+- **Konsekvensboks.** Indstillinger sammenligner den valgte klasse med standarden CC2 for den aktuelle beregning.
+- **Lagring.** Konstruktion, antal, inddata og konsekvensklasse gemmes samlet i browseren.
+
+Under arbejdet er fund K-20 tilføjet: arket bruger h₁ og h₂ i tre forskellige betydninger.

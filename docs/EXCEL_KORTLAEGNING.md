@@ -233,4 +233,4 @@ Teksterne i arket bliver appens standardtekster. Ordlyden overføres fra cellern
 
 ## 9. Fund
 
-Uoverensstemmelser og forhold, der kan ændres senere, er beskrevet med eksempler og muligheder i [FUND.md](FUND.md), nr. K-01 til K-19. Første version af appen regner præcis som arket.
+Uoverensstemmelser og forhold, der kan ændres senere, er beskrevet med eksempler og muligheder i [FUND.md](FUND.md), fra K-01 og frem. Første version af appen regner præcis som arket.

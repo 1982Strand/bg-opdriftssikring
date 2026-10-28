@@ -1,0 +1,188 @@
+/* Layout for siderne Opdriftssikring og Indstillinger. Fælles klasser (kort, trin, felter,
+   tabeller, mærker) står i index.css og ændres ikke her. */
+@import './resultat.css';
+@import './expander-card.css';
+
+.page-heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+/* Valg af konstruktion og antal i samme række som nulstilling, som MSL's tilstandsrække. */
+.calc-mode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 32px;
+  margin-bottom: 24px;
+}
+.calc-mode > button {
+  margin-left: auto;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(320px, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.calc-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 32px;
+  align-content: start;
+}
+.calc-fields-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.calc-figure {
+  margin: 0;
+  min-width: 0;
+}
+.calc-figure svg {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  margin: 0 auto;
+}
+.calc-note {
+  color: var(--muted-foreground);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  margin: 12px 0 0;
+}
+.calc-conclusion {
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  margin: 0;
+}
+.params-table {
+  margin-top: 24px;
+}
+.data-table tbody th {
+  background: transparent;
+  border-block: 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  vertical-align: middle;
+}
+.data-table td.num,
+.data-table th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.m9-badge.is-warning {
+  background: var(--warning-foreground);
+}
+.m9-result-label h3 sub {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Kort 4–5 tones ned i gråtoner, når opdriftssikring ikke er nødvendig. Gråtoner bevarer
+   tekstens kontrast; felterne kan stadig bruges. */
+.calc-card.is-dimmed .dim-results,
+.calc-card.is-dimmed .solutions,
+.calc-card.is-dimmed .dim-expander-card {
+  filter: grayscale(1);
+}
+
+.calc-override {
+  display: grid;
+  grid-template-columns: minmax(200px, auto) minmax(160px, 220px) minmax(120px, 160px);
+  align-items: end;
+  gap: 16px 32px;
+  margin: 8px 0 4px;
+}
+
+.solutions {
+  display: grid;
+  gap: 24px;
+  margin-top: 24px;
+}
+/* Figuren til venstre i fuld størrelse, tal og mellemregninger til højre. */
+.solution-card {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(280px, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: 4px 32px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.solution-card h3 {
+  grid-column: 1 / -1;
+  font-size: var(--fs-section);
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.solution-card > .calc-figure {
+  grid-row: 2 / span 3;
+}
+.solution-details {
+  min-width: 0;
+}
+.solution-table {
+  margin-top: 0;
+}
+.solution-table td .m9-badge {
+  margin-left: 8px;
+}
+
+.mellemregninger .formler {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+}
+
+/* Indstillinger */
+.class-compare {
+  max-width: 720px;
+}
+
+@media (max-width: 1100px) {
+  .calc-grid,
+  .solution-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .solution-card > .calc-figure {
+    grid-row: auto;
+  }
+  .calc-fields-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .calc-fields,
+  .calc-fields-4,
+  .calc-override {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .calc-mode > button {
+    margin-left: 0;
+  }
+}
+.settings-subheading {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  margin: 28px 0 0;
+}
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.table-wrap:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

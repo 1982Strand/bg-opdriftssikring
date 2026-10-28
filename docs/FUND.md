@@ -30,6 +30,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-17 | Friktion på én side af nettet | Længder | Som arket |
 | K-18 | T₁ kan ændres, men indgår ikke i T₃ | Geometri | T₁ = 0 fast |
 | K-19 | Forankring regnes altid som under vand | Længder | Som arket |
+| K-20 | h₁ og h₂ har tre forskellige betydninger | Tekst | h₁ = jorddækning |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-02, K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -332,3 +333,18 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 - b) Uændret.
 
 **Første version.** Som arket.
+
+## K-20 h₁ og h₂ har tre forskellige betydninger
+
+**Arket.** Symbolerne h₁ og h₂ bruges på tre måder:
+- Indtastningen i F121 og teksten i A115 kalder h₁ jorddækningen til rørets top.
+- Teksten i C114 og E114 og figuren (image4) bruger h₁ = T₁ − T₂ (terræn til GVS) og h₂ = T₃ − T₂ (GVS til rørmidte). Det er de to led i ballastformlen.
+- DANVA 54 bruger h₁ om den frie højde over røret og h₂ = d/2.
+
+Beregningen påvirkes ikke, men en læser kan misforstå rapporten.
+
+**Muligheder.**
+- a) h₁ bruges kun om jorddækningen, og ballastens led navngives efter tør og våd fyldhøjde.
+- b) Uændret.
+
+**Første version.** Appen bruger h₁ om jorddækningen til rørets top, som indtastningen i arket. Tværsnittet viser h₁ og d/2. Ballastens led står som T₂ og T₃ − T₂.
