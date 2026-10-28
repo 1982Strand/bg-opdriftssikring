@@ -140,4 +140,6 @@ Figurerne er illustrationer; beregningen er uændret. Længden af toplaget (75 %
 Brugerens ønske: »du må gerne gøre bukket mere 'kantet' så det ikke ligner geonettet buer så meget. Lidt mere i stil med billedet, taget fra regnearket«
 
 - Vendingen ved enden tegnes nu som et lodret stykke med skarpe hjørner, som i regnearkets figur. Den runde vending fra forrige ændring er erstattet.
-- Ved to rør står de to lodrette vendinger i midten 10 px fra hinanden.
+- Ved to rør står de to lodrette vendinger i midten oven i hinanden.
+
+Brugerens præcisering: »omslaget ved to ledninger skal lige justeres, da nettene i teorien ligger helt opad hinanden i midten. Igen ligesom det ses på billedet fra regnearket.« Mellemrummet på 10 px i midten er derfor fjernet. Det fælles lodrette stykke tegnes én gang, så to stiplede linjer ikke ligger oven i hinanden.

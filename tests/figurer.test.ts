@@ -89,11 +89,18 @@ test('omslaget tegnes som en vending ved hver ende og et kortere toplag', () => 
   );
   assert.deepEqual(
     losninger.map((l) => antal(l, / V /g)),
-    [0, 0, 2, 4],
+    [0, 0, 2, 3],
   );
   // Toplaget starter inde mod røret, går ud til vendingen og bukker lodret ned til bundlaget.
   const c = losningSvg(r, i, 'C').match(/<path d="M ([\d.]+) ([\d.]+) H ([\d.]+) V ([\d.]+)/)!;
   const [, xStart, yStart, xEnde, yBund] = c.map(Number);
   assert.ok(yBund - yStart >= 16, 'toplaget ligger mindst 16 px over bundlaget');
   assert.ok(xStart > xEnde, 'toplaget starter inde mod røret og går ud til vendingen');
+  // Ved to rør ligger de to net op ad hinanden i midten, og det fælles lodrette stykke tegnes én
+  // gang.
+  const dSti = losningSvg(r, i, 'D').match(/<path d="([^"]+)"/)![1];
+  const venstreNet = dSti.match(/ L ([\d.]+) [\d.]+ V [\d.]+ H [\d.]+ M /)!;
+  const hoejreNet = dSti.match(/ M [\d.]+ [\d.]+ H ([\d.]+) M ([\d.]+) /)!;
+  assert.equal(venstreNet[1], hoejreNet[1], 'toplagene mødes i midten');
+  assert.equal(venstreNet[1], hoejreNet[2], 'bundlagene mødes i midten');
 });

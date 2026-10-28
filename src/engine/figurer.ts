@@ -272,15 +272,15 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   else if (!to)
     sti = `M ${px(xVenstre + tilbage)} ${yTop}${ned(xVenstre)}${over(0)}${op(xHoejre)} H ${px(xHoejre - tilbage)}`;
   else {
-    // Ét net pr. rør. I midten vender de to net mod hinanden med et lille mellemrum.
+    // Ét net pr. rør. I midten bukkes de to net om, så de ligger op ad hinanden. Det fælles
+    // lodrette stykke tegnes kun én gang, så to stiplede linjer ikke ligger oven i hinanden.
     const xMidt = t.X(0);
-    const g = 5;
-    const tilbageMidt = Math.max(0, TOPLAG * (mellem / 2) * t.s - g);
+    const tilbageMidt = TOPLAG * (mellem / 2) * t.s;
     sti =
       `M ${px(xVenstre + tilbage)} ${yTop}${ned(xVenstre)}${over(centre[0])}` +
-      `${op(xMidt - g)} H ${px(xMidt - g - tilbageMidt)}`;
+      `${op(xMidt)} H ${px(xMidt - tilbageMidt)}`;
     sti +=
-      ` M ${px(xMidt + g + tilbageMidt)} ${yTop}${ned(xMidt + g)}${over(centre[1])}` +
+      ` M ${px(xMidt + tilbageMidt)} ${yTop} H ${px(xMidt)} M ${px(xMidt)} ${yBund}${over(centre[1])}` +
       `${op(xHoejre)} H ${px(xHoejre - tilbage)}`;
   }
   t.dele.push(
