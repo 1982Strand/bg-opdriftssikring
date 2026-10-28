@@ -109,3 +109,7 @@ Brugerens spørgsmål: »koefficienten der står under opdriften (gamma_f = 1,1)
 
 - Flisen for opdriften viser kun γ_f, fx »γf = 1,10«. Brugeren ønskede efterfølgende: »bare skriv det som før oppe i flisen (gamma_f = 1,1), men behold beregningen og forklaringen nede i mellemregninger-boksen«.
 - Mellemregningerne har linjen γ_f = γ_G;dst = 1,1 · K_FI med den valgte klasse og en note om tabel A.4-1 NA, afsnit A.1 og valget under Indstillinger.
+
+## 28. oktober 2026 — ét fælles sæt reduktionsfaktorer (K-22)
+
+Spørgsmål: Skal appen gemme reduktionsfaktorerne pr. net, da Navne tabel har en kolonne pr. net, som arket ikke bruger? Brugerens svar: »Nej, behold ét fælles sæt faktorer som i regnearket.« Appen bruger fortsat f_kryb = 1,43, f_m = 1,05, f_d = 1,15 og f_e = 1,22 for alle net, både i valggrænserne og i P_till.

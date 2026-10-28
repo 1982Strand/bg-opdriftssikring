@@ -32,7 +32,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-19 | Forankring regnes altid som under vand | Længder | Som arket |
 | K-20 | h₁ og h₂ har tre forskellige betydninger | Tekst | h₁ = jorddækning |
 | K-21 | Produktlisten mangler X-GRID 130 og 200 | Valg af geonet | Afgjort: 130 og 200 tilføjet |
-| K-22 | Reduktionsfaktorerne pr. net bruges ikke | Data, P_till | Fælles faktorer som arket |
+| K-22 | Reduktionsfaktorerne pr. net bruges ikke | Data, P_till | Afgjort: ét fælles sæt |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -406,4 +406,4 @@ Faktorerne i H24:K27 bruges ingen steder. Da alle kolonner og kopien i Rapporten
 
 **Spørgsmål.** Angiver BBA-certifikatet forskellige faktorer for de enkelte net, fx f_d for mekanisk beskadigelse?
 
-**Første version.** Ét fælles sæt faktorer som i arket.
+**Afgjort 28. oktober 2026.** Mulighed b: appen beholder ét fælles sæt faktorer som i arket.
