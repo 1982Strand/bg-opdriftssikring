@@ -15,14 +15,12 @@ const { fKryb, fM, fD, fE } = standarder.geonet;
 /** G213 og Navne tabel C44: samlet reduktionsfaktor. */
 export const RF = fKryb * fM * fD * fE;
 
-/** Navne tabel G44:K44. Valggrænsen er UTS/RF, men for 150 er den indtastet som 78,9 (K-02). */
-export const geonetProdukter = standarder.geonet.produkter.map(
-  (p: { uts: number; valggraense?: number }) => ({
-    uts: p.uts,
-    graense: p.valggraense ?? p.uts / RF,
-    indtastetGraense: p.valggraense !== undefined,
-  }),
-);
+/** Produkterne fra databladet for X-GRID. Valggrænsen er P_till = UTS/RF for alle produkter
+ * (beslutning om K-21). Regnearket havde ikke 130 og 200 og brugte 78,9 for 150 (K-02). */
+export const geonetProdukter = standarder.geonet.produkter.map((p) => ({
+  uts: p.uts,
+  graense: p.uts / RF,
+}));
 
 export function vaelgGeonet(
   Fopdrift: number,

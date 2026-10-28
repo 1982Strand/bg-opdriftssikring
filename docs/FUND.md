@@ -12,7 +12,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | Nr. | Fund | Påvirker | Første version |
 |---|---|---|---|
 | K-01 | Teksten om γ_f passer ikke med værdien | Tekst | 1,1 · K_FI, teksten viser værdien |
-| K-02 | Forkert grænse for X-GRID 150 | Valg af geonet | Som arket |
+| K-02 | Forkert grænse for X-GRID 150 | Valg af geonet | Afgjort: grænsen er UTS/RF (K-21) |
 | K-03 | Netvalg og kontrol bruger forskellige krav | Valg af geonet | Som arket |
 | K-04 | Kun ét lag geonet | Valg af geonet | Afgjort: som arket, 2 lag manuelt |
 | K-05 | GVS under rørtoppen | Opdrift og ballast | Som arket |
@@ -31,9 +31,9 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-18 | T₁ kan ændres, men indgår ikke i T₃ | Geometri | T₁ = 0 fast |
 | K-19 | Forankring regnes altid som under vand | Længder | Som arket |
 | K-20 | h₁ og h₂ har tre forskellige betydninger | Tekst | h₁ = jorddækning |
-| K-21 | Produktlisten mangler X-GRID 130 og 200 | Valg af geonet | Som arket |
+| K-21 | Produktlisten mangler X-GRID 130 og 200 | Valg af geonet | Afgjort: 130 og 200 tilføjet |
 
-Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-02, K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
+Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
 ---
 
@@ -73,7 +73,7 @@ Grænsetabellens UTS for det største produkt er 200 (K22), men produktlisten ha
 - b) Findes X-GRID 200, tilføjes det som produkt med grænsen 94,94.
 - c) Uændret.
 
-**Første version.** Som arket. Kontrolpunkt, når F_opdrift ligger mellem 71,20 og 78,9.
+**Afgjort 28. oktober 2026.** Grænsen 78,9 er udgået. Valggrænsen er UTS/RF for alle produkter, og X-GRID 200 er tilføjet (K-21). F_opdrift mellem 71,20 og 94,00 kN/m giver nu X-GRID 200 med OK. Kontrolpunktet K-02 findes ikke længere.
 
 ## K-03 Netvalg og kontrol bruger forskellige krav
 
@@ -85,6 +85,9 @@ Grænsetabellens UTS for det største produkt er 200 (K22), men produktlisten ha
 | X-GRID 55 | 25,85–26,11 kN/m |
 | X-GRID 80 | 37,60–37,98 kN/m |
 | X-GRID 110 | 51,70–52,22 kN/m |
+| X-GRID 130 | 61,10–61,71 kN/m (tilføjet, K-21) |
+| X-GRID 150 | 70,50–71,20 kN/m |
+| X-GRID 200 | 94,00–94,94 kN/m (tilføjet, K-21) |
 
 **Eksempel.** d = 2,60 m, h₁ = 1,0 m, GVS i terræn giver F_opdrift = 37,74 kN/m. Arket vælger X-GRID 80 med P_till = 37,98 og udnyttelsen 1,006, altså EJ OK. X-GRID 110 ville give 1,39.
 
@@ -379,6 +382,6 @@ Case 2 (F_opdrift = 113,32 kN/m) er løst med 2 × 150 (1,26). Med 130 på liste
 - b) Kun i det manuelle valg.
 - c) Uændret.
 
-**Første version.** Som arket.
+**Afgjort 28. oktober 2026.** Mulighed a: X-GRID 130 og 200 er tilføjet til produktlisten for automatisk og manuelt valg med valggrænsen UTS/RF. Det løser også K-02. Tre af de 42 kontrolcases får et andet net end i arket; deres nye forventninger står i `tests/cases/afvigelser.json`.
 
 **Bemærkning til databladet.** Rullevægten for X-GRID 200 er angivet til 350 kg. Fladevægten 760 g/m² på en rulle på 5 × 100 m giver 380 kg. For de øvrige produkter ligger den trykte rullevægt 0–20 kg over den beregnede. Det har ingen betydning for beregningen, men kan have betydning for en senere mængdeberegning.

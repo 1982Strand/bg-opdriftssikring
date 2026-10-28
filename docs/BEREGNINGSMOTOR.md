@@ -41,7 +41,6 @@ Hvor arket viser `#VALUE!`, fx P_till, når intet produkt kan vælges, er værdi
 
 | Kontrolpunkt | Betingelse |
 |---|---|
-| K-02 | Automatisk valgt produkt med den indtastede grænse 78,9, og F_opdrift ≥ P_till |
 | K-03 | Automatisk valg, 0 < F_opdrift < P_till, og P_till/F_opdrift ≤ 1,01 |
 | K-05 | GVS-dybden er større end h₁ (GVS under rørtoppen) |
 | K-12 | S₁ ≥ 1 |
@@ -50,12 +49,15 @@ Hvor arket viser `#VALUE!`, fx P_till, når intet produkt kan vælges, er værdi
 ## Særheder bevaret fra arket
 
 - π = 3,14 og g = 9,82 (K-06, K-07).
-- Valggrænsen for X-GRID 150 er 78,9 (K-02). De øvrige grænser er UTS/RF uden afrunding.
 - Netvalget og kontrollen bruger forskellige krav (K-03).
 - Der regnes videre med negativ F_opdrift, når S₁ ≥ 1 (K-12).
 - Tillægget på 0,4 m i netlængden med omslag (K-09) står som `netTillaegOmslag`.
 
 En ændring af disse kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
+
+## Besluttede afvigelser fra arket
+
+- **K-21 (og K-02).** Produktlisten er X-GRID 35, 55, 80, 110, 130, 150 og 200 fra databladet. Valggrænsen er P_till = UTS/RF for alle produkter uden afrunding.
 
 ## Figurer
 

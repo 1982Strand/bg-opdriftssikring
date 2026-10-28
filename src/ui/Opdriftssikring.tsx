@@ -606,20 +606,22 @@ export function Opdriftssikring() {
                         <Fmt text="P_{till} (kN/m)" />
                       </th>
                       <th scope="col" className="num">
-                        Valggrænse i regnearket (kN/m)
+                        <Fmt text="P_{till}/F_{opdrift}" />
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {geonetProdukter.map((p) => (
-                      <tr key={p.uts}>
+                      <tr
+                        key={p.uts}
+                        className={
+                          r.geonet.automatisk && r.geonet.uts === p.uts ? 'dim-selected' : undefined
+                        }
+                      >
                         <th scope="row">X-GRID {p.uts}</th>
                         <td className="num">{tal(p.uts, 0)}</td>
-                        <td className="num">{tal(p.uts / r.geonet.RF)}</td>
-                        <td className="num">
-                          {tal(p.graense)}
-                          {p.indtastetGraense ? ' (indtastet, fund K-02)' : ''}
-                        </td>
+                        <td className="num">{tal(p.graense)}</td>
+                        <td className="num">{tal(p.graense / r.Fopdrift)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -627,7 +629,9 @@ export function Opdriftssikring() {
               </TabelRamme>
               <p className="calc-note">
                 Reduktionsfaktorerne er fra BBA-certifikat {standarder.geonet.bba}. Det automatiske
-                valg tager det mindste produkt, hvor F<sub>opdrift</sub> er under valggrænsen.
+                valg tager det mindste produkt, hvor F<sub>opdrift</sub> er under P<sub>till</sub>.
+                X-GRID 130 og 200 er tilføjet fra databladet, og regnearkets valggrænse på 78,9 kN/m
+                for X-GRID 150 er udgået (fund K-21 og K-02).
               </p>
             </Udfold>
           </Trin>

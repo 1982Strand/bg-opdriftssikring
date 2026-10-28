@@ -81,13 +81,20 @@ test('fejlteksterne er danske og nævner feltet', () => {
     );
 });
 
-test('valggrænserne svarer til Navne tabel G44:K44, med 78,9 for X-GRID 150', () => {
+test('produkterne følger databladet, og valggrænsen er UTS/RF (K-21)', () => {
   assert.equal(RF, excelCases.navneTabel.RF);
-  const graenser = excelCases.navneTabel.graenser;
   assert.deepEqual(
-    geonetProdukter.map((p) => p.graense),
-    [graenser['35'], graenser['55'], graenser['80'], graenser['110'], graenser['200']],
+    geonetProdukter.map((p) => p.uts),
+    [35, 55, 80, 110, 130, 150, 200],
   );
+  for (const p of geonetProdukter) assert.equal(p.graense, p.uts / RF);
+  // De fire første grænser er som i Navne tabel; 78,9 for X-GRID 150 er udgået (K-02).
+  const g = excelCases.navneTabel.graenser;
+  assert.deepEqual(
+    geonetProdukter.slice(0, 4).map((p) => p.graense),
+    [g['35'], g['55'], g['80'], g['110']],
+  );
+  assert.notEqual(geonetProdukter[5].graense, g['200']);
 });
 
 test('geonettet vælges med streng ulighed lige under og over hver valggrænse', () => {
@@ -106,7 +113,7 @@ test('kontrolpunkter følger udvalgte Excel-cases', () => {
   const forventninger: [string, string[]][] = [
     ['Case 1:', []],
     ['Case 2: Ø4000', []],
-    ['K-02: grænsen 78,9', ['K-02']],
+    ['K-02: grænsen 78,9', []],
     ['K-03: bånd for X-GRID 35', ['K-03']],
     ['K-03: bånd for X-GRID 80', ['K-03']],
     ['K-03: bånd for X-GRID 150', ['K-03']],

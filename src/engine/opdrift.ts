@@ -21,7 +21,7 @@ export interface OpdriftInput {
   overstyring: GeonetOverstyring | null;
 }
 export type Status = 'OK' | 'EJ OK';
-export type Kontrolpunkt = 'K-02' | 'K-03' | 'K-05' | 'K-12' | 'K-13';
+export type Kontrolpunkt = 'K-03' | 'K-05' | 'K-12' | 'K-13';
 export interface Inputfejl {
   felt: keyof OpdriftInput;
   tekst: string;
@@ -237,8 +237,6 @@ function kontrolpunkter(
 ): Kontrolpunkt[] {
   const k: Kontrolpunkt[] = [];
   const valgt = geonet.automatisk && geonet.Ptill !== null ? geonet.Ptill : null;
-  const indtastet = geonetProdukter.find((p) => p.uts === geonet.uts)?.indtastetGraense;
-  if (valgt !== null && indtastet && Fopdrift >= valgt) k.push('K-02');
   if (valgt !== null && Fopdrift > 0 && Fopdrift < valgt && valgt / Fopdrift <= krav.udnyttelse)
     k.push('K-03');
   if (input.gvs > input.h1) k.push('K-05');

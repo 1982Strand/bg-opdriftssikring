@@ -11,7 +11,25 @@ interface Case {
 
 const cases = JSON.parse(
   readFileSync(new URL('./cases/excel-cases.json', import.meta.url), 'utf8'),
-) as { cases: Case[] };
+) as { cases: Case[]; resultatCeller: Record<string, string> };
+
+/** Bevidste afvigelser fra regnearket. Hver afvigelse hører til en beslutning i
+ * docs/BESLUTNINGER.md og angiver de berørte cellers nye forventning. Excels facit ændres ikke. */
+interface Afvigelse {
+  id: string;
+  dato: string;
+  beslutning: string;
+  beregning: string;
+  celler: Record<string, Record<string, number | string>>;
+}
+const { afvigelser } = JSON.parse(
+  readFileSync(new URL('./cases/afvigelser.json', import.meta.url), 'utf8'),
+) as { afvigelser: Afvigelse[] };
+const forventning = (sag: Case) => {
+  const celler = { ...sag.excel };
+  for (const a of afvigelser) Object.assign(celler, a.celler[sag.navn] ?? {});
+  return celler;
+};
 const celleTilFelt: Record<string, (r: OpdriftResultat) => number | string | null> = {
   C8: (r) => r.projektbeskrivelse.d,
   C9: (r) => r.projektbeskrivelse.h1,
@@ -76,7 +94,7 @@ for (const sag of cases.cases) {
       Object.keys(celleTilFelt).sort(),
       'Kontrolcellerne skal alle sammenlignes',
     );
-    for (const [celle, forventet] of Object.entries(sag.excel)) {
+    for (const [celle, forventet] of Object.entries(forventning(sag))) {
       const faktisk = celleTilFelt[celle](beregning.resultat);
       if (celle === 'G199' && typeof forventet === 'number') {
         assert.equal(faktisk, String(forventet), celle);
@@ -101,3 +119,18 @@ for (const sag of cases.cases) {
     }
   });
 }
+
+test('afvigelserne gælder kendte cases og celler og ændrer arkets værdi', () => {
+  for (const a of afvigelser) {
+    assert.match(a.id, /^K-\d{2}$/);
+    assert.ok(a.beslutning && a.beregning, a.id);
+    for (const [navn, celler] of Object.entries(a.celler)) {
+      const sag = cases.cases.find((c) => c.navn === navn);
+      assert.ok(sag, `${a.id}: ukendt case ${navn}`);
+      for (const [celle, vaerdi] of Object.entries(celler)) {
+        assert.ok(celle in cases.resultatCeller, `${a.id}: ukendt celle ${celle}`);
+        assert.notEqual(sag.excel[celle], vaerdi, `${a.id}: ${navn} ${celle} er som i arket`);
+      }
+    }
+  }
+});
