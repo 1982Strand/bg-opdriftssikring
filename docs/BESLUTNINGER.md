@@ -51,6 +51,6 @@ Brugerens ord: »Start fase 2: udtræk kontrolcases fra Excel og byg beregningsm
 Kontrolcasene udtrækkes fra selve regnearket med `tools/excel-cases.ps1`. Der er 42 cases i `tests/cases/excel-cases.json`. Motoren regner præcis som arket, jf. beslutningen om første version.
 
 Følgende er valgt af Claude og kan ændres:
-- **Tolerance.** Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Den dækker kun afrundingsstøj i kommatal. Valgt geonet, OK/EJ OK og tekster skal stemme præcist. Tolerancen afventer brugerens godkendelse, jf. arbejdsreglerne.
+- **Tolerance.** Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Den dækker kun afrundingsstøj i kommatal. Valgt geonet, OK/EJ OK og tekster skal stemme præcist. Brugeren godkendte tolerancen: »Tolerancen 1e-9 er godkendt.«
 - **Fysisk mening.** γ · 0,9 skal være større end γ_w = 10 kN/m³. Ellers er den effektive rumvægt under vand ikke positiv, og arket ville dividere med 0 eller give negative forankringslængder.
 - **Kontrolpunkter.** De følger betingelserne i `docs/BEREGNINGSMOTOR.md`. K-02 gælder produktet med den indtastede grænse 78,9, når F_opdrift ≥ P_till.
