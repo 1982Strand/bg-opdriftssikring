@@ -230,6 +230,7 @@ Teksterne i arket bliver appens standardtekster. Ordlyden overføres fra cellern
 - **Firmaets nuværende praksis (e-mail, oktober 2026).** Sikkerheden på trækstyrke er reduceret fra 1,5 til 1,0 og på forankringslængde fra 1,3 til 1,05 (S₂). Begge er selvvalgte og ikke normhjemlede. Reduktionsfaktorerne kommer fra BBA-certifikatet.
 - **Tovkraft.** Tovkraften er 50 % af opdriften på hver side af røret, men hele F_opdrift bruges ved valg af net og forankring. Det svarer til en faktor 2 eller 1/cos 60°. Det armerede fyld opfattes som en semirigid blok. Noten står i A182:A191. Spørgsmålet er rejst af en statiker, og en forsøgsopstilling er nævnt.
 - **Udførelse.** Den lodrette afstand mellem netlagene ved omslag er i praksis 0,2–0,4 m, så sandet kan komprimeres.
+- **Datablad for X-GRID (1221-2/100).** Produkterne 35, 55, 80, 110, 130, 150 og 200. Max. trækstyrke på langs er lig UTS og på tværs 20 kN/m. Den karakteristiske trækstyrke ved 120 år er UTS/1,43. Ruller er 5 × 100 m. Sammenligningen med arket står i FUND.md, K-21.
 
 ## 9. Fund
 

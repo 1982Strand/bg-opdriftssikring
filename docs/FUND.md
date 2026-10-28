@@ -31,6 +31,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-18 | T₁ kan ændres, men indgår ikke i T₃ | Geometri | T₁ = 0 fast |
 | K-19 | Forankring regnes altid som under vand | Længder | Som arket |
 | K-20 | h₁ og h₂ har tre forskellige betydninger | Tekst | h₁ = jorddækning |
+| K-21 | Produktlisten mangler X-GRID 130 og 200 | Valg af geonet | Som arket |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-02, K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -284,7 +285,7 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 
 **Arket.** Navne tabel nævner Fortrac og BBA 01/R125, mens rapporten nævner X-GRID og BBA 16/H253. Grænsetabellen har UTS 200, mens produktlisten har 150. Reduktionsfaktorerne står både i Navne tabel og i Rapporten (G209:G212). Ud over K-02 har det ingen virkning på beregningen.
 
-**Spørgsmål.** Findes der et X-GRID 200, som skal med (K-02 b)?
+**Datablad.** Ja. Databladet for X-GRID (dokument 1221-2/100) har X-GRID 200 og også X-GRID 130, se K-21. Grænsen 78,9 passer hverken til 150 (P_till = 71,20) eller 200 (P_till = 94,94). 78,9 · RF = 166,2 kN/m og 78,9 · 1,43 = 112,8 kN/m svarer heller ikke til noget produkt.
 
 **Første version.** Produktdata står ét sted i appen med arkets værdier, inklusive grænsen 78,9. Geonet-siden viser både P_till og arkets grænse med henvisning til K-02.
 
@@ -348,3 +349,36 @@ Beregningen påvirkes ikke, men en læser kan misforstå rapporten.
 - b) Uændret.
 
 **Første version.** Appen bruger h₁ om jorddækningen til rørets top, som indtastningen i arket. Tværsnittet viser h₁ og d/2. Ballastens led står som T₂ og T₃ − T₂.
+
+## K-21 Produktlisten mangler X-GRID 130 og 200
+
+**Arket.** Produktlisten har X-GRID 35, 55, 80, 110 og 150. Databladet for X-GRID (dokument 1221-2/100) har også 130 og 200. Resten af databladet stemmer med arket:
+- UTS (max. trækstyrke på langs) for 35–150;
+- polyester med PVC-coating og BBA-certifikat 16/H253;
+- krybningsfaktoren f_kryb = 1,43. Databladets karakteristiske trækstyrke ved 120 års belastning er UTS/1,43, fx 80/1,43 = 55,9 kN/m.
+
+Trækstyrken på tværs er 20 kN/m, hvilket stemmer med arkets krav om udrulning på tværs af ledningen. f_m = 1,05, f_d = 1,15 og f_e = 1,22 står ikke i databladet og kan kun kontrolleres i BBA-certifikatet.
+
+**Eksempel.** h₁ = 1,0 m og GVS i terræn, P_till/F_opdrift for hvert produkt:
+
+| d | F_opdrift | Arket vælger | X-GRID 130 | X-GRID 150 | X-GRID 200 |
+|---|---|---|---|---|---|
+| 3,05 m | 55,86 | 150 (1,28) | 1,10 OK | 1,28 OK | 1,70 OK |
+| 3,40 m | 72,21 | 150 (0,99, EJ OK) | 0,86 | 0,99 | 1,32 OK |
+| 3,54 m | 79,30 | Kontakt leverandør | 0,78 | 0,90 | 1,20 OK |
+
+Case 2 (F_opdrift = 113,32 kN/m) er løst med 2 × 150 (1,26). Med 130 på listen ville 2 × 130 også holde (1,09).
+
+| Produkt | P_till | Holder til F_opdrift (krav 1,01) |
+|---|---|---|
+| X-GRID 130 | 61,71 kN/m | 61,10 kN/m |
+| X-GRID 200 | 94,94 kN/m | 94,00 kN/m |
+
+**Muligheder.**
+- a) X-GRID 130 og 200 kommer på produktlisten for både automatisk og manuelt valg med valggrænsen UTS/RF. Det løser også K-02.
+- b) Kun i det manuelle valg.
+- c) Uændret.
+
+**Første version.** Som arket.
+
+**Bemærkning til databladet.** Rullevægten for X-GRID 200 er angivet til 350 kg. Fladevægten 760 g/m² på en rulle på 5 × 100 m giver 380 kg. For de øvrige produkter ligger den trykte rullevægt 0–20 kg over den beregnede. Det har ingen betydning for beregningen, men kan have betydning for en senere mængdeberegning.
