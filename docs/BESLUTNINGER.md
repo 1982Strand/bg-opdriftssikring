@@ -134,3 +134,10 @@ Brugerens ønske: »du må gerne gøre afstanden imellem geonet lidt større, og
 - Ved to rør med omslag tegnes ét net pr. rør, og de to net vender mod hinanden i midten. Regnearkets figur viser et fælles omslag.
 
 Figurerne er illustrationer; beregningen er uændret. Længden af toplaget (75 %) og afstanden (16 px) er valgt af Claude og kan ændres.
+
+## 28. oktober 2026 — kantet omslag i figurerne
+
+Brugerens ønske: »du må gerne gøre bukket mere 'kantet' så det ikke ligner geonettet buer så meget. Lidt mere i stil med billedet, taget fra regnearket«
+
+- Vendingen ved enden tegnes nu som et lodret stykke med skarpe hjørner, som i regnearkets figur. Den runde vending fra forrige ændring er erstattet.
+- Ved to rør står de to lodrette vendinger i midten 10 px fra hinanden.

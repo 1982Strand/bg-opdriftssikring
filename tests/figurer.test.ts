@@ -77,16 +77,22 @@ test('teksten escapes', () => {
 test('omslaget tegnes som en vending ved hver ende og et kortere toplag', () => {
   const i = cases[0].input;
   const r = beregn(i);
-  const buer = (l: 'A' | 'B' | 'C' | 'D') => {
+  const antal = (l: 'A' | 'B' | 'C' | 'D', moenster: RegExp) => {
     const d = losningSvg(r, i, l).match(/<path d="([^"]+)"/)![1];
-    return d.match(/ A /g)!.length;
+    return d.match(moenster)?.length ?? 0;
   };
-  // Én bue pr. rør, plus to vendinger pr. net med omslag.
-  assert.deepEqual([buer('A'), buer('B'), buer('C'), buer('D')], [1, 2, 3, 6]);
-  // Toplaget starter inde mod røret, går ud til vendingen og bukker ned til bundlaget.
-  const c = losningSvg(r, i, 'C').match(
-    /<path d="M ([\d.]+) ([\d.]+) H ([\d.]+) A [\d.]+ [\d.]+ 0 0 0 [\d.]+ ([\d.]+)/,
-  )!;
+  const losninger = ['A', 'B', 'C', 'D'] as const;
+  // Én bue pr. rør og en lodret, kantet vending i hver ende af et net med omslag.
+  assert.deepEqual(
+    losninger.map((l) => antal(l, / A /g)),
+    [1, 2, 1, 2],
+  );
+  assert.deepEqual(
+    losninger.map((l) => antal(l, / V /g)),
+    [0, 0, 2, 4],
+  );
+  // Toplaget starter inde mod røret, går ud til vendingen og bukker lodret ned til bundlaget.
+  const c = losningSvg(r, i, 'C').match(/<path d="M ([\d.]+) ([\d.]+) H ([\d.]+) V ([\d.]+)/)!;
   const [, xStart, yStart, xEnde, yBund] = c.map(Number);
   assert.ok(yBund - yStart >= 16, 'toplaget ligger mindst 16 px over bundlaget');
   assert.ok(xStart > xEnde, 'toplaget starter inde mod røret og går ud til vendingen');
