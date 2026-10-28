@@ -1,6 +1,6 @@
 # Plan for appen Opdriftssikring
 
-Status 28. oktober 2026: Spørgsmålene til planen er besvaret, se [BESLUTNINGER.md](BESLUTNINGER.md). Fase 1 er afsluttet: repoet [bg-opdriftssikring](https://github.com/1982Strand/bg-opdriftssikring) er oprettet offentligt, og skelettet med tema, skal og pladsholdersider er bygget.
+Status 28. oktober 2026: Spørgsmålene til planen er besvaret, se [BESLUTNINGER.md](BESLUTNINGER.md). Fase 1 er afsluttet: repoet [bg-opdriftssikring](https://github.com/1982Strand/bg-opdriftssikring) er oprettet offentligt, og skelettet med tema, skal og pladsholdersider er bygget. Fase 2 er afsluttet: beregningsmotoren regner som arket og er kontrolleret mod 42 cases udtrukket fra regnearket.
 
 ## 1. Mål
 
@@ -135,7 +135,7 @@ Teksterne følger valget mellem rør og liggende tank. Formlerne sættes som mat
 |---|---|---|
 | 0 | Plan, kortlægning og fundliste (afsluttet) | – |
 | 1 | Repo, projektskelet, tema og skal fra MSL, startfil og kontrol i GitHub (afsluttet) | Kopiering og tilpasning |
-| 2 | Kontrolcases fra Excel (køres lokalt af Claude) og beregningsmotor med tests | Motor og tests |
+| 2 | Kontrolcases fra Excel (køres lokalt af Claude) og beregningsmotor med tests (afsluttet) | Motor og tests |
 | 3 | Siden Opdriftssikring med figurer og kontrolpunkter | Delvist |
 | 4 | Rapport, firmaprofil og kartotek | Delvist |
 | 5 | Opslag og hjælp | Tekst og tabeller |
