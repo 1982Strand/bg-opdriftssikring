@@ -3,13 +3,13 @@
 import type { Kontrolpunkt, OpdriftResultat } from '../engine/opdrift.ts';
 import { tal } from '../engine/format.ts';
 
-export function kontrolpunktTekst(k: Kontrolpunkt, r: OpdriftResultat, tank = false): string {
+export function kontrolpunktTekst(k: Kontrolpunkt, r: OpdriftResultat): string {
   const g = r.geonet;
   switch (k) {
     case 'K-03':
       return `P_{till}/F_{opdrift} = ${tal(g.sikkerhed, 3)} er under kravet 1,01, selv om F_{opdrift} er mindre end P_{till}. Regnearket vælger nettet efter F_{opdrift} < P_{till} og eftervisningen efter kravet 1,01 (fund K-03).`;
     case 'K-05':
-      return `GVS ligger under toppen af ${tank ? 'tanken' : 'røret'}. Regnearket regner opdrift og ballast, som om ${tank ? 'tanken' : 'røret'} står helt under vand (fund K-05).`;
+      return `GVS ligger under toppen af røret. Regnearket regner opdrift og ballast, som om røret står helt under vand (fund K-05).`;
     case 'K-12':
       return `S₁ = ${tal(r.S1)} ≥ 1,0, så opdriftssikring er ikke nødvendig. Regnearket regner alligevel videre med F_{opdrift} = ${tal(r.Fopdrift)} kN/m (fund K-12).`;
     case 'K-13':
@@ -17,5 +17,5 @@ export function kontrolpunktTekst(k: Kontrolpunkt, r: OpdriftResultat, tank = fa
   }
 }
 
-export const kontrolpunktTekster = (r: OpdriftResultat, tank = false) =>
-  r.kontrolpunkter.map((k) => ({ kode: k, tekst: kontrolpunktTekst(k, r, tank) }));
+export const kontrolpunktTekster = (r: OpdriftResultat) =>
+  r.kontrolpunkter.map((k) => ({ kode: k, tekst: kontrolpunktTekst(k, r) }));

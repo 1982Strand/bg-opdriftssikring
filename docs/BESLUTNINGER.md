@@ -13,10 +13,10 @@ Brugerens svar: »1,2 og 3: I første omgang skal appen regne præcist som excel
 1. **Beregning.** Første version regner præcist som arket, også netvalget med grænsen 78,9 og kravet 1,01, π = 3,14 og g = 9,82. Fundene er beskrevet med eksempler og muligheder i `docs/FUND.md` (K-01 til K-19). De ændres kun efter særskilt beslutning.
 2. **GVS.** Som arket. GVS under rørtoppen og rørmidten afvises ikke (K-05).
 3. **Geonet.** Det automatiske valg er som i arket med ét lag og »kontakt leverandør for råd« over grænsen (K-04).
-4. **Løsninger i rapporten.** Antallet af ledninger (1 eller 2) vælges på beregningssiden. Rapporten tager de to relevante løsninger med, uden og med omslag. Den ene kan fravælges på rapportsiden.
+4. **Løsninger i rapporten.** Antallet af ledninger (1 eller 2) vælges på beregningssiden. Rapporten tager de to relevante løsninger med, uden og med omslag. Den ene kan fravælges på rapportsiden. Ændret 28. oktober 2026: alle fire løsninger vises, se nedenfor.
 5. **Navn.** Topbjælken viser **OPDRIFT** | Sikring med geonet.
 6. **Hosting.** Kun lokal brug i første omgang. Den delte udgave forberedes, og Cloudflare sættes først op efter godkendelse.
-7. **Rør og tanke.** Der vælges mellem rør og liggende tank. Formlerne er de samme, og teksterne tilpasses. Mængdeberegning samt stående tanke og brønde er senere udvidelser.
+7. **Rør og tanke.** Der vælges mellem rør og liggende tank. Formlerne er de samme, og teksterne tilpasses. Mængdeberegning samt stående tanke og brønde er senere udvidelser. Ændret 28. oktober 2026: kun rør, se nedenfor.
 
 Følgende er valgt af Claude og kan ændres:
 - Ikonet i topbjælken er `Waves`.
@@ -69,7 +69,7 @@ Følgende er valgt af Claude og kan ændres:
 - **Notation.** Sænket skrift bruges i felter, fliser, formler og figurer, fx L_geonet. Negative tal vises med rigtigt minustegn, fx −6,60.
 - **Felter.** Hjælpeteksterne bygger på arkets noter, fx at 0 kg/m egenvægt giver den største sikkerhed (A150).
 - **Konsekvensboks.** Indstillinger sammenligner den valgte klasse med standarden CC2 for den aktuelle beregning.
-- **Lagring.** Konstruktion, antal, inddata og konsekvensklasse gemmes samlet i browseren.
+- **Lagring.** Konstruktion, antal, inddata og konsekvensklasse gemmes samlet i browseren. Konstruktion og antal er udgået 28. oktober 2026.
 
 Under arbejdet er fund K-20 tilføjet: arket bruger h₁ og h₂ i tre forskellige betydninger.
 
@@ -143,3 +143,20 @@ Brugerens ønske: »du må gerne gøre bukket mere 'kantet' så det ikke ligner 
 - Ved to rør står de to lodrette vendinger i midten oven i hinanden.
 
 Brugerens præcisering: »omslaget ved to ledninger skal lige justeres, da nettene i teorien ligger helt opad hinanden i midten. Igen ligesom det ses på billedet fra regnearket.« Mellemrummet på 10 px i midten er derfor fjernet. Det fælles lodrette stykke tegnes én gang, så to stiplede linjer ikke ligger oven i hinanden.
+
+## 28. oktober 2026 — alle løsninger vises, og der regnes kun på rør
+
+Brugerens ønske: »Istedet for at man skal vælge antal ledninger i toppen, vil jeg egentlig hellere, at de bare alle vises i afsnit 5 i appen. Og fjern også 'Rør/Tank' vælgeren i toppen, det skal bare være rør hele vejen igennem.«
+
+Beslutning 4 og 7 fra 26. oktober er ændret:
+- Valget af antal ledninger er fjernet. Afsnit 5 viser alle fire løsninger: uden og med omslag for én ledning (A og C) og derefter for to ledninger (B og D).
+- Valget mellem rør og liggende tank er fjernet. Alle tekster og figurer gælder rør.
+- Arkets forudsætning for to ledninger, største diameter og mindste egenvægt, står nu i kortene for B og D i stedet for i afsnit 1.
+- Indstillingernes konsekvensboks viser L_geonet for alle fire løsninger.
+- Gemte data med de gamle valg indlæses fortsat. Valgene ignoreres.
+
+Valgt af Claude og kan ændres: rækkefølgen A, C, B, D, så løsningerne for én ledning står først, og titlerne »Uden omslag, én ledning« og »Med omslag, én ledning«.
+
+Åbent til fase 4: hvilke af de fire løsninger rapporten tager med, og om nogle kan fravælges på rapportsiden.
+
+Under arbejdet er en fejl rettet: et gemt manuelt valg af X-GRID 130 eller 200 blev ved genindlæsning sat tilbage til X-GRID 150. Gyldige produkter læses nu fra produktlisten.
