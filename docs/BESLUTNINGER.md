@@ -81,3 +81,5 @@ Brugerens ord: »Først og fremmest, så skal man ikke kunne vælge hvor mange l
 - Motoren afviser mere end 2 lag. Antallet står som `lagVedManueltValg` i `defaults.json`.
 - Motoren tillader stadig 1 lag i en overstyring, fordi en af kontrolcasene fra regnearket er overstyret til 1 lag X-GRID 110. Siden bruger det ikke.
 - Det automatiske valg er fortsat som i arket: ét lag, og over grænsen »kontakt leverandør for råd« (K-04).
+
+Opfølgende spørgsmål: Skal den automatiske beregning selv vælge 2 lag, når ét lag ikke er nok? Brugerens svar: »Nej, det automatiske valg skal blive som i regnearket. 2 lag vælges kun manuelt.« Fund K-04 er dermed afgjort.

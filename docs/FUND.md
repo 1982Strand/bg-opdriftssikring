@@ -14,7 +14,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-01 | Teksten om γ_f passer ikke med værdien | Tekst | 1,1 · K_FI, teksten viser værdien |
 | K-02 | Forkert grænse for X-GRID 150 | Valg af geonet | Som arket |
 | K-03 | Netvalg og kontrol bruger forskellige krav | Valg af geonet | Som arket |
-| K-04 | Kun ét lag geonet | Valg af geonet | Som arket, kan overstyres |
+| K-04 | Kun ét lag geonet | Valg af geonet | Afgjort: som arket, 2 lag manuelt |
 | K-05 | GVS under rørtoppen | Opdrift og ballast | Som arket |
 | K-06 | π = 3,14 | Alle tal (0,05 %) | Som arket |
 | K-07 | g = 9,82 for rørvægt | Ballast (lille) | Som arket |
@@ -117,7 +117,7 @@ Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af 
 - c) Uændret, med manuelt valg.
 - Teksten om ét lag tilpasses ved a og b.
 
-**Første version.** Det automatiske valg er som i arket. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, sådan som case 2 er regnet i arket. Overstyringen vises i rapporten.
+**Afgjort 28. oktober 2026.** Det automatiske valg forbliver som i arket med ét lag og »kontakt leverandør for råd« over grænsen. Mulighed a og b er fravalgt. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, sådan som case 2 er regnet i arket. Overstyringen vises i rapporten.
 
 ## K-05 GVS under rørtoppen
 
