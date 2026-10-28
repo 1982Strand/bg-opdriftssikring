@@ -1,4 +1,4 @@
-/* Layout for siderne Opdriftssikring og Indstillinger. Fælles klasser (kort, trin, felter,
+/* Layout for siden Opdriftssikring. Fælles klasser (kort, trin, felter,
    tabeller, mærker) står i index.css og ændres ikke her. */
 @import './resultat.css';
 @import './expander-card.css';
@@ -148,7 +148,18 @@
   line-height: 1.6;
 }
 
-/* Indstillinger */
+/* Generelle beregningsforudsætninger og partialkoefficienter */
+.settings-subheading.forudsaetninger-start {
+  margin-top: 0;
+}
+.forudsaetninger {
+  padding-left: 1.25em;
+  list-style: disc;
+  white-space: normal;
+}
+.forudsaetninger li + li {
+  margin-top: 6px;
+}
 .class-compare {
   max-width: 720px;
 }

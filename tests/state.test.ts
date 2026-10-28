@@ -2,8 +2,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   loadSession,
-  nulstilBeregning,
-  nulstilIndstillinger,
   parseSession,
   saveSession,
   standardSession,
@@ -46,17 +44,6 @@ test('ugyldigt dokument giver standarder og fejl', () => {
   assert.equal(parseSession('{').error, true);
   assert.equal(parseSession('{').session.inddata.d, 2.5);
   assert.equal(parseSession('{}').error, true);
-});
-test('nulstillinger bevarer det andet lag', () => {
-  const s = {
-    ...standardSession(),
-    inddata: { ...standardSession().inddata, d: 4 },
-    konsekvensklasse: 'CC3' as const,
-  };
-  assert.equal(nulstilBeregning(s).inddata.d, 2.5);
-  assert.equal(nulstilBeregning(s).konsekvensklasse, 'CC3');
-  assert.equal(nulstilIndstillinger(s).inddata.d, 4);
-  assert.equal(nulstilIndstillinger(s).konsekvensklasse, 'CC2');
 });
 test('lagring håndterer blokeret lager og én versionsnøgle', () => {
   const s = standardSession();

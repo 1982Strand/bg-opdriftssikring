@@ -1,12 +1,6 @@
 import type { ReactNode } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '../components/ui/accordion';
 import { beregnOpdrift, type OpdriftResultat, type Status } from '../engine/opdrift';
 import { geonetProdukter } from '../engine/geonet';
 import standarder from '../engine/defaults.json' with { type: 'json' };
@@ -20,7 +14,10 @@ import { SaveState } from './SaveState';
 import { useSession } from './SessionContext';
 import { SettingField } from './SettingField';
 import { kontrolpunktTekster } from './kontrolpunkter';
-import { nulstilBeregning, tilMotorInput, type Session } from './state';
+import { betingelser, projekteringsansvar } from './forudsaetninger';
+import { Partialkoefficienter } from './Partialkoefficienter';
+import { Udfold } from './Udfold';
+import { standardSession, tilMotorInput, type Session } from './state';
 import './sider.css';
 
 const { pi, gammaW, g } = standarder;
@@ -94,17 +91,6 @@ function Flise({
         </p>
       )}
     </div>
-  );
-}
-
-function Udfold({ titel, children }: { titel: string; children: ReactNode }) {
-  return (
-    <Accordion type="single" collapsible className="dim-expander-card">
-      <AccordionItem value="indhold">
-        <AccordionTrigger>{titel}</AccordionTrigger>
-        <AccordionContent className="mellemregninger">{children}</AccordionContent>
-      </AccordionItem>
-    </Accordion>
   );
 }
 
@@ -304,7 +290,7 @@ export function Opdriftssikring() {
         )}
       </div>
       <div className="calc-mode">
-        <Button variant="outline" onClick={() => update(nulstilBeregning(session))}>
+        <Button variant="outline" onClick={() => update(standardSession())}>
           <RotateCcw aria-hidden="true" />
           Nulstil beregning
         </Button>
@@ -312,6 +298,33 @@ export function Opdriftssikring() {
 
       <Trin
         nr={1}
+        titel="Generelle beregningsforudsætninger"
+        opsummering="DS/EN 1997-1 DK NA:2021 · levetid 120 år"
+      >
+        <h3 className="settings-subheading forudsaetninger-start">Betingelser</h3>
+        <ul className="settings-prose forudsaetninger">
+          {betingelser(session.konsekvensklasse).map((tekst) => (
+            <li key={tekst}>{tekst}</li>
+          ))}
+        </ul>
+        <h3 className="settings-subheading">Projekteringsansvar</h3>
+        {projekteringsansvar.map((tekst) => (
+          <p className="settings-prose" key={tekst}>
+            {tekst}
+          </p>
+        ))}
+      </Trin>
+
+      <Trin
+        nr={2}
+        titel="Partialkoefficienter"
+        opsummering={`${session.konsekvensklasse} · K_{FI} = ${tal(standarder.KFI[session.konsekvensklasse], 1)} · γ_{f} = ${tal(standarder.gammaGdst * standarder.KFI[session.konsekvensklasse])}`}
+      >
+        <Partialkoefficienter />
+      </Trin>
+
+      <Trin
+        nr={3}
         titel="Geometri og grundvand"
         opsummering={`d = ${tal(i.d)} m · h₁ = ${tal(i.h1)} m · ${i.gvsITerraen ? 'GVS i terræn' : `GVS ${tal(i.gvs)} m under terræn`}`}
       >
@@ -350,7 +363,7 @@ export function Opdriftssikring() {
       </Trin>
 
       <Trin
-        nr={2}
+        nr={4}
         titel="Egenvægt og fyldmateriale"
         opsummering={`E_{k} = ${tal(i.roervaegt, 0)} kg/m · γ = ${tal(i.gamma)} kN/m³ · φ_{k} = ${tal(i.phi)}°`}
       >
@@ -426,7 +439,7 @@ export function Opdriftssikring() {
               <Fmt
                 text={`Konsekvensklasse ${session.konsekvensklasse}: γ_{G;stb} = ${tal(pk.gammaGstb)} på fyld og egenvægt, γ_{φ} = ${tal(pk.gammaPhi)} på tan φ og γ_{f} = ${tal(pk.gammaF)} på opdriften. `}
               />
-              <a href="#indstillinger">Konsekvensklassen vælges under Indstillinger.</a>
+              Konsekvensklassen vælges i afsnit 2.
             </p>
           </>
         )}
@@ -439,7 +452,7 @@ export function Opdriftssikring() {
       ) : (
         <>
           <Trin
-            nr={3}
+            nr={5}
             titel="Opdrift uden geonet"
             opsummering={`S₁ = ${tal(r.S1)} · ${r.S1Status}`}
           >
@@ -473,7 +486,7 @@ export function Opdriftssikring() {
                 <Fmt
                   text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet. Konsekvensfaktoren K_{FI} er 1,0 i CC1 og CC2 og 1,1 i CC3 (afsnit A.1). `}
                 />
-                <a href="#indstillinger">Konsekvensklassen vælges under Indstillinger.</a>
+                Konsekvensklassen vælges i afsnit 2.
               </p>
               <p className="calc-note">
                 T₃ = h₁ + d/2 = {tal(r.T3)} m. Som i regnearket regnes med π = {tal(pi)} og g ={' '}
@@ -483,7 +496,7 @@ export function Opdriftssikring() {
           </Trin>
 
           <Trin
-            nr={4}
+            nr={6}
             titel="Geonet"
             opsummering={
               r.geonet.uts === null
@@ -610,7 +623,7 @@ export function Opdriftssikring() {
           </Trin>
 
           <Trin
-            nr={5}
+            nr={7}
             titel="Forankring"
             opsummering={`K = ${tal(r.K)} kN/m · F_{bund} = ${tal(r.Fbund)} kN/m`}
             dimmed={ikkeNoedvendig}

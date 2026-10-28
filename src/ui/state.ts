@@ -119,9 +119,3 @@ export function saveSession(storage: Pick<Storage, 'setItem'>, session: Session)
     return false;
   }
 }
-export function nulstilBeregning(s: Session): Session {
-  return { ...standardSession(), konsekvensklasse: s.konsekvensklasse };
-}
-export function nulstilIndstillinger(s: Session): Session {
-  return { ...s, konsekvensklasse: 'CC2' };
-}

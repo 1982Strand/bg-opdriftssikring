@@ -1,7 +1,7 @@
 import { AxeBuilder } from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
-const pladsholdere = ['rapport', 'geonet', 'hjaelp'];
+const pladsholdere = ['rapport', 'geonet', 'hjaelp', 'indstillinger'];
 const axe = async (page: Page) =>
   (
     await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
@@ -43,10 +43,6 @@ for (const width of [1440, 390]) {
     await expect(
       page.locator('[data-slot="accordion-content"][data-state="open"]').first(),
     ).toBeVisible();
-    expect(await axe(page)).toEqual([]);
-
-    await page.goto('/#indstillinger');
-    await expect(page.getByRole('heading', { level: 1, name: 'Indstillinger' })).toBeVisible();
     expect(await axe(page)).toEqual([]);
 
     for (const side of pladsholdere) {

@@ -38,28 +38,32 @@ Topbjælken er den samme mørkegrønne bjælke som i MSL, med ikonet `Waves` + *
 | Beregning | Rapport | PDF-rapporten (afsnit 6) |
 | Opslag | Geonet og faste værdier | X-GRID med UTS, reduktionsfaktorer, P_till og arkets grænser; partialkoefficienter og konstanter |
 | Opslag | Hjælp og dokumentation | Beregningsgrundlag, formler, forudsætninger, tovkraft, DANVA 54 og Eurocode, udførelse |
-| Opsætning | Indstillinger | Konsekvensklasse og de partialkoefficienter, den styrer (afsnit 5) |
+| Opsætning | Indstillinger | Pladsholder til senere indstillinger. Konsekvensklassen er flyttet til beregningssiden (afsnit 4). |
 
 Menuens fod viser »BG Byggros A/S« og versionsnummeret, som i MSL.
 
 ## 4. Siden Opdriftssikring
 
-Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«, »Nulstil beregning« og nummererede kort. Alt regnes straks ved indtastning. Mellemregninger vises i udfoldelige felter med formel og indsatte tal.
+Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«, »Nulstil beregning« og nummererede kort. Alt regnes straks ved indtastning. Mellemregninger vises i udfoldelige felter med formel og indsatte tal. »Nulstil beregning« sætter alt tilbage til standard, også konsekvensklassen.
 
-1. **Geometri og grundvand.**
+Kortene har samme rækkefølge som rapporten:
+
+1. **Generelle beregningsforudsætninger.** Arkets Betingelser og Projekteringsansvar (A39:A69) med rettet stavning. Betingelserne nævner den valgte konsekvensklasse i stedet for arkets faste »middel konsekvensklasse«.
+2. **Partialkoefficienter.** Valg af konsekvensklasse og koefficienterne fra tabel A.4-1 NA, se afsnit 5. Et udfoldeligt felt sammenligner den valgte klasse med standarden CC2 for den aktuelle beregning.
+3. **Geometri og grundvand.**
    - Der regnes på rør. Der er hverken valg af konstruktion eller antal ledninger.
    - Diameter d, jorddækning h₁ og GVS-dybde, med valget »GVS i terræn«.
    - Et levende tværsnit med T₁, T₂, T₃, h₁, h₂ og d.
    - T₁ = 0 er fast (K-18). Felterne afviser kun værdier uden fysisk mening, fx diameter ≤ 0. Ellers er der ingen grænser, som i arket.
-2. **Egenvægt og fyldmateriale.** Rørets egenvægt i kg/m, γ, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier og de anvendte partialkoefficienter.
-3. **Opdrift uden geonet.** O, B og S₁ med statusmærke og arkets konklusionstekst.
-4. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
-5. **Forankring.**
+4. **Egenvægt og fyldmateriale.** Rørets egenvægt i kg/m, γ, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier og de anvendte partialkoefficienter.
+5. **Opdrift uden geonet.** O, B og S₁ med statusmærke og arkets konklusionstekst.
+6. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
+7. **Forankring.**
    - F_bund, F_top og K vises.
    - Alle fire løsninger vises under hinanden: uden og med omslag for én ledning (A og C) og derefter for to ledninger (B og D). Kortene for to ledninger viser arkets forudsætninger: største diameter og mindste egenvægt.
    - Hver løsning har en målsat figur til venstre og til højre L pr. side, afstand mellem ledninger, L_a, L_geonet,tot, arkets kontrol, hvor arket har en, og mellemregningerne.
 
-Er S₁ > 1, tones kort 4–5 ned i gråtoner, så kontrasten bevares, men tallene vises som i arket.
+Er S₁ > 1, tones kort 6–7 ned i gråtoner, så kontrasten bevares, men tallene vises som i arket.
 
 Under resultaterne står kortet **Kontrolpunkter**, når der er aktive fund. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-03, K-05, K-12, K-13). Kontrolpunkterne ændrer ikke beregningen og kommer ikke med i rapporten.
 
@@ -72,9 +76,9 @@ Figurerne tegnes som SVG ud fra de aktuelle mål, ligesom opbygningsfiguren i MS
 - Der regnes med fuld præcision og afrundes kun i visningen: 2 decimaler som arket.
 - Ændringer fra fundlisten indføres senere som afgrænsede ændringer med egne tests. Hver ændring kan sammenlignes med arkets resultater.
 
-### Indstillinger
+### Partialkoefficienter og Indstillinger
 
-Siden er opbygget som MSL's Indstillinger, med nummererede afsnit, nulstilling til standard og automatisk gemning i browseren. Siden kan senere få flere afsnit, fx fra fundlisten (K-14).
+Konsekvensklassen vælges i kort 2 på beregningssiden. Siden Indstillinger bevares som pladsholder til senere indstillinger, fx fra fundlisten (K-14).
 
 **Konsekvensklasse.** Klassen vælges blandt CC1, CC2 og CC3, og standarden er CC2, som i arket. Den giver konsekvensfaktoren K_FI efter DS/EN 1997-1 DK NA:2021, A.1: CC1 og CC2 giver 1,0, CC3 giver 1,1. Partialkoefficienterne følger tabel A.4-1 NA (UPL med trækelementer):
 
@@ -145,4 +149,4 @@ Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden få
 
 - **Mængdeberegning.** Ud fra ledningens længde: antal strimler, strimmellængde, m² geonet og antal ruller. Det kræver rulledata pr. produkt.
 - **Stående tanke og brønde.** Kræver en volumenbaseret model uden for arket og eget fagligt grundlag.
-- **Geoteknisk kategori.** Valg på Indstillinger, hvor kategori 1 ganger partialkoefficienterne for jordparametre med γ_s = 1,25 (DK NA:2021, A.3.1(6)P). Udskudt 28. oktober 2026.
+- **Geoteknisk kategori.** Valg ved konsekvensklassen i kort 2, hvor kategori 1 ganger partialkoefficienterne for jordparametre med γ_s = 1,25 (DK NA:2021, A.3.1(6)P). Udskudt 28. oktober 2026.

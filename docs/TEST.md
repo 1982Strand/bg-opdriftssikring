@@ -31,7 +31,7 @@ Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse p
 Øvrige enhedstests dækker:
 - validering og kontrolpunkter i motoren;
 - figurerne for alle 42 cases;
-- teksterne til kontrolpunkterne;
+- teksterne til kontrolpunkterne og forudsætningerne;
 - talformatet;
 - lagringen i browseren.
 
@@ -41,7 +41,7 @@ Browsertestene dækker:
 - GVS under terræn med kontrolpunkter og nedtoning;
 - alle fire løsninger uden valg af antal eller konstruktion;
 - manuelt valg af 2 lag X-GRID 150;
-- konsekvensklasse CC3;
+- forudsætningerne og konsekvensklasse CC3 i kort 1–2;
 - navigationen;
 - tilgængelighed med axe ved 1440 og 390 px.
 
