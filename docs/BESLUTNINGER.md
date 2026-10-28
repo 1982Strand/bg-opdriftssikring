@@ -43,3 +43,14 @@ Appen får siden Indstillinger under menugruppen Opsætning.
 Brugerens svar: »Med kontrolklasse mente jeg geoteknisk kategori. Tag den med på indstillingssiden, så kategori 1 ganger partialkoefficienterne for jordparametre med 1,25.« Kort efter: »nej vent. Drop i første omgang dette og tag bare den del med konsekvensklassen med«.
 
 Indstillingssiden får derfor kun konsekvensklassen i første omgang. Geoteknisk kategori er noteret som senere udvidelse i `docs/PLAN.md`.
+
+## 28. oktober 2026 — beregningsmotor og kontrolcases (fase 2)
+
+Brugerens ord: »Start fase 2: udtræk kontrolcases fra Excel og byg beregningsmotoren med tests.«
+
+Kontrolcasene udtrækkes fra selve regnearket med `tools/excel-cases.ps1`. Der er 42 cases i `tests/cases/excel-cases.json`. Motoren regner præcis som arket, jf. beslutningen om første version.
+
+Følgende er valgt af Claude og kan ændres:
+- **Tolerance.** Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Den dækker kun afrundingsstøj i kommatal. Valgt geonet, OK/EJ OK og tekster skal stemme præcist. Tolerancen afventer brugerens godkendelse, jf. arbejdsreglerne.
+- **Fysisk mening.** γ · 0,9 skal være større end γ_w = 10 kN/m³. Ellers er den effektive rumvægt under vand ikke positiv, og arket ville dividere med 0 eller give negative forankringslængder.
+- **Kontrolpunkter.** De følger betingelserne i `docs/BEREGNINGSMOTOR.md`. K-02 gælder produktet med den indtastede grænse 78,9, når F_opdrift ≥ P_till.

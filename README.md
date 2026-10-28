@@ -31,6 +31,8 @@ Browsertestene bruger port 5186 og genbruger ikke den lokale appserver.
 
 - [Plan](docs/PLAN.md)
 - [Kortlægning af regnearket](docs/EXCEL_KORTLAEGNING.md)
+- [Beregningsmotor](docs/BEREGNINGSMOTOR.md)
+- [Test og kontrolcases](docs/TEST.md)
 - [Fund i regnearket](docs/FUND.md)
 - [Beslutninger](docs/BESLUTNINGER.md)
 - [Arbejdsregler](AGENTS.md)
