@@ -7,7 +7,7 @@ import { geonetProdukter, vaelgGeonet, type GeonetValg } from './geonet.ts';
 export type Konsekvensklasse = 'CC1' | 'CC2' | 'CC3';
 export interface GeonetOverstyring {
   uts: number; // UTS pr. lag, kN/m
-  lag: number;
+  lag: number; // 1 eller 2; siden bruger altid 2 ved manuelt valg
 }
 export interface OpdriftInput {
   d: number; // F123, udvendig diameter, m
@@ -276,10 +276,11 @@ function valider(input: OpdriftInput): Inputfejl[] {
         felt: 'overstyring',
         tekst: 'Geonettet skal være et produkt fra produktlisten.',
       });
-    if (!Number.isInteger(o.lag) || o.lag < 1)
+    // Højst 2 lag: et net i midten af tre eller flere lag kan ikke udnyttes.
+    if (!Number.isInteger(o.lag) || o.lag < 1 || o.lag > standarder.geonet.lagVedManueltValg)
       fejl.push({
         felt: 'overstyring',
-        tekst: 'Antallet af lag skal være et helt tal på mindst 1.',
+        tekst: `Antallet af lag skal være 1 eller ${standarder.geonet.lagVedManueltValg}. Et net i midten af flere lag kan ikke udnyttes.`,
       });
   }
   return fejl;

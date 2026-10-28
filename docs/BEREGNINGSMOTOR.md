@@ -17,14 +17,14 @@ Motoren ligger i `src/engine/` og kører i TypeScript i browseren. Brugerflade, 
 - karakteristisk rørvægt i kg/m;
 - γ, γ_tør og φ_k;
 - konsekvensklasse;
-- eventuel overstyring af geonettet med produkt og antal lag.
+- eventuel overstyring af geonettet med produkt og antal lag (1 eller 2; siden bruger altid 2).
 
 Felterne afviser kun værdier uden fysisk mening. Hver fejl er knyttet til sit felt, så siden kan vise den ved feltet:
 - d skal være > 0;
 - h₁, GVS og rørvægt skal være ≥ 0;
 - γ_tør skal være > 0, og φ_k skal ligge mellem 0° og 90° (begge udelukket);
 - γ · 0,9 skal være > γ_w, da den effektive rumvægt under vand ellers ikke er positiv;
-- en overstyring skal være et produkt fra listen med et helt antal lag på mindst 1.
+- en overstyring skal være et produkt fra listen i 1 eller 2 lag. Et net i midten af flere lag kan ikke udnyttes.
 
 ## Resultat
 
