@@ -6,7 +6,7 @@ Appen er under opbygning. Planen står i [docs/PLAN.md](docs/PLAN.md).
 
 ## Lokal brug
 
-Kræver Node 24 eller nyere.
+Kræver Node 24 eller nyere. Dobbeltklik på `Start Opdriftssikring.cmd`. Den installerer afhængigheder første gang, bygger appen og åbner http://127.0.0.1:5176/. Portene er valgt, så appen kan køre samtidig med MSL Dimensionering.
 
 ```powershell
 npm ci
@@ -24,6 +24,8 @@ npm test
 npm run build
 npm run test:browser
 ```
+
+Browsertestene bruger port 5186 og genbruger ikke den lokale appserver.
 
 ## Dokumentation
 
