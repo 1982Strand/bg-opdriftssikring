@@ -486,7 +486,7 @@ export function Opdriftssikring() {
                 label="Opdrift O"
                 vaerdi={tal(r.O)}
                 enhed="kN/m"
-                note={`γ_{f} = ${tal(pk.gammaF)}`}
+                note={`γ_{f} = 1,1 · K_{FI} = ${tal(pk.gammaF)} (${session.konsekvensklasse}, DK NA tabel A.4-1)`}
               />
               <Flise label="Ballast B" vaerdi={tal(r.B)} enhed="kN/m" note="Fyld og egenvægt" />
               <Flise
@@ -500,12 +500,19 @@ export function Opdriftssikring() {
             <Udfold titel="Mellemregninger">
               <Formler
                 linjer={[
+                  `γ_{f} = γ_{G;dst} = ${tal(standarder.gammaGdst, 1)} · K_{FI} = ${tal(standarder.gammaGdst, 1)} · ${tal(pk.KFI, 1)} = ${tal(pk.gammaF)} (konsekvensklasse ${session.konsekvensklasse})`,
                   `O = π/4 · d² · γ_{w} · γ_{f} = ${tal(pi)}/4 · ${tal(i.d)}² · ${tal(gammaW)} · ${tal(pk.gammaF)} = ${tal(r.O)} kN/m`,
                   `B = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − (π/4 · d² · γ′_{d})/2 + E_{d} · g/1000`,
                   `B = ${tal(r.ballastLed.torFyld)} + ${tal(r.ballastLed.vaadFyld)} − ${tal(r.ballastLed.roerHalvdel)} + ${tal(r.ballastLed.egenvaegt)} = ${tal(r.B)} kN/m`,
                   `S₁ = B/O = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
                 ]}
               />
+              <p className="calc-note">
+                <Fmt
+                  text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet. Konsekvensfaktoren K_{FI} er 1,0 i CC1 og CC2 og 1,1 i CC3 (afsnit A.1). `}
+                />
+                <a href="#indstillinger">Konsekvensklassen vælges under Indstillinger.</a>
+              </p>
               <p className="calc-note">
                 T₃ = h₁ + d/2 = {tal(r.T3)} m. Som i regnearket regnes med π = {tal(pi)} og g ={' '}
                 {tal(g)} m/s² (fund K-06 og K-07).
