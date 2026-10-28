@@ -6,7 +6,8 @@ export interface GeonetValg {
   automatisk: boolean;
   RF: number;
   Ptill: number | null;
-  udnyttelse: number | null;
+  /** P_till/F_opdrift (E238), en sikkerhed; krav over 1,01. */
+  sikkerhed: number | null;
   status: 'OK' | 'EJ OK' | null;
   tekst: string | null;
 }
@@ -40,7 +41,7 @@ export function vaelgGeonet(
       automatisk: true,
       RF,
       Ptill: null, // G229, E238 og H238 giver #VALUE! i arket.
-      udnyttelse: null,
+      sikkerhed: null,
       status: null,
       tekst: 'kontakt leverandør for råd', // G207
     };
@@ -50,15 +51,15 @@ export function vaelgGeonet(
 
 function resultat(uts: number, navn: string, automatisk: boolean, Fopdrift: number): GeonetValg {
   const Ptill = uts / RF; // G229
-  const udnyttelse = Ptill / Fopdrift; // E238
+  const sikkerhed = Ptill / Fopdrift; // E238
   return {
     uts,
     navn,
     automatisk,
     RF,
     Ptill,
-    udnyttelse,
-    status: udnyttelse > standarder.krav.udnyttelse ? 'OK' : 'EJ OK', // H238
+    sikkerhed,
+    status: sikkerhed > standarder.krav.geonet ? 'OK' : 'EJ OK', // H238
     tekst: null,
   };
 }

@@ -7,7 +7,7 @@ export function kontrolpunktTekst(k: Kontrolpunkt, r: OpdriftResultat, tank = fa
   const g = r.geonet;
   switch (k) {
     case 'K-03':
-      return `P_{till}/F_{opdrift} = ${tal(g.udnyttelse, 3)} er under kravet 1,01, selv om F_{opdrift} er mindre end P_{till}. Regnearket vælger nettet efter F_{opdrift} < P_{till} og eftervisningen efter kravet 1,01 (fund K-03).`;
+      return `P_{till}/F_{opdrift} = ${tal(g.sikkerhed, 3)} er under kravet 1,01, selv om F_{opdrift} er mindre end P_{till}. Regnearket vælger nettet efter F_{opdrift} < P_{till} og eftervisningen efter kravet 1,01 (fund K-03).`;
     case 'K-05':
       return `GVS ligger under toppen af ${tank ? 'tanken' : 'røret'}. Regnearket regner opdrift og ballast, som om ${tank ? 'tanken' : 'røret'} står helt under vand (fund K-05).`;
     case 'K-12':

@@ -26,7 +26,10 @@ test('case 1 er standard og vises som i regnearket', async ({ page }) => {
   await expect(flise(page, 'Sikkerhed S₁').locator('.m9-badge')).toHaveText('EJ OK');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 80');
   await expect(flise(page, 'Krav til geonettets trækstyrke').locator('strong')).toHaveText('27,53');
-  await expect(flise(page, 'Udnyttelse').locator('strong')).toHaveText('1,38');
+  await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,38');
+  await expect(flise(page, 'Sikkerhed Ptill').locator('p')).toHaveText(
+    'Udnyttelse af Ptill: 72 % · krav > 1,01',
+  );
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,50');
   await expect(
     losning(page, 'Uden omslag').getByRole('row', { name: /Forankring pr. side/ }),
@@ -79,7 +82,7 @@ test('GVS under terræn, kontrolpunkter og S₁ over 1,0', async ({ page }) => {
   await saet(page, 'Rørdiameter d (m)', '2.601');
   await saet(page, 'Jorddækning h₁ (m)', '1');
   await expect(page.getByText(/1,005 er under kravet 1,01/)).toBeVisible();
-  await expect(flise(page, 'Udnyttelse').locator('.m9-badge')).toHaveText('EJ OK');
+  await expect(flise(page, 'Sikkerhed Ptill').locator('.m9-badge')).toHaveText('EJ OK');
 });
 
 test('to ledninger og liggende tank skifter løsninger og tekster', async ({ page }) => {
@@ -105,7 +108,10 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
   await page.getByRole('option', { name: 'X-GRID 150 · UTS 300 kN/m' }).click();
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 150 (2 lag)');
   await expect(flise(page, 'Tilladelig træklast i geonet').locator('strong')).toHaveText('142,41');
-  await expect(flise(page, 'Udnyttelse').locator('strong')).toHaveText('1,26');
+  await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,26');
+  await expect(flise(page, 'Sikkerhed Ptill').locator('p')).toHaveText(
+    'Udnyttelse af Ptill: 80 % · krav > 1,01',
+  );
   await expect(
     losning(page, 'Uden omslag').getByRole('row', { name: /Forankring pr. side/ }),
   ).toContainText('7,40 m');
@@ -131,7 +137,7 @@ test('X-GRID 200 vælges automatisk over X-GRID 150 (K-21)', async ({ page }) =>
   await saet(page, 'Rørdiameter d (m)', '3.4');
   await saet(page, 'Jorddækning h₁ (m)', '1');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 200');
-  await expect(flise(page, 'Udnyttelse').locator('strong')).toHaveText('1,31');
-  await expect(flise(page, 'Udnyttelse').locator('.m9-badge')).toHaveText('OK');
+  await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,31');
+  await expect(flise(page, 'Sikkerhed Ptill').locator('.m9-badge')).toHaveText('OK');
   await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
 });
