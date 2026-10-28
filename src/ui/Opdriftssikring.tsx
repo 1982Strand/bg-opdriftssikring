@@ -538,7 +538,7 @@ export function Opdriftssikring() {
             )}
             <div className="dim-results m9-result-cards">
               <Flise
-                label="Kraft til geonet F_{opdrift}"
+                label="Krav til geonettets trækstyrke F_{opdrift}"
                 vaerdi={tal(r.Fopdrift)}
                 enhed="kN/m"
                 note="F_{opdrift} = O − B"
@@ -553,7 +553,7 @@ export function Opdriftssikring() {
                 }
               />
               <Flise
-                label="Tilladelig last P_{till}"
+                label="Tilladelig træklast i geonet P_{till}"
                 vaerdi={tal(r.geonet.Ptill)}
                 enhed={r.geonet.Ptill === null ? undefined : 'kN/m'}
                 note="P_{till} = UTS/RF"

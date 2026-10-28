@@ -113,3 +113,7 @@ Brugerens spørgsmål: »koefficienten der står under opdriften (gamma_f = 1,1)
 ## 28. oktober 2026 — ét fælles sæt reduktionsfaktorer (K-22)
 
 Spørgsmål: Skal appen gemme reduktionsfaktorerne pr. net, da Navne tabel har en kolonne pr. net, som arket ikke bruger? Brugerens svar: »Nej, behold ét fælles sæt faktorer som i regnearket.« Appen bruger fortsat f_kryb = 1,43, f_m = 1,05, f_d = 1,15 og f_e = 1,22 for alle net, både i valggrænserne og i P_till.
+
+## 28. oktober 2026 — navne på fliserne under Geonet
+
+Brugerens ønske: »'Kraft til geonet Fopdrift' Skal omdøbes til 'Krav til geonettets trækstyrke Fopdrift' og 'Tilladelig last Ptill' omdøbes til 'Tilladelig træklast i geonet Ptill'«. Fliserne har fået de nye navne.
