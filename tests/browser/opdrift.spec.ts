@@ -25,6 +25,7 @@ test('case 1 er standard og vises som i regnearket', async ({ page }) => {
   await expect(flise(page, 'Sikkerhed S₁').locator('strong')).toHaveText('0,49');
   await expect(flise(page, 'Sikkerhed S₁').locator('.m9-badge')).toHaveText('EJ OK');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 80');
+  await expect(flise(page, 'Krav til geonettets trækstyrke').locator('strong')).toHaveText('27,53');
   await expect(flise(page, 'Udnyttelse').locator('strong')).toHaveText('1,38');
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,50');
   await expect(
@@ -103,7 +104,7 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
   await page.getByRole('combobox', { name: 'Produkt i 2 lag' }).click();
   await page.getByRole('option', { name: 'X-GRID 150 · UTS 300 kN/m' }).click();
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 150 (2 lag)');
-  await expect(flise(page, 'Tilladelig last').locator('strong')).toHaveText('142,41');
+  await expect(flise(page, 'Tilladelig træklast i geonet').locator('strong')).toHaveText('142,41');
   await expect(flise(page, 'Udnyttelse').locator('strong')).toHaveText('1,26');
   await expect(
     losning(page, 'Uden omslag').getByRole('row', { name: /Forankring pr. side/ }),
