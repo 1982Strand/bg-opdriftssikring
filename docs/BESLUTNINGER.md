@@ -124,3 +124,13 @@ Brugerens spørgsmål: »i boksen med 'Udnyttelse Ptill/Fopdrift' - hvad betyder
 
 - Flisen hedder »Sikkerhed P_till/F_opdrift«. Under tallet står fx »Udnyttelse af P_till: 80 % · krav > 1,01«. Udnyttelsen vises kun ved positiv F_opdrift.
 - Motorens felt `geonet.udnyttelse` hedder nu `geonet.sikkerhed`, og kravet i `defaults.json` hedder `krav.geonet`. Det er valgt af Claude, så rapporten i fase 4 ikke arver den misvisende betegnelse.
+
+## 28. oktober 2026 — tydeligere omslag i figurerne
+
+Brugerens ønske: »du må gerne gøre afstanden imellem geonet lidt større, og så afkorte det øverste, omslåede lag en smule, så det på den måde er tydeligt at nettet lægges ud forneden først, og så ombukkes.«
+
+- Afstanden mellem netlagene tegnes mindst 16 px. Målene står fortsat med de beregnede værdier, og h_top-målet går til det tegnede toplag.
+- Ombukket tegnes som en rund vending ved enden af bundlaget, og toplaget er tegnet som 75 % af forankringslængden.
+- Ved to rør med omslag tegnes ét net pr. rør, og de to net vender mod hinanden i midten. Regnearkets figur viser et fælles omslag.
+
+Figurerne er illustrationer; beregningen er uændret. Længden af toplaget (75 %) og afstanden (16 px) er valgt af Claude og kan ændres.

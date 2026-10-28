@@ -23,6 +23,7 @@ const MARGEN = { venstre: 24, hoejre: 150, top: 52, bund: 74 };
 const HAELDNING = 0.6; // gravens sider, vandret pr. lodret
 const BUNDLAG = 0.15; // m under røret
 const OMSLAG = 0.2; // m mellem netlagene ved omslag, som i regnearket
+const TOPLAG = 0.75; // det omslåede lag tegnes som 75 % af forankringslængden
 
 const esc = (t: string) =>
   t.replace(
@@ -249,21 +250,38 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   t.dele.push(gvs(t, i.gvs));
   for (const cx of centre) t.dele.push(roer(t, cx, T3, d));
 
-  // Geonettet: vandret i rørmidtens niveau og hen over rørenes øverste halvdel.
+  // Geonettet ligger i rørmidtens niveau og hen over rørenes øverste halvdel. Med omslag lægges
+  // nettet ud forneden først og bukkes derefter tilbage over sig selv ved enderne.
   const radius = (d / 2) * t.s + roerKant((d / 2) * t.s) / 2 + 2;
-  let sti = `M ${t.X(-ydre)} ${t.Y(T3)}`;
-  for (const cx of centre)
-    sti += ` L ${px(t.X(cx) - radius)} ${t.Y(T3)} A ${px(radius)} ${px(radius)} 0 0 1 ${px(t.X(cx) + radius)} ${t.Y(T3)}`;
-  sti += ` L ${t.X(ydre)} ${t.Y(T3)}`;
-  if (omslag) {
-    // Omslag: 0,2 m op ved yderkanterne og tilbage mod røret.
-    const top = T3 - OMSLAG;
-    const korde = Math.sqrt(Math.max(0, (d / 2) ** 2 - OMSLAG ** 2)) * t.s + 6;
-    sti += ` M ${t.X(-ydre)} ${t.Y(T3)} V ${t.Y(top)} H ${px(t.X(centre[0]) - korde)}`;
-    sti += ` M ${t.X(ydre)} ${t.Y(T3)} V ${t.Y(top)} H ${px(t.X(centre.at(-1)!) + korde)}`;
-    // Fælles omslag mellem rørene, som regnearkets image8.
-    if (to)
-      sti += ` M ${t.X(0)} ${t.Y(T3)} V ${t.Y(top)} M ${px(t.X(centre[0]) + korde)} ${t.Y(top)} H ${px(t.X(centre[1]) - korde)}`;
+  const yBund = t.Y(T3);
+  // Afstanden mellem netlagene tegnes mindst 16 px, så omslaget kan ses; målene står med de
+  // beregnede værdier.
+  const afstand = Math.max(OMSLAG * t.s, 16);
+  const yTop = px(yBund - afstand);
+  const bue = px(afstand / 2);
+  const over = (cx: number) =>
+    ` L ${px(t.X(cx) - radius)} ${yBund} A ${px(radius)} ${px(radius)} 0 0 1 ${px(t.X(cx) + radius)} ${yBund}`;
+  // Vending ved en ende: fra toplaget ned til bundlaget eller omvendt, buet ud mod enden.
+  const ned = (x: number) => ` H ${px(x)} A ${bue} ${bue} 0 0 0 ${px(x)} ${yBund}`;
+  const op = (x: number) => ` L ${px(x)} ${yBund} A ${bue} ${bue} 0 0 0 ${px(x)} ${yTop}`;
+  const xVenstre = t.X(-ydre);
+  const xHoejre = t.X(ydre);
+  const tilbage = TOPLAG * L * t.s;
+  let sti: string;
+  if (!omslag) sti = `M ${xVenstre} ${yBund}${centre.map(over).join('')} L ${xHoejre} ${yBund}`;
+  else if (!to)
+    sti = `M ${px(xVenstre + tilbage)} ${yTop}${ned(xVenstre)}${over(0)}${op(xHoejre)} H ${px(xHoejre - tilbage)}`;
+  else {
+    // Ét net pr. rør. I midten vender de to net mod hinanden med et lille mellemrum.
+    const xMidt = t.X(0);
+    const g = bue + 3;
+    const tilbageMidt = Math.max(0, TOPLAG * (mellem / 2) * t.s - g);
+    sti =
+      `M ${px(xVenstre + tilbage)} ${yTop}${ned(xVenstre)}${over(centre[0])}` +
+      `${op(xMidt - g)} H ${px(xMidt - g - tilbageMidt)}`;
+    sti +=
+      ` M ${px(xMidt + g + tilbageMidt)} ${yTop}${ned(xMidt + g)}${over(centre[1])}` +
+      `${op(xHoejre)} H ${px(xHoejre - tilbage)}`;
   }
   t.dele.push(
     `<path d="${sti}" fill="none" stroke="${farve.net}" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round"/>`,
@@ -305,7 +323,7 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   if (omslag) {
     // To mål side om side; teksterne står over hinanden til højre.
     t.dele.push(
-      lodretMaal(xh, t.Y(0), t.Y(r.hTop), ''),
+      lodretMaal(xh, t.Y(0), yTop, ''),
       lodretMaal(xh + 14, t.Y(0), t.Y(r.hBund), ''),
       tekst(xh + 24, midt - 5, `h_{top} = ${m(r.hTop)}`, 'start'),
       tekst(xh + 24, midt + 11, `h_{bund} = ${m(r.hBund)}`, 'start'),
