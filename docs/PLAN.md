@@ -62,14 +62,14 @@ Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«,
 
 Er S₁ > 1, tones kort 4–5 ned i gråtoner, så kontrasten bevares, men tallene vises som i arket.
 
-Under resultaterne står kortet **Kontrolpunkter**, når der er aktive fund. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-02, K-03, K-05, K-12, K-13). Kontrolpunkterne ændrer ikke beregningen og kommer ikke med i rapporten.
+Under resultaterne står kortet **Kontrolpunkter**, når der er aktive fund. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-03, K-05, K-12, K-13). Kontrolpunkterne ændrer ikke beregningen og kommer ikke med i rapporten.
 
 Figurerne tegnes som SVG ud fra de aktuelle mål, ligesom opbygningsfiguren i MSL. Samme figur bruges på skærmen og i rapporten. Arkets billeder bruges kun som forlæg.
 
 ## 5. Beregningsmotor og data
 
 - `src/engine/opdrift.ts` er en ren funktion: `beregnOpdrift(input, standarder) → resultat`. Resultatet indeholder alle mellemværdier fra kortlægningen med samme navne, status OK/EJ OK, kontrolpunkter og fejl. Motoren kender ikke brugerfladen.
-- `src/engine/defaults.json` indeholder partialkoefficienter, X-GRID-tabellen og konstanterne fra kortlægningens afsnit 3. Alle værdier er som i arket, også π = 3,14, g = 9,82 og grænsen 78,9. Produktdata findes kun ét sted (K-15).
+- `src/engine/defaults.json` indeholder partialkoefficienter, X-GRID-tabellen og konstanterne fra kortlægningens afsnit 3. Alle værdier er som i arket, også π = 3,14 og g = 9,82. Undtagelsen er produktlisten, som følger databladet med X-GRID 130 og 200 og valggrænsen UTS/RF (K-21). Produktdata findes kun ét sted (K-15).
 - Der regnes med fuld præcision og afrundes kun i visningen: 2 decimaler som arket.
 - Ændringer fra fundlisten indføres senere som afgrænsede ændringer med egne tests. Hver ændring kan sammenlignes med arkets resultater.
 

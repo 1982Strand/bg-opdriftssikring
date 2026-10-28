@@ -6,8 +6,6 @@ import { tal } from '../engine/format.ts';
 export function kontrolpunktTekst(k: Kontrolpunkt, r: OpdriftResultat, tank = false): string {
   const g = r.geonet;
   switch (k) {
-    case 'K-02':
-      return `X-GRID ${g.navn} er valgt efter regnearkets valggrænse på 78,9 kN/m, men P_{till} = ${tal(g.Ptill)} kN/m er mindre end F_{opdrift} = ${tal(r.Fopdrift)} kN/m. Eftervisningen af geonettet viser derfor EJ OK (fund K-02).`;
     case 'K-03':
       return `P_{till}/F_{opdrift} = ${tal(g.udnyttelse, 3)} er under kravet 1,01, selv om F_{opdrift} er mindre end P_{till}. Regnearket vælger nettet efter F_{opdrift} < P_{till} og eftervisningen efter kravet 1,01 (fund K-03).`;
     case 'K-05':

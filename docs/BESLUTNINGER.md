@@ -83,3 +83,22 @@ Brugerens ord: »Først og fremmest, så skal man ikke kunne vælge hvor mange l
 - Det automatiske valg er fortsat som i arket: ét lag, og over grænsen »kontakt leverandør for råd« (K-04).
 
 Opfølgende spørgsmål: Skal den automatiske beregning selv vælge 2 lag, når ét lag ikke er nok? Brugerens svar: »Nej, det automatiske valg skal blive som i regnearket. 2 lag vælges kun manuelt.« Fund K-04 er dermed afgjort.
+
+## 28. oktober 2026 — X-GRID 130 og 200 og valggrænsen UTS/RF (K-21 og K-02)
+
+Anledning: Brugeren bad om en sammenligning af databladet for X-GRID med regnearket. Databladet har også X-GRID 130 og 200, som mangler i arket (fund K-21).
+
+Brugerens ord: »Ja, tilføj X-GRID 130 og 200 til både det automatiske og det manuelle valg med valggrænsen UTS/RF (K-21 mulighed a). Det løser også K-02.«
+
+- Produktlisten er X-GRID 35, 55, 80, 110, 130, 150 og 200.
+- Valggrænsen er P_till = UTS/RF for alle produkter. Regnearkets grænse 78,9 for X-GRID 150 udgår, og kontrolpunktet K-02 er fjernet.
+- Det automatiske valg tager fortsat ét lag og det mindste produkt med F_opdrift < P_till. Over X-GRID 200 (94,94 kN/m) står der »kontakt leverandør for råd«, og 2 lag vælges manuelt.
+- Dette er den første bevidste afvigelse fra regnearket i beregningen. Tre kontrolcases får et andet net:
+  - d = 3,0 m, h₁ = 1,0 m: X-GRID 130 i stedet for 150;
+  - K-02-casen: X-GRID 200 med OK i stedet for 150 med EJ OK;
+  - casen over grænsen: X-GRID 200 i stedet for »kontakt leverandør«.
+- De nye forventninger er regnet uden motoren ud fra arkets F_opdrift og står i `tests/cases/afvigelser.json`. Arkets udtrukne værdier i `excel-cases.json` er uændrede.
+
+Følgende er valgt af Claude og kan ændres:
+- Afvigelser fra arket føres i en særskilt fil i stedet for at rette i det udtrukne facit, så et nyt udtræk ikke sletter dem.
+- Mellemregningerne for geonet viser nu P_till og P_till/F_opdrift for alle produkter, med det automatisk valgte markeret.

@@ -14,16 +14,6 @@ const tekster = (delnavn: string) => {
   return kontrolpunktTekster(r.resultat);
 };
 
-test('K-02 nævner det valgte net, P_till og F_opdrift med dansk komma', () => {
-  assert.deepEqual(tekster('K-02: grænsen 78,9'), [
-    {
-      kode: 'K-02',
-      tekst:
-        'X-GRID 150 er valgt efter regnearkets valggrænse på 78,9 kN/m, men P_{till} = 71,20 kN/m er mindre end F_{opdrift} = 75,06 kN/m. Eftervisningen af geonettet viser derfor EJ OK (fund K-02).',
-    },
-  ]);
-});
-
 test('K-03 viser udnyttelsen med tre decimaler', () => {
   const [k] = tekster('K-03: bånd for X-GRID 80');
   assert.equal(k.kode, 'K-03');

@@ -1,0 +1,34 @@
+{
+  "format": "opdrift-afvigelser",
+  "version": 1,
+  "afvigelser": [
+    {
+      "id": "K-21",
+      "dato": "2026-10-28",
+      "beslutning": "X-GRID 130 og 200 er tilføjet til produktlisten for automatisk og manuelt valg, og valggrænsen er UTS/RF for alle produkter. Det løser også K-02 (grænsen 78,9 for X-GRID 150 udgår). Se docs/BESLUTNINGER.md.",
+      "beregning": "Forventningerne er beregnet uden motoren ud fra arkets F_opdrift (G177) og RF (G213): mindste UTS i {35, 55, 80, 110, 130, 150, 200} med F_opdrift < UTS/RF, P_till = UTS/RF, udnyttelse = P_till/F_opdrift og OK, hvis udnyttelsen er over 1,01.",
+      "celler": {
+        "Gitter: d = 3,0 m, h1 = 1,0 m": {
+          "G207": 130.0,
+          "G199": 130.0,
+          "G229": 61.710681810467996,
+          "E238": 1.1495529685553512
+        },
+        "K-02: grænsen 78,9 for X-GRID 150": {
+          "G207": 200.0,
+          "G199": 200.0,
+          "G229": 94.93951047764307,
+          "E238": 1.2648555931227012,
+          "H238": "OK"
+        },
+        "Over grænsen: kontakt leverandør": {
+          "G207": 200.0,
+          "G199": 200.0,
+          "G229": 94.93951047764307,
+          "E238": 1.197165703748983,
+          "H238": "OK"
+        }
+      }
+    }
+  ]
+}

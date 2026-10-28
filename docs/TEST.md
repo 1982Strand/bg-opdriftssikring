@@ -45,7 +45,11 @@ Browsertestene dækker:
 - navigationen;
 - tilgængelighed med axe ved 1440 og 390 px.
 
-Input og forventninger må ikke ændres for at få en ændring til at bestå. En bevidst afvigelse fra arket kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md), og de berørte forventninger ændres som en del af den beslutning.
+Input og forventninger må ikke ændres for at få en ændring til at bestå. En bevidst afvigelse fra arket kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
+
+### Besluttede afvigelser
+
+Den udtrukne fil `excel-cases.json` er altid arkets egne værdier og ændres kun ved et nyt udtræk. Besluttede afvigelser står i `tests/cases/afvigelser.json`. Hver afvigelse har sit fundnummer, dato, beslutning og en beskrivelse af, hvordan de nye forventninger er beregnet. De nye forventninger regnes uden motoren ud fra arkets egne værdier og kun for de celler, der ændres. Testen lægger dem oven på arkets værdier og kontrollerer, at hver afvigelse gælder en kendt case og celle og faktisk afviger fra arket.
 
 ### Nyt udtræk
 

@@ -122,3 +122,13 @@ test('konsekvensklasse CC3 på Indstillinger bruges på beregningssiden', async 
   await page.getByRole('button', { name: 'Nulstil indstillinger' }).click();
   await expect(page.getByRole('radio', { name: 'CC2' })).toBeChecked();
 });
+
+test('X-GRID 200 vælges automatisk over X-GRID 150 (K-21)', async ({ page }) => {
+  await start(page);
+  await saet(page, 'Rørdiameter d (m)', '3.4');
+  await saet(page, 'Jorddækning h₁ (m)', '1');
+  await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 200');
+  await expect(flise(page, 'Udnyttelse').locator('strong')).toHaveText('1,31');
+  await expect(flise(page, 'Udnyttelse').locator('.m9-badge')).toHaveText('OK');
+  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
+});
