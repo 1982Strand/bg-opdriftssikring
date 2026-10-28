@@ -102,3 +102,10 @@ Brugerens ord: »Ja, tilføj X-GRID 130 og 200 til både det automatiske og det 
 Følgende er valgt af Claude og kan ændres:
 - Afvigelser fra arket føres i en særskilt fil i stedet for at rette i det udtrukne facit, så et nyt udtræk ikke sletter dem.
 - Mellemregningerne for geonet viser nu P_till og P_till/F_opdrift for alle produkter, med det automatisk valgte markeret.
+
+## 28. oktober 2026 — kilde og konsekvensklasse ved γ_f
+
+Brugerens spørgsmål: »koefficienten der står under opdriften (gamma_f = 1,1) hvor kommer den fra og hvad afhænger den af?« Svaret var γ_G;dst = 1,1 · K_FI fra DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som kun afhænger af konsekvensklassen. Brugerens ønske: »skriv kilden og konsekvensklassen ind ved γ_f på siden, fx i flisen og i mellemregningerne.«
+
+- Flisen for opdriften viser fx »γf = 1,1 · KFI = 1,10 (CC2, DK NA tabel A.4-1)«.
+- Mellemregningerne har linjen γ_f = γ_G;dst = 1,1 · K_FI med den valgte klasse og en note om tabel A.4-1 NA, afsnit A.1 og valget under Indstillinger.
