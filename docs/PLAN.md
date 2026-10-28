@@ -1,6 +1,6 @@
 # Plan for appen Opdriftssikring
 
-Status 28. oktober 2026: Spørgsmålene til planen er besvaret, se [BESLUTNINGER.md](BESLUTNINGER.md). Fase 1 er afsluttet: repoet [bg-opdriftssikring](https://github.com/1982Strand/bg-opdriftssikring) er oprettet offentligt, og skelettet med tema, skal og pladsholdersider er bygget. Fase 2 er afsluttet: beregningsmotoren regner som arket og er kontrolleret mod 42 cases udtrukket fra regnearket.
+Status 28. oktober 2026: Spørgsmålene til planen er besvaret, se [BESLUTNINGER.md](BESLUTNINGER.md). Fase 1 er afsluttet: repoet [bg-opdriftssikring](https://github.com/1982Strand/bg-opdriftssikring) er oprettet offentligt, og skelettet med tema, skal og pladsholdersider er bygget. Fase 2 er afsluttet: beregningsmotoren regner som arket og er kontrolleret mod 42 cases udtrukket fra regnearket. Fase 3 er afsluttet: siderne Opdriftssikring og Indstillinger er bygget.
 
 ## 1. Mål
 
@@ -57,12 +57,12 @@ Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«,
 4. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og udnyttelse. Produkt og antal lag kan overstyres manuelt, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
 5. **Forankring.**
    - F_bund, F_top og K vises.
-   - De to løsninger for det valgte antal ledninger vises: uden og med omslag, dvs. A og C for 1 ledning eller B og D for 2.
-   - Hver løsning har en målsat figur, L pr. side, afstand mellem ledninger, L_a, L_geonet,tot og arkets kontrol, hvor arket har en.
+   - De to løsninger for det valgte antal ledninger vises under hinanden: uden og med omslag, dvs. A og C for 1 ledning eller B og D for 2.
+   - Hver løsning har en målsat figur til venstre og til højre L pr. side, afstand mellem ledninger, L_a, L_geonet,tot, arkets kontrol, hvor arket har en, og mellemregningerne.
 
-Er S₁ > 1, tones kort 4–5 ned, men tallene vises som i arket.
+Er S₁ > 1, tones kort 4–5 ned i gråtoner, så kontrasten bevares, men tallene vises som i arket.
 
-Under resultaterne står **Kontrolpunkter**. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-02, K-03, K-05, K-12, K-13). Kontrolpunkterne ændrer ikke beregningen og kommer ikke med i rapporten.
+Under resultaterne står kortet **Kontrolpunkter**, når der er aktive fund. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-02, K-03, K-05, K-12, K-13). Kontrolpunkterne ændrer ikke beregningen og kommer ikke med i rapporten.
 
 Figurerne tegnes som SVG ud fra de aktuelle mål, ligesom opbygningsfiguren i MSL. Samme figur bruges på skærmen og i rapporten. Arkets billeder bruges kun som forlæg.
 
@@ -136,7 +136,7 @@ Teksterne følger valget mellem rør og liggende tank. Formlerne sættes som mat
 | 0 | Plan, kortlægning og fundliste (afsluttet) | – |
 | 1 | Repo, projektskelet, tema og skal fra MSL, startfil og kontrol i GitHub (afsluttet) | Kopiering og tilpasning |
 | 2 | Kontrolcases fra Excel (køres lokalt af Claude) og beregningsmotor med tests (afsluttet) | Motor og tests |
-| 3 | Siden Opdriftssikring med figurer og kontrolpunkter | Delvist |
+| 3 | Siden Opdriftssikring med figurer og kontrolpunkter (afsluttet) | Delvist |
 | 4 | Rapport, firmaprofil og kartotek | Delvist |
 | 5 | Opslag og hjælp | Tekst og tabeller |
 | 6 | Hosting, efter godkendelse | – |

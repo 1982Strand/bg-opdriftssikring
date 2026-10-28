@@ -7,6 +7,8 @@ Motoren ligger i `src/engine/` og kører i TypeScript i browseren. Brugerflade, 
 | `defaults.json` | Arkets faste værdier: partialkoefficienter, K_FI for konsekvensklasserne, γ_w, g = 9,82, π = 3,14, S₂, mindstelængder, krav og X-GRID-produkterne med reduktionsfaktorer |
 | `geonet.ts` | Reduktionsfaktor RF, valggrænser, automatisk valg af geonet og manuel overstyring |
 | `opdrift.ts` | `beregnOpdrift(input)`: validering, opdrift, ballast, S₁, geonet, kraftoverførsel, de fire løsninger og kontrolpunkter |
+| `figurer.ts` | Målsatte SVG-figurer til skærm og rapport: tværsnittet og de fire løsninger |
+| `format.ts` | Tal med dansk komma, tusindtalspunktum og minustegn |
 
 ## Inddata
 
@@ -28,7 +30,7 @@ Felterne afviser kun værdier uden fysisk mening. Hver fejl er knyttet til sit f
 
 Resultatet indeholder alle mellemværdier, så skærm og rapport kan vise dem uden at regne selv:
 - T₃, de regningsmæssige parametre og partialkoefficienterne med γ_f = 1,1 · K_FI;
-- O, B, S₁ og arkets konklusion;
+- O, B med sine fire led (`ballastLed`), S₁ og arkets konklusion;
 - F_opdrift og geonettets UTS, navn, P_till, udnyttelse og status;
 - F_bund, F_top og K;
 - løsningerne `losninger.A`–`D` (afsnit 9–12 i arket) med længder og kontrol.
@@ -54,6 +56,10 @@ Hvor arket viser `#VALUE!`, fx P_till, når intet produkt kan vælges, er værdi
 - Tillægget på 0,4 m i netlængden med omslag (K-09) står som `netTillaegOmslag`.
 
 En ændring af disse kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
+
+## Figurer
+
+`figurer.ts` tegner tværsnittet og de fire løsninger ud fra resultatet. Regnearkets billeder er forlæg. Geometrien er i rigtig skala, mens tekst og streger er i skærmpixel, så figurerne er lige tydelige ved alle størrelser. Gravens hældning (0,6 vandret pr. lodret) og et bundlag på 0,15 m under røret er kun illustration og indgår ikke i beregningen. Figurerne bruger MSL's farver plus en dæmpet blå til grundvand og afviser ugyldige tal i stedet for at tegne dem.
 
 ## Kontrol
 

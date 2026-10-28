@@ -26,6 +26,9 @@ import {
   type PageKey,
 } from './navigation';
 import { RestartApp } from './RestartApp';
+import { Opdriftssikring } from './Opdriftssikring';
+import { Indstillinger } from './Indstillinger';
+import { SessionProvider } from './SessionContext';
 
 const pages: Record<PageKey, { intro: string; notice: string }> = {
   opdriftssikring: {
@@ -140,28 +143,41 @@ export function App() {
     document.title = documentTitle(page);
   }, [page]);
   return (
-    <SidebarProvider className="app-shell">
-      <header className="topbar">
-        <MenuButton returnFocus />
-        <div className="brand">
-          <Waves size={24} strokeWidth={1.6} aria-hidden="true" />
-          <strong>OPDRIFT</strong>
-          <span>Sikring med geonet</span>
+    <SessionProvider>
+      <SidebarProvider className="app-shell">
+        <header className="topbar">
+          <MenuButton returnFocus />
+          <div className="brand">
+            <Waves size={24} strokeWidth={1.6} aria-hidden="true" />
+            <strong>OPDRIFT</strong>
+            <span>Sikring med geonet</span>
+          </div>
+        </header>
+        <div className="app-body">
+          <Navigation page={page} />
+          <div className="app-content">
+            <main>
+              {page === 'opdriftssikring' ? (
+                <Opdriftssikring />
+              ) : page === 'indstillinger' ? (
+                <Indstillinger />
+              ) : (
+                <>
+                  <PageHeader page={page} title={pageName(page)} intro={pages[page].intro} />
+                  <section
+                    className="section-card settings-card"
+                    aria-labelledby="placeholder-title"
+                  >
+                    <h2 id="placeholder-title">Indhold</h2>
+                    <Notice>{pages[page].notice}</Notice>
+                  </section>
+                  <PageFooter />
+                </>
+              )}
+            </main>
+          </div>
         </div>
-      </header>
-      <div className="app-body">
-        <Navigation page={page} />
-        <div className="app-content">
-          <main>
-            <PageHeader page={page} title={pageName(page)} intro={pages[page].intro} />
-            <section className="section-card settings-card" aria-labelledby="placeholder-title">
-              <h2 id="placeholder-title">Indhold</h2>
-              <Notice>{pages[page].notice}</Notice>
-            </section>
-            <PageFooter />
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </SessionProvider>
   );
 }

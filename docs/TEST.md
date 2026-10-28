@@ -28,6 +28,23 @@ Casene dækker:
 
 Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Tolerancen dækker kun afrundingsstøj i kommatal, fordi motoren og Excel kan udføre de samme regneoperationer i lidt forskellig rækkefølge. Valgt geonet, OK/EJ OK og tekster skal stemme præcist.
 
+Øvrige enhedstests dækker:
+- validering og kontrolpunkter i motoren;
+- figurerne for alle 42 cases;
+- teksterne til kontrolpunkterne;
+- talformatet;
+- lagringen i browseren.
+
+Browsertestene dækker:
+- standardresultatet for case 1;
+- feltfejl, nulstilling og genindlæsning;
+- GVS under terræn med kontrolpunkter og nedtoning;
+- to ledninger og liggende tank;
+- manuelt valg af 2 lag X-GRID 150;
+- konsekvensklasse CC3;
+- navigationen;
+- tilgængelighed med axe ved 1440 og 390 px.
+
 Input og forventninger må ikke ændres for at få en ændring til at bestå. En bevidst afvigelse fra arket kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md), og de berørte forventninger ændres som en del af den beslutning.
 
 ### Nyt udtræk

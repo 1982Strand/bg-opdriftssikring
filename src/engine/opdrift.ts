@@ -37,6 +37,8 @@ export interface OpdriftResultat {
   roervaegtD: number;
   projektbeskrivelse: { d: number; h1: number; gvs: number | 'i Terræn' };
   O: number;
+  /** Ballastens led: fyld over GVS, fyld under GVS, rørets øverste halvdel (trækkes fra) og egenvægt. */
+  ballastLed: { torFyld: number; vaadFyld: number; roerHalvdel: number; egenvaegt: number };
   B: number;
   S1: number;
   S1Status: Status;
@@ -117,11 +119,15 @@ export function beregnOpdrift(
   const T3 = h1 + d / 2; // B123
 
   const O = (pi / 4) * d ** 2 * gammaW * gammaF; // G133
+  // G145 i fire led, lagt sammen i arkets rækkefølge.
+  const ballastLed = {
+    torFyld: gvs * d * gammaTorD,
+    vaadFyld: (T3 - gvs) * d * gammaEffD,
+    roerHalvdel: ((pi / 4) * d ** 2 * gammaEffD) / 2,
+    egenvaegt: (roervaegtD * standarder.g) / 1000,
+  };
   const B =
-    gvs * d * gammaTorD +
-    (T3 - gvs) * d * gammaEffD -
-    ((pi / 4) * d ** 2 * gammaEffD) / 2 +
-    (roervaegtD * standarder.g) / 1000; // G145
+    ballastLed.torFyld + ballastLed.vaadFyld - ballastLed.roerHalvdel + ballastLed.egenvaegt;
   const S1 = B / O; // E167
   const Fopdrift = O - B; // G177
   const geonet = vaelgGeonet(Fopdrift, input.overstyring); // G199:H238
@@ -169,6 +175,7 @@ export function beregnOpdrift(
       roervaegtD,
       projektbeskrivelse: { d, h1, gvs: gvs === 0 ? 'i Terræn' : gvs }, // C8:C10
       O,
+      ballastLed,
       B,
       S1,
       S1Status: status(S1, krav.S1), // H167

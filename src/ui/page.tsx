@@ -14,10 +14,12 @@ export function PageHeader({
   page,
   title,
   intro,
+  status,
 }: {
   page: PageKey;
   title: ReactNode;
   intro?: ReactNode;
+  status?: ReactNode;
 }) {
   return (
     <>
@@ -27,6 +29,7 @@ export function PageHeader({
           <h1>{title}</h1>
           {intro && <p className="intro">{intro}</p>}
         </div>
+        {status && <div className="page-heading-actions">{status}</div>}
       </div>
     </>
   );
