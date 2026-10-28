@@ -99,7 +99,7 @@ Ballasten er fyldet i en lodret stribe med rørets bredde fra terræn til rørmi
 | G199 | Produkt | Produktnavn til den valgte UTS |
 | G213 | RF | f_kryb · f_m · f_d · f_e = 2,1066045 |
 | G229 | P_till | UTS / RF |
-| E238 | Udnyttelse | P_till / F_opdrift; »OK« hvis > 1,01 (H238) |
+| E238 | Sikkerhed | P_till / F_opdrift; »OK« hvis > 1,01 (H238) |
 
 ### 4.4 Kraftoverførsel i sand (afsnit 8)
 
@@ -184,7 +184,7 @@ Inddata: d = 2,5 m, h₁ = 1,5 m, GVS i terræn, E_rør,k = 340 kg/m, γ = 17, �
 
 Inddata: d = 4,0 m, h₁ = 0,6 m (T₃ = 2,6 m), GVS i terræn, E_rør,k = 340 kg/m og samme fyld som case 1. Geonettet er overstyret med hånden til »150 (2 lag)«, dvs. UTS = 300 kN/m. Uden overstyringen giver arket »kontakt leverandør for råd«, og P_till bliver en fejlværdi.
 
-O = 138,16; B = 24,84; S₁ = 0,18; F_opdrift = 113,32; P_till = 142,41; udnyttelse 1,26; F_bund = 8,04; F_top = 7,42; K = 118,99.
+O = 138,16; B = 24,84; S₁ = 0,18; F_opdrift = 113,32; P_till = 142,41; P_till/F_opdrift = 1,26; F_bund = 8,04; F_top = 7,42; K = 118,99.
 A: 2L = 14,80; L = 7,40; L_a = 18,80; L_tot = 21,08; kontrol 1,04.
 B: 2L_mellem = 9,87; L_a = 32,67; L_tot = 37,23.
 C: 2L = 10,52; L = 5,26; L_a = 14,52; L_tot = 28,93; kontrol 1,36.

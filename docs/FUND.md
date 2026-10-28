@@ -90,14 +90,14 @@ Grænsetabellens UTS for det største produkt er 200 (K22), men produktlisten ha
 | X-GRID 150 | 70,50–71,20 kN/m |
 | X-GRID 200 | 94,00–94,94 kN/m (tilføjet, K-21) |
 
-**Eksempel.** d = 2,60 m, h₁ = 1,0 m, GVS i terræn giver F_opdrift = 37,74 kN/m. Arket vælger X-GRID 80 med P_till = 37,98 og udnyttelsen 1,006, altså EJ OK. X-GRID 110 ville give 1,39.
+**Eksempel.** d = 2,60 m, h₁ = 1,0 m, GVS i terræn giver F_opdrift = 37,74 kN/m. Arket vælger X-GRID 80 med P_till = 37,98 og P_till/F_opdrift = 1,006, altså EJ OK. X-GRID 110 ville give 1,39.
 
 **Muligheder.**
 - a) Nettet vælges med samme krav som kontrollen (> 1,01).
 - b) Kontrollen ændres til ≥ 1,0 som teksten, og nettet vælges ved F_opdrift ≤ P_till.
 - c) Uændret.
 
-**Første version.** Som arket. Kontrolpunkt, når udnyttelsen ligger i båndet.
+**Første version.** Som arket. Kontrolpunkt, når P_till/F_opdrift ligger i båndet.
 
 ## K-04 Kun ét lag geonet
 

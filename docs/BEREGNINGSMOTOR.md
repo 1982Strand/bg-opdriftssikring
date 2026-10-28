@@ -31,7 +31,7 @@ Felterne afviser kun værdier uden fysisk mening. Hver fejl er knyttet til sit f
 Resultatet indeholder alle mellemværdier, så skærm og rapport kan vise dem uden at regne selv:
 - T₃, de regningsmæssige parametre og partialkoefficienterne med γ_f = 1,1 · K_FI;
 - O, B med sine fire led (`ballastLed`), S₁ og arkets konklusion;
-- F_opdrift og geonettets UTS, navn, P_till, udnyttelse og status;
+- F_opdrift og geonettets UTS, navn, P_till, sikkerheden P_till/F_opdrift og status;
 - F_bund, F_top og K;
 - løsningerne `losninger.A`–`D` (afsnit 9–12 i arket) med længder og kontrol.
 

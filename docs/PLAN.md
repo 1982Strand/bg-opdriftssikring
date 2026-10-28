@@ -54,7 +54,7 @@ Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«,
    - T₁ = 0 er fast (K-18). Felterne afviser kun værdier uden fysisk mening, fx diameter ≤ 0. Ellers er der ingen grænser, som i arket.
 2. **Egenvægt og fyldmateriale.** Rør- eller tankvægt i kg/m, γ, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier og de anvendte partialkoefficienter.
 3. **Opdrift uden geonet.** O, B og S₁ med statusmærke og arkets konklusionstekst.
-4. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og udnyttelse. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
+4. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
 5. **Forankring.**
    - F_bund, F_top og K vises.
    - De to løsninger for det valgte antal ledninger vises under hinanden: uden og med omslag, dvs. A og C for 1 ledning eller B og D for 2.

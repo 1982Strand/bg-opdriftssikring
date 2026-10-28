@@ -526,7 +526,7 @@ export function Opdriftssikring() {
             opsummering={
               r.geonet.uts === null
                 ? 'Kontakt leverandør'
-                : `X-GRID ${r.geonet.navn} · P_{till}/F_{opdrift} = ${tal(r.geonet.udnyttelse)}`
+                : `X-GRID ${r.geonet.navn} · P_{till}/F_{opdrift} = ${tal(r.geonet.sikkerhed)}`
             }
             dimmed={ikkeNoedvendig}
           >
@@ -559,10 +559,14 @@ export function Opdriftssikring() {
                 note="P_{till} = UTS/RF"
               />
               <Flise
-                label="Udnyttelse P_{till}/F_{opdrift}"
-                vaerdi={tal(r.geonet.udnyttelse)}
+                label="Sikkerhed P_{till}/F_{opdrift}"
+                vaerdi={tal(r.geonet.sikkerhed)}
                 status={r.geonet.status}
-                note="Krav > 1,01"
+                note={
+                  r.geonet.sikkerhed !== null && r.Fopdrift > 0
+                    ? `Udnyttelse af P_{till}: ${tal(100 / r.geonet.sikkerhed, 0)} % · krav > 1,01`
+                    : 'Krav > 1,01'
+                }
               />
             </div>
             <div className="calc-override">

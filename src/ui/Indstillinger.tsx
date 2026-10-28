@@ -38,7 +38,7 @@ export function Indstillinger() {
     ],
     [
       'P_{till}/F_{opdrift}',
-      (r) => (r.geonet.status ? `${tal(r.geonet.udnyttelse)} · ${r.geonet.status}` : '–'),
+      (r) => (r.geonet.status ? `${tal(r.geonet.sikkerhed)} · ${r.geonet.status}` : '–'),
     ],
     ...losninger.map((l): [string, (r: OpdriftResultat) => string] => [
       `L_{geonet} pr. side, ${navn[l]}`,

@@ -14,7 +14,7 @@ const tekster = (delnavn: string) => {
   return kontrolpunktTekster(r.resultat);
 };
 
-test('K-03 viser udnyttelsen med tre decimaler', () => {
+test('K-03 viser P_till/F_opdrift med tre decimaler', () => {
   const [k] = tekster('K-03: bånd for X-GRID 80');
   assert.equal(k.kode, 'K-03');
   assert.match(k.tekst, /^P_\{till\}\/F_\{opdrift\} = 1,005 er under kravet 1,01/);

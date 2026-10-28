@@ -237,7 +237,7 @@ function kontrolpunkter(
 ): Kontrolpunkt[] {
   const k: Kontrolpunkt[] = [];
   const valgt = geonet.automatisk && geonet.Ptill !== null ? geonet.Ptill : null;
-  if (valgt !== null && Fopdrift > 0 && Fopdrift < valgt && valgt / Fopdrift <= krav.udnyttelse)
+  if (valgt !== null && Fopdrift > 0 && Fopdrift < valgt && valgt / Fopdrift <= krav.geonet)
     k.push('K-03');
   if (input.gvs > input.h1) k.push('K-05');
   if (S1 >= krav.S1) k.push('K-12');

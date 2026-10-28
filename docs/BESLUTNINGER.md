@@ -117,3 +117,10 @@ Spørgsmål: Skal appen gemme reduktionsfaktorerne pr. net, da Navne tabel har e
 ## 28. oktober 2026 — navne på fliserne under Geonet
 
 Brugerens ønske: »'Kraft til geonet Fopdrift' Skal omdøbes til 'Krav til geonettets trækstyrke Fopdrift' og 'Tilladelig last Ptill' omdøbes til 'Tilladelig træklast i geonet Ptill'«. Fliserne har fået de nye navne.
+
+## 28. oktober 2026 — sikkerhed i stedet for udnyttelse for geonettet
+
+Brugerens spørgsmål: »i boksen med 'Udnyttelse Ptill/Fopdrift' - hvad betyder de 1,26? Er det at den maksimale trækstyrke i det valgte net er udnyttet kun 26%, eller omvendt, at der er 26% "tilbage" af den fulde trækstyrke?« Svaret var, at 1,26 er forholdet P_till/F_opdrift, dvs. en sikkerhed. Udnyttelsen af P_till er 1/1,26 = 80 %, og navnet »Udnyttelse« var misvisende. Brugerens ønske: »omdøb flisen til »Sikkerhed P_till/F_opdrift« og vis udnyttelsen af P_till i procent under tallet.«
+
+- Flisen hedder »Sikkerhed P_till/F_opdrift«. Under tallet står fx »Udnyttelse af P_till: 80 % · krav > 1,01«. Udnyttelsen vises kun ved positiv F_opdrift.
+- Motorens felt `geonet.udnyttelse` hedder nu `geonet.sikkerhed`, og kravet i `defaults.json` hedder `krav.geonet`. Det er valgt af Claude, så rapporten i fase 4 ikke arver den misvisende betegnelse.
