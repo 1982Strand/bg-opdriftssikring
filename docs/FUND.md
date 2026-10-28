@@ -32,6 +32,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-19 | Forankring regnes altid som under vand | Længder | Som arket |
 | K-20 | h₁ og h₂ har tre forskellige betydninger | Tekst | h₁ = jorddækning |
 | K-21 | Produktlisten mangler X-GRID 130 og 200 | Valg af geonet | Afgjort: 130 og 200 tilføjet |
+| K-22 | Reduktionsfaktorerne pr. net bruges ikke | Data, P_till | Fælles faktorer som arket |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -385,3 +386,24 @@ Case 2 (F_opdrift = 113,32 kN/m) er løst med 2 × 150 (1,26). Med 130 på liste
 **Afgjort 28. oktober 2026.** Mulighed a: X-GRID 130 og 200 er tilføjet til produktlisten for automatisk og manuelt valg med valggrænsen UTS/RF. Det løser også K-02. Tre af de 42 kontrolcases får et andet net end i arket; deres nye forventninger står i `tests/cases/afvigelser.json`.
 
 **Bemærkning til databladet.** Rullevægten for X-GRID 200 er angivet til 350 kg. Fladevægten 760 g/m² på en rulle på 5 × 100 m giver 380 kg. For de øvrige produkter ligger den trykte rullevægt 0–20 kg over den beregnede. Det har ingen betydning for beregningen, men kan have betydning for en senere mængdeberegning.
+
+## K-22 Reduktionsfaktorerne pr. net bruges ikke
+
+**Arket.** Navne tabel har en kolonne med reduktionsfaktorer for hvert net (G24:K27 for 35, 55, 80, 110 og 200). Kun faktorerne for X-GRID 35 bruges:
+
+| Brug | Celle | Faktorer |
+|---|---|---|
+| Valggrænserne G44:J44 = UTS/C44 for alle net | Navne tabel C44 = G24 · G25 · G26 · G27 | Kolonnen for X-GRID 35 |
+| P_till = UTS/RF for det valgte net (G229) | Rapporten G209:G212, indtastet | En egen kopi uden forbindelse til Navne tabel |
+
+Faktorerne i H24:K27 bruges ingen steder. Da alle kolonner og kopien i Rapporten i dag har de samme værdier (1,43; 1,05; 1,15; 1,22), er resultaterne rigtige. Retter man en faktor for ét net i Navne tabel, ændres hverken valget eller P_till. Retter man i Rapporten, ændres P_till, men ikke valggrænserne.
+
+**Appen.** Appen har ét fælles sæt faktorer i `defaults.json`. Det bruges både til valggrænserne og P_till for alle syv net. Det giver samme tal som arket og kan ikke komme ud af trit med sig selv, men kan ikke rumme forskellige faktorer pr. net. Databladet bekræfter f_kryb = 1,43 for alle syv net. f_m, f_d og f_e kan kun kontrolleres i BBA-certifikat 16/H253.
+
+**Muligheder.**
+- a) Faktorerne gemmes pr. net i appen, med de samme værdier som i dag. Hvert net regnes med sine egne faktorer, både i valget og i P_till. Tallene ændres ikke, før en faktor ændres.
+- b) Uændret med ét fælles sæt.
+
+**Spørgsmål.** Angiver BBA-certifikatet forskellige faktorer for de enkelte net, fx f_d for mekanisk beskadigelse?
+
+**Første version.** Ét fælles sæt faktorer som i arket.
