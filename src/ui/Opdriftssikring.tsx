@@ -4,7 +4,7 @@ import { Button } from '../components/ui/button';
 import { beregnOpdrift, type GvsZone, type OpdriftResultat, type Status } from '../engine/opdrift';
 import { geonetProdukter } from '../engine/geonet';
 import standarder from '../engine/defaults.json' with { type: 'json' };
-import { losningSvg, tvaersnitSvg, type Losning } from '../engine/figurer';
+import { losningSvg, opdriftsarealSvg, tvaersnitSvg, type Losning } from '../engine/figurer';
 import { tal } from '../engine/format';
 import { Fmt } from './Fmt';
 import { Notice } from './Notice';
@@ -341,6 +341,8 @@ export function Opdriftssikring() {
   const avanceret = session.avanceret;
   const zone = r?.gvsZone ?? null;
   const cc3 = session.konsekvensklasse === 'CC3';
+  // Kun i avanceret beregning med GVS mellem rørtop og rørbund.
+  const arealfigur = r ? opdriftsarealSvg(r, input) : null;
 
   return (
     <>
@@ -608,38 +610,48 @@ export function Opdriftssikring() {
             </div>
             <p className="calc-conclusion">{r.konklusion.join(' ')}</p>
             <Udfold titel="Mellemregninger">
-              <Formler
-                linjer={[
-                  `γ_{f} = γ_{G;dst} = ${tal(standarder.gammaGdst, 1)} · K_{FI} = ${tal(standarder.gammaGdst, 1)} · ${tal(pk.KFI, 1)} = ${tal(pk.gammaF)} (konsekvensklasse ${session.konsekvensklasse})`,
-                  ...opdriftLinjer(r, input, zone),
-                  ...ballastLinjer(r, zone),
-                  r.S1 === null
-                    ? 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.'
-                    : `S₁ = B/O = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
-                ]}
-              />
-              <p className="calc-note">
-                <Fmt
-                  text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
-                />
-              </p>
-              <p className="calc-note">
-                <Fmt
-                  text={
-                    avanceret
-                      ? 'Opdriften O er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
-                      : 'Opdriften O er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand, også når GVS ligger under rørtoppen (fund K-05).'
-                  }
-                />
-              </p>
-              <p className="calc-note">
-                Ballasten B er fyldet i en lodret søjle med rørets bredde fra terræn til rørmidte,
-                minus rørets øverste halvdel, plus rørets egenvægt.
-              </p>
-              <p className="calc-note">
-                T₃ = h₁ + d/2 = {tal(r.T3)} m. Rørets egenvægt omregnes fra kg/m til kN/m med g ={' '}
-                {tal(g)} m/s², som er tyngdeaccelerationen i Danmark.
-              </p>
+              <div className={arealfigur ? 'mellemregninger-med-figur' : undefined}>
+                <div>
+                  <Formler
+                    linjer={[
+                      `γ_{f} = γ_{G;dst} = ${tal(standarder.gammaGdst, 1)} · K_{FI} = ${tal(standarder.gammaGdst, 1)} · ${tal(pk.KFI, 1)} = ${tal(pk.gammaF)} (konsekvensklasse ${session.konsekvensklasse})`,
+                      ...opdriftLinjer(r, input, zone),
+                      ...ballastLinjer(r, zone),
+                      r.S1 === null
+                        ? 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.'
+                        : `S₁ = B/O = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
+                    ]}
+                  />
+                  <p className="calc-note">
+                    <Fmt
+                      text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
+                    />
+                  </p>
+                  <p className="calc-note">
+                    <Fmt
+                      text={
+                        avanceret
+                          ? 'Opdriften O er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
+                          : 'Opdriften O er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand, også når GVS ligger under rørtoppen (fund K-05).'
+                      }
+                    />
+                  </p>
+                  <p className="calc-note">
+                    Ballasten B er fyldet i en lodret søjle med rørets bredde fra terræn til
+                    rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
+                  </p>
+                  <p className="calc-note">
+                    T₃ = h₁ + d/2 = {tal(r.T3)} m. Rørets egenvægt omregnes fra kg/m til kN/m med g
+                    = {tal(g)} m/s², som er tyngdeaccelerationen i Danmark.
+                  </p>
+                </div>
+                {arealfigur && (
+                  <Figur
+                    svg={arealfigur}
+                    label="Rørets tværsnit delt af GVS: arealet over og under GVS"
+                  />
+                )}
+              </div>
             </Udfold>
           </Trin>
 

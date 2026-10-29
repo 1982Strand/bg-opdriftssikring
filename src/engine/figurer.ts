@@ -351,3 +351,48 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   }[losning];
   return svg(t, titel);
 }
+
+/** Rørets tværsnit delt af GVS med A_tør, A_våd, a, θ og r (avanceret beregning, GVS mellem rørtop
+ * og rørbund). Cirklen har fast størrelse; GVS' placering følger forholdet a/r. */
+export function opdriftsarealSvg(r: OpdriftResultat, i: OpdriftInput): string | null {
+  const z = r.gvsZone;
+  if (!z || z.zone === 1 || z.zone === 4) return null;
+  const radius = i.d / 2;
+  const R = 90;
+  const cx = 115;
+  const cy = 125;
+  const s = R / radius;
+  const yGvs = cy - z.a * s;
+  const c = Math.sqrt(radius ** 2 - z.a ** 2) * s;
+  const theta = Math.acos(z.a / radius);
+  const under = z.a < 0; // GVS under rørmidten: den tørre del er størst
+  const venstre = `${px(cx - c)} ${px(yGvs)}`;
+  const hoejre = `${px(cx + c)} ${px(yGvs)}`;
+  const leder = (x: number, y: number, ty: number) =>
+    linje(x, y, 222, ty - 4, farve.muted, 0.75, ' stroke-dasharray="3 2"');
+  const bue = 24;
+  const dele = [
+    `<path d="M${venstre} A${R} ${R} 0 ${under ? 1 : 0} 1 ${hoejre} Z" fill="${farve.bund}" fill-opacity="0.22"/>`,
+    `<path d="M${venstre} A${R} ${R} 0 ${under ? 0 : 1} 0 ${hoejre} Z" fill="${farve.vand}" fill-opacity="0.25"/>`,
+    `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${farve.ink}" stroke-width="2"/>`,
+    linje(cx - R - 14, yGvs, cx + R + 14, yGvs, farve.vand, 1.5, ' stroke-dasharray="7 5"'),
+    tekst(cx - R - 12, yGvs - 6, 'GVS', 'start', farve.vand),
+    linje(cx, cy, cx - c, yGvs, farve.muted, 1, ' stroke-dasharray="4 3"'),
+    linje(cx, cy, cx + c, yGvs, farve.muted, 1, ' stroke-dasharray="4 3"'),
+    linje(cx, cy, cx, yGvs, farve.ink, 1),
+    `<path d="M${cx} ${cy - bue} A${bue} ${bue} 0 0 1 ${px(cx + bue * Math.sin(theta))} ${px(cy - bue * Math.cos(theta))}" fill="none" stroke="${farve.ink}" stroke-width="1"/>`,
+    `<circle cx="${cx}" cy="${cy}" r="3" fill="${farve.ink}"/>`,
+    leder(cx + 4, (cy - R + yGvs) / 2, 46),
+    tekst(228, 46, `A_{tør} = ${tal(z.Ator, 4)} m²`, 'start'),
+    leder(cx + 2, (cy + yGvs) / 2, 96),
+    tekst(228, 96, `a = ${m(z.a)}`, 'start'),
+    leder(cx + bue * Math.sin(theta / 2), cy - bue * Math.cos(theta / 2), 126),
+    tekst(228, 126, `θ = arccos(a/r) = ${tal((theta * 180) / Math.PI)}°`, 'start'),
+    leder(cx + c / 2, (cy + yGvs) / 2, 156),
+    tekst(228, 156, `r = ${m(radius)}`, 'start'),
+    leder(cx - 4, (yGvs + cy + R) / 2, 206),
+    tekst(228, 206, `A_{våd} = ${tal(z.Avaad, 4)} m²`, 'start'),
+  ];
+  const label = 'Rørets tværsnit delt af GVS: arealet over og under GVS';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" aria-hidden="true" font-family="'Segoe UI', system-ui, sans-serif" font-size="12"><title>${esc(label)}</title>${dele.join('')}</svg>`;
+}
