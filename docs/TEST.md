@@ -26,6 +26,8 @@ Casene dækker:
 - rørvægt, fyldparametre og konsekvensklasse;
 - manuel overstyring af geonettet.
 
+Kontrollen mod arket regner med arkets π = 3,14 (`arketsKonstanter`), mens appen regner med π (K-06). Det samme gælder testene af kontrolpunkterne, som bruger arkets tal. En særskilt test kontrollerer, at appen bruger π.
+
 Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Tolerancen dækker kun afrundingsstøj i kommatal, fordi motoren og Excel kan udføre de samme regneoperationer i lidt forskellig rækkefølge. Valgt geonet, OK/EJ OK og tekster skal stemme præcist.
 
 Øvrige enhedstests dækker:

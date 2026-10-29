@@ -4,7 +4,7 @@ Motoren ligger i `src/engine/` og kører i TypeScript i browseren. Brugerflade, 
 
 | Fil | Indhold |
 |---|---|
-| `defaults.json` | Arkets faste værdier: partialkoefficienter, K_FI for konsekvensklasserne, γ_w, g = 9,82, π = 3,14, S₂, mindstelængder, krav og X-GRID-produkterne med reduktionsfaktorer |
+| `defaults.json` | Arkets faste værdier: partialkoefficienter, K_FI for konsekvensklasserne, γ_w, g = 9,82, S₂, mindstelængder, krav og X-GRID-produkterne med reduktionsfaktorer |
 | `geonet.ts` | Reduktionsfaktor RF, valggrænser, automatisk valg af geonet og manuel overstyring |
 | `opdrift.ts` | `beregnOpdrift(input)`: validering, opdrift, ballast, S₁, geonet, kraftoverførsel, de fire løsninger og kontrolpunkter |
 | `figurer.ts` | Målsatte SVG-figurer til skærm og rapport: tværsnittet og de fire løsninger |
@@ -48,7 +48,7 @@ Hvor arket viser `#VALUE!`, fx P_till, når intet produkt kan vælges, er værdi
 
 ## Særheder bevaret fra arket
 
-- π = 3,14 og g = 9,82 (K-06, K-07).
+- g = 9,82 for rørets egenvægt (K-07). Det er tyngdeaccelerationen i Danmark.
 - Netvalget og kontrollen bruger forskellige krav (K-03).
 - Der regnes videre med negativ F_opdrift, når S₁ ≥ 1 (K-12).
 - Tillægget på 0,4 m i netlængden med omslag (K-09) står som `netTillaegOmslag`.
@@ -58,6 +58,7 @@ En ændring af disse kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
 ## Besluttede afvigelser fra arket
 
 - **K-21 (og K-02).** Produktlisten er X-GRID 35, 55, 80, 110, 130, 150 og 200 fra databladet. Valggrænsen er P_till = UTS/RF for alle produkter uden afrunding.
+- **K-06.** Motoren regner med π (`konstanter` i `opdrift.ts`). `beregnOpdrift(input, arketsKonstanter)` regner med arkets 3,14 og bruges kun i kontrollen mod arket.
 
 ## Figurer
 

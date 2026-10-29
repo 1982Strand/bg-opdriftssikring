@@ -1,15 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { beregnOpdrift, type OpdriftInput } from '../src/engine/opdrift.ts';
+import { arketsKonstanter, beregnOpdrift, type OpdriftInput } from '../src/engine/opdrift.ts';
 import { kontrolpunktTekster } from '../src/ui/kontrolpunkter.ts';
 
 const { cases } = JSON.parse(
   readFileSync(new URL('./cases/excel-cases.json', import.meta.url), 'utf8'),
 ) as { cases: { navn: string; input: OpdriftInput }[] };
+// Teksterne kontrolleres med arkets tal, dvs. π = 3,14 (K-06).
 const tekster = (delnavn: string) => {
   const sag = cases.find((c) => c.navn.includes(delnavn))!;
-  const r = beregnOpdrift(sag.input);
+  const r = beregnOpdrift(sag.input, arketsKonstanter);
   assert.ok(r.ok, delnavn);
   return kontrolpunktTekster(r.resultat);
 };

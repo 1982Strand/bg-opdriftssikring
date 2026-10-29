@@ -20,7 +20,7 @@ import { Udfold } from './Udfold';
 import { standardSession, tilMotorInput, type Session } from './state';
 import './sider.css';
 
-const { pi, gammaW, g } = standarder;
+const { gammaW, g } = standarder;
 
 /** Nummereret afsnitskort med opsummering til højre, som på MSL's Dimensionering. */
 function Trin({
@@ -501,7 +501,7 @@ export function Opdriftssikring() {
               <Formler
                 linjer={[
                   `γ_{f} = γ_{G;dst} = ${tal(standarder.gammaGdst, 1)} · K_{FI} = ${tal(standarder.gammaGdst, 1)} · ${tal(pk.KFI, 1)} = ${tal(pk.gammaF)} (konsekvensklasse ${session.konsekvensklasse})`,
-                  `O = π/4 · d² · γ_{w} · γ_{f} = ${tal(pi)}/4 · ${tal(i.d)}² · ${tal(gammaW)} · ${tal(pk.gammaF)} = ${tal(r.O)} kN/m`,
+                  `O = π/4 · d² · γ_{w} · γ_{f} = π/4 · ${tal(i.d)}² · ${tal(gammaW)} · ${tal(pk.gammaF)} = ${tal(r.O)} kN/m`,
                   `B = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − (π/4 · d² · γ′_{d})/2 + E_{d} · g/1000`,
                   `B = ${tal(r.ballastLed.torFyld)} + ${tal(r.ballastLed.vaadFyld)} − ${tal(r.ballastLed.roerHalvdel)} + ${tal(r.ballastLed.egenvaegt)} = ${tal(r.B)} kN/m`,
                   `S₁ = B/O = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
@@ -513,8 +513,8 @@ export function Opdriftssikring() {
                 />
               </p>
               <p className="calc-note">
-                T₃ = h₁ + d/2 = {tal(r.T3)} m. Som i regnearket regnes med π = {tal(pi)} og g ={' '}
-                {tal(g)} m/s² (fund K-06 og K-07).
+                T₃ = h₁ + d/2 = {tal(r.T3)} m. Rørets egenvægt omregnes fra kg/m til kN/m med g ={' '}
+                {tal(g)} m/s², som er tyngdeaccelerationen i Danmark.
               </p>
             </Udfold>
           </Trin>
