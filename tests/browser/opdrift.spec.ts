@@ -28,7 +28,7 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await expect(flise(page, 'Krav til geonettets trækstyrke').locator('strong')).toHaveText('27,56');
   await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,38');
   await expect(flise(page, 'Sikkerhed Ptill').locator('p')).toHaveText(
-    'Udnyttelse af Ptill: 73 % · krav > 1,01',
+    'Krav: Ptill/Fopdrift > 1,01 (Ptill udnyttet 73%)',
   );
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,50');
   await expect(
@@ -128,7 +128,7 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
   await expect(flise(page, 'Tilladelig træklast i geonet').locator('strong')).toHaveText('142,41');
   await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,26');
   await expect(flise(page, 'Sikkerhed Ptill').locator('p')).toHaveText(
-    'Udnyttelse af Ptill: 80 % · krav > 1,01',
+    'Krav: Ptill/Fopdrift > 1,01 (Ptill udnyttet 80%)',
   );
   await expect(
     losning(page, 'Uden omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
