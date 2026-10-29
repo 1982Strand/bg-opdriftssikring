@@ -463,9 +463,8 @@ export function Opdriftssikring() {
             </TabelRamme>
             <p className="calc-note">
               <Fmt
-                text={`Konsekvensklasse ${session.konsekvensklasse}: γ_{G;stb} = ${tal(pk.gammaGstb)} på fyld og egenvægt, γ_{φ} = ${tal(pk.gammaPhi)} på tan φ og γ_{f} = ${tal(pk.gammaF)} på opdriften. Faktoren ganges på γ_{våd}, og vandet trækkes fra bagefter: γ′_{d} = γ_{våd,d} − γ_{w} = ${tal(r.gammaD)} − ${tal(gammaW)} = ${tal(r.gammaEffD)} kN/m³. `}
+                text={`Konsekvensklasse ${session.konsekvensklasse}: γ_{G;stb} = ${tal(pk.gammaGstb)} på fyld og egenvægt, γ_{φ} = ${tal(pk.gammaPhi)} på tan φ og γ_{f} = ${tal(pk.gammaF)} på opdriften.`}
               />
-              Konsekvensklassen vælges i afsnit 2.
             </p>
           </>
         )}

@@ -183,7 +183,7 @@ Brugerens ønske: »'rumvægt, våd γ' skal hedde 'rumvægt, mættet γ_m'. 'Ru
 
 - Den våde rumvægt hedder γ_våd og den tørre γ_tør. Regningsmæssige værdier får indekset d: γ_våd,d, γ_tør,d, γ′_d, φ_d og E_d.
 - Den effektive rumvægt er γ′ = γ_våd − γ_w. Tabellen i kort 4 viser nu også den karakteristiske værdi, fx 17 − 10 = 7,00 kN/m³ i case 1.
-- Den regningsmæssige værdi er som i arket γ′_d = γ_våd,d − γ_w = 0,9 · γ_våd − γ_w, fx 15,30 − 10 = 5,30 kN/m³. Faktoren 0,9 ganges altså kun på γ_våd, ikke på γ′. Noten under tabellen viser udregningen.
+- Den regningsmæssige værdi er som i arket γ′_d = γ_våd,d − γ_w = 0,9 · γ_våd − γ_w, fx 15,30 − 10 = 5,30 kN/m³. Faktoren 0,9 ganges altså kun på γ_våd, ikke på γ′. Tabellen viser formlen ved den regningsmæssige værdi.
 
 Valgt af Claude og kan ændres: feltteksterne i motorens fejlbeskeder bruger samme navne og vises med sænket skrift, fx »γ_våd skal opfylde γ_våd · 0,9 > γ_w«. Motorens interne navne (`gamma`, `gammaTor`) er uændrede.
 
@@ -196,3 +196,9 @@ Brugerens ønske: »du må gerne lige indsætte parameterangivelsen i en kolonne
 - Rettet samme dag efter brugerens svar: »nej, flyt tallene tilbage under kolonneoverskrifterne, og lad parameterangivielsen stå foran. Lav evt. lidt mere mellemrum imellem kolonnerne, så det er tydeligt hvor parameterangivelsen hører til«. Tallene står igen under »Karakteristisk« og »Regningsmæssig«, og symbolerne har deres egen kolonne foran. Symbolet står tæt på sin værdi, med god afstand til den foregående værdi.
 
 Valgt af Claude og kan ændres: afstanden (72 px før symbolet, 16 px mellem symbol og værdi), og »Egenvægt E« hedder nu »Rørets egenvægt« som i feltet.
+
+## 29. oktober 2026 — kortere note under tabellen over fyldparametre
+
+Brugerens ønske: »fjern følgende fra den forklarende tekst under tabellen: 'Faktoren ganges på γvåd, og vandet trækkes fra bagefter: γ′d = γvåd,d − γw = 15,30 − 10,00 = 5,30 kN/m³. Konsekvensklassen vælges i afsnit 2.'«
+
+Noten under tabellen i kort 4 nævner nu kun konsekvensklassen og partialkoefficienterne γ_G;stb, γ_φ og γ_f. Formlen for γ′_d står fortsat i tabellens symbolkolonne.
