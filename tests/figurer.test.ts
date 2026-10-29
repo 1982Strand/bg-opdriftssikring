@@ -120,15 +120,16 @@ test('arealfiguren vises kun i avanceret beregning med GVS mellem rørtop og rø
   assert.equal(med(4.6, 'avanceret'), null);
   for (const gvs of [0.65, 1.3, 2.9, 4.5]) {
     const svg = med(gvs, 'avanceret')!;
-    assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 400 250"/);
+    assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 530 250"/);
     assert.doesNotMatch(svg, /NaN|Infinity|undefined|null/);
   }
   assert.deepEqual(tekst(med(1.3, 'avanceret')!), [
-    'GVS',
     'Atør = 1,4770 m²',
     'a = 1,30 m',
     'θ = arccos(a/r) = 49,46°',
     'r = 2,00 m',
     'Avåd = 11,0894 m²',
+    'T₂ GVS: 1,30 m',
+    'T₃ rørmidte: 2,60 m',
   ]);
 });
