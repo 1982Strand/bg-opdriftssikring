@@ -286,3 +286,5 @@ Brugerens ønske: »du må gerne sætte din visualisering ind i mellemregningern
 Valgt af Claude og kan ændres: cirklen har fast størrelse, og GVS' placering følger forholdet a/r. Farverne er figurpalettens grundvandsblå for den våde del og en lys jordfarve for den tørre del.
 
 Tilføjet samme dag efter brugerens ønske: »Du må gerne tilføje T2 og T3 på figuren, altså fx 'T2 GVS' ligesom oppe i figuren på kort 3.« Figuren har nu koterne »T₂ GVS« og »T₃ rørmidte« med dybder til venstre for røret, som i tværsnittet i kort 3. Rørmidtens niveau er vist med en stiplet linje.
+
+Rettet samme dag efter brugerens ønske: »ændr 'a = 0,80 m' til ' a = T3 - T2 = 0,80 m' og 'r = 2,00 m' til 'r = d/2 = 2,00 m' der skal ikke tilføjes noget til arealerne«. Figuren skriver nu »a = T₃ − T₂ = …« og »r = d/2 = …«. Teksterne for arealerne er uændrede.

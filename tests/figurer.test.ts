@@ -125,9 +125,9 @@ test('arealfiguren vises kun i avanceret beregning med GVS mellem rørtop og rø
   }
   assert.deepEqual(tekst(med(1.3, 'avanceret')!), [
     'Atør = 1,4770 m²',
-    'a = 1,30 m',
+    'a = T₃ − T₂ = 1,30 m',
     'θ = arccos(a/r) = 49,46°',
-    'r = 2,00 m',
+    'r = d/2 = 2,00 m',
     'Avåd = 11,0894 m²',
     'T₂ GVS: 1,30 m',
     'T₃ rørmidte: 2,60 m',
