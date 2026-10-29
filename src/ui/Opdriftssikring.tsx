@@ -733,47 +733,60 @@ export function Opdriftssikring() {
               />
             </div>
             <Udfold titel="Mellemregninger">
+              <h3 className="mellemregninger-overskrift">Reduktionsfaktor (RF)</h3>
+              <p className="calc-note">
+                RF beregnes som produktet af følgende faktorer (BBA {standarder.geonet.bba}):
+              </p>
+              <TabelRamme label="Reduktionsfaktor">
+                <table className="data-table rf-table">
+                  <tbody>
+                    {(
+                      [
+                        [
+                          'Krybningsfaktor (f_{kryb})',
+                          'max 120 års levetid',
+                          standarder.geonet.fKryb,
+                        ],
+                        [
+                          'Produktions- og ekstrapolationsfaktor (f_{m})',
+                          'max 120 års levetid',
+                          standarder.geonet.fM,
+                        ],
+                        [
+                          'Mekanisk beskadigelse (f_{d})',
+                          'afrundede kornfraktioner, D < 35 mm',
+                          standarder.geonet.fD,
+                        ],
+                        ['Kemisk påvirkning (f_{e})', 'pH 4,1–8,9', standarder.geonet.fE],
+                      ] as const
+                    ).map(([navn, note, vaerdi]) => (
+                      <tr key={navn}>
+                        <th scope="row">
+                          <Fmt text={navn} />
+                          <span className="rf-note">{note}</span>
+                        </th>
+                        <td className="num">{tal(vaerdi)}</td>
+                      </tr>
+                    ))}
+                    <tr className="rf-sum">
+                      <th scope="row">
+                        Samlet reduktionsfaktor (RF)
+                        <span className="rf-note">
+                          <Fmt text="RF = f_{kryb} · f_{m} · f_{d} · f_{e}" />
+                        </span>
+                      </th>
+                      <td className="num">{tal(r.geonet.RF, 4)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </TabelRamme>
               <Formler
                 linjer={[
-                  `RF = f_{kryb} · f_{m} · f_{d} · f_{e} = ${[standarder.geonet.fKryb, standarder.geonet.fM, standarder.geonet.fD, standarder.geonet.fE].map((x) => tal(x)).join(' · ')} = ${tal(r.geonet.RF, 4)}`,
                   r.geonet.uts === null
                     ? `Intet produkt har en valggrænse over F_{opdrift} = ${tal(r.Fopdrift)} kN/m.`
                     : `P_{till} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF, 4)} = ${tal(r.geonet.Ptill)} kN/m`,
                 ]}
               />
-              <TabelRamme label="Geonetprodukter">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Produkt</th>
-                      <th scope="col" className="num">
-                        UTS (kN/m)
-                      </th>
-                      <th scope="col" className="num">
-                        <Fmt text="P_{till} (kN/m)" />
-                      </th>
-                      <th scope="col" className="num">
-                        <Fmt text="P_{till}/F_{opdrift}" />
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {geonetProdukter.map((p) => (
-                      <tr
-                        key={p.uts}
-                        className={
-                          r.geonet.automatisk && r.geonet.uts === p.uts ? 'dim-selected' : undefined
-                        }
-                      >
-                        <th scope="row">X-GRID {p.uts}</th>
-                        <td className="num">{tal(p.uts, 0)}</td>
-                        <td className="num">{tal(p.graense)}</td>
-                        <td className="num">{tal(p.graense / r.Fopdrift)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </TabelRamme>
               <p className="calc-note">
                 Reduktionsfaktorerne er fra BBA-certifikat {standarder.geonet.bba}. Det automatiske
                 valg tager det mindste produkt, hvor F<sub>opdrift</sub> er under P<sub>till</sub>.

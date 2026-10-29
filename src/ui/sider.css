@@ -232,8 +232,25 @@
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
-/* Det automatisk valgte produkt, som MSL's produktoversigt. */
-.data-table tr.dim-selected > * {
+/* Reduktionsfaktoren i mellemregningerne for geonet: faktorerne med forklaring og summen fremhævet. */
+.mellemregninger-overskrift {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  margin: 0;
+}
+.rf-table {
+  max-width: 640px;
+  margin: 8px 0 16px;
+}
+.rf-table td {
+  vertical-align: middle;
+}
+.rf-table th .rf-note {
+  display: block;
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+.rf-table tr.rf-sum > * {
   background: var(--accent);
   font-weight: 600;
 }

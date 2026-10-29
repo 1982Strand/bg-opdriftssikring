@@ -38,6 +38,17 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     losning(page, 'Med omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
   ).toContainText('1,36 m');
   await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
+  // Mellemregningerne for geonet viser RF og P_till for det valgte net, ikke de øvrige net.
+  const geonet = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '6 Geonet' }),
+  });
+  await geonet.getByRole('button', { name: 'Mellemregninger', exact: true }).click();
+  await expect(geonet.getByRole('row', { name: /Samlet reduktionsfaktor/ })).toContainText(
+    '2,1066',
+  );
+  await expect(geonet.getByRole('row', { name: /Kemisk påvirkning/ })).toContainText('1,22');
+  await expect(geonet.getByText('Ptill = UTS/RF = 80/2,1066 = 37,98 kN/m')).toBeVisible();
+  await expect(geonet.getByRole('row', { name: /X-GRID/ })).toHaveCount(0);
 });
 
 test('ændring, feltfejl, nulstilling og genindlæsning', async ({ page }) => {
