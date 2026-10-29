@@ -236,13 +236,13 @@
 .mellemregninger-overskrift {
   font-size: var(--fs-body);
   font-weight: 600;
-  margin: 0;
+  margin: 16px 0 0;
 }
 .rf-table {
   max-width: 640px;
   margin: 8px 0 16px;
 }
-.rf-table td {
+.data-table.rf-table td {
   vertical-align: middle;
 }
 .rf-table th .rf-note {

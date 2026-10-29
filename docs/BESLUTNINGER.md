@@ -302,3 +302,11 @@ Valgt af Claude og kan ændres:
 - Arkets »extrapolation« er skrevet med dansk stavning: »ekstrapolationsfaktor«.
 - Linjen RF = 1,43 · 1,05 · 1,15 · 1,22 er fjernet, fordi opstillingen viser det samme.
 - Infoikonerne fra forlægget er ikke med.
+
+## 29. oktober 2026 — RF med 2 decimaler, F_opdrift og tekst i flisen Valgt geonet
+
+Brugerens ønske: »Afrund RF til max 2 decimaler. Tilføj også lige Fopdrift mellemregningen. ændr teksten i boksen med valgt geonet fra 'Valgt manuelt · UTS = 300 kN/m' til 'Ultimal styrke UTS = 300 kN/m'«. På spørgsmålet, om afrundingen også skal gælde beregningen, svarede brugeren: »Kun visningen«.
+
+- RF vises med 2 decimaler (2,11) i opstillingen og i linjen for P_till. Beregningen bruger fortsat RF = 2,1066 som regnearket, så fx »P_till = UTS/RF = 80/2,11 = 37,98 kN/m«.
+- Mellemregningerne for geonet starter med F_opdrift = O − B med indsatte tal.
+- Flisen »Valgt geonet« skriver »Ultimal styrke UTS = … kN/m«. Det gælder både automatisk og manuelt valg; det manuelle valg ses fortsat af »(2 lag)« i produktnavnet.

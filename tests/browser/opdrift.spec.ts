@@ -43,11 +43,11 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     has: page.getByRole('heading', { name: '6 Geonet' }),
   });
   await geonet.getByRole('button', { name: 'Mellemregninger', exact: true }).click();
-  await expect(geonet.getByRole('row', { name: /Samlet reduktionsfaktor/ })).toContainText(
-    '2,1066',
-  );
+  await expect(geonet.getByRole('row', { name: /Samlet reduktionsfaktor/ })).toContainText('2,11');
   await expect(geonet.getByRole('row', { name: /Kemisk påvirkning/ })).toContainText('1,22');
-  await expect(geonet.getByText('Ptill = UTS/RF = 80/2,1066 = 37,98 kN/m')).toBeVisible();
+  await expect(geonet.getByText('Fopdrift = O − B = 54,00 − 26,43 = 27,56 kN/m')).toBeVisible();
+  await expect(geonet.getByText('Ptill = UTS/RF = 80/2,11 = 37,98 kN/m')).toBeVisible();
+  await expect(flise(page, 'Valgt geonet').locator('p')).toHaveText('Ultimal styrke UTS = 80 kN/m');
   await expect(geonet.getByRole('row', { name: /X-GRID/ })).toHaveCount(0);
 });
 

@@ -685,7 +685,7 @@ export function Opdriftssikring() {
                 note={
                   r.geonet.uts === null
                     ? 'Der produceres ikke geonet med den nødvendige styrke.'
-                    : `${r.geonet.automatisk ? 'Automatisk valgt' : 'Valgt manuelt'} · UTS = ${tal(r.geonet.uts, 0)} kN/m`
+                    : `Ultimal styrke UTS = ${tal(r.geonet.uts, 0)} kN/m`
                 }
               />
               <Flise
@@ -733,6 +733,11 @@ export function Opdriftssikring() {
               />
             </div>
             <Udfold titel="Mellemregninger">
+              <Formler
+                linjer={[
+                  `F_{opdrift} = O − B = ${tal(r.O)} − ${tal(r.B)} = ${tal(r.Fopdrift)} kN/m`,
+                ]}
+              />
               <h3 className="mellemregninger-overskrift">Reduktionsfaktor (RF)</h3>
               <p className="calc-note">
                 RF beregnes som produktet af følgende faktorer (BBA {standarder.geonet.bba}):
@@ -775,7 +780,7 @@ export function Opdriftssikring() {
                           <Fmt text="RF = f_{kryb} · f_{m} · f_{d} · f_{e}" />
                         </span>
                       </th>
-                      <td className="num">{tal(r.geonet.RF, 4)}</td>
+                      <td className="num">{tal(r.geonet.RF)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -784,7 +789,7 @@ export function Opdriftssikring() {
                 linjer={[
                   r.geonet.uts === null
                     ? `Intet produkt har en valggrænse over F_{opdrift} = ${tal(r.Fopdrift)} kN/m.`
-                    : `P_{till} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF, 4)} = ${tal(r.geonet.Ptill)} kN/m`,
+                    : `P_{till} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF)} = ${tal(r.geonet.Ptill)} kN/m`,
                 ]}
               />
               <p className="calc-note">
