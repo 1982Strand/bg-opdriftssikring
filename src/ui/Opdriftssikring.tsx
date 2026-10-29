@@ -509,9 +509,8 @@ export function Opdriftssikring() {
               />
               <p className="calc-note">
                 <Fmt
-                  text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet. Konsekvensfaktoren K_{FI} er 1,0 i CC1 og CC2 og 1,1 i CC3 (afsnit A.1). `}
+                  text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
                 />
-                Konsekvensklassen vælges i afsnit 2.
               </p>
               <p className="calc-note">
                 T₃ = h₁ + d/2 = {tal(r.T3)} m. Som i regnearket regnes med π = {tal(pi)} og g ={' '}

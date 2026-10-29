@@ -202,3 +202,9 @@ Valgt af Claude og kan ændres: afstanden (72 px før symbolet, 16 px mellem sym
 Brugerens ønske: »fjern følgende fra den forklarende tekst under tabellen: 'Faktoren ganges på γvåd, og vandet trækkes fra bagefter: γ′d = γvåd,d − γw = 15,30 − 10,00 = 5,30 kN/m³. Konsekvensklassen vælges i afsnit 2.'«
 
 Noten under tabellen i kort 4 nævner nu kun konsekvensklassen og partialkoefficienterne γ_G;stb, γ_φ og γ_f. Formlen for γ′_d står fortsat i tabellens symbolkolonne.
+
+## 29. oktober 2026 — kortere note i mellemregningerne for opdrift
+
+Brugerens ønske: »fjerne teksten 'Konsekvensfaktoren KFI er 1,0 i CC1 og CC2 og 1,1 i CC3 (afsnit A.1). Konsekvensklassen vælges i afsnit 2.' fra den forklarende tekst i mellemregningerne i sektion 5.«
+
+Noten i mellemregningerne i kort 5 forklarer nu kun, at γ_f er γ_G;dst fra tabel A.4-1 NA for UPL med trækelementer. K_FI og valget af klasse står i kort 2.
