@@ -28,11 +28,13 @@ Casene dækker:
 
 Kontrollen mod arket regner med arkets π = 3,14 (`arketsKonstanter`), mens appen regner med π (K-06). Det samme gælder testene af kontrolpunkterne, som bruger arkets tal. En særskilt test kontrollerer, at appen bruger π.
 
+CC1 er udgået (beslutning 29. oktober 2026). Casen »CC1: case 1« sammenlignes derfor ikke med arket, men kontrolleres ved, at motoren afviser CC1. Samme input i CC2 er »Case 1«, som sammenlignes med arket.
+
 Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Tolerancen dækker kun afrundingsstøj i kommatal, fordi motoren og Excel kan udføre de samme regneoperationer i lidt forskellig rækkefølge. Valgt geonet, OK/EJ OK og tekster skal stemme præcist.
 
 Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
-- den giver præcis samme resultat som standardberegningen for de 35 cases med GVS i terræn, og at standardberegningen er uændret, når metoden angives;
-- opdrift, ballast og netvalg er som standardberegningen for alle 38 cases med GVS ned til rørtoppen;
+- den giver præcis samme resultat som standardberegningen for de 34 cases i CC2 og CC3 med GVS i terræn, og at standardberegningen er uændret, når metoden angives;
+- opdrift, ballast og netvalg er som standardberegningen for alle 37 cases i CC2 og CC3 med GVS ned til rørtoppen;
 - håndregningerne i [FORSLAG_K-05.md](FORSLAG_K-05.md), afsnit 7.1 og 7.2, genfindes;
 - O og B stemmer med en uafhængig numerisk integration over rørets vinkel for 960 kombinationer med GVS i alle zoner, ved 1e-9;
 - arealet over GVS har de rigtige grænser og er symmetrisk om rørmidten, og O og B springer ikke ved zonegrænserne;
@@ -46,7 +48,8 @@ Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
 
 Øvrige enhedstests dækker:
 - validering og kontrolpunkter i motoren;
-- figurerne for alle 42 cases;
+- figurerne for de 41 cases i CC2 og CC3;
+- at CC1 afvises, og at CC3 kræver GVS i terræn i begge beregningsmetoder;
 - teksterne til kontrolpunkterne og forudsætningerne;
 - talformatet;
 - lagringen i browseren.
@@ -58,6 +61,7 @@ Browsertestene dækker:
 - alle fire løsninger uden valg af antal eller konstruktion;
 - manuelt valg af 2 lag X-GRID 150;
 - forudsætningerne og konsekvensklasse CC3 i kort 1–2;
+- CC3 med note om statikerkontrol og låst GVS i terræn;
 - avanceret beregning til og fra med GVS under rørtoppen og ved rørbunden;
 - navigationen;
 - tilgængelighed med axe ved 1440 og 390 px, også med avanceret beregning.

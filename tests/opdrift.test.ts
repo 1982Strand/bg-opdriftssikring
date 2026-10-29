@@ -141,14 +141,37 @@ test('overstyring giver ingen kontrolpunkter for netvalget', () => {
   if (resultat.ok) assert.deepEqual(resultat.resultat.kontrolpunkter, []);
 });
 
-test('CC1 giver samme resultat som CC2, og CC3 giver γ_f = 1,1 · 1,1', () => {
-  const cc1 = beregnOpdrift({ ...basis, konsekvensklasse: 'CC1' });
+test('CC2 giver γ_f = 1,1, og CC3 giver γ_f = 1,1 · 1,1', () => {
   const cc2 = beregnOpdrift({ ...basis, konsekvensklasse: 'CC2' });
   const cc3 = beregnOpdrift({ ...basis, konsekvensklasse: 'CC3' });
-  assert.ok(cc1.ok && cc2.ok && cc3.ok);
-  assert.deepEqual(cc1.resultat, cc2.resultat);
+  assert.ok(cc2.ok && cc3.ok);
   assert.equal(cc2.resultat.partialkoefficienter.gammaF, 1.1);
   assert.equal(cc3.resultat.partialkoefficienter.gammaF, 1.1 * 1.1);
+});
+
+test('CC1 afvises, fordi opdrift ikke kan regnes i CC1', () => {
+  const cc1 = beregnOpdrift({ ...basis, konsekvensklasse: 'CC1' as never });
+  assert.equal(cc1.ok, false);
+  if (!cc1.ok)
+    assert.deepEqual(cc1.fejl, [
+      {
+        felt: 'konsekvensklasse',
+        tekst: 'Opdrift kan ikke regnes i konsekvensklasse CC1. Vælg CC2 eller CC3.',
+      },
+    ]);
+});
+
+test('CC3 kræver GVS i terræn i begge beregningsmetoder', () => {
+  for (const metode of ['standard', 'avanceret'] as const) {
+    assert.equal(beregnOpdrift({ ...basis, konsekvensklasse: 'CC3', gvs: 0, metode }).ok, true);
+    const lav = beregnOpdrift({ ...basis, konsekvensklasse: 'CC3', gvs: 1, metode });
+    assert.equal(lav.ok, false);
+    if (!lav.ok)
+      assert.deepEqual(lav.fejl, [
+        { felt: 'gvs', tekst: 'Ved konsekvensklasse CC3 regnes altid med GVS i terræn.' },
+      ]);
+  }
+  assert.equal(beregnOpdrift({ ...basis, konsekvensklasse: 'CC2', gvs: 1 }).ok, true);
 });
 
 test('appen regner med π, og kontrollen mod arket bruger 3,14 (K-06)', () => {

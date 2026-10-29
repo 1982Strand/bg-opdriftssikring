@@ -85,6 +85,20 @@ const celleTilFelt: Record<string, (r: OpdriftResultat) => number | string | nul
 };
 
 for (const sag of cases.cases) {
+  // CC1 er udgået, fordi opdrift ikke kan regnes i CC1 (beslutning 29. oktober 2026). Casen
+  // kontrolleres derfor ved, at motoren afviser den. Samme input i CC2 er »Case 1«.
+  if ((sag.input.konsekvensklasse as string) === 'CC1') {
+    test(sag.navn, () => {
+      const beregning = beregnOpdrift(sag.input, arketsKonstanter);
+      assert.equal(beregning.ok, false);
+      if (!beregning.ok)
+        assert.deepEqual(
+          beregning.fejl.map((f) => f.felt),
+          ['konsekvensklasse'],
+        );
+    });
+    continue;
+  }
   test(sag.navn, () => {
     const beregning = beregnOpdrift(sag.input, arketsKonstanter);
     assert.equal(beregning.ok, true, JSON.stringify(beregning));

@@ -10,7 +10,7 @@ import { useSession } from './SessionContext';
 import { tilMotorInput } from './state';
 
 const STANDARD: Konsekvensklasse = 'CC2';
-const klasser: Konsekvensklasse[] = ['CC1', 'CC2', 'CC3'];
+const klasser: Konsekvensklasse[] = ['CC2', 'CC3'];
 const losninger = ['A', 'C', 'B', 'D'] as const;
 const navn = {
   A: 'uden omslag, én ledning',
@@ -54,7 +54,7 @@ export function Partialkoefficienter() {
       <p className="settings-prose">
         Partialkoefficienterne følger DS/EN 1997-1 DK NA:2021 (Eurocode 7), tabel A.4-1 NA for
         løftning (UPL) med trækelementer. Konsekvensfaktoren K<sub>FI</sub> følger af afsnit A.1:
-        CC1 og CC2 giver 1,0, og CC3 giver 1,1. K<sub>FI</sub> indgår kun i den ugunstige last, dvs.
+        CC2 giver 1,0, og CC3 giver 1,1. K<sub>FI</sub> indgår kun i den ugunstige last, dvs.
         opdriften. Regnearket svarer til CC2.
       </p>
       <SettingField
@@ -68,6 +68,12 @@ export function Partialkoefficienter() {
         value={valgt}
         change={(v) => update({ ...session, konsekvensklasse: v as Konsekvensklasse })}
       />
+      {valgt === 'CC3' && (
+        <Notice kind="warning">
+          Ved konsekvensklasse CC3 kræves særskilt kontrol fra certificeret statiker, godkendt til
+          KK3/CC3. Der regnes altid med GVS i terræn.
+        </Notice>
+      )}
       <TabelRamme label="Partialkoefficienter">
         <table className="data-table params-table class-compare">
           <thead>

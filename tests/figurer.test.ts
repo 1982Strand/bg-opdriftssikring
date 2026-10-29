@@ -5,9 +5,13 @@ import { beregnOpdrift, type OpdriftInput } from '../src/engine/opdrift.ts';
 import { losningSvg, tvaersnitSvg } from '../src/engine/figurer.ts';
 import { tal } from '../src/engine/format.ts';
 
-const { cases } = JSON.parse(
-  readFileSync(new URL('./cases/excel-cases.json', import.meta.url), 'utf8'),
-) as { cases: { navn: string; input: OpdriftInput }[] };
+// CC1 er udgået, fordi opdrift ikke kan regnes i CC1 (beslutning 29. oktober 2026). CC1-casen
+// kontrolleres i opdrift-excel.test.ts ved, at motoren afviser den.
+const cases = (
+  JSON.parse(readFileSync(new URL('./cases/excel-cases.json', import.meta.url), 'utf8')) as {
+    cases: { navn: string; input: OpdriftInput }[];
+  }
+).cases.filter((c) => (c.input.konsekvensklasse as string) !== 'CC1');
 const beregn = (input: OpdriftInput) => {
   const r = beregnOpdrift(input);
   assert.ok(r.ok);
@@ -22,7 +26,7 @@ const gyldig = (svg: string) => {
   assert.doesNotMatch(svg, /NaN|Infinity|undefined|null/);
 };
 
-test('alle 42 cases giver gyldige figurer for tværsnit og de fire løsninger', () => {
+test('alle 41 cases i CC2 og CC3 giver gyldige figurer for tværsnit og de fire løsninger', () => {
   for (const sag of cases) {
     const r = beregn(sag.input);
     gyldig(tvaersnitSvg(r, sag.input));

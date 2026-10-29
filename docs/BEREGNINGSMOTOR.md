@@ -16,7 +16,7 @@ Motoren ligger i `src/engine/` og kører i TypeScript i browseren. Brugerflade, 
 - diameter d, jorddækning h₁ og GVS-dybde, alle i m;
 - karakteristisk rørvægt i kg/m;
 - γ_våd (`gamma`), γ_tør (`gammaTor`) og φ_k;
-- konsekvensklasse;
+- konsekvensklasse, CC2 eller CC3;
 - eventuel overstyring af geonettet med produkt og antal lag (1 eller 2; siden bruger altid 2);
 - beregningsmetode: `standard` (som arket, også når feltet mangler) eller `avanceret`.
 
@@ -25,7 +25,9 @@ Felterne afviser kun værdier uden fysisk mening. Hver fejl er knyttet til sit f
 - h₁, GVS og rørvægt skal være ≥ 0;
 - γ_tør skal være > 0, og φ_k skal ligge mellem 0° og 90° (begge udelukket);
 - γ_våd · 0,9 skal være > γ_w, da den effektive rumvægt under vand ellers ikke er positiv;
-- en overstyring skal være et produkt fra listen i 1 eller 2 lag. Et net i midten af flere lag kan ikke udnyttes.
+- en overstyring skal være et produkt fra listen i 1 eller 2 lag. Et net i midten af flere lag kan ikke udnyttes;
+- konsekvensklassen skal være CC2 eller CC3, fordi opdrift ikke kan regnes i CC1;
+- i CC3 skal GVS ligge i terræn, i begge beregningsmetoder.
 
 ## Resultat
 
@@ -80,4 +82,4 @@ Med `metode: 'avanceret'` regnes opdrift og ballast for den del af røret, der s
 
 ## Kontrol
 
-Motoren kontrolleres mod 42 cases udtrukket fra regnearket, se [TEST.md](TEST.md). Motoren indlæser ikke casene.
+Motoren kontrolleres mod 42 cases udtrukket fra regnearket. CC1-casen kontrolleres ved, at motoren afviser den, se [TEST.md](TEST.md). Motoren indlæser ikke casene.

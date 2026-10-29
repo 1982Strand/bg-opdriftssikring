@@ -5,7 +5,8 @@
 import standarder from './defaults.json' with { type: 'json' };
 import { geonetProdukter, vaelgGeonet, type GeonetValg } from './geonet.ts';
 
-export type Konsekvensklasse = 'CC1' | 'CC2' | 'CC3';
+/** Opdrift kan pr. definition ikke regnes i CC1 (EC7), så kun CC2 og CC3 findes. */
+export type Konsekvensklasse = 'CC2' | 'CC3';
 /** 'standard' regner som regnearket. 'avanceret' regner opdrift og ballast for den del af røret,
  * der står under GVS (fund K-05, mulighed c). */
 export type Beregningsmetode = 'standard' | 'avanceret';
@@ -382,5 +383,14 @@ function valider(input: OpdriftInput): Inputfejl[] {
         tekst: `Antallet af lag skal være 1 eller ${standarder.geonet.lagVedManueltValg}. Et net i midten af flere lag kan ikke udnyttes.`,
       });
   }
+  // Opdrift kan ikke regnes i CC1 (EC7). CC3 skal tage højde for ekstremhændelser, så der regnes
+  // altid med GVS i terræn.
+  if (!(input.konsekvensklasse in standarder.KFI))
+    fejl.push({
+      felt: 'konsekvensklasse',
+      tekst: `Opdrift kan ikke regnes i konsekvensklasse ${input.konsekvensklasse}. Vælg CC2 eller CC3.`,
+    });
+  else if (input.konsekvensklasse === 'CC3' && input.gvs > 0)
+    fejl.push({ felt: 'gvs', tekst: 'Ved konsekvensklasse CC3 regnes altid med GVS i terræn.' });
   return fejl;
 }

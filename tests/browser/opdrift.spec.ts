@@ -101,7 +101,7 @@ test('alle fire løsninger vises, og der er ingen valg af antal eller konstrukti
   await expect(
     losning(page, 'Med omslag, to ledninger').getByText(/den største diameter/),
   ).toBeVisible();
-  await expect(page.getByRole('radio')).toHaveText(['CC1', 'CC2', 'CC3']);
+  await expect(page.getByRole('radio')).toHaveText(['CC2', 'CC3']);
   await expect(page.getByText(/tank/i)).toHaveCount(0);
 });
 
@@ -160,6 +160,25 @@ test('X-GRID 200 vælges automatisk over X-GRID 150 (K-21)', async ({ page }) =>
   await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,31');
   await expect(flise(page, 'Sikkerhed Ptill').locator('.m9-badge')).toHaveText('OK');
   await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
+});
+
+test('CC3 kræver statikerkontrol og regner altid med GVS i terræn', async ({ page }) => {
+  await start(page);
+  await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
+  await saet(page, 'GVS under terræn (m)', '1');
+  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('54,00');
+  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('49,18');
+  await page.getByRole('radio', { name: 'CC3' }).click();
+  await expect(page.getByText(/kræves særskilt kontrol fra certificeret statiker/)).toBeVisible();
+  await expect(page.getByText(/100-års hændelser for skybrud og oversvømmelse/)).toBeVisible();
+  await expect(page.getByRole('checkbox', { name: 'GVS i terræn' })).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: 'GVS i terræn' })).toBeDisabled();
+  await expect(page.getByRole('spinbutton', { name: 'GVS under terræn (m)' })).toBeDisabled();
+  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('26,43');
+  // Tilbage i CC2 gælder den indtastede GVS igen.
+  await page.getByRole('radio', { name: 'CC2' }).click();
+  await expect(page.getByText(/kræves særskilt kontrol fra certificeret statiker/)).toHaveCount(0);
+  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('49,18');
 });
 
 test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {

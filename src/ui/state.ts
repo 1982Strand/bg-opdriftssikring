@@ -41,7 +41,8 @@ export function tilMotorInput(s: Session): OpdriftInput {
   return {
     d: i.d,
     h1: i.h1,
-    gvs: i.gvsITerraen ? 0 : i.gvs,
+    // CC3 regnes altid med GVS i terræn; den indtastede GVS gemmes til CC2.
+    gvs: i.gvsITerraen || s.konsekvensklasse === 'CC3' ? 0 : i.gvs,
     roervaegt: i.roervaegt,
     gamma: i.gamma,
     gammaTor: i.gammaTor,
@@ -89,9 +90,7 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
           overstyringAktiv: typeof i.overstyringAktiv === 'boolean' ? i.overstyringAktiv : false,
           produkt: standarder.geonet.produkter.some((p) => p.uts === i.produkt) ? i.produkt : 150,
         },
-        konsekvensklasse: ['CC1', 'CC2', 'CC3'].includes(x.konsekvensklasse)
-          ? x.konsekvensklasse
-          : 'CC2',
+        konsekvensklasse: ['CC2', 'CC3'].includes(x.konsekvensklasse) ? x.konsekvensklasse : 'CC2',
         avanceret: x.avanceret === true,
       },
       error: false,

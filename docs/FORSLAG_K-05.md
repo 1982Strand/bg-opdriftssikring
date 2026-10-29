@@ -197,7 +197,7 @@ Dagens σ′_v-formel regner tør jord med under rørmidten. Det har ikke betydn
 Afgjort 29. oktober 2026:
 - P1, P2, P3 og P7: som foreslået.
 - P4: afgjort under K-19 samme dag. Forankringen regnes med den faktiske effektive spænding i nettets niveau i den avancerede beregning.
-- P5: noten vises med brugerens ordlyd: »GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved skybrud. Værste tilfælde er GVS i terræn. Hvis GVS sættes herunder skal der sikres tilstrækkelige drænforanstaltninger. Beregninger på eget ansvar.«
+- P5: noten vises med brugerens ordlyd: »GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved skybrud. Værste tilfælde er GVS i terræn. Hvis GVS sættes herunder skal der sikres tilstrækkelige drænforanstaltninger eller på anden vis dokumenteres at vandstanden ikke kan blive højere. Beregninger på eget ansvar.« Sætningen om dræn er udvidet senere samme dag.
 - P6: ingen blå farve på røret.
 - P8: Standardberegningen er uændret, så arkets cases skal ikke have afvigelser. Den avancerede beregning har i stedet sine egne tests i `tests/avanceret.test.ts` (afsnit 10).
 
