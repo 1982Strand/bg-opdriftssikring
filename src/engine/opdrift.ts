@@ -81,6 +81,8 @@ export interface OpdriftResultat {
   hTop: number;
   Fbund: number;
   Ftop: number;
+  /** Effektiv lodret spænding i nettets niveau ved h_bund og h_top, kN/m². */
+  forankringsspaending: { bund: number; top: number };
   K: number;
   losninger: {
     /** Afsnit 9: ét rør uden omslag. */
@@ -218,8 +220,13 @@ export function beregnOpdrift(
   const hBund = T3; // C285
   const hTop = hBund - standarder.omslagAfstand; // E285
   const tanPhiD = Math.tan((phiD * Math.PI) / 180);
-  const Fbund = hBund * gammaEffD * mu * tanPhiD; // C289
-  const Ftop = hTop * gammaEffD * mu * tanPhiD; // E289
+  // Effektiv lodret spænding i dybden z. Arket regner altid med γ′_d, som om nettet ligger under vand
+  // (K-19). Den avancerede beregning regner tør fyld over GVS og effektiv rumvægt under.
+  const spaending = (z: number) =>
+    zone ? Math.min(gvs, z) * gammaTorD + Math.max(0, z - gvs) * gammaEffD : z * gammaEffD;
+  const forankringsspaending = { bund: spaending(hBund), top: spaending(hTop) };
+  const Fbund = forankringsspaending.bund * mu * tanPhiD; // C289
+  const Ftop = forankringsspaending.top * mu * tanPhiD; // E289
   const K = Fopdrift * standarder.S2; // F299
 
   // Afsnit 9: G312, C315, B319, B320, A333, E333
@@ -228,9 +235,9 @@ export function beregnOpdrift(
   const ballastForankringA = B + Fbund * LA * 2;
   const kontrolA = ingenOpdrift ? null : ballastForankringA / O;
 
-  // Afsnit 10: E363, G363, C366, C369, B384, B385. I avanceret beregning med GVS under rørmidten
-  // regnes σ′_v med tør jord til rørmidten.
-  const sigmaV = zone && zone.zone >= 3 ? T3 * gammaTorD : gvs * gammaTorD + (T3 - gvs) * gammaEffD;
+  // Afsnit 10: E363, G363, C366, C369, B384, B385. Den avancerede beregning bruger samme spænding
+  // i rørmidten som forankringen, så GVS under rørmidten giver tør jord til rørmidten.
+  const sigmaV = zone ? spaending(T3) : gvs * gammaTorD + (T3 - gvs) * gammaEffD;
   const toLMellemBeregnet = (0.5 * Fopdrift * 2 * standarder.faktorMellemRoer) / sigmaV;
   const toLMellem = Math.max(min.udenOmslag.mellemRoer, toLMellemBeregnet);
 
@@ -277,6 +284,7 @@ export function beregnOpdrift(
       hTop,
       Fbund,
       Ftop,
+      forankringsspaending,
       K,
       losninger: {
         A: {

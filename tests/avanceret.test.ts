@@ -60,11 +60,26 @@ function integreret(i: OpdriftInput) {
   return { O, B };
 }
 
-test('med GVS i eller over rørtoppen regner den avancerede beregning som standarden', () => {
+test('med GVS i terræn regner den avancerede beregning præcis som standarden', () => {
+  let antal = 0;
+  for (const sag of cases) {
+    if (sag.input.gvs !== 0) continue;
+    assert.deepEqual(faelles(avanceret(sag.input)), faelles(beregn(sag.input)), sag.navn);
+    antal++;
+  }
+  assert.equal(antal, 35);
+});
+
+test('med GVS ned til rørtoppen er opdrift, ballast og netvalg som standarden', () => {
   let antal = 0;
   for (const sag of cases) {
     if (sag.input.gvs > sag.input.h1) continue;
-    assert.deepEqual(faelles(avanceret(sag.input)), faelles(beregn(sag.input)), sag.navn);
+    const a = avanceret(sag.input);
+    const s = beregn(sag.input);
+    for (const felt of ['O', 'B', 'S1', 'S1Status', 'Fopdrift', 'geonet', 'K'] as const)
+      assert.deepEqual(a[felt], s[felt], `${sag.navn}: ${felt}`);
+    // Forankringen regnes med den faktiske spænding (K-19) og er aldrig mindre end i arket.
+    assert.ok(a.Fbund >= s.Fbund && a.Ftop >= s.Ftop, sag.navn);
     antal++;
   }
   assert.equal(antal, 38);
@@ -92,10 +107,42 @@ test('håndregningen for case 2 med GVS i 1,6 m (zone 2)', () => {
     ['111.21', '60.71', '0.55', '50.50'],
   );
   assert.equal(r.geonet.uts, 110);
+  // Forankringen med den faktiske spænding i nettets niveau (K-19): 1,6 m tør fyld over GVS.
+  const tanPhiD = Math.tan((35 * Math.PI) / 180) / 1.2;
+  naer(r.forankringsspaending.bund, 1.6 * 14.4 + 1.0 * 5.3);
+  naer(r.forankringsspaending.top, 1.6 * 14.4 + 0.8 * 5.3);
+  naer(r.Fbund, (1.6 * 14.4 + 1.0 * 5.3) * tanPhiD);
+  naer(r.Ftop, (1.6 * 14.4 + 0.8 * 5.3) * tanPhiD);
   assert.deepEqual(
-    [r.losninger.A.L, r.losninger.C.L, r.losninger.B.toLMellem].map((x) => x.toFixed(2)),
-    ['3.30', '2.46', '2.14'],
+    [r.Fbund, r.Ftop, r.losninger.A.L, r.losninger.C.L, r.losninger.B.toLMellem].map((x) =>
+      x.toFixed(2),
+    ),
+    ['16.54', '15.92', '1.60', '1.28', '2.14'],
   );
+});
+
+test('forankringen bruger samme spænding i rørmidten som afstanden mellem to ledninger', () => {
+  for (const gvs of [0, 0.3, 1.6, 2.6, 3.2, 5]) {
+    const r = avanceret({ ...case2, gvs });
+    naer(r.forankringsspaending.bund, r.losninger.B.sigmaV);
+    // Under nettets niveau er al fyld tør.
+    if (gvs >= r.hBund) naer(r.forankringsspaending.bund, r.hBund * r.gammaTorD);
+  }
+});
+
+test('med K-19 bliver F_bund aldrig mindre og L aldrig større end i standardberegningen', () => {
+  for (const d of [0.4, 1, 2.5, 4])
+    for (const h1 of [0, 0.5, 1.5, 3])
+      for (let f = 0; f <= 1.2; f += 0.05) {
+        const input = { ...case2, d, h1, gvs: Math.max(0, h1 + (f - 0.5) * d) };
+        const a = avanceret(input);
+        const s = beregn(input);
+        assert.ok(a.Fbund >= s.Fbund - 1e-12 && a.Ftop >= s.Ftop - 1e-12);
+        if (a.Fopdrift > 0) {
+          assert.ok(a.losninger.A.L <= s.losninger.A.L + 1e-12);
+          assert.ok(a.losninger.C.L <= s.losninger.C.L + 1e-12);
+        }
+      }
 });
 
 test('håndregningen for case 2 med GVS i 2,9 m (zone 3)', () => {

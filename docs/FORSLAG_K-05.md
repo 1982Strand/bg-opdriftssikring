@@ -97,7 +97,7 @@ Formlerne hænger sammen ved zonegrænserne:
 - **σ′_v i rørmidten** bruges til afstanden mellem to ledninger i løsning B. Forslaget er σ′_v = min(T₂, T₃) · γ_tør,d + max(0, T₃ − T₂) · γ′_d.
   - I zone 1 og 2 er det samme formel som i dag.
   - I zone 3 og 4 giver dagens formel et negativt led og regner tør jord med under rørmidten. σ′_v bliver derfor for stor og afstanden for lille (punkt P3).
-- **F_bund og F_top** regnes fortsat med γ′_d uanset GVS (K-19, punkt P4).
+- **F_bund og F_top** regnes med samme spænding i nettets niveau: σ′_v(h_bund) og σ′_v(h_top). Det er besluttet under K-19 (punkt P4).
 - **Kontrolpunkt K-05** udgår. K-12 (S₁ ≥ 1) gælder fortsat.
 
 ## 7. Eksempler
@@ -196,7 +196,7 @@ Dagens σ′_v-formel regner tør jord med under rørmidten. Det har ikke betydn
 
 Afgjort 29. oktober 2026:
 - P1, P2, P3 og P7: som foreslået.
-- P4: tages op, når K-19 behandles.
+- P4: afgjort under K-19 samme dag. Forankringen regnes med den faktiske effektive spænding i nettets niveau i den avancerede beregning.
 - P5: noten vises med brugerens ordlyd: »GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved skybrud. Værste tilfælde er GVS i terræn. Hvis GVS sættes herunder skal der sikres tilstrækkelige drænforanstaltninger. Beregninger på eget ansvar.«
 - P6: ingen blå farve på røret.
 - P8: Standardberegningen er uændret, så arkets cases skal ikke have afvigelser. Den avancerede beregning har i stedet sine egne tests i `tests/avanceret.test.ts` (afsnit 10).
@@ -241,7 +241,6 @@ Punkterne, som de blev forelagt:
 
 - Ballastmodellen, partialkoefficienterne, γ_w = 10 kN/m³ og g = 9,82 m/s².
 - Valget af geonet, P_till, kravene og mindstelængderne.
-- Forankringens F_bund og F_top (K-19).
 - Løsningernes formler bortset fra σ′_v i løsning B.
 
 ## 12. Arbejdsgang efter godkendelse
