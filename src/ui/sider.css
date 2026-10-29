@@ -158,7 +158,7 @@
 /* Mellemregninger med en figur til højre; på smalle skærme står figuren under teksten. */
 .mellemregninger-med-figur {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 400px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 530px);
   gap: 16px 32px;
   align-items: start;
 }

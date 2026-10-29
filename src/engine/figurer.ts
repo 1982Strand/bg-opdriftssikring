@@ -352,15 +352,17 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   return svg(t, titel);
 }
 
-/** Rørets tværsnit delt af GVS med A_tør, A_våd, a, θ og r (avanceret beregning, GVS mellem rørtop
- * og rørbund). Cirklen har fast størrelse; GVS' placering følger forholdet a/r. */
+/** Rørets tværsnit delt af GVS med koterne T₂ og T₃ og A_tør, A_våd, a, θ og r (avanceret
+ * beregning, GVS mellem rørtop og rørbund). Cirklen har fast størrelse; GVS' placering følger
+ * forholdet a/r. */
 export function opdriftsarealSvg(r: OpdriftResultat, i: OpdriftInput): string | null {
   const z = r.gvsZone;
   if (!z || z.zone === 1 || z.zone === 4) return null;
   const radius = i.d / 2;
   const R = 90;
-  const cx = 115;
+  const cx = 244; // plads til koterne til venstre
   const cy = 125;
+  const xTekst = cx + R + 23;
   const s = R / radius;
   const yGvs = cy - z.a * s;
   const c = Math.sqrt(radius ** 2 - z.a ** 2) * s;
@@ -369,30 +371,43 @@ export function opdriftsarealSvg(r: OpdriftResultat, i: OpdriftInput): string | 
   const venstre = `${px(cx - c)} ${px(yGvs)}`;
   const hoejre = `${px(cx + c)} ${px(yGvs)}`;
   const leder = (x: number, y: number, ty: number) =>
-    linje(x, y, 222, ty - 4, farve.muted, 0.75, ' stroke-dasharray="3 2"');
+    linje(x, y, xTekst - 6, ty - 4, farve.muted, 0.75, ' stroke-dasharray="3 2"');
   const bue = 24;
   const dele = [
     `<path d="M${venstre} A${R} ${R} 0 ${under ? 1 : 0} 1 ${hoejre} Z" fill="${farve.bund}" fill-opacity="0.22"/>`,
     `<path d="M${venstre} A${R} ${R} 0 ${under ? 0 : 1} 0 ${hoejre} Z" fill="${farve.vand}" fill-opacity="0.25"/>`,
     `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${farve.ink}" stroke-width="2"/>`,
     linje(cx - R - 14, yGvs, cx + R + 14, yGvs, farve.vand, 1.5, ' stroke-dasharray="7 5"'),
-    tekst(cx - R - 12, yGvs - 6, 'GVS', 'start', farve.vand),
+    // Rørmidtens niveau, som koten T₃ henviser til.
+    linje(cx - R - 14, cy, cx, cy, farve.muted, 1, ' stroke-dasharray="4 3"'),
     linje(cx, cy, cx - c, yGvs, farve.muted, 1, ' stroke-dasharray="4 3"'),
     linje(cx, cy, cx + c, yGvs, farve.muted, 1, ' stroke-dasharray="4 3"'),
     linje(cx, cy, cx, yGvs, farve.ink, 1),
     `<path d="M${cx} ${cy - bue} A${bue} ${bue} 0 0 1 ${px(cx + bue * Math.sin(theta))} ${px(cy - bue * Math.cos(theta))}" fill="none" stroke="${farve.ink}" stroke-width="1"/>`,
     `<circle cx="${cx}" cy="${cy}" r="3" fill="${farve.ink}"/>`,
     leder(cx + 4, (cy - R + yGvs) / 2, 46),
-    tekst(228, 46, `A_{tør} = ${tal(z.Ator, 4)} m²`, 'start'),
+    tekst(xTekst, 46, `A_{tør} = ${tal(z.Ator, 4)} m²`, 'start'),
     leder(cx + 2, (cy + yGvs) / 2, 96),
-    tekst(228, 96, `a = ${m(z.a)}`, 'start'),
+    tekst(xTekst, 96, `a = ${m(z.a)}`, 'start'),
     leder(cx + bue * Math.sin(theta / 2), cy - bue * Math.cos(theta / 2), 126),
-    tekst(228, 126, `θ = arccos(a/r) = ${tal((theta * 180) / Math.PI)}°`, 'start'),
+    tekst(xTekst, 126, `θ = arccos(a/r) = ${tal((theta * 180) / Math.PI)}°`, 'start'),
     leder(cx + c / 2, (cy + yGvs) / 2, 156),
-    tekst(228, 156, `r = ${m(radius)}`, 'start'),
+    tekst(xTekst, 156, `r = ${m(radius)}`, 'start'),
     leder(cx - 4, (yGvs + cy + R) / 2, 206),
-    tekst(228, 206, `A_{våd} = ${tal(z.Avaad, 4)} m²`, 'start'),
+    tekst(xTekst, 206, `A_{våd} = ${tal(z.Avaad, 4)} m²`, 'start'),
   ];
+  // Koterne til venstre som i tværsnittet i kort 3, skubbet fra hinanden, hvis de ligger for tæt.
+  const koter: [string, number, number, string][] = [
+    ['T₂ GVS', i.gvs, yGvs, farve.vand],
+    ['T₃ rørmidte', r.T3, cy, farve.ink],
+  ];
+  koter.sort((k1, k2) => k1[2] - k2[2]);
+  let sidste = -Infinity;
+  for (const [koten, dybde, y, fyld] of koter) {
+    const yt = Math.max(y + 4, sidste + 15);
+    sidste = yt;
+    dele.push(tekst(cx - R - 18, yt, `${koten}: ${m(dybde)}`, 'end', fyld));
+  }
   const label = 'Rørets tværsnit delt af GVS: arealet over og under GVS';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" aria-hidden="true" font-family="'Segoe UI', system-ui, sans-serif" font-size="12"><title>${esc(label)}</title>${dele.join('')}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 530 250" width="530" height="250" aria-hidden="true" font-family="'Segoe UI', system-ui, sans-serif" font-size="12"><title>${esc(label)}</title>${dele.join('')}</svg>`;
 }
