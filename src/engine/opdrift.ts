@@ -255,12 +255,12 @@ function valider(input: OpdriftInput): Inputfejl[] {
     ['roervaegt', 'Egenvægten', (v) => v >= 0, 'kan ikke være negativ.'],
     [
       'gamma',
-      'γ',
+      'γ_{våd}',
       (v) => v * standarder.gammaGstb > gammaW,
-      `skal opfylde γ · ${dansk(standarder.gammaGstb)} > γ_w = ${dansk(gammaW)} kN/m³. Ellers er den effektive rumvægt under vand ikke positiv, og forankringen kan ikke beregnes.`,
+      `skal opfylde γ_{våd} · ${dansk(standarder.gammaGstb)} > γ_{w} = ${dansk(gammaW)} kN/m³. Ellers er den effektive rumvægt under vand ikke positiv, og forankringen kan ikke beregnes.`,
     ],
-    ['gammaTor', 'γ_tør', (v) => v > 0, 'skal være større end 0 kN/m³.'],
-    ['phi', 'φ_k', (v) => v > 0 && v < 90, 'skal være større end 0° og mindre end 90°.'],
+    ['gammaTor', 'γ_{tør}', (v) => v > 0, 'skal være større end 0 kN/m³.'],
+    ['phi', 'φ_{k}', (v) => v > 0 && v < 90, 'skal være større end 0° og mindre end 90°.'],
   ];
   for (const [felt, navn, gyldig, tekst] of regler) {
     const v = input[felt] as number;

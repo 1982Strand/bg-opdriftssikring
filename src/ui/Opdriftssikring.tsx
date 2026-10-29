@@ -365,7 +365,7 @@ export function Opdriftssikring() {
       <Trin
         nr={4}
         titel="Egenvægt og fyldmateriale"
-        opsummering={`E_{k} = ${tal(i.roervaegt, 0)} kg/m · γ = ${tal(i.gamma)} kN/m³ · φ_{k} = ${tal(i.phi)}°`}
+        opsummering={`E_{k} = ${tal(i.roervaegt, 0)} kg/m · γ_{våd} = ${tal(i.gamma)} kN/m³ · φ_{k} = ${tal(i.phi)}°`}
       >
         <div className="calc-fields calc-fields-4">
           {talfelt(
@@ -376,7 +376,7 @@ export function Opdriftssikring() {
           )}
           {talfelt(
             'gamma',
-            'Rumvægt, våd γ (kN/m³)',
+            'Rumvægt, våd γ_{våd} (kN/m³)',
             'Karakteristisk rumvægt af fyldet under GVS.',
           )}
           {talfelt(
@@ -409,15 +409,15 @@ export function Opdriftssikring() {
                 <tbody>
                   {(
                     [
-                      ['Rumvægt, våd γ', `${tal(i.gamma)} kN/m³`, `${tal(r.gammaD)} kN/m³`],
+                      ['Rumvægt, våd γ_{våd}', `${tal(i.gamma)} kN/m³`, `${tal(r.gammaD)} kN/m³`],
                       [
                         'Rumvægt, tør γ_{tør}',
                         `${tal(i.gammaTor)} kN/m³`,
                         `${tal(r.gammaTorD)} kN/m³`,
                       ],
                       [
-                        'Effektiv rumvægt under vand γ′ = γ_{d} − γ_{w}',
-                        '–',
+                        'Effektiv rumvægt under vand γ′ = γ_{våd} − γ_{w}',
+                        `${tal(i.gamma - gammaW)} kN/m³`,
                         `${tal(r.gammaEffD)} kN/m³`,
                       ],
                       ['Friktionsvinkel φ', `${tal(i.phi)}°`, `${tal(r.phiD)}°`],
@@ -437,7 +437,7 @@ export function Opdriftssikring() {
             </TabelRamme>
             <p className="calc-note">
               <Fmt
-                text={`Konsekvensklasse ${session.konsekvensklasse}: γ_{G;stb} = ${tal(pk.gammaGstb)} på fyld og egenvægt, γ_{φ} = ${tal(pk.gammaPhi)} på tan φ og γ_{f} = ${tal(pk.gammaF)} på opdriften. `}
+                text={`Konsekvensklasse ${session.konsekvensklasse}: γ_{G;stb} = ${tal(pk.gammaGstb)} på fyld og egenvægt, γ_{φ} = ${tal(pk.gammaPhi)} på tan φ og γ_{f} = ${tal(pk.gammaF)} på opdriften. Faktoren ganges på γ_{våd}, og vandet trækkes fra bagefter: γ′_{d} = γ_{våd,d} − γ_{w} = ${tal(r.gammaD)} − ${tal(gammaW)} = ${tal(r.gammaEffD)} kN/m³. `}
               />
               Konsekvensklassen vælges i afsnit 2.
             </p>

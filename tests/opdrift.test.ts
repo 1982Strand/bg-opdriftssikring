@@ -76,7 +76,7 @@ test('fejlteksterne er danske og nævner feltet', () => {
       resultat.fejl.map((f) => f.tekst),
       [
         'Diameteren d skal være et tal.',
-        'γ skal opfylde γ · 0,9 > γ_w = 10 kN/m³. Ellers er den effektive rumvægt under vand ikke positiv, og forankringen kan ikke beregnes.',
+        'γ_{våd} skal opfylde γ_{våd} · 0,9 > γ_{w} = 10 kN/m³. Ellers er den effektive rumvægt under vand ikke positiv, og forankringen kan ikke beregnes.',
       ],
     );
 });
