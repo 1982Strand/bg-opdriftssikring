@@ -65,7 +65,7 @@ Kortene har samme rækkefølge som rapporten:
 
 Er S₁ > 1, tones kort 6–7 ned i gråtoner, så kontrasten bevares, men tallene vises som i arket.
 
-**Avanceret beregning.** En afkrydsning øverst på siden skifter til den avancerede beregning (fund K-05, mulighed c, [FORSLAG_K-05.md](FORSLAG_K-05.md)). Den ændrer formler, mellemregninger, forklaringer og noter. Uden afkrydsning regnes som arket. Valget gemmes sammen med beregningen, og »Nulstil beregning« vælger standardberegningen. Senere afvigelser fra arket kan samles i den avancerede beregning efter beslutning, fx K-19.
+**Avanceret beregning.** En afkrydsning øverst på siden skifter til den avancerede beregning (fund K-05, mulighed c, [FORSLAG_K-05.md](FORSLAG_K-05.md)). Den ændrer formler, mellemregninger, forklaringer og noter. Uden afkrydsning regnes som arket. Valget gemmes sammen med beregningen, og »Nulstil beregning« vælger standardberegningen. Den avancerede beregning omfatter også K-19: forankringen regnes med den faktiske effektive spænding i nettets niveau. Senere afvigelser fra arket kan samles her efter beslutning.
 
 Under resultaterne står kortet **Kontrolpunkter**, når der er aktive fund. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-03, K-05, K-12, K-13). Kontrolpunkterne ændrer ikke beregningen og kommer ikke med i rapporten.
 

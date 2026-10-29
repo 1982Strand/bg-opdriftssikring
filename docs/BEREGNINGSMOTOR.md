@@ -67,12 +67,12 @@ Med `metode: 'avanceret'` regnes opdrift og ballast for den del af røret, der s
 
 - `gvsZone` angiver zonen (1 i eller over rørtoppen, 2 mellem rørtop og rørmidte, 3 mellem rørmidte og rørbund, 4 ved eller under rørbunden), a = T₃ − T₂ og rørets areal over og under GVS. Feltet er `null` i standardberegningen.
 - Den mindste del af tværsnittet regnes direkte, så små arealer nær rørtop og rørbund ikke tabes ved afrunding.
-- I zone 1 er resultatet præcis som standardberegningen.
+- Med GVS i terræn er resultatet præcis som standardberegningen. Med GVS mellem terræn og rørtop er opdrift, ballast og netvalg som standardberegningen, men forankringen regnes med den faktiske spænding (K-19).
 - I zone 2 deles rørhalvdelen i en tør og en våd del (`ballastLed.roerDele`). I zone 3 og 4 er hele søjlen til rørmidten tør.
 - I zone 4 er O = 0, og S₁ og kontrollerne for løsning A og C er `null`. S₁-status er OK, og konklusionen siger, at røret ikke påvirkes af opdrift.
-- σ′_v for to ledninger regnes med tør jord til rørmidten, når GVS ligger under midten.
+- Den effektive lodrette spænding regnes som σ′_v(z) = min(T₂, z) · γ_tør,d + max(0, z − T₂) · γ′_d. Den bruges til σ′_v i rørmidten for to ledninger og til forankringen (`forankringsspaending`).
 - Kontrolpunkt K-05 gælder kun standardberegningen. K-12 forudsætter, at S₁ kan regnes.
-- Forankringen (F_bund, F_top) er som i standardberegningen (K-19).
+- F_bund og F_top regnes med spændingen i h_bund og h_top i stedet for altid med γ′_d (K-19, mulighed a). I standardberegningen er `forankringsspaending` h · γ′_d som i arket.
 
 ## Figurer
 

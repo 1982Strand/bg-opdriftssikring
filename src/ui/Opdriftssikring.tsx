@@ -263,6 +263,29 @@ function opdriftLinjer(
   ];
 }
 
+/** Mellemregningerne for F_bund og F_top. Den avancerede beregning viser spændingen i nettets niveau
+ * (K-19); arket regner altid med γ′_d. */
+function forankringLinjer(r: OpdriftResultat, input: ReturnType<typeof tilMotorInput>): string[] {
+  const mu = tal(standarder.mu);
+  const tanPhi = `tan ${tal(r.phiD)}°`;
+  if (r.metode === 'standard')
+    return [
+      `F_{bund} = h_{bund} · γ′_{d} · μ · tan φ_{d} = ${tal(r.hBund)} · ${tal(r.gammaEffD)} · ${mu} · ${tanPhi} = ${tal(r.Fbund)} kN/m`,
+      `F_{top} = h_{top} · γ′_{d} · μ · tan φ_{d} = ${tal(r.hTop)} · ${tal(r.gammaEffD)} · ${mu} · ${tanPhi} = ${tal(r.Ftop)} kN/m`,
+    ];
+  const T2 = input.gvs;
+  const spaending = (navn: string, h: number, sigma: number) =>
+    T2 >= h
+      ? `σ′_{v,${navn}} = h_{${navn}} · γ_{tør,d} = ${tal(h)} · ${tal(r.gammaTorD)} = ${tal(sigma)} kN/m², da GVS ligger under nettet`
+      : `σ′_{v,${navn}} = T₂ · γ_{tør,d} + (h_{${navn}} − T₂) · γ′_{d} = ${tal(T2)} · ${tal(r.gammaTorD)} + ${tal(h - T2)} · ${tal(r.gammaEffD)} = ${tal(sigma)} kN/m²`;
+  return [
+    spaending('bund', r.hBund, r.forankringsspaending.bund),
+    `F_{bund} = σ′_{v,bund} · μ · tan φ_{d} = ${tal(r.forankringsspaending.bund)} · ${mu} · ${tanPhi} = ${tal(r.Fbund)} kN/m`,
+    spaending('top', r.hTop, r.forankringsspaending.top),
+    `F_{top} = σ′_{v,top} · μ · tan φ_{d} = ${tal(r.forankringsspaending.top)} · ${mu} · ${tanPhi} = ${tal(r.Ftop)} kN/m`,
+  ];
+}
+
 /** Mellemregningerne for B efter GVS' placering (docs/FORSLAG_K-05.md, afsnit 5). */
 function ballastLinjer(r: OpdriftResultat, zone: GvsZone | null): string[] {
   const b = r.ballastLed;
@@ -768,14 +791,20 @@ export function Opdriftssikring() {
               <Formler
                 linjer={[
                   `φ_{d} = arctan(tan φ_{k}/γ_{φ}) = arctan(tan ${tal(i.phi)}°/${tal(pk.gammaPhi)}) = ${tal(r.phiD)}°`,
-                  `F_{bund} = h_{bund} · γ′_{d} · μ · tan φ_{d} = ${tal(r.hBund)} · ${tal(r.gammaEffD)} · ${tal(standarder.mu)} · tan ${tal(r.phiD)}° = ${tal(r.Fbund)} kN/m`,
-                  `F_{top} = h_{top} · γ′_{d} · μ · tan φ_{d} = ${tal(r.hTop)} · ${tal(r.gammaEffD)} · ${tal(standarder.mu)} · tan ${tal(r.phiD)}° = ${tal(r.Ftop)} kN/m`,
+                  ...forankringLinjer(r, input),
                   `K = F_{opdrift} · S₂ = ${tal(r.Fopdrift)} · ${tal(standarder.S2)} = ${tal(r.K)} kN/m`,
                 ]}
               />
               <p className="calc-note">
-                Geonettet antages forankret i våd jord, så γ′<sub>d</sub> bruges uanset GVS. Hele
-                opdriften bruges til forankringen, selv om tovkraften på hver side er halvdelen.
+                {avanceret ? (
+                  'Kraftoverførslen regnes med den effektive lodrette spænding i nettets niveau: tør fyld over GVS og effektiv rumvægt under.'
+                ) : (
+                  <>
+                    Geonettet antages forankret i våd jord, så γ′<sub>d</sub> bruges uanset GVS.
+                  </>
+                )}{' '}
+                Hele opdriften bruges til forankringen, selv om tovkraften på hver side er
+                halvdelen.
               </p>
             </Udfold>
             <div className="solutions">

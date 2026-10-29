@@ -29,7 +29,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-16 | Faste sidetal og »Udarbejdet af Bruger« | Rapport | Løses i appen |
 | K-17 | Friktion på én side af nettet | Længder | Som arket |
 | K-18 | T₁ kan ændres, men indgår ikke i T₃ | Geometri | T₁ = 0 fast |
-| K-19 | Forankring regnes altid som under vand | Længder | Som arket |
+| K-19 | Forankring regnes altid som under vand | Længder | Afgjort: som arket, a) i avanceret beregning |
 | K-20 | h₁ og h₂ har tre forskellige betydninger | Tekst | h₁ = jorddækning |
 | K-21 | Produktlisten mangler X-GRID 130 og 200 | Valg af geonet | Afgjort: 130 og 200 tilføjet |
 | K-22 | Reduktionsfaktorerne pr. net bruges ikke | Data, P_till | Afgjort: ét fælles sæt |
@@ -339,7 +339,7 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 - a) Forankringen regnes med den faktiske spænding ved GVS under terræn (hænger sammen med K-05 c).
 - b) Uændret.
 
-**Første version.** Som arket.
+**Afgjort 29. oktober 2026.** Standardberegningen regner som arket. I den avancerede beregning regnes F_bund og F_top med den faktiske effektive spænding i nettets niveau: σ′_v(z) = min(T₂, z) · γ_tør,d + max(0, z − T₂) · γ′_d. Det er den samme spænding, som løsning B bruger i rørmidten. Ved GVS i terræn er resultatet det samme som i arket.
 
 ## K-20 h₁ og h₂ har tre forskellige betydninger
 

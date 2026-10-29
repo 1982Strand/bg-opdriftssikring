@@ -243,3 +243,12 @@ Valgt af Claude og kan ændres:
 - Afkrydsningen står ved »Nulstil beregning« øverst på siden. Når den er valgt, vises en kort oplysning: »Avanceret beregning er valgt. Opdrift og ballast regnes for den del af røret, der står under GVS, og afviger fra regnearket, når GVS ligger under rørtoppen.«
 - Når der ikke er opdrift, siger noten i kort 6: »Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.« Mellemregningerne siger, at S₁ og kontrollerne ikke kan regnes.
 - Under udviklingen viste den numeriske kontrol en afrundingsfejl lige over rørbunden, hvor A_våd = π/4 · d² − A_tør kunne blive en anelse negativ. Under rørmidten regnes A_våd derfor direkte.
+
+## 29. oktober 2026 — fund K-19 i den avancerede beregning
+
+Brugerens svar: »K-19: vælg mulighed a) i den avancerede beregning, så F_bund og F_top regnes med den faktiske effektive spænding i nettets niveau. Standardberegningen er uændret.«
+
+- I den avancerede beregning regnes F_bund og F_top med σ′_v(z) = min(T₂, z) · γ_tør,d + max(0, z − T₂) · γ′_d i h_bund og h_top. Det er samme spænding, som afstanden mellem to ledninger bruger i rørmidten.
+- Ved GVS i terræn er resultatet det samme som i standardberegningen. Ved GVS under terræn bliver forankringslængderne kortere, fx L uden omslag 1,60 m i stedet for 3,30 m i case 2 med GVS i 1,6 m.
+- Mellemregningerne for kraftoverførsel viser σ′_v med indsatte tal. Noten siger i den avancerede beregning: »Kraftoverførslen regnes med den effektive lodrette spænding i nettets niveau: tør fyld over GVS og effektiv rumvægt under.«
+- Standardberegningen er uændret og regner som arket med γ′_d uanset GVS.

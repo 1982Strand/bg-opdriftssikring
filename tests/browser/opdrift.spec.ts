@@ -186,6 +186,12 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(
     page.getByText(/del af rørets udvendige tværsnit, der ligger under GVS/),
   ).toBeVisible();
+  // Forankringen regnes med den faktiske spænding i nettets niveau (K-19).
+  await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('16,54');
+  await page.getByRole('button', { name: 'Mellemregninger for kraftoverførsel' }).click();
+  await expect(
+    page.getByText(/σ′v,bund = T₂ · γtør,d \+ \(hbund − T₂\) · γ′d = 1,60/),
+  ).toBeVisible();
 
   // Valget gemmes sammen med beregningen.
   await page.reload();
@@ -203,5 +209,6 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
   await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('138,23');
   await expect(page.getByText(/GVS ligger under toppen af røret/)).toBeVisible();
+  await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,04');
   await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);
 });

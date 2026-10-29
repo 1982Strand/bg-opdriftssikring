@@ -31,13 +31,16 @@ Kontrollen mod arket regner med arkets π = 3,14 (`arketsKonstanter`), mens appe
 Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Tolerancen dækker kun afrundingsstøj i kommatal, fordi motoren og Excel kan udføre de samme regneoperationer i lidt forskellig rækkefølge. Valgt geonet, OK/EJ OK og tekster skal stemme præcist.
 
 Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
-- den giver præcis samme resultat som standardberegningen for de 38 cases med GVS i eller over rørtoppen, og at standardberegningen er uændret, når metoden angives;
+- den giver præcis samme resultat som standardberegningen for de 35 cases med GVS i terræn, og at standardberegningen er uændret, når metoden angives;
+- opdrift, ballast og netvalg er som standardberegningen for alle 38 cases med GVS ned til rørtoppen;
 - håndregningerne i [FORSLAG_K-05.md](FORSLAG_K-05.md), afsnit 7.1 og 7.2, genfindes;
 - O og B stemmer med en uafhængig numerisk integration over rørets vinkel for 960 kombinationer med GVS i alle zoner, ved 1e-9;
 - arealet over GVS har de rigtige grænser og er symmetrisk om rørmidten, og O og B springer ikke ved zonegrænserne;
 - O og F_opdrift aftager, og B vokser eller er konstant, når GVS sænkes;
 - GVS ved eller under rørbunden giver O = 0 og ingen S₁ eller kontrol;
 - σ′_v følger GVS, og K-05 kun forekommer i standardberegningen;
+- forankringen bruger samme spænding i rørmidten som afstanden mellem to ledninger, og håndregningen for case 2 med GVS i 1,6 m genfindes (F_bund = 16,54 kN/m);
+- F_bund og F_top aldrig er mindre, og L aldrig større, end i standardberegningen;
 - F_opdrift aldrig er større end i standardberegningen, når der skal bruges net;
 - figurerne er gyldige, og valget gemmes i sessionen.
 
