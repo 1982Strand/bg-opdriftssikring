@@ -340,6 +340,7 @@ export function Opdriftssikring() {
   const pk = r?.partialkoefficienter;
   const avanceret = session.avanceret;
   const zone = r?.gvsZone ?? null;
+  const cc3 = session.konsekvensklasse === 'CC3';
 
   return (
     <>
@@ -417,7 +418,7 @@ export function Opdriftssikring() {
       <Trin
         nr={3}
         titel="Geometri og grundvand"
-        opsummering={`d = ${tal(i.d)} m · h₁ = ${tal(i.h1)} m · ${i.gvsITerraen ? 'GVS i terræn' : `GVS ${tal(i.gvs)} m under terræn`}`}
+        opsummering={`d = ${tal(i.d)} m · h₁ = ${tal(i.h1)} m · ${input.gvs === 0 ? 'GVS i terræn' : `GVS ${tal(input.gvs)} m under terræn`}`}
       >
         <div className="calc-grid">
           <div className="calc-fields">
@@ -434,7 +435,8 @@ export function Opdriftssikring() {
                 kind: 'checkbox',
                 help: 'Grundvandsspejlet ligger i terræn. Det er normalt den ugunstigste realistiske vandstand.',
               }}
-              value={i.gvsITerraen}
+              value={i.gvsITerraen || cc3}
+              disabled={cc3}
               change={(v) => saet({ gvsITerraen: Boolean(v) })}
             />
             {talfelt(
@@ -443,7 +445,7 @@ export function Opdriftssikring() {
               avanceret
                 ? 'Dybden fra terræn til grundvandsspejlet. Ligger GVS under rørtoppen, giver kun den del af røret, der står under vand, opdrift.'
                 : 'Dybden fra terræn til grundvandsspejlet. Regnearket forudsætter GVS over midten af røret (fund K-05).',
-              { disabled: i.gvsITerraen },
+              { disabled: i.gvsITerraen || cc3 },
             )}
           </div>
           {r && (
@@ -453,11 +455,19 @@ export function Opdriftssikring() {
             />
           )}
         </div>
+        {cc3 && (
+          <Notice>
+            Ved konsekvensklasse CC3 regnes altid med GVS i terræn, da der skal tages højde for
+            ekstremhændelser: 100-års hændelser for skybrud og oversvømmelse, stigning i havvands-
+            og grundvandsspejl og risiko for svigt af drænsystemer.
+          </Notice>
+        )}
         {avanceret && input.gvs > 0 && (
           <Notice kind="warning">
             GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved
             skybrud. Værste tilfælde er GVS i terræn. Hvis GVS sættes herunder skal der sikres
-            tilstrækkelige drænforanstaltninger. Beregninger på eget ansvar.
+            tilstrækkelige drænforanstaltninger eller på anden vis dokumenteres at vandstanden ikke
+            kan blive højere. Beregninger på eget ansvar.
           </Notice>
         )}
       </Trin>

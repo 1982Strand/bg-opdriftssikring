@@ -7,9 +7,13 @@ import { parseSession, standardSession, tilMotorInput } from '../src/ui/state.ts
 
 // Den avancerede beregning (docs/FORSLAG_K-05.md). Standardberegningen kontrolleres mod regnearket
 // i opdrift-excel.test.ts.
-const { cases } = JSON.parse(
-  readFileSync(new URL('./cases/excel-cases.json', import.meta.url), 'utf8'),
-) as { cases: { navn: string; input: OpdriftInput }[] };
+// CC1 er udgået, fordi opdrift ikke kan regnes i CC1 (beslutning 29. oktober 2026). CC1-casen
+// kontrolleres i opdrift-excel.test.ts ved, at motoren afviser den.
+const cases = (
+  JSON.parse(readFileSync(new URL('./cases/excel-cases.json', import.meta.url), 'utf8')) as {
+    cases: { navn: string; input: OpdriftInput }[];
+  }
+).cases.filter((c) => (c.input.konsekvensklasse as string) !== 'CC1');
 const beregn = (input: OpdriftInput) => {
   const b = beregnOpdrift(input);
   assert.ok(b.ok, JSON.stringify(b));
@@ -67,7 +71,7 @@ test('med GVS i terræn regner den avancerede beregning præcis som standarden',
     assert.deepEqual(faelles(avanceret(sag.input)), faelles(beregn(sag.input)), sag.navn);
     antal++;
   }
-  assert.equal(antal, 35);
+  assert.equal(antal, 34);
 });
 
 test('med GVS ned til rørtoppen er opdrift, ballast og netvalg som standarden', () => {
@@ -82,7 +86,7 @@ test('med GVS ned til rørtoppen er opdrift, ballast og netvalg som standarden',
     assert.ok(a.Fbund >= s.Fbund && a.Ftop >= s.Ftop, sag.navn);
     antal++;
   }
-  assert.equal(antal, 38);
+  assert.equal(antal, 37);
 });
 
 test('standardberegningen er uændret, også når metoden angives', () => {

@@ -252,3 +252,19 @@ Brugerens svar: »K-19: vælg mulighed a) i den avancerede beregning, så F_bund
 - Ved GVS i terræn er resultatet det samme som i standardberegningen. Ved GVS under terræn bliver forankringslængderne kortere, fx L uden omslag 1,60 m i stedet for 3,30 m i case 2 med GVS i 1,6 m.
 - Mellemregningerne for kraftoverførsel viser σ′_v med indsatte tal. Noten siger i den avancerede beregning: »Kraftoverførslen regnes med den effektive lodrette spænding i nettets niveau: tør fyld over GVS og effektiv rumvægt under.«
 - Standardberegningen er uændret og regner som arket med γ′_d uanset GVS.
+
+## 29. oktober 2026 — konsekvensklasser og advarsel om lav GVS
+
+Brugerens ønske: »ændr advarslen i kort 3, sætningen skal ændres fra 'Hvis GVS sættes herunder skal der sikres tilstrækkelige drænforanstaltninger.' til 'Hvis GVS sættes herunder skal der sikres tilstrækkelige drænforanstaltninger eller på anden vis dokumenteres at vandstanden ikke kan blive højere.'. Derudover, så fjern mulighed for at vælge CC1 i kort 2 og de tilhørende tekster omkring CC1. Man kan pr definition ikke regne opdrift i CC1, jf. EC7. Hvis man vælger CC3, skal der tilføjes en note om, at der kræves særskilt kontrol fra certificeret statiker, godkendt til KK3/CC3. Desuden, hvis man vælger CC3, uanset om det er i standard eller avanceret, skal det kun være muligt at beregne med GVS i terræn, da der skal tages højde for ekstremhændelser, altså 100-års hændelser for skybrud/oversvømmelse, stigning i havvands- og grundvandsspejl, eller risiko for svigt af drænsystemer.«
+
+- Advarslen i kort 3 (avanceret beregning, GVS under terræn) har den nye sætning.
+- CC1 er fjernet. Kort 2 har kun CC2 og CC3, og teksterne om CC1 er slettet. Motoren afviser CC1 med teksten »Opdrift kan ikke regnes i konsekvensklasse CC1. Vælg CC2 eller CC3.« En gemt beregning med CC1 indlæses som CC2.
+- Ved CC3 vises i kort 2: »Ved konsekvensklasse CC3 kræves særskilt kontrol fra certificeret statiker, godkendt til KK3/CC3. Der regnes altid med GVS i terræn.«
+- Ved CC3 regnes altid med GVS i terræn, i både standard og avanceret beregning:
+  - »GVS i terræn« er afkrydset og låst, og feltet for GVS under terræn er låst.
+  - Kort 3 forklarer: »Ved konsekvensklasse CC3 regnes altid med GVS i terræn, da der skal tages højde for ekstremhændelser: 100-års hændelser for skybrud og oversvømmelse, stigning i havvands- og grundvandsspejl og risiko for svigt af drænsystemer.«
+  - Motoren afviser GVS under terræn i CC3.
+  - En indtastet GVS gemmes og gælder igen, hvis der skiftes tilbage til CC2.
+- Regnearkets kontrolcase »CC1: case 1« kontrolleres nu ved, at motoren afviser CC1. Samme input i CC2 er »Case 1«, som fortsat sammenlignes med arket. De øvrige 41 cases er uændrede.
+
+Valgt af Claude og kan ændres: noten om statikerkontrol står i kort 2 ved valget, og forklaringen om GVS står i kort 3 ved felterne. Rapporten i fase 4 skal have noten om statikerkontrol med, når CC3 er valgt.

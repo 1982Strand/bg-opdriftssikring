@@ -82,9 +82,13 @@ Figurerne tegnes som SVG ud fra de aktuelle mål, ligesom opbygningsfiguren i MS
 
 Konsekvensklassen vælges i kort 2 på beregningssiden. Siden Indstillinger bevares som pladsholder til senere indstillinger, fx fra fundlisten (K-14).
 
-**Konsekvensklasse.** Klassen vælges blandt CC1, CC2 og CC3, og standarden er CC2, som i arket. Den giver konsekvensfaktoren K_FI efter DS/EN 1997-1 DK NA:2021, A.1: CC1 og CC2 giver 1,0, CC3 giver 1,1. Partialkoefficienterne følger tabel A.4-1 NA (UPL med trækelementer):
+**Konsekvensklasse.** Klassen vælges blandt CC2 og CC3, og standarden er CC2, som i arket. Opdrift kan pr. definition ikke regnes i CC1 (EC7), så CC1 findes ikke. Klassen giver konsekvensfaktoren K_FI efter DS/EN 1997-1 DK NA:2021, A.1: CC2 giver 1,0, CC3 giver 1,1.
 
-| Partialkoefficient | Værdi | CC1/CC2 | CC3 | Bruges til |
+Ved CC3 kræves særskilt kontrol fra certificeret statiker, godkendt til KK3/CC3, og der regnes altid med GVS i terræn. Det gælder både standard og avanceret beregning, fordi der skal tages højde for ekstremhændelser.
+
+Partialkoefficienterne følger tabel A.4-1 NA (UPL med trækelementer):
+
+| Partialkoefficient | Værdi | CC2 | CC3 | Bruges til |
 |---|---|---|---|---|
 | γ_G;dst, (grund)vand, ugunstig | 1,1 · K_FI | 1,1 | 1,21 | Opdrift (arkets γ_f) |
 | γ_G;stb, gunstig | 0,9 | 0,9 | 0,9 | Fyld og egenvægt |
@@ -116,7 +120,7 @@ Rapportens indhold følger arkets afsnit og tal:
 8. Kraftoverførsel i sand
 9. Løsningerne. Hvilke af de fire løsninger rapporten tager med, og om nogle kan fravælges, afklares i fase 4.
 
-Rapporten skal oplyse, om der er regnet med standardberegningen eller den avancerede beregning. Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden får sagsbehandleren fra kartoteket i stedet for »Bruger«.
+Rapporten skal oplyse, om der er regnet med standardberegningen eller den avancerede beregning, og ved CC3 have noten om særskilt kontrol fra certificeret statiker. Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden får sagsbehandleren fra kartoteket i stedet for »Bruger«.
 
 ## 7. Test og kontrol
 

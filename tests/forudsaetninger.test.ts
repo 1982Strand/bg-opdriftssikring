@@ -9,9 +9,6 @@ test('betingelserne nævner den valgte konsekvensklasse', () => {
   assert.ok(
     betingelser('CC3').includes('Analysen sker i konsekvensklasse CC3 (høj konsekvensklasse).'),
   );
-  assert.ok(
-    betingelser('CC1').includes('Analysen sker i konsekvensklasse CC1 (lav konsekvensklasse).'),
-  );
 });
 
 test('projekteringsansvaret har arkets begrænsning til 5 gange honoraret', () => {

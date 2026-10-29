@@ -3,7 +3,7 @@
  * Teksterne bruges på beregningssiden og senere i rapporten. */
 import type { Konsekvensklasse } from '../engine/opdrift.ts';
 
-const klassenavn: Record<Konsekvensklasse, string> = { CC1: 'lav', CC2: 'middel', CC3: 'høj' };
+const klassenavn: Record<Konsekvensklasse, string> = { CC2: 'middel', CC3: 'høj' };
 
 export const betingelser = (klasse: Konsekvensklasse) => [
   'Forudsætninger vedrørende geometri, materialeparametre, belastninger m.v., som måtte have indflydelse på konstruktionen, er baseret på kundens oplysninger.',
