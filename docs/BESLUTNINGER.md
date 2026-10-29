@@ -310,3 +310,9 @@ Brugerens ønske: »Afrund RF til max 2 decimaler. Tilføj også lige Fopdrift m
 - RF vises med 2 decimaler (2,11) i opstillingen og i linjen for P_till. Beregningen bruger fortsat RF = 2,1066 som regnearket, så fx »P_till = UTS/RF = 80/2,11 = 37,98 kN/m«.
 - Mellemregningerne for geonet starter med F_opdrift = O − B med indsatte tal.
 - Flisen »Valgt geonet« skriver »Ultimal styrke UTS = … kN/m«. Det gælder både automatisk og manuelt valg; det manuelle valg ses fortsat af »(2 lag)« i produktnavnet.
+
+## 29. oktober 2026 — tekst i flisen Sikkerhed P_till/F_opdrift
+
+Brugerens ønske: »ændr' teksten i kortet med sikkerhed fra 'Udnyttelse af Ptill: 80 % · krav > 1,01' til 'Krav: Ptill/Fopdrift > 1,0 (Ptill udnyttet 80%)'«. På spørgsmålet, om kravet skal skrives som 1,01, der bruges i beregningen, eller ændres til 1,0, svarede brugeren: »Skriv 1,01«.
+
+Flisen skriver nu »Krav: P_till/F_opdrift > 1,01 (P_till udnyttet 80%)«. Uden positiv F_opdrift står kun »Krav: P_till/F_opdrift > 1,01«. Kravet hentes fra `krav.geonet`, og beregningen er uændret.

@@ -700,8 +700,8 @@ export function Opdriftssikring() {
                 status={r.geonet.status}
                 note={
                   r.geonet.sikkerhed !== null && r.Fopdrift > 0
-                    ? `Udnyttelse af P_{till}: ${tal(100 / r.geonet.sikkerhed, 0)} % · krav > 1,01`
-                    : 'Krav > 1,01'
+                    ? `Krav: P_{till}/F_{opdrift} > ${tal(standarder.krav.geonet)} (P_{till} udnyttet ${tal(100 / r.geonet.sikkerhed, 0)}%)`
+                    : `Krav: P_{till}/F_{opdrift} > ${tal(standarder.krav.geonet)}`
                 }
               />
             </div>
