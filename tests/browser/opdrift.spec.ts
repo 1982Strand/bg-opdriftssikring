@@ -138,6 +138,13 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
     '7 Forankring',
   ]);
   await expect(page.getByRole('heading', { name: 'Projekteringsansvar' })).toBeVisible();
+  await expect(
+    page.getByText(
+      'Opdriften regnes med γG;dst = 1,1 · KFI, hvor kun konsekvensfaktoren KFI afhænger af konsekvensklassen: 1,0 i CC2 og 1,1 i CC3 (afsnit A.1).',
+      { exact: false },
+    ),
+  ).toBeVisible();
+  await expect(page.getByText(/Regnearket svarer til CC2/)).toHaveCount(0);
   await expect(page.getByText('Analysen sker i konsekvensklasse CC2 (middel')).toBeVisible();
   await page.getByRole('radio', { name: 'CC3' }).click();
   await expect(page.getByText('Analysen sker i konsekvensklasse CC3 (høj')).toBeVisible();
