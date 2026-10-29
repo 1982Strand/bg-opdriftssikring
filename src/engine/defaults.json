@@ -1,7 +1,6 @@
 {
   "gammaW": 10,
   "g": 9.82,
-  "pi": 3.14,
   "gammaGstb": 0.9,
   "gammaGdst": 1.1,
   "KFI": { "CC1": 1.0, "CC2": 1.0, "CC3": 1.1 },

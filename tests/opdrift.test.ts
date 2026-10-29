@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { beregnOpdrift, type OpdriftInput } from '../src/engine/opdrift.ts';
+import { arketsKonstanter, beregnOpdrift, type OpdriftInput } from '../src/engine/opdrift.ts';
 import { RF, geonetProdukter, vaelgGeonet } from '../src/engine/geonet.ts';
 
 const excelCases = JSON.parse(
@@ -126,7 +126,7 @@ test('kontrolpunkter følger udvalgte Excel-cases', () => {
   for (const [delnavn, kontrolpunkter] of forventninger) {
     const sag = caseMed(delnavn);
     assert.ok(sag, `Mangler Excel-case med navn ${delnavn}`);
-    const resultat = beregnOpdrift(sag.input);
+    const resultat = beregnOpdrift(sag.input, arketsKonstanter);
     assert.equal(resultat.ok, true, sag.navn);
     if (resultat.ok) assert.deepEqual(resultat.resultat.kontrolpunkter, kontrolpunkter, sag.navn);
   }
@@ -149,6 +149,15 @@ test('CC1 giver samme resultat som CC2, og CC3 giver γ_f = 1,1 · 1,1', () => {
   assert.deepEqual(cc1.resultat, cc2.resultat);
   assert.equal(cc2.resultat.partialkoefficienter.gammaF, 1.1);
   assert.equal(cc3.resultat.partialkoefficienter.gammaF, 1.1 * 1.1);
+});
+
+test('appen regner med π, og kontrollen mod arket bruger 3,14 (K-06)', () => {
+  const app = beregnOpdrift(basis);
+  const ark = beregnOpdrift(basis, arketsKonstanter);
+  assert.ok(app.ok && ark.ok);
+  assert.equal(app.resultat.O, (Math.PI / 4) * 2.5 ** 2 * 10 * 1.1);
+  assert.equal(ark.resultat.O, (3.14 / 4) * 2.5 ** 2 * 10 * 1.1);
+  assert.equal(app.resultat.losninger.A.Ltot - 2 * app.resultat.losninger.A.L, (Math.PI * 2.5) / 2);
 });
 
 test('motoren ændrer ikke inputobjektet', () => {

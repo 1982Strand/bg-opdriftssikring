@@ -208,3 +208,14 @@ Noten under tabellen i kort 4 nævner nu kun konsekvensklassen og partialkoeffic
 Brugerens ønske: »fjerne teksten 'Konsekvensfaktoren KFI er 1,0 i CC1 og CC2 og 1,1 i CC3 (afsnit A.1). Konsekvensklassen vælges i afsnit 2.' fra den forklarende tekst i mellemregningerne i sektion 5.«
 
 Noten i mellemregningerne i kort 5 forklarer nu kun, at γ_f er γ_G;dst fra tabel A.4-1 NA for UPL med trækelementer. K_FI og valget af klasse står i kort 2.
+
+## 29. oktober 2026 — fund K-06 og K-07: π og g
+
+Brugerens svar: »K-06: brug π (mulighed a). K-07: behold g = 9,82 (mulighed c), men forklar at det er tyngdeaccelerationen i Danmark.«
+
+- **K-06.** Appen regner med π i O, i den halve rørflade i B og i netlængderne. Case 1 giver O = 54,00 i stedet for 53,97 kN/m og F_opdrift = 27,56 i stedet for 27,53 kN/m. I de 42 cases skifter hverken netvalg eller OK/EJ OK.
+- Kontrollen mod regnearket regner fortsat med 3,14, så alle 42 cases stadig sammenlignes med arket ved 1e-9. Udtrækket i `tests/cases/` er uændret.
+- Mellemregningen for O skriver π/4 i stedet for 3,14/4.
+- **K-07.** g = 9,82 bevares. Mellemregningerne i kort 5 forklarer, at rørets egenvægt omregnes med g = 9,82 m/s², som er tyngdeaccelerationen i Danmark.
+
+Browsertestene bruger nu appens tal med π, fx O = 54,00 og udnyttelsen 73 % i case 1. K-03-eksemplet i browsertesten er flyttet fra d = 2,601 til d = 2,600 m, så det stadig viser P_till/F_opdrift = 1,005.

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { beregnOpdrift, type OpdriftResultat } from '../src/engine/opdrift.ts';
+import { arketsKonstanter, beregnOpdrift, type OpdriftResultat } from '../src/engine/opdrift.ts';
 
 interface Case {
   navn: string;
@@ -86,7 +86,7 @@ const celleTilFelt: Record<string, (r: OpdriftResultat) => number | string | nul
 
 for (const sag of cases.cases) {
   test(sag.navn, () => {
-    const beregning = beregnOpdrift(sag.input);
+    const beregning = beregnOpdrift(sag.input, arketsKonstanter);
     assert.equal(beregning.ok, true, JSON.stringify(beregning));
     if (!beregning.ok) return;
     assert.deepEqual(

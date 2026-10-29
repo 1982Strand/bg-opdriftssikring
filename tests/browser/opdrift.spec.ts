@@ -16,19 +16,19 @@ const flise = (page: Page, label: string) =>
 const losning = (page: Page, titel: string) =>
   page.locator('.solution-card', { has: page.getByRole('heading', { name: titel, exact: true }) });
 
-test('case 1 er standard og vises som i regnearket', async ({ page }) => {
+test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await start(page);
   await expect(page.getByRole('status').filter({ hasText: 'Standarddata' })).toBeVisible();
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('53,97');
+  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('54,00');
   await expect(flise(page, 'Opdrift O').locator('p')).toHaveText('γf = 1,10');
-  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('26,44');
+  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('26,43');
   await expect(flise(page, 'Sikkerhed S₁').locator('strong')).toHaveText('0,49');
   await expect(flise(page, 'Sikkerhed S₁').locator('.m9-badge')).toHaveText('EJ OK');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 80');
-  await expect(flise(page, 'Krav til geonettets trækstyrke').locator('strong')).toHaveText('27,53');
+  await expect(flise(page, 'Krav til geonettets trækstyrke').locator('strong')).toHaveText('27,56');
   await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,38');
   await expect(flise(page, 'Sikkerhed Ptill').locator('p')).toHaveText(
-    'Udnyttelse af Ptill: 72 % · krav > 1,01',
+    'Udnyttelse af Ptill: 73 % · krav > 1,01',
   );
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,50');
   await expect(
@@ -43,7 +43,7 @@ test('case 1 er standard og vises som i regnearket', async ({ page }) => {
 test('ændring, feltfejl, nulstilling og genindlæsning', async ({ page }) => {
   await start(page);
   await saet(page, 'Rørdiameter d (m)', '3');
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('77,72');
+  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('77,75');
   await saet(page, 'Rørdiameter d (m)', '0');
   const d = page.getByRole('spinbutton', { name: 'Rørdiameter d (m)' });
   await expect(d).toHaveAttribute('aria-invalid', 'true');
@@ -79,7 +79,7 @@ test('GVS under terræn, kontrolpunkter og S₁ over 1,0', async ({ page }) => {
     kort.filter({ has: page.getByRole('heading', { name: '7 Forankring' }) }),
   ).toHaveClass(/is-dimmed/);
   await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
-  await saet(page, 'Rørdiameter d (m)', '2.601');
+  await saet(page, 'Rørdiameter d (m)', '2.6');
   await saet(page, 'Jorddækning h₁ (m)', '1');
   await expect(page.getByText(/1,005 er under kravet 1,01/)).toBeVisible();
   await expect(flise(page, 'Sikkerhed Ptill').locator('.m9-badge')).toHaveText('EJ OK');
@@ -141,10 +141,10 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
   await expect(page.getByText('Analysen sker i konsekvensklasse CC2 (middel')).toBeVisible();
   await page.getByRole('radio', { name: 'CC3' }).click();
   await expect(page.getByText('Analysen sker i konsekvensklasse CC3 (høj')).toBeVisible();
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('59,37');
+  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('59,40');
   await expect(flise(page, 'Opdrift O').locator('p')).toHaveText('γf = 1,21');
   await page.getByRole('button', { name: 'Konsekvens for den aktuelle beregning' }).click();
-  await expect(page.getByRole('row', { name: /Opdrift O/ })).toContainText('59,37 kN/m');
+  await expect(page.getByRole('row', { name: /Opdrift O/ })).toContainText('59,40 kN/m');
   await page.getByRole('button', { name: 'Nulstil beregning' }).click();
   await expect(page.getByRole('radio', { name: 'CC2' })).toBeChecked();
   await page.goto('/#indstillinger');

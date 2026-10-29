@@ -16,8 +16,8 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-03 | Netvalg og kontrol bruger forskellige krav | Valg af geonet | Som arket |
 | K-04 | Kun ét lag geonet | Valg af geonet | Afgjort: som arket, 2 lag manuelt |
 | K-05 | GVS under rørtoppen | Opdrift og ballast | Som arket |
-| K-06 | π = 3,14 | Alle tal (0,05 %) | Som arket |
-| K-07 | g = 9,82 for rørvægt | Ballast (lille) | Som arket |
+| K-06 | π = 3,14 | Alle tal (0,05 %) | Afgjort: π |
+| K-07 | g = 9,82 for rørvægt | Ballast (lille) | Afgjort: som arket |
 | K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Som arket |
 | K-09 | Omslag: tillæg på 1,2 m i netlængden | Netlængde | Som arket |
 | K-10 | To rør: ingen kontrol, forskellig mellemlængde | Længder, kontrol | Som arket |
@@ -159,7 +159,7 @@ Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af 
 
 **Muligheder.** a) Der regnes med π. b) Uændret.
 
-**Første version.** Som arket.
+**Afgjort.** Mulighed a): appen regner med π (beslutning 29. oktober 2026). Med 3,14 lå arket en anelse på den usikre side, fordi O blev lidt for lille og B lidt for stor. Kontrollen mod arket regner fortsat med 3,14. I de 42 cases skifter hverken netvalg eller OK/EJ OK.
 
 ## K-07 g = 9,82 for rørvægt
 
@@ -169,7 +169,7 @@ Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af 
 
 **Muligheder.** a) 9,81. b) 10, som vandet. c) Uændret.
 
-**Første version.** Som arket.
+**Afgjort.** Mulighed c): g = 9,82 bevares (beslutning 29. oktober 2026). Det er tyngdeaccelerationen i Danmark, ca. 9,816 m/s², og ikke en fejl. Mellemregningerne forklarer det. 10 ville give mere ballast og dermed ligge på den usikre side.
 
 ## K-08 Omslag: kontrollen passer ikke til dimensioneringen
 

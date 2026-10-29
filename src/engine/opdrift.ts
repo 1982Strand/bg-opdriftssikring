@@ -5,6 +5,14 @@ import standarder from './defaults.json' with { type: 'json' };
 import { geonetProdukter, vaelgGeonet, type GeonetValg } from './geonet.ts';
 
 export type Konsekvensklasse = 'CC1' | 'CC2' | 'CC3';
+/** Konstanter, hvor appen bevidst afviger fra regnearket. */
+export interface Konstanter {
+  pi: number;
+}
+/** Appen regner med π (fund K-06). */
+export const konstanter: Konstanter = { pi: Math.PI };
+/** Regnearkets π = 3,14. Bruges kun, når motoren kontrolleres mod arket. */
+export const arketsKonstanter: Konstanter = { pi: 3.14 };
 export interface GeonetOverstyring {
   uts: number; // UTS pr. lag, kN/m
   lag: number; // 1 eller 2; siden bruger altid 2 ved manuelt valg
@@ -96,13 +104,14 @@ const konklusionIkkeNoedvendig: [string, string] = [
   'totalsikkerhed mod opdrift på min. 1,0 er opnået',
 ];
 
-const { pi, gammaW, mu, krav, mindstelaengder: min } = standarder;
+const { gammaW, mu, krav, mindstelaengder: min } = standarder;
 const status = (vaerdi: number, graense: number): Status => (vaerdi > graense ? 'OK' : 'EJ OK');
 /** Tal i fejltekster med dansk decimalkomma, fx 0,9. */
 const dansk = (x: number) => String(x).replace('.', ',');
 
 export function beregnOpdrift(
   input: OpdriftInput,
+  { pi }: Konstanter = konstanter,
 ): { ok: true; resultat: OpdriftResultat } | { ok: false; fejl: Inputfejl[] } {
   const fejl = valider(input);
   if (fejl.length) return { ok: false, fejl };
@@ -124,7 +133,7 @@ export function beregnOpdrift(
     torFyld: gvs * d * gammaTorD,
     vaadFyld: (T3 - gvs) * d * gammaEffD,
     roerHalvdel: ((pi / 4) * d ** 2 * gammaEffD) / 2,
-    egenvaegt: (roervaegtD * standarder.g) / 1000,
+    egenvaegt: (roervaegtD * standarder.g) / 1000, // g = 9,82, tyngdeaccelerationen i Danmark (K-07)
   };
   const B =
     ballastLed.torFyld + ballastLed.vaadFyld - ballastLed.roerHalvdel + ballastLed.egenvaegt;
