@@ -47,6 +47,16 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await expect(geonet.getByRole('row', { name: /Kemisk påvirkning/ })).toContainText('1,22');
   await expect(geonet.getByText('Fopdrift = O − B = 54,00 − 26,43 = 27,56 kN/m')).toBeVisible();
   await expect(geonet.getByText('Ptill = UTS/RF = 80/2,11 = 37,98 kN/m')).toBeVisible();
+  await expect(geonet.getByText('RF beregnes som produktet af følgende faktorer:')).toBeVisible();
+  await expect(
+    geonet.getByText(
+      'Reduktionsfaktorer fremgår af “British Board of Agreement” (BBA) certifikat No. 16/H253, se www.byggros.com',
+    ),
+  ).toBeVisible();
+  await expect(geonet.getByRole('link', { name: 'www.byggros.com' })).toHaveAttribute(
+    'href',
+    'https://www.byggros.com',
+  );
   await expect(flise(page, 'Valgt geonet').locator('p')).toHaveText('Ultimal styrke UTS = 80 kN/m');
   await expect(geonet.getByRole('row', { name: /X-GRID/ })).toHaveCount(0);
 });

@@ -322,3 +322,11 @@ Flisen skriver nu »Krav: P_till/F_opdrift > 1,01 (P_till udnyttet 80%)«. Uden 
 Brugerens ønske: »Flyt mellemregning for Ptill op under Fopdrift. slet teksten 'X-GRID 130 og 200 er tilføjet fra databladet, og regnearkets valggrænse på 78,9 kN/m for X-GRID 150 er udgået (fund K-21 og K-02).'«
 
 Mellemregningerne i kort 6 starter nu med F_opdrift og derefter P_till, før opstillingen af RF. Noten under opstillingen siger kun, at reduktionsfaktorerne er fra BBA-certifikatet, og hvordan det automatiske valg sker. Fund K-21 og K-02 er fortsat beskrevet i FUND.md.
+
+## 29. oktober 2026 — kildehenvisning til BBA-certifikatet i mellemregningerne for geonet
+
+Brugerens ønske: »ændr teksten 'RF beregnes som produktet af følgende faktorer (BBA 16/H253):' til 'RF beregnes som produktet af følgende faktorer:' teksten i bunden skal ændres til: 'Reduktionsfaktorer fremgår af “British Board of Agreement” (BBA) certifikat No. 16/H253, se [www.byggros.com](https://www.byggros.com)'«
+
+- Indledningen til opstillingen af RF nævner ikke længere certifikatet.
+- Noten under mellemregningerne er erstattet af kildehenvisningen med link til https://www.byggros.com, som åbnes i en ny fane. Sætningen om, at det automatiske valg tager det mindste produkt, hvor F_opdrift er under P_till, er dermed udgået af noten.
+- Links i noter understreges som i MSL Dimensionering.

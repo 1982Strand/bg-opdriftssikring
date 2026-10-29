@@ -742,9 +742,7 @@ export function Opdriftssikring() {
                 ]}
               />
               <h3 className="mellemregninger-overskrift">Reduktionsfaktor (RF)</h3>
-              <p className="calc-note">
-                RF beregnes som produktet af følgende faktorer (BBA {standarder.geonet.bba}):
-              </p>
+              <p className="calc-note">RF beregnes som produktet af følgende faktorer:</p>
               <TabelRamme label="Reduktionsfaktor">
                 <table className="data-table rf-table">
                   <tbody>
@@ -789,8 +787,11 @@ export function Opdriftssikring() {
                 </table>
               </TabelRamme>
               <p className="calc-note">
-                Reduktionsfaktorerne er fra BBA-certifikat {standarder.geonet.bba}. Det automatiske
-                valg tager det mindste produkt, hvor F<sub>opdrift</sub> er under P<sub>till</sub>.
+                Reduktionsfaktorer fremgår af “British Board of Agreement” (BBA) certifikat No.{' '}
+                {standarder.geonet.bba}, se{' '}
+                <a href="https://www.byggros.com" target="_blank" rel="noreferrer">
+                  www.byggros.com
+                </a>
               </p>
             </Udfold>
           </Trin>
