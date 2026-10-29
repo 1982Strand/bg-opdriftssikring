@@ -316,3 +316,9 @@ Brugerens ønske: »Afrund RF til max 2 decimaler. Tilføj også lige Fopdrift m
 Brugerens ønske: »ændr' teksten i kortet med sikkerhed fra 'Udnyttelse af Ptill: 80 % · krav > 1,01' til 'Krav: Ptill/Fopdrift > 1,0 (Ptill udnyttet 80%)'«. På spørgsmålet, om kravet skal skrives som 1,01, der bruges i beregningen, eller ændres til 1,0, svarede brugeren: »Skriv 1,01«.
 
 Flisen skriver nu »Krav: P_till/F_opdrift > 1,01 (P_till udnyttet 80%)«. Uden positiv F_opdrift står kun »Krav: P_till/F_opdrift > 1,01«. Kravet hentes fra `krav.geonet`, og beregningen er uændret.
+
+## 29. oktober 2026 — rækkefølge og note i mellemregningerne for geonet
+
+Brugerens ønske: »Flyt mellemregning for Ptill op under Fopdrift. slet teksten 'X-GRID 130 og 200 er tilføjet fra databladet, og regnearkets valggrænse på 78,9 kN/m for X-GRID 150 er udgået (fund K-21 og K-02).'«
+
+Mellemregningerne i kort 6 starter nu med F_opdrift og derefter P_till, før opstillingen af RF. Noten under opstillingen siger kun, at reduktionsfaktorerne er fra BBA-certifikatet, og hvordan det automatiske valg sker. Fund K-21 og K-02 er fortsat beskrevet i FUND.md.

@@ -736,6 +736,9 @@ export function Opdriftssikring() {
               <Formler
                 linjer={[
                   `F_{opdrift} = O − B = ${tal(r.O)} − ${tal(r.B)} = ${tal(r.Fopdrift)} kN/m`,
+                  r.geonet.uts === null
+                    ? `Intet produkt har en valggrænse over F_{opdrift} = ${tal(r.Fopdrift)} kN/m.`
+                    : `P_{till} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF)} = ${tal(r.geonet.Ptill)} kN/m`,
                 ]}
               />
               <h3 className="mellemregninger-overskrift">Reduktionsfaktor (RF)</h3>
@@ -785,18 +788,9 @@ export function Opdriftssikring() {
                   </tbody>
                 </table>
               </TabelRamme>
-              <Formler
-                linjer={[
-                  r.geonet.uts === null
-                    ? `Intet produkt har en valggrænse over F_{opdrift} = ${tal(r.Fopdrift)} kN/m.`
-                    : `P_{till} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF)} = ${tal(r.geonet.Ptill)} kN/m`,
-                ]}
-              />
               <p className="calc-note">
                 Reduktionsfaktorerne er fra BBA-certifikat {standarder.geonet.bba}. Det automatiske
                 valg tager det mindste produkt, hvor F<sub>opdrift</sub> er under P<sub>till</sub>.
-                X-GRID 130 og 200 er tilføjet fra databladet, og regnearkets valggrænse på 78,9 kN/m
-                for X-GRID 150 er udgået (fund K-21 og K-02).
               </p>
             </Udfold>
           </Trin>
