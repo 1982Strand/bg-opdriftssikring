@@ -151,6 +151,8 @@ Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af 
 
 **Første version.** Som arket uden afvisning. Kontrolpunkt, når GVS ligger under rørtoppen.
 
+**Forslag til mulighed c.** Formler, eksempler, punkter til beslutning og testplan står i [FORSLAG_K-05.md](FORSLAG_K-05.md) (29. oktober 2026, ikke godkendt).
+
 ## K-06 π = 3,14
 
 **Arket.** O, B og L_geonet,tot regnes med 3,14. Kun tan bruger PI().
