@@ -55,7 +55,7 @@ Kortene har samme rækkefølge som rapporten:
    - Diameter d, jorddækning h₁ og GVS-dybde, med valget »GVS i terræn«.
    - Et levende tværsnit med T₁, T₂, T₃, h₁, h₂ og d.
    - T₁ = 0 er fast (K-18). Felterne afviser kun værdier uden fysisk mening, fx diameter ≤ 0. Ellers er der ingen grænser, som i arket.
-4. **Egenvægt og fyldmateriale.** Rørets egenvægt i kg/m, γ, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier og de anvendte partialkoefficienter.
+4. **Egenvægt og fyldmateriale.** Rørets egenvægt i kg/m, γ_våd, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier, også γ′ = γ_våd − γ_w, og de anvendte partialkoefficienter. Regningsmæssige værdier får indekset d, fx γ_våd,d, γ_tør,d og γ′_d.
 5. **Opdrift uden geonet.** O, B og S₁ med statusmærke og arkets konklusionstekst.
 6. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
 7. **Forankring.**

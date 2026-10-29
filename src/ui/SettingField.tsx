@@ -211,7 +211,7 @@ export function SettingField({
       )}
       {error && (
         <p className="setting-error" id={`${field.key}-external-error`} role="alert">
-          {error}
+          <Fmt text={error} />
         </p>
       )}
       {/* Forklaringen står også skjult i DOM, så skærmlæsere får den via aria-describedby. */}

@@ -176,3 +176,13 @@ Valgt af Claude og kan ændres:
 - Linjen om konsekvensklasse nævner den valgte klasse, fx »konsekvensklasse CC2 (middel konsekvensklasse)«, i stedet for arkets faste »middel konsekvenssklasse«. Det er besluttet for rapporten i planen.
 - Opsummeringen i kort 1 er »DS/EN 1997-1 DK NA:2021 · levetid 120 år«. Kort 2 viser klasse, K_FI og γ_f.
 - »Nulstil beregning« sætter nu også konsekvensklassen tilbage til CC2, fordi klassen står på beregningssiden. Knappen »Nulstil indstillinger« er udgået.
+
+## 29. oktober 2026 — navne på rumvægtene
+
+Brugerens ønske: »'rumvægt, våd γ' skal hedde 'rumvægt, mættet γ_m'. 'Rumvægt, tør γtør' skal hedde 'Rumvægt, tør γ_d'.« Claude påpegede, at indekset d allerede betyder regningsmæssig. Brugerens endelige svar: »jeg tror hellere jeg vil ændre den våde rumvægt til γ_våd og den tørre til γ_tør. og så d'et kommer på for de regningsmæssige værdier«.
+
+- Den våde rumvægt hedder γ_våd og den tørre γ_tør. Regningsmæssige værdier får indekset d: γ_våd,d, γ_tør,d, γ′_d, φ_d og E_d.
+- Den effektive rumvægt er γ′ = γ_våd − γ_w. Tabellen i kort 4 viser nu også den karakteristiske værdi, fx 17 − 10 = 7,00 kN/m³ i case 1.
+- Den regningsmæssige værdi er som i arket γ′_d = γ_våd,d − γ_w = 0,9 · γ_våd − γ_w, fx 15,30 − 10 = 5,30 kN/m³. Faktoren 0,9 ganges altså kun på γ_våd, ikke på γ′. Noten under tabellen viser udregningen.
+
+Valgt af Claude og kan ændres: feltteksterne i motorens fejlbeskeder bruger samme navne og vises med sænket skrift, fx »γ_våd skal opfylde γ_våd · 0,9 > γ_w«. Motorens interne navne (`gamma`, `gammaTor`) er uændrede.
