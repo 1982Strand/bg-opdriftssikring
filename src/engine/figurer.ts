@@ -388,11 +388,11 @@ export function opdriftsarealSvg(r: OpdriftResultat, i: OpdriftInput): string | 
     leder(cx + 4, (cy - R + yGvs) / 2, 46),
     tekst(xTekst, 46, `A_{tør} = ${tal(z.Ator, 4)} m²`, 'start'),
     leder(cx + 2, (cy + yGvs) / 2, 96),
-    tekst(xTekst, 96, `a = ${m(z.a)}`, 'start'),
+    tekst(xTekst, 96, `a = T₃ − T₂ = ${m(z.a)}`, 'start'),
     leder(cx + bue * Math.sin(theta / 2), cy - bue * Math.cos(theta / 2), 126),
     tekst(xTekst, 126, `θ = arccos(a/r) = ${tal((theta * 180) / Math.PI)}°`, 'start'),
     leder(cx + c / 2, (cy + yGvs) / 2, 156),
-    tekst(xTekst, 156, `r = ${m(radius)}`, 'start'),
+    tekst(xTekst, 156, `r = d/2 = ${m(radius)}`, 'start'),
     leder(cx - 4, (yGvs + cy + R) / 2, 206),
     tekst(xTekst, 206, `A_{våd} = ${tal(z.Avaad, 4)} m²`, 'start'),
   ];
