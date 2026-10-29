@@ -30,6 +30,17 @@ Kontrollen mod arket regner med arkets π = 3,14 (`arketsKonstanter`), mens appe
 
 Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Tolerancen dækker kun afrundingsstøj i kommatal, fordi motoren og Excel kan udføre de samme regneoperationer i lidt forskellig rækkefølge. Valgt geonet, OK/EJ OK og tekster skal stemme præcist.
 
+Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
+- den giver præcis samme resultat som standardberegningen for de 38 cases med GVS i eller over rørtoppen, og at standardberegningen er uændret, når metoden angives;
+- håndregningerne i [FORSLAG_K-05.md](FORSLAG_K-05.md), afsnit 7.1 og 7.2, genfindes;
+- O og B stemmer med en uafhængig numerisk integration over rørets vinkel for 960 kombinationer med GVS i alle zoner, ved 1e-9;
+- arealet over GVS har de rigtige grænser og er symmetrisk om rørmidten, og O og B springer ikke ved zonegrænserne;
+- O og F_opdrift aftager, og B vokser eller er konstant, når GVS sænkes;
+- GVS ved eller under rørbunden giver O = 0 og ingen S₁ eller kontrol;
+- σ′_v følger GVS, og K-05 kun forekommer i standardberegningen;
+- F_opdrift aldrig er større end i standardberegningen, når der skal bruges net;
+- figurerne er gyldige, og valget gemmes i sessionen.
+
 Øvrige enhedstests dækker:
 - validering og kontrolpunkter i motoren;
 - figurerne for alle 42 cases;
@@ -44,8 +55,9 @@ Browsertestene dækker:
 - alle fire løsninger uden valg af antal eller konstruktion;
 - manuelt valg af 2 lag X-GRID 150;
 - forudsætningerne og konsekvensklasse CC3 i kort 1–2;
+- avanceret beregning til og fra med GVS under rørtoppen og ved rørbunden;
 - navigationen;
-- tilgængelighed med axe ved 1440 og 390 px.
+- tilgængelighed med axe ved 1440 og 390 px, også med avanceret beregning.
 
 Input og forventninger må ikke ændres for at få en ændring til at bestå. En bevidst afvigelse fra arket kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
 

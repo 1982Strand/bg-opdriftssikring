@@ -16,6 +16,8 @@ export interface Session {
     produkt: number;
   };
   konsekvensklasse: Konsekvensklasse;
+  /** Avanceret beregning (docs/FORSLAG_K-05.md); ellers regnes som regnearket. */
+  avanceret: boolean;
 }
 export const STORAGE_KEY = 'opdrift.session';
 export const standardSession = (): Session => ({
@@ -32,6 +34,7 @@ export const standardSession = (): Session => ({
     produkt: 150,
   },
   konsekvensklasse: 'CC2',
+  avanceret: false,
 });
 export function tilMotorInput(s: Session): OpdriftInput {
   const i = s.inddata;
@@ -47,6 +50,7 @@ export function tilMotorInput(s: Session): OpdriftInput {
     overstyring: i.overstyringAktiv
       ? { uts: i.produkt, lag: standarder.geonet.lagVedManueltValg }
       : null,
+    metode: s.avanceret ? 'avanceret' : 'standard',
   };
 }
 const num = (v: unknown, d: number, min = -Infinity, max = Infinity) =>
@@ -88,6 +92,7 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
         konsekvensklasse: ['CC1', 'CC2', 'CC3'].includes(x.konsekvensklasse)
           ? x.konsekvensklasse
           : 'CC2',
+        avanceret: x.avanceret === true,
       },
       error: false,
     };

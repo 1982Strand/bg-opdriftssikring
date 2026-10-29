@@ -161,3 +161,47 @@ test('X-GRID 200 vælges automatisk over X-GRID 150 (K-21)', async ({ page }) =>
   await expect(flise(page, 'Sikkerhed Ptill').locator('.m9-badge')).toHaveText('OK');
   await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
 });
+
+test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
+  await start(page);
+  await saet(page, 'Rørdiameter d (m)', '4');
+  await saet(page, 'Jorddækning h₁ (m)', '0.6');
+  await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
+  await saet(page, 'GVS under terræn (m)', '1.6');
+  // Standardberegningen regner som regnearket og viser kontrolpunkt K-05.
+  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('138,23');
+  await expect(page.getByText(/GVS ligger under toppen af røret/)).toBeVisible();
+  await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);
+  await expect(page.getByText(/Avanceret beregning er valgt/)).toHaveCount(0);
+
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await expect(page.getByText(/Avanceret beregning er valgt/)).toBeVisible();
+  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('111,21');
+  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('60,71');
+  await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 110');
+  await expect(page.getByText(/Beregninger på eget ansvar/)).toBeVisible();
+  await expect(page.getByText(/GVS ligger under toppen af røret/)).toHaveCount(0);
+  await page.getByRole('button', { name: 'Mellemregninger', exact: true }).first().click();
+  await expect(page.getByText(/arccos\(a\/r\).* = 2,4567 m²/)).toBeVisible();
+  await expect(
+    page.getByText(/del af rørets udvendige tværsnit, der ligger under GVS/),
+  ).toBeVisible();
+
+  // Valget gemmes sammen med beregningen.
+  await page.reload();
+  await expect(page.getByRole('checkbox', { name: 'Avanceret beregning' })).toBeChecked();
+
+  // GVS ved rørbunden: ingen opdrift.
+  await saet(page, 'GVS under terræn (m)', '4.6');
+  await expect(
+    page.getByText('GVS ligger ved eller under rørbunden', { exact: false }),
+  ).toBeVisible();
+  await expect(flise(page, 'Sikkerhed S₁').locator('strong')).toHaveText('–');
+  await expect(flise(page, 'Sikkerhed S₁').locator('p')).toHaveText('Ingen opdrift');
+
+  // Uden afkrydsning regnes igen som regnearket.
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('138,23');
+  await expect(page.getByText(/GVS ligger under toppen af røret/)).toBeVisible();
+  await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);
+});

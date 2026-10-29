@@ -1,10 +1,14 @@
 /** Opdriftssikring med geonet, regnet præcis som regnearket (docs/EXCEL_KORTLAEGNING.md).
  * Kommentarerne henviser til arkets celler i »Rapporten«. Afvigelser fra arket står i docs/FUND.md
- * og indføres kun efter beslutning. */
+ * og indføres kun efter beslutning. Den avancerede beregning (docs/FORSLAG_K-05.md) er en særskilt
+ * metode; standardberegningen er uændret. */
 import standarder from './defaults.json' with { type: 'json' };
 import { geonetProdukter, vaelgGeonet, type GeonetValg } from './geonet.ts';
 
 export type Konsekvensklasse = 'CC1' | 'CC2' | 'CC3';
+/** 'standard' regner som regnearket. 'avanceret' regner opdrift og ballast for den del af røret,
+ * der står under GVS (fund K-05, mulighed c). */
+export type Beregningsmetode = 'standard' | 'avanceret';
 /** Konstanter, hvor appen bevidst afviger fra regnearket. */
 export interface Konstanter {
   pi: number;
@@ -27,12 +31,21 @@ export interface OpdriftInput {
   phi: number; // C159, grader
   konsekvensklasse: Konsekvensklasse;
   overstyring: GeonetOverstyring | null;
+  metode?: Beregningsmetode; // 'standard', hvis den mangler
 }
 export type Status = 'OK' | 'EJ OK';
 export type Kontrolpunkt = 'K-03' | 'K-05' | 'K-12' | 'K-13';
 export interface Inputfejl {
   felt: keyof OpdriftInput;
   tekst: string;
+}
+/** GVS' placering i den avancerede beregning: 1 i eller over rørtoppen, 2 mellem rørtop og rørmidte,
+ * 3 mellem rørmidte og rørbund, 4 ved eller under rørbunden. */
+export interface GvsZone {
+  zone: 1 | 2 | 3 | 4;
+  a: number; // GVS' højde over rørmidten, T₃ − T₂, m
+  Ator: number; // rørets areal over GVS, m²
+  Avaad: number; // rørets areal under GVS, m²
 }
 
 export interface OpdriftResultat {
@@ -44,11 +57,22 @@ export interface OpdriftResultat {
   gammaEffD: number;
   roervaegtD: number;
   projektbeskrivelse: { d: number; h1: number; gvs: number | 'i Terræn' };
+  metode: Beregningsmetode;
+  /** Kun i den avancerede beregning. */
+  gvsZone: GvsZone | null;
   O: number;
-  /** Ballastens led: fyld over GVS, fyld under GVS, rørets øverste halvdel (trækkes fra) og egenvægt. */
-  ballastLed: { torFyld: number; vaadFyld: number; roerHalvdel: number; egenvaegt: number };
+  /** Ballastens led: fyld over GVS, fyld under GVS, rørets øverste halvdel (trækkes fra) og egenvægt.
+   * I avanceret beregning med GVS mellem rørtop og rørmidte deles rørhalvdelen i en tør og en våd del. */
+  ballastLed: {
+    torFyld: number;
+    vaadFyld: number;
+    roerHalvdel: number;
+    egenvaegt: number;
+    roerDele?: { tor: number; vaad: number };
+  };
   B: number;
-  S1: number;
+  /** null, når der ikke er opdrift (avanceret beregning med GVS ved eller under rørbunden). */
+  S1: number | null;
   S1Status: Status;
   konklusion: [string, string];
   Fopdrift: number;
@@ -66,8 +90,8 @@ export interface OpdriftResultat {
       La: number;
       Ltot: number;
       ballastForankring: number;
-      kontrol: number;
-      status: Status;
+      kontrol: number | null;
+      status: Status | null;
     };
     /** Afsnit 10: to rør uden omslag. */
     B: {
@@ -85,8 +109,8 @@ export interface OpdriftResultat {
       La: number;
       Ltot: number;
       ballastForankring: number;
-      kontrol: number;
-      status: Status;
+      kontrol: number | null;
+      status: Status | null;
     };
     /** Afsnit 12: to rør med omslag. */
     D: { toLMellem: number; L: number; La: number; Ltot: number };
@@ -103,6 +127,28 @@ const konklusionIkkeNoedvendig: [string, string] = [
   'Som det ses af ovennævnte beregninger er sikring mod opdrift IKKE nødvendig',
   'totalsikkerhed mod opdrift på min. 1,0 er opnået',
 ];
+// Avanceret beregning med GVS ved eller under rørbunden.
+const konklusionIngenOpdrift: [string, string] = [
+  'GVS ligger ved eller under rørbunden, så røret påvirkes ikke af opdrift.',
+  'Opdriftssikring er ikke nødvendig.',
+];
+
+/** Zone og areal over og under GVS for et rør med udvendigt areal `fuld` (docs/FORSLAG_K-05.md). */
+function gvsZone(d: number, h1: number, gvs: number, fuld: number): GvsZone {
+  const r = d / 2;
+  const a = h1 + r - gvs;
+  if (gvs <= h1) return { zone: 1, a, Ator: 0, Avaad: fuld };
+  if (gvs >= h1 + d) return { zone: 4, a, Ator: fuld, Avaad: 0 };
+  // Cirkelafsnittet over en vandret linje i højden a over midten. Den mindste af de to dele regnes
+  // direkte, så et lille areal nær rørtop eller rørbund ikke tabes ved afrunding.
+  const s = Math.sqrt(r ** 2 - a ** 2);
+  if (a >= 0) {
+    const Ator = r ** 2 * Math.acos(a / r) - a * s;
+    return { zone: 2, a, Ator, Avaad: fuld - Ator };
+  }
+  const Avaad = Math.max(0, r ** 2 * Math.acos(-a / r) + a * s);
+  return { zone: 3, a, Ator: fuld - Avaad, Avaad };
+}
 
 const { gammaW, mu, krav, mindstelaengder: min } = standarder;
 const status = (vaerdi: number, graense: number): Status => (vaerdi > graense ? 'OK' : 'EJ OK');
@@ -126,18 +172,46 @@ export function beregnOpdrift(
   const gammaEffD = gammaD - gammaW; // C286
   const roervaegtD = input.roervaegt * standarder.gammaGstb; // D149
   const T3 = h1 + d / 2; // B123
+  const metode = input.metode ?? 'standard';
+  const zone = metode === 'avanceret' ? gvsZone(d, h1, gvs, (pi / 4) * d ** 2) : null;
 
-  const O = (pi / 4) * d ** 2 * gammaW * gammaF; // G133
+  // G133. I avanceret beregning giver kun rørets areal under GVS opdrift.
+  const O = zone ? zone.Avaad * gammaW * gammaF : (pi / 4) * d ** 2 * gammaW * gammaF;
   // G145 i fire led, lagt sammen i arkets rækkefølge.
-  const ballastLed = {
-    torFyld: gvs * d * gammaTorD,
-    vaadFyld: (T3 - gvs) * d * gammaEffD,
-    roerHalvdel: ((pi / 4) * d ** 2 * gammaEffD) / 2,
-    egenvaegt: (roervaegtD * standarder.g) / 1000, // g = 9,82, tyngdeaccelerationen i Danmark (K-07)
-  };
+  const egenvaegt = (roervaegtD * standarder.g) / 1000; // g = 9,82, tyngdeaccelerationen i Danmark (K-07)
+  let ballastLed: OpdriftResultat['ballastLed'];
+  if (!zone || zone.zone === 1)
+    ballastLed = {
+      torFyld: gvs * d * gammaTorD,
+      vaadFyld: (T3 - gvs) * d * gammaEffD,
+      roerHalvdel: ((pi / 4) * d ** 2 * gammaEffD) / 2,
+      egenvaegt,
+    };
+  else if (zone.zone === 2) {
+    // Rørhalvdelen over GVS trækkes fra med tør rumvægt og resten med effektiv rumvægt.
+    const roerDele = {
+      tor: zone.Ator * gammaTorD,
+      vaad: (((pi / 4) * d ** 2) / 2 - zone.Ator) * gammaEffD,
+    };
+    ballastLed = {
+      torFyld: gvs * d * gammaTorD,
+      vaadFyld: (T3 - gvs) * d * gammaEffD,
+      roerHalvdel: roerDele.tor + roerDele.vaad,
+      egenvaegt,
+      roerDele,
+    };
+  } else
+    // GVS under rørmidten: hele søjlen til rørmidten er tør.
+    ballastLed = {
+      torFyld: T3 * d * gammaTorD,
+      vaadFyld: 0,
+      roerHalvdel: (((pi / 4) * d ** 2) / 2) * gammaTorD,
+      egenvaegt,
+    };
   const B =
     ballastLed.torFyld + ballastLed.vaadFyld - ballastLed.roerHalvdel + ballastLed.egenvaegt;
-  const S1 = B / O; // E167
+  const ingenOpdrift = zone?.zone === 4;
+  const S1 = ingenOpdrift ? null : B / O; // E167
   const Fopdrift = O - B; // G177
   const geonet = vaelgGeonet(Fopdrift, input.overstyring); // G199:H238
 
@@ -152,10 +226,11 @@ export function beregnOpdrift(
   const toLVist = Math.max(min.udenOmslag.iAlt, K / Fbund);
   const LA = Math.max(min.udenOmslag.prSide, toLVist / 2);
   const ballastForankringA = B + Fbund * LA * 2;
-  const kontrolA = ballastForankringA / O;
+  const kontrolA = ingenOpdrift ? null : ballastForankringA / O;
 
-  // Afsnit 10: E363, G363, C366, C369, B384, B385
-  const sigmaV = gvs * gammaTorD + (T3 - gvs) * gammaEffD;
+  // Afsnit 10: E363, G363, C366, C369, B384, B385. I avanceret beregning med GVS under rørmidten
+  // regnes σ′_v med tør jord til rørmidten.
+  const sigmaV = zone && zone.zone >= 3 ? T3 * gammaTorD : gvs * gammaTorD + (T3 - gvs) * gammaEffD;
   const toLMellemBeregnet = (0.5 * Fopdrift * 2 * standarder.faktorMellemRoer) / sigmaV;
   const toLMellem = Math.max(min.udenOmslag.mellemRoer, toLMellemBeregnet);
 
@@ -164,7 +239,7 @@ export function beregnOpdrift(
   const toL = x < min.medOmslag.naarXUnder ? min.medOmslag.iAlt : x;
   const LC = Math.max(min.medOmslag.prSide, toL / 2);
   const ballastForankringC = B + ((Fbund + Ftop) / 2) * LC * 4;
-  const kontrolC = ballastForankringC / O;
+  const kontrolC = ingenOpdrift ? null : ballastForankringC / O;
   const tillaeg = standarder.netTillaegOmslag; // 0,4 i B412 og B470 (K-09)
 
   return {
@@ -183,12 +258,19 @@ export function beregnOpdrift(
       gammaEffD,
       roervaegtD,
       projektbeskrivelse: { d, h1, gvs: gvs === 0 ? 'i Terræn' : gvs }, // C8:C10
+      metode,
+      gvsZone: zone,
       O,
       ballastLed,
       B,
       S1,
-      S1Status: status(S1, krav.S1), // H167
-      konklusion: S1 < krav.S1 ? konklusionNoedvendig : konklusionIkkeNoedvendig,
+      S1Status: S1 === null ? 'OK' : status(S1, krav.S1), // H167
+      konklusion:
+        S1 === null
+          ? konklusionIngenOpdrift
+          : S1 < krav.S1
+            ? konklusionNoedvendig
+            : konklusionIkkeNoedvendig,
       Fopdrift,
       geonet,
       hBund,
@@ -204,7 +286,7 @@ export function beregnOpdrift(
           Ltot: LA * 2 + (pi * d) / 2,
           ballastForankring: ballastForankringA,
           kontrol: kontrolA,
-          status: status(kontrolA, krav.kontrol), // H333
+          status: kontrolA === null ? null : status(kontrolA, krav.kontrol), // H333
         },
         B: {
           sigmaV,
@@ -221,7 +303,7 @@ export function beregnOpdrift(
           Ltot: 4 * (LC + tillaeg) + (pi * d) / 2,
           ballastForankring: ballastForankringC,
           kontrol: kontrolC,
-          status: status(kontrolC, krav.kontrol), // H427
+          status: kontrolC === null ? null : status(kontrolC, krav.kontrol), // H427
         },
         D: {
           toLMellem: 2 * LC, // C452
@@ -230,7 +312,7 @@ export function beregnOpdrift(
           Ltot: 4 * (2 * LC + tillaeg) + pi * d,
         },
       },
-      kontrolpunkter: kontrolpunkter(input, geonet, Fopdrift, S1, toLVist, LA),
+      kontrolpunkter: kontrolpunkter(input, metode, geonet, Fopdrift, S1, toLVist, LA),
     },
   };
 }
@@ -238,9 +320,10 @@ export function beregnOpdrift(
 /** Oplysninger om aktive fund (docs/FUND.md). De ændrer ikke beregningen. */
 function kontrolpunkter(
   input: OpdriftInput,
+  metode: Beregningsmetode,
   geonet: GeonetValg,
   Fopdrift: number,
-  S1: number,
+  S1: number | null,
   toLVist: number,
   LA: number,
 ): Kontrolpunkt[] {
@@ -248,8 +331,9 @@ function kontrolpunkter(
   const valgt = geonet.automatisk && geonet.Ptill !== null ? geonet.Ptill : null;
   if (valgt !== null && Fopdrift > 0 && Fopdrift < valgt && valgt / Fopdrift <= krav.geonet)
     k.push('K-03');
-  if (input.gvs > input.h1) k.push('K-05');
-  if (S1 >= krav.S1) k.push('K-12');
+  // Den avancerede beregning regner GVS under rørtoppen korrekt, så K-05 gælder kun standarden.
+  if (metode === 'standard' && input.gvs > input.h1) k.push('K-05');
+  if (S1 !== null && S1 >= krav.S1) k.push('K-12');
   if (toLVist !== 2 * LA) k.push('K-13');
   return k;
 }

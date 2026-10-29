@@ -44,6 +44,10 @@ for (const width of [1440, 390]) {
       page.locator('[data-slot="accordion-content"][data-state="open"]').first(),
     ).toBeVisible();
     expect(await axe(page)).toEqual([]);
+    // Avanceret beregning med GVS mellem rørtop og rørmidte: note om vandstand og nye mellemregninger.
+    await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+    await expect(page.getByText(/Beregninger på eget ansvar/)).toBeVisible();
+    expect(await axe(page)).toEqual([]);
 
     for (const side of pladsholdere) {
       await page.goto(`/#${side}`);

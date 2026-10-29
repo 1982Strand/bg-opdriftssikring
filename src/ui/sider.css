@@ -21,6 +21,9 @@
 .calc-mode > button {
   margin-left: auto;
 }
+.calc-mode-notice {
+  margin: -8px 0 24px;
+}
 
 .calc-grid {
   display: grid;

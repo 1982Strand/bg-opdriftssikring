@@ -17,7 +17,8 @@ Motoren ligger i `src/engine/` og kører i TypeScript i browseren. Brugerflade, 
 - karakteristisk rørvægt i kg/m;
 - γ_våd (`gamma`), γ_tør (`gammaTor`) og φ_k;
 - konsekvensklasse;
-- eventuel overstyring af geonettet med produkt og antal lag (1 eller 2; siden bruger altid 2).
+- eventuel overstyring af geonettet med produkt og antal lag (1 eller 2; siden bruger altid 2);
+- beregningsmetode: `standard` (som arket, også når feltet mangler) eller `avanceret`.
 
 Felterne afviser kun værdier uden fysisk mening. Hver fejl er knyttet til sit felt, så siden kan vise den ved feltet:
 - d skal være > 0;
@@ -59,6 +60,19 @@ En ændring af disse kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
 
 - **K-21 (og K-02).** Produktlisten er X-GRID 35, 55, 80, 110, 130, 150 og 200 fra databladet. Valggrænsen er P_till = UTS/RF for alle produkter uden afrunding.
 - **K-06.** Motoren regner med π (`konstanter` i `opdrift.ts`). `beregnOpdrift(input, arketsKonstanter)` regner med arkets 3,14 og bruges kun i kontrollen mod arket.
+
+## Avanceret beregning
+
+Med `metode: 'avanceret'` regnes opdrift og ballast for den del af røret, der står under GVS (fund K-05, mulighed c). Formlerne står i [FORSLAG_K-05.md](FORSLAG_K-05.md), afsnit 3–6. Standardberegningen er uændret.
+
+- `gvsZone` angiver zonen (1 i eller over rørtoppen, 2 mellem rørtop og rørmidte, 3 mellem rørmidte og rørbund, 4 ved eller under rørbunden), a = T₃ − T₂ og rørets areal over og under GVS. Feltet er `null` i standardberegningen.
+- Den mindste del af tværsnittet regnes direkte, så små arealer nær rørtop og rørbund ikke tabes ved afrunding.
+- I zone 1 er resultatet præcis som standardberegningen.
+- I zone 2 deles rørhalvdelen i en tør og en våd del (`ballastLed.roerDele`). I zone 3 og 4 er hele søjlen til rørmidten tør.
+- I zone 4 er O = 0, og S₁ og kontrollerne for løsning A og C er `null`. S₁-status er OK, og konklusionen siger, at røret ikke påvirkes af opdrift.
+- σ′_v for to ledninger regnes med tør jord til rørmidten, når GVS ligger under midten.
+- Kontrolpunkt K-05 gælder kun standardberegningen. K-12 forudsætter, at S₁ kan regnes.
+- Forankringen (F_bund, F_top) er som i standardberegningen (K-19).
 
 ## Figurer
 

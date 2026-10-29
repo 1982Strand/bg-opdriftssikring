@@ -65,6 +65,8 @@ Kortene har samme rækkefølge som rapporten:
 
 Er S₁ > 1, tones kort 6–7 ned i gråtoner, så kontrasten bevares, men tallene vises som i arket.
 
+**Avanceret beregning.** En afkrydsning øverst på siden skifter til den avancerede beregning (fund K-05, mulighed c, [FORSLAG_K-05.md](FORSLAG_K-05.md)). Den ændrer formler, mellemregninger, forklaringer og noter. Uden afkrydsning regnes som arket. Valget gemmes sammen med beregningen, og »Nulstil beregning« vælger standardberegningen. Senere afvigelser fra arket kan samles i den avancerede beregning efter beslutning, fx K-19.
+
 Under resultaterne står kortet **Kontrolpunkter**, når der er aktive fund. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-03, K-05, K-12, K-13). Kontrolpunkterne ændrer ikke beregningen og kommer ikke med i rapporten.
 
 Figurerne tegnes som SVG ud fra de aktuelle mål, ligesom opbygningsfiguren i MSL. Samme figur bruges på skærmen og i rapporten. Arkets billeder bruges kun som forlæg.
@@ -114,7 +116,7 @@ Rapportens indhold følger arkets afsnit og tal:
 8. Kraftoverførsel i sand
 9. Løsningerne. Hvilke af de fire løsninger rapporten tager med, og om nogle kan fravælges, afklares i fase 4.
 
-Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden får sagsbehandleren fra kartoteket i stedet for »Bruger«.
+Rapporten skal oplyse, om der er regnet med standardberegningen eller den avancerede beregning. Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden får sagsbehandleren fra kartoteket i stedet for »Bruger«.
 
 ## 7. Test og kontrol
 

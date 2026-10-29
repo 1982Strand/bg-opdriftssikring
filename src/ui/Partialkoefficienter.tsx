@@ -33,7 +33,7 @@ export function Partialkoefficienter() {
   const KFI = standarder.KFI[valgt];
   const raekker: [string, (r: OpdriftResultat) => string][] = [
     ['Opdrift O', (r) => `${tal(r.O)} kN/m`],
-    ['Sikkerhed S₁', (r) => `${tal(r.S1)} · ${r.S1Status}`],
+    ['Sikkerhed S₁', (r) => (r.S1 === null ? 'Ingen opdrift' : `${tal(r.S1)} · ${r.S1Status}`)],
     ['F_{opdrift}', (r) => `${tal(r.Fopdrift)} kN/m`],
     [
       'Valgt geonet',
