@@ -329,4 +329,5 @@ Brugerens ønske: »ændr teksten 'RF beregnes som produktet af følgende faktor
 
 - Indledningen til opstillingen af RF nævner ikke længere certifikatet.
 - Noten under mellemregningerne er erstattet af kildehenvisningen med link til https://www.byggros.com, som åbnes i en ny fane. Sætningen om, at det automatiske valg tager det mindste produkt, hvor F_opdrift er under P_till, er dermed udgået af noten.
+  På spørgsmålet, om sætningen skal tilbage, svarede brugeren: »Nej, sætningen om det automatiske valg skal ikke tilbage.«
 - Links i noter understreges som i MSL Dimensionering.
