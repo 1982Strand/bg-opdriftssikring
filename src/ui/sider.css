@@ -62,15 +62,19 @@
 .params-table {
   margin-top: 24px;
 }
-/* Symbol og værdi står tæt sammen; parameterkolonnen tager resten af bredden. */
+/* Symbolet står tæt foran sin værdi, og der er god afstand til den foregående værdi. Tallene står
+   under kolonneoverskrifterne; parameterkolonnen tager resten af bredden. */
 .fyld-table td,
 .fyld-table thead th:not(:first-child) {
   width: 1%;
   white-space: nowrap;
 }
-.fyld-table td.symbol {
-  padding-left: 40px;
-  padding-right: 12px;
+.fyld-table .symbol {
+  padding-left: 72px;
+  padding-right: 8px;
+}
+.fyld-table .num {
+  padding-left: 8px;
 }
 .data-table tbody tr:last-child th {
   border-bottom: 0;
@@ -194,6 +198,9 @@
   }
   .calc-mode > button {
     margin-left: 0;
+  }
+  .fyld-table .symbol {
+    padding-left: 24px;
   }
 }
 .settings-subheading {

@@ -192,6 +192,7 @@ Valgt af Claude og kan ændres: feltteksterne i motorens fejlbeskeder bruger sam
 Brugerens ønske: »du må gerne lige indsætte parameterangivelsen i en kolonne foran 'karakteristisk' og 'regningsmæssig' - bare så man ikke er i tvivl om hvilken parameter der er tale om. Altså fx så der foran den våde rumvægt, karakteristisk står 'γvåd' og foran den regningsmæssige værdi står 'γvåd,d'«.
 
 - Tabellen i kort 4 har nu et symbol foran hver værdi: γ_våd/γ_våd,d, γ_tør/γ_tør,d, γ′ = γ_våd − γ_w/γ′_d = γ_våd,d − γ_w, φ_k/φ_d og E_k/E_d.
-- Overskrifterne »Karakteristisk« og »Regningsmæssig« dækker hver symbol og værdi. Parameterkolonnen har kun navnet, fx »Rumvægt, våd«.
+- Parameterkolonnen har kun navnet, fx »Rumvægt, våd«.
+- Rettet samme dag efter brugerens svar: »nej, flyt tallene tilbage under kolonneoverskrifterne, og lad parameterangivielsen stå foran. Lav evt. lidt mere mellemrum imellem kolonnerne, så det er tydeligt hvor parameterangivelsen hører til«. Tallene står igen under »Karakteristisk« og »Regningsmæssig«, og symbolerne har deres egen kolonne foran. Symbolet står tæt på sin værdi, med god afstand til den foregående værdi.
 
-Valgt af Claude og kan ændres: symbol og værdi står tæt sammen i højre side af tabellen, og »Egenvægt E« hedder nu »Rørets egenvægt« som i feltet.
+Valgt af Claude og kan ændres: afstanden (72 px før symbolet, 16 px mellem symbol og værdi), og »Egenvægt E« hedder nu »Rørets egenvægt« som i feltet.

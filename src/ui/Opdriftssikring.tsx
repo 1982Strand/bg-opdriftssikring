@@ -398,10 +398,16 @@ export function Opdriftssikring() {
                 <thead>
                   <tr>
                     <th scope="col">Parameter</th>
-                    <th scope="colgroup" colSpan={2}>
+                    <th scope="col" className="symbol">
+                      <span className="sr-only">Symbol</span>
+                    </th>
+                    <th scope="col" className="num">
                       Karakteristisk
                     </th>
-                    <th scope="colgroup" colSpan={2}>
+                    <th scope="col" className="symbol">
+                      <span className="sr-only">Symbol</span>
+                    </th>
+                    <th scope="col" className="num">
                       Regningsmæssig
                     </th>
                   </tr>
