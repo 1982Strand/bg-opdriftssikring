@@ -57,6 +57,9 @@
   line-height: 1.6;
   margin: 12px 0 0;
 }
+.calc-note a {
+  text-decoration: underline;
+}
 .calc-conclusion {
   font-size: var(--fs-body);
   line-height: 1.6;
