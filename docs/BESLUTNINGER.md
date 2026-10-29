@@ -288,3 +288,17 @@ Valgt af Claude og kan ændres: cirklen har fast størrelse, og GVS' placering f
 Tilføjet samme dag efter brugerens ønske: »Du må gerne tilføje T2 og T3 på figuren, altså fx 'T2 GVS' ligesom oppe i figuren på kort 3.« Figuren har nu koterne »T₂ GVS« og »T₃ rørmidte« med dybder til venstre for røret, som i tværsnittet i kort 3. Rørmidtens niveau er vist med en stiplet linje.
 
 Rettet samme dag efter brugerens ønske: »ændr 'a = 0,80 m' til ' a = T3 - T2 = 0,80 m' og 'r = 2,00 m' til 'r = d/2 = 2,00 m' der skal ikke tilføjes noget til arealerne«. Figuren skriver nu »a = T₃ − T₂ = …« og »r = d/2 = …«. Teksterne for arealerne er uændrede.
+
+## 29. oktober 2026 — reduktionsfaktoren i mellemregningerne for geonet
+
+Brugerens ønske: »kan du ikke fjerne tabellen i mellemregningerne, så man ikke ser tallene for alle de andre net? Tilføj gerne beregningen for RF også, se inspiration i billedet her.«
+
+- Tabellen med alle produkter, deres P_till og P_till/F_opdrift er fjernet fra mellemregningerne i kort 6.
+- I stedet står »Reduktionsfaktor (RF)« med de fire faktorer fra BBA 16/H253, hver med en kort forklaring, og summen »Samlet reduktionsfaktor (RF)« fremhævet med formlen RF = f_kryb · f_m · f_d · f_e. Derefter følger P_till for det valgte net og noten om valget.
+
+Valgt af Claude og kan ændres:
+- Forklaringerne er arkets tekster (Rapporten A209:A216): »max 120 års levetid« for f_kryb og f_m og »afrundede kornfraktioner, D < 35 mm« for f_d.
+- For f_e står »pH 4,1–8,9« som i betingelserne i stedet for arkets »angiv pH-værdi i hele tal«, fordi appen ikke har et felt til pH.
+- Arkets »extrapolation« er skrevet med dansk stavning: »ekstrapolationsfaktor«.
+- Linjen RF = 1,43 · 1,05 · 1,15 · 1,22 er fjernet, fordi opstillingen viser det samme.
+- Infoikonerne fra forlægget er ikke med.
