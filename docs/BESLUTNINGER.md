@@ -219,3 +219,9 @@ Brugerens svar: »K-06: brug π (mulighed a). K-07: behold g = 9,82 (mulighed c)
 - **K-07.** g = 9,82 bevares. Mellemregningerne i kort 5 forklarer, at rørets egenvægt omregnes med g = 9,82 m/s², som er tyngdeaccelerationen i Danmark.
 
 Browsertestene bruger nu appens tal med π, fx O = 54,00 og udnyttelsen 73 % i case 1. K-03-eksemplet i browsertesten er flyttet fra d = 2,601 til d = 2,600 m, så det stadig viser P_till/F_opdrift = 1,005.
+
+## 29. oktober 2026 — princippet for O og B i mellemregningerne
+
+Brugerens svar på Claudes forslag: »Ja, indsæt noten om både O og B som første note i mellemregningerne i kort 5.«
+
+Første note i mellemregningerne i kort 5 forklarer nu princippet: O er vægten af det fortrængte vand for et tomt rør helt under vand (også ved GVS under rørtoppen, K-05), og B er fyldet i en lodret søjle med rørets bredde fra terræn til rørmidte, minus rørets øverste halvdel, plus egenvægten. Fyld under GVS regnes med γ′_d, så vandets opdrift på jorden indgår i B og ikke i O.
