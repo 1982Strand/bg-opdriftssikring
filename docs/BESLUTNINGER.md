@@ -225,3 +225,5 @@ Browsertestene bruger nu appens tal med π, fx O = 54,00 og udnyttelsen 73 % i c
 Brugerens svar på Claudes forslag: »Ja, indsæt noten om både O og B som første note i mellemregningerne i kort 5.«
 
 Første note i mellemregningerne i kort 5 forklarer nu princippet: O er vægten af det fortrængte vand for et tomt rør helt under vand (også ved GVS under rørtoppen, K-05), og B er fyldet i en lodret søjle med rørets bredde fra terræn til rørmidte, minus rørets øverste halvdel, plus egenvægten. Fyld under GVS regnes med γ′_d, så vandets opdrift på jorden indgår i B og ikke i O.
+
+Rettet samme dag efter brugerens ønske: »flyt noten om γf øverst, da den står først i mellemregningerne. Flyt 'Ballasten B er fyldet i en lodret søjle med rørets bredde fra terræn til rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.' ned som en note for sig selv og ikke som en del af opdrift-noten. fjern teksten 'Fyld under GVS regnes med γ′d, så vandets opdrift på jorden indgår i B og ikke i O.'« Noterne står nu i rækkefølgen γ_f, O, B og til sidst T₃ og g.

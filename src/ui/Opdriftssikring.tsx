@@ -509,13 +509,17 @@ export function Opdriftssikring() {
               />
               <p className="calc-note">
                 <Fmt
-                  text={`Opdriften O er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand, også når GVS ligger under rørtoppen (fund K-05). Ballasten B er fyldet i en lodret søjle med rørets bredde fra terræn til rørmidte, minus rørets øverste halvdel, plus rørets egenvægt. Fyld under GVS regnes med γ′_{d}, så vandets opdrift på jorden indgår i B og ikke i O.`}
+                  text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
                 />
               </p>
               <p className="calc-note">
                 <Fmt
-                  text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
+                  text={`Opdriften O er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand, også når GVS ligger under rørtoppen (fund K-05).`}
                 />
+              </p>
+              <p className="calc-note">
+                Ballasten B er fyldet i en lodret søjle med rørets bredde fra terræn til rørmidte,
+                minus rørets øverste halvdel, plus rørets egenvægt.
               </p>
               <p className="calc-note">
                 T₃ = h₁ + d/2 = {tal(r.T3)} m. Rørets egenvægt omregnes fra kg/m til kN/m med g ={' '}
