@@ -38,7 +38,7 @@ test('alle produkter i listen kan gemmes som manuelt valg', () => {
 });
 test('gemte valg af antal ledninger og konstruktion fra før ignoreres', () => {
   const s = parseSession(JSON.stringify({ inddata: {}, antal: 2, konstruktion: 'tank' })).session;
-  assert.deepEqual(Object.keys(s).sort(), ['inddata', 'konsekvensklasse']);
+  assert.deepEqual(Object.keys(s).sort(), ['avanceret', 'inddata', 'konsekvensklasse']);
 });
 test('ugyldigt dokument giver standarder og fejl', () => {
   assert.equal(parseSession('{').error, true);

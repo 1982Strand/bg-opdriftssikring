@@ -15,7 +15,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-02 | Forkert grænse for X-GRID 150 | Valg af geonet | Afgjort: grænsen er UTS/RF (K-21) |
 | K-03 | Netvalg og kontrol bruger forskellige krav | Valg af geonet | Som arket |
 | K-04 | Kun ét lag geonet | Valg af geonet | Afgjort: som arket, 2 lag manuelt |
-| K-05 | GVS under rørtoppen | Opdrift og ballast | Som arket |
+| K-05 | GVS under rørtoppen | Opdrift og ballast | Afgjort: som arket, c) som avanceret beregning |
 | K-06 | π = 3,14 | Alle tal (0,05 %) | Afgjort: π |
 | K-07 | g = 9,82 for rørvægt | Ballast (lille) | Afgjort: som arket |
 | K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Som arket |
@@ -151,7 +151,7 @@ Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af 
 
 **Første version.** Som arket uden afvisning. Kontrolpunkt, når GVS ligger under rørtoppen.
 
-**Forslag til mulighed c.** Formler, eksempler, punkter til beslutning og testplan står i [FORSLAG_K-05.md](FORSLAG_K-05.md) (29. oktober 2026, ikke godkendt).
+**Afgjort 29. oktober 2026.** Standardberegningen regner som arket og viser kontrolpunktet. Mulighed c er indført som en særskilt avanceret beregning, der kun gælder, når »Avanceret beregning« er afkrydset. Formler, eksempler og beslutninger står i [FORSLAG_K-05.md](FORSLAG_K-05.md).
 
 ## K-06 π = 3,14
 

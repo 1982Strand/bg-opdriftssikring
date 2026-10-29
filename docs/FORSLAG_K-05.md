@@ -1,8 +1,8 @@
 # Forslag: K-05 mulighed c – korrekt beregning ved GVS under rørtoppen
 
-**Status 29. oktober 2026: forslag til gennemgang. Ikke godkendt, og ingen kode er ændret.**
+**Status 29. oktober 2026: godkendt og indført som en særskilt avanceret beregning.** Standardberegningen er uændret og regner som regnearket. Den avancerede beregning gælder kun, når »Avanceret beregning« er afkrydset øverst på beregningssiden. Beslutningerne står i afsnit 9 og i [BESLUTNINGER.md](BESLUTNINGER.md).
 
-Forslaget beskriver, hvordan opdrift og ballast kan regnes fysisk korrekt for alle placeringer af grundvandsspejlet (GVS). Det gælder fund K-05 i [FUND.md](FUND.md). Punkterne i afsnit 9 skal afgøres, før noget bygges.
+Forslaget beskriver, hvordan opdrift og ballast kan regnes fysisk korrekt for alle placeringer af grundvandsspejlet (GVS). Det gælder fund K-05 i [FUND.md](FUND.md). »I dag« i eksemplerne betyder standardberegningen.
 
 ## 1. Problemet i arket
 
@@ -194,6 +194,15 @@ Dagens σ′_v-formel regner tør jord med under rørmidten. Det har ikke betydn
 
 ## 9. Punkter til beslutning
 
+Afgjort 29. oktober 2026:
+- P1, P2, P3 og P7: som foreslået.
+- P4: tages op, når K-19 behandles.
+- P5: noten vises med brugerens ordlyd: »GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved skybrud. Værste tilfælde er GVS i terræn. Hvis GVS sættes herunder skal der sikres tilstrækkelige drænforanstaltninger. Beregninger på eget ansvar.«
+- P6: ingen blå farve på røret.
+- P8: Standardberegningen er uændret, så arkets cases skal ikke have afvigelser. Den avancerede beregning har i stedet sine egne tests i `tests/avanceret.test.ts` (afsnit 10).
+
+Punkterne, som de blev forelagt:
+
 - **P1. Formler og model.** O og B regnes som i afsnit 3–5. Ballastmodellen (søjle til rørmidte uden sidefriktion) og alle koefficienter er uændrede.
 - **P2. Ingen opdrift (zone 4).** Forslag:
   - S₁ vises som »–« med status OK og konklusionen fra afsnit 8.
@@ -210,10 +219,7 @@ Dagens σ′_v-formel regner tør jord med under rørmidten. Det har ikke betydn
 ## 10. Testplan
 
 1. **Uændret over rørtoppen.** De 38 cases med GVS i eller over rørtoppen skal fortsat stemme med arket ved 1e-9 uden afvigelser. De regnes med arkets π = 3,14 som i dag.
-2. **Afvigelser for de fire cases med GVS under rørtoppen:** GVS i 2,0, 2,75, 3,5 og 4,5 m med d = 2,5 m og h₁ = 1,5 m.
-   - Forventningerne regnes uden motoren af et særskilt script med arkets π = 3,14. De skrives i `tests/cases/afvigelser.json` med fundnummer, dato og beregningsmetode, som [TEST.md](TEST.md) foreskriver.
-   - Alle celler, hvis værdi ændres, får en ny forventning, fx O, B, S₁, status, konklusion og F_opdrift.
-   - I casen med GVS i 4,5 m bliver S₁ og kontrollerne »ingen værdi« (punkt P2).
+2. **Kontrolcases.** Ændret efter beslutningen om en særskilt avanceret beregning: standardberegningen kontrolleres fortsat mod alle 42 cases uden afvigelser. Den avancerede beregning skal give præcis samme resultat som standarden for de 38 cases med GVS i eller over rørtoppen.
 3. **Enhedstests af formlerne:**
    - A_tør er 0 ved rørtoppen, π · r²/2 ved rørmidten og π · r² ved rørbunden. A_tør(a) + A_tør(−a) = π · r².
    - O og B springer ikke ved rørtoppen, rørmidten og rørbunden.

@@ -227,3 +227,19 @@ Brugerens svar på Claudes forslag: »Ja, indsæt noten om både O og B som før
 Første note i mellemregningerne i kort 5 forklarer nu princippet: O er vægten af det fortrængte vand for et tomt rør helt under vand (også ved GVS under rørtoppen, K-05), og B er fyldet i en lodret søjle med rørets bredde fra terræn til rørmidte, minus rørets øverste halvdel, plus egenvægten. Fyld under GVS regnes med γ′_d, så vandets opdrift på jorden indgår i B og ikke i O.
 
 Rettet samme dag efter brugerens ønske: »flyt noten om γf øverst, da den står først i mellemregningerne. Flyt 'Ballasten B er fyldet i en lodret søjle med rørets bredde fra terræn til rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.' ned som en note for sig selv og ikke som en del af opdrift-noten. fjern teksten 'Fyld under GVS regnes med γ′d, så vandets opdrift på jorden indgår i B og ikke i O.'« Noterne står nu i rækkefølgen γ_f, O, B og til sidst T₃ og g.
+
+## 29. oktober 2026 — avanceret beregning (K-05 mulighed c)
+
+Brugerens svar: »Først og fremmest, så vil jeg gerne lave dette, som en helt ny udgave af beregningerne. Dvs. vi har vores nuværende standard-beregning og så nu denne avancerede beregning. Jeg tænker, at det netop skal kunne opdeles fuldt ud, så vi bibeholder vores nuværende beregning der er tro mod regnearket og så udvikler denne avancerede beregning sideløbende. Man kunne Fx lave en toggle, eller knap 'Avanceret beregning' som så ændrer beregningen, tilhørende formler, forklaringer, visninger mv, således vi ikke ændrer noget hvis vi stadig gerne vil beholde vores nuværende beregningsmetode. Svar på P1-P8: P1: ok. P2: ok til forslaget. P3: ok til forslaget. P4: lad os tage det når du når til det, så kan vi finde ud af hvad vi gør her. P5: Note når GVS sættes under terræn: 'GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved skybrud. Værste tilfælde er GVS i terræn. Hvis GVS sættes herunder skal der sikres tilstrækkelige drænforanstaltninger. Beregninger på eget ansvar.'. P6: undlad blå farve på rør. P7: ok til teksters ordlyd. P8: ok. HUSK! ændringerne skal kun gælde, hvis man har togglet/afkrydset 'Avanceret beregning'«
+
+- Standardberegningen er uændret og regner som regnearket, inklusive kontrolpunkt K-05.
+- Afkrydsningen »Avanceret beregning« øverst på beregningssiden skifter til den avancerede beregning. Den ændrer opdrift, ballast, σ′_v for to ledninger, mellemregninger, forklaringer og noter efter [FORSLAG_K-05.md](FORSLAG_K-05.md). Uden afkrydsning er alt som før.
+- I den avancerede beregning vises noten fra P5 i kort 3, når GVS ligger under terræn, og kontrolpunkt K-05 udgår.
+- Valget gemmes sammen med beregningen. »Nulstil beregning« vælger standardberegningen.
+- P8 er tilpasset: Arkets cases får ingen afvigelser, fordi standardberegningen er uændret. Den avancerede beregning har sine egne tests.
+- P4 (K-19) tages op som næste punkt for den avancerede beregning.
+
+Valgt af Claude og kan ændres:
+- Afkrydsningen står ved »Nulstil beregning« øverst på siden. Når den er valgt, vises en kort oplysning: »Avanceret beregning er valgt. Opdrift og ballast regnes for den del af røret, der står under GVS, og afviger fra regnearket, når GVS ligger under rørtoppen.«
+- Når der ikke er opdrift, siger noten i kort 6: »Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.« Mellemregningerne siger, at S₁ og kontrollerne ikke kan regnes.
+- Under udviklingen viste den numeriske kontrol en afrundingsfejl lige over rørbunden, hvor A_våd = π/4 · d² − A_tør kunne blive en anelse negativ. Under rørmidten regnes A_våd derfor direkte.

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { beregnOpdrift, type OpdriftResultat, type Status } from '../engine/opdrift';
+import { beregnOpdrift, type GvsZone, type OpdriftResultat, type Status } from '../engine/opdrift';
 import { geonetProdukter } from '../engine/geonet';
 import standarder from '../engine/defaults.json' with { type: 'json' };
 import { losningSvg, tvaersnitSvg, type Losning } from '../engine/figurer';
@@ -155,6 +155,8 @@ function LosningKort({
 }) {
   const { A, B, C, D } = r.losninger;
   const titel = losningTitel[losning];
+  const torTilMidte = r.gvsZone !== null && r.gvsZone.zone >= 3;
+  const ingenKontrol = 'Kontrollen kan ikke regnes, da røret ikke påvirkes af opdrift.';
   const d = input.d;
   const faelles = (x: { La: number; Ltot: number }): [string, string][] => [
     ['Samlet bredde L_{a}', `${tal(x.La)} m`],
@@ -187,10 +189,14 @@ function LosningKort({
       `L_{geonet} = max(1,0; 2L/2) = ${tal(A.L)} m pr. side`,
       `L_{a} = 2 · L_{geonet} + d = 2 · ${tal(A.L)} + ${tal(d)} = ${tal(A.La)} m`,
       `L_{geonet,tot} = 2 · L_{geonet} + π · d/2 = ${tal(A.Ltot)} m`,
-      `Kontrol = (B + F_{bund} · 2 · L_{geonet})/O = (${tal(r.B)} + ${tal(r.Fbund)} · 2 · ${tal(A.L)})/${tal(r.O)} = ${tal(A.kontrol)} (krav > 1,0)`,
+      A.kontrol === null
+        ? ingenKontrol
+        : `Kontrol = (B + F_{bund} · 2 · L_{geonet})/O = (${tal(r.B)} + ${tal(r.Fbund)} · 2 · ${tal(A.L)})/${tal(r.O)} = ${tal(A.kontrol)} (krav > 1,0)`,
     ],
     B: [
-      `σ′_{v} = T₂ · γ_{tør,d} + (T₃ − T₂) · γ′_{d} = ${tal(B.sigmaV)} kN/m²`,
+      torTilMidte
+        ? `σ′_{v} = T₃ · γ_{tør,d} = ${tal(r.T3)} · ${tal(r.gammaTorD)} = ${tal(B.sigmaV)} kN/m², da GVS ligger under rørmidten`
+        : `σ′_{v} = T₂ · γ_{tør,d} + (T₃ − T₂) · γ′_{d} = ${tal(B.sigmaV)} kN/m²`,
       `2 · L_{geonet} mellem = max(0,5; F_{opdrift} · 1,2/σ′_{v}) = max(0,5; ${tal(r.Fopdrift)} · 1,2/${tal(B.sigmaV)}) = ${tal(B.toLMellem)} m`,
       `L_{geonet} yderst = ${tal(B.L)} m, som uden omslag`,
       `L_{a} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + 2 · d = ${tal(B.La)} m`,
@@ -201,7 +207,9 @@ function LosningKort({
       `L_{geonet} = max(0,6; 2L/2) = ${tal(C.L)} m pr. side`,
       `L_{a} = 2 · L_{geonet} + d = ${tal(C.La)} m`,
       `L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2 = ${tal(C.Ltot)} m`,
-      `Kontrol = (B + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O = ${tal(C.kontrol)} (krav > 1,0)`,
+      C.kontrol === null
+        ? ingenKontrol
+        : `Kontrol = (B + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O = ${tal(C.kontrol)} (krav > 1,0)`,
     ],
     D: [
       `2 · L_{geonet} mellem = 2 · L_{geonet} = ${tal(D.toLMellem)} m, som med omslag`,
@@ -230,6 +238,48 @@ function LosningKort({
       </div>
     </article>
   );
+}
+
+/** Mellemregningerne for O. I avanceret beregning med GVS under rørtoppen vises arealet under GVS. */
+function opdriftLinjer(
+  r: OpdriftResultat,
+  input: ReturnType<typeof tilMotorInput>,
+  zone: GvsZone | null,
+): string[] {
+  const { gammaF } = r.partialkoefficienter;
+  if (!zone || zone.zone === 1)
+    return [
+      `O = π/4 · d² · γ_{w} · γ_{f} = π/4 · ${tal(input.d)}² · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m`,
+    ];
+  if (zone.zone === 4)
+    return [
+      `O = 0, da GVS ligger ved eller under rørbunden: T₂ = ${tal(input.gvs)} m ≥ h₁ + d = ${tal(input.h1 + input.d)} m`,
+    ];
+  return [
+    `r = d/2 = ${tal(input.d / 2)} m og a = T₃ − T₂ = ${tal(r.T3)} − ${tal(input.gvs)} = ${tal(zone.a)} m`,
+    `A_{tør} = r² · arccos(a/r) − a · √(r² − a²) = ${tal(zone.Ator, 4)} m²`,
+    `A_{våd} = π/4 · d² − A_{tør} = ${tal(zone.Avaad + zone.Ator, 4)} − ${tal(zone.Ator, 4)} = ${tal(zone.Avaad, 4)} m²`,
+    `O = A_{våd} · γ_{w} · γ_{f} = ${tal(zone.Avaad, 4)} · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m`,
+  ];
+}
+
+/** Mellemregningerne for B efter GVS' placering (docs/FORSLAG_K-05.md, afsnit 5). */
+function ballastLinjer(r: OpdriftResultat, zone: GvsZone | null): string[] {
+  const b = r.ballastLed;
+  if (zone && zone.zone >= 3)
+    return [
+      'B = (T₃ · d − π · r²/2) · γ_{tør,d} + E_{d} · g/1000, da GVS ligger under rørmidten',
+      `B = ${tal(b.torFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+    ];
+  if (b.roerDele)
+    return [
+      'B = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − A_{tør} · γ_{tør,d} − (π · r²/2 − A_{tør}) · γ′_{d} + E_{d} · g/1000',
+      `B = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerDele.tor)} − ${tal(b.roerDele.vaad)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+    ];
+  return [
+    'B = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − (π/4 · d² · γ′_{d})/2 + E_{d} · g/1000',
+    `B = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+  ];
 }
 
 export function Opdriftssikring() {
@@ -265,6 +315,8 @@ export function Opdriftssikring() {
   const losninger: Losning[] = ['A', 'C', 'B', 'D'];
   const ikkeNoedvendig = r?.S1Status === 'OK';
   const pk = r?.partialkoefficienter;
+  const avanceret = session.avanceret;
+  const zone = r?.gvsZone ?? null;
 
   return (
     <>
@@ -290,11 +342,27 @@ export function Opdriftssikring() {
         )}
       </div>
       <div className="calc-mode">
+        <SettingField
+          field={{
+            key: 'avanceret',
+            label: 'Avanceret beregning',
+            kind: 'checkbox',
+            help: 'Regner opdrift og ballast for den del af røret, der står under GVS. Standardberegningen følger regnearket.',
+          }}
+          value={session.avanceret}
+          change={(v) => update({ ...session, avanceret: Boolean(v) })}
+        />
         <Button variant="outline" onClick={() => update(standardSession())}>
           <RotateCcw aria-hidden="true" />
           Nulstil beregning
         </Button>
       </div>
+      {avanceret && (
+        <Notice className="calc-mode-notice">
+          Avanceret beregning er valgt. Opdrift og ballast regnes for den del af røret, der står
+          under GVS, og afviger fra regnearket, når GVS ligger under rørtoppen.
+        </Notice>
+      )}
 
       <Trin
         nr={1}
@@ -349,7 +417,9 @@ export function Opdriftssikring() {
             {talfelt(
               'gvs',
               'GVS under terræn (m)',
-              'Dybden fra terræn til grundvandsspejlet. Regnearket forudsætter GVS over midten af røret (fund K-05).',
+              avanceret
+                ? 'Dybden fra terræn til grundvandsspejlet. Ligger GVS under rørtoppen, giver kun den del af røret, der står under vand, opdrift.'
+                : 'Dybden fra terræn til grundvandsspejlet. Regnearket forudsætter GVS over midten af røret (fund K-05).',
               { disabled: i.gvsITerraen },
             )}
           </div>
@@ -360,6 +430,13 @@ export function Opdriftssikring() {
             />
           )}
         </div>
+        {avanceret && input.gvs > 0 && (
+          <Notice kind="warning">
+            GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved
+            skybrud. Værste tilfælde er GVS i terræn. Hvis GVS sættes herunder skal der sikres
+            tilstrækkelige drænforanstaltninger. Beregninger på eget ansvar.
+          </Notice>
+        )}
       </Trin>
 
       <Trin
@@ -479,7 +556,7 @@ export function Opdriftssikring() {
           <Trin
             nr={5}
             titel="Opdrift uden geonet"
-            opsummering={`S₁ = ${tal(r.S1)} · ${r.S1Status}`}
+            opsummering={r.S1 === null ? 'Ingen opdrift' : `S₁ = ${tal(r.S1)} · ${r.S1Status}`}
           >
             <div className="dim-results m9-result-cards">
               <Flise
@@ -493,7 +570,7 @@ export function Opdriftssikring() {
                 label="Sikkerhed S₁ = B/O"
                 vaerdi={tal(r.S1)}
                 status={r.S1Status}
-                note="Krav > 1,0"
+                note={r.S1 === null ? 'Ingen opdrift' : 'Krav > 1,0'}
               />
             </div>
             <p className="calc-conclusion">{r.konklusion.join(' ')}</p>
@@ -501,10 +578,11 @@ export function Opdriftssikring() {
               <Formler
                 linjer={[
                   `γ_{f} = γ_{G;dst} = ${tal(standarder.gammaGdst, 1)} · K_{FI} = ${tal(standarder.gammaGdst, 1)} · ${tal(pk.KFI, 1)} = ${tal(pk.gammaF)} (konsekvensklasse ${session.konsekvensklasse})`,
-                  `O = π/4 · d² · γ_{w} · γ_{f} = π/4 · ${tal(i.d)}² · ${tal(gammaW)} · ${tal(pk.gammaF)} = ${tal(r.O)} kN/m`,
-                  `B = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − (π/4 · d² · γ′_{d})/2 + E_{d} · g/1000`,
-                  `B = ${tal(r.ballastLed.torFyld)} + ${tal(r.ballastLed.vaadFyld)} − ${tal(r.ballastLed.roerHalvdel)} + ${tal(r.ballastLed.egenvaegt)} = ${tal(r.B)} kN/m`,
-                  `S₁ = B/O = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
+                  ...opdriftLinjer(r, input, zone),
+                  ...ballastLinjer(r, zone),
+                  r.S1 === null
+                    ? 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.'
+                    : `S₁ = B/O = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
                 ]}
               />
               <p className="calc-note">
@@ -514,7 +592,11 @@ export function Opdriftssikring() {
               </p>
               <p className="calc-note">
                 <Fmt
-                  text={`Opdriften O er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand, også når GVS ligger under rørtoppen (fund K-05).`}
+                  text={
+                    avanceret
+                      ? 'Opdriften O er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
+                      : 'Opdriften O er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand, også når GVS ligger under rørtoppen (fund K-05).'
+                  }
                 />
               </p>
               <p className="calc-note">
@@ -540,8 +622,9 @@ export function Opdriftssikring() {
           >
             {ikkeNoedvendig && (
               <Notice>
-                S₁ &gt; 1,0: opdriftssikring er ikke nødvendig. Tallene nedenfor vises som i
-                regnearket.
+                {r.S1 === null
+                  ? 'Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.'
+                  : 'S₁ > 1,0: opdriftssikring er ikke nødvendig. Tallene nedenfor vises som i regnearket.'}
               </Notice>
             )}
             <div className="dim-results m9-result-cards">
