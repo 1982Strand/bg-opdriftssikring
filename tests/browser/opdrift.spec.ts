@@ -208,6 +208,7 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(page.getByText(/Beregninger på eget ansvar/)).toBeVisible();
   await expect(page.getByText(/GVS ligger under toppen af røret/)).toHaveCount(0);
   await page.getByRole('button', { name: 'Mellemregninger', exact: true }).first().click();
+  await expect(page.getByRole('img', { name: /Rørets tværsnit delt af GVS/ })).toBeVisible();
   await expect(page.getByText(/arccos\(a\/r\).* = 2,4567 m²/)).toBeVisible();
   await expect(
     page.getByText(/del af rørets udvendige tværsnit, der ligger under GVS/),
@@ -234,6 +235,7 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   // Uden afkrydsning regnes igen som regnearket.
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
   await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('138,23');
+  await expect(page.getByRole('img', { name: /Rørets tværsnit delt af GVS/ })).toHaveCount(0);
   await expect(page.getByText(/GVS ligger under toppen af røret/)).toBeVisible();
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,04');
   await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);

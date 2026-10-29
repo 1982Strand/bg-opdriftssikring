@@ -78,7 +78,7 @@ Med `metode: 'avanceret'` regnes opdrift og ballast for den del af røret, der s
 
 ## Figurer
 
-`figurer.ts` tegner tværsnittet og de fire løsninger ud fra resultatet. Regnearkets billeder er forlæg. Geometrien er i rigtig skala, mens tekst og streger er i skærmpixel, så figurerne er lige tydelige ved alle størrelser. Gravens hældning (0,6 vandret pr. lodret) og et bundlag på 0,15 m under røret er kun illustration og indgår ikke i beregningen. Figurerne bruger MSL's farver plus en dæmpet blå til grundvand og afviser ugyldige tal i stedet for at tegne dem.
+`figurer.ts` tegner tværsnittet og de fire løsninger ud fra resultatet. I den avancerede beregning med GVS mellem rørtop og rørbund tegner `opdriftsarealSvg` desuden rørets tværsnit delt af GVS med A_tør, A_våd, a, θ og r til mellemregningerne i kort 5. Regnearkets billeder er forlæg. Geometrien er i rigtig skala, mens tekst og streger er i skærmpixel, så figurerne er lige tydelige ved alle størrelser. Gravens hældning (0,6 vandret pr. lodret) og et bundlag på 0,15 m under røret er kun illustration og indgår ikke i beregningen. Figurerne bruger MSL's farver plus en dæmpet blå til grundvand og afviser ugyldige tal i stedet for at tegne dem.
 
 ## Kontrol
 

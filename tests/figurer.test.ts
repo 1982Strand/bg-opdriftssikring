@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { beregnOpdrift, type OpdriftInput } from '../src/engine/opdrift.ts';
-import { losningSvg, tvaersnitSvg } from '../src/engine/figurer.ts';
+import { losningSvg, opdriftsarealSvg, tvaersnitSvg } from '../src/engine/figurer.ts';
 import { tal } from '../src/engine/format.ts';
 
 // CC1 er udgået, fordi opdrift ikke kan regnes i CC1 (beslutning 29. oktober 2026). CC1-casen
@@ -107,4 +107,28 @@ test('omslaget tegnes som en vending ved hver ende og et kortere toplag', () => 
   const hoejreNet = dSti.match(/ M [\d.]+ [\d.]+ H ([\d.]+) M ([\d.]+) /)!;
   assert.equal(venstreNet[1], hoejreNet[1], 'toplagene mødes i midten');
   assert.equal(venstreNet[1], hoejreNet[2], 'bundlagene mødes i midten');
+});
+
+test('arealfiguren vises kun i avanceret beregning med GVS mellem rørtop og rørbund', () => {
+  const i = { ...cases[0].input, d: 4, h1: 0.6 };
+  const med = (gvs: number, metode: 'standard' | 'avanceret') => {
+    const input = { ...i, gvs, metode };
+    return opdriftsarealSvg(beregn(input), input);
+  };
+  assert.equal(med(1.3, 'standard'), null);
+  assert.equal(med(0.3, 'avanceret'), null);
+  assert.equal(med(4.6, 'avanceret'), null);
+  for (const gvs of [0.65, 1.3, 2.9, 4.5]) {
+    const svg = med(gvs, 'avanceret')!;
+    assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 400 250"/);
+    assert.doesNotMatch(svg, /NaN|Infinity|undefined|null/);
+  }
+  assert.deepEqual(tekst(med(1.3, 'avanceret')!), [
+    'GVS',
+    'Atør = 1,4770 m²',
+    'a = 1,30 m',
+    'θ = arccos(a/r) = 49,46°',
+    'r = 2,00 m',
+    'Avåd = 11,0894 m²',
+  ]);
 });

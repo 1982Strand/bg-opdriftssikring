@@ -274,3 +274,13 @@ Valgt af Claude og kan ændres: noten om statikerkontrol står i kort 2 ved valg
 Brugerens ønske: »Ordlyden skal lige ændres lidt. Partial koefficienten regnes altid 1,1 * KFI, hvor det bare er KFI der ændrer sig ift konsekvensklassen. Kom lige med et forslag til omskrivning. Fjern i øvrigt teksten 'Regnearket svarer til CC2'«. Brugerens valg: forslag 2.
 
 Teksten i kort 2 lyder nu: »Partialkoefficienterne følger DS/EN 1997-1 DK NA:2021 (Eurocode 7), tabel A.4-1 NA for løftning (UPL) med trækelementer. Opdriften regnes med γ_G;dst = 1,1 · K_FI, hvor kun konsekvensfaktoren K_FI afhænger af konsekvensklassen: 1,0 i CC2 og 1,1 i CC3 (afsnit A.1).«
+
+## 29. oktober 2026 — figur over A_tør og A_våd i mellemregningerne
+
+Brugerens ønske: »du må gerne sætte din visualisering ind i mellemregningerne, din tegning forklarer det rigtig fint. Den skal bare ind til højre i boksen, så teksten bliver stående og boksen ikke ændres ellers, udover at denne figur indsættes«.
+
+- Mellemregningerne i kort 5 viser rørets tværsnit delt af GVS til højre for teksten: den tørre del A_tør, den våde del A_våd, a, θ = arccos(a/r) og r med de aktuelle tal.
+- Figuren vises kun i den avancerede beregning, når GVS ligger mellem rørtop og rørbund, dvs. når linjerne for a, A_tør og A_våd står i mellemregningerne. Teksten og resten af boksen er uændret.
+- På smalle skærme står figuren under teksten.
+
+Valgt af Claude og kan ændres: cirklen har fast størrelse, og GVS' placering følger forholdet a/r. Farverne er figurpalettens grundvandsblå for den våde del og en lys jordfarve for den tørre del.
