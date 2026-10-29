@@ -394,14 +394,14 @@ export function Opdriftssikring() {
         {r && pk && (
           <>
             <TabelRamme label="Fyldparametre">
-              <table className="data-table params-table">
+              <table className="data-table params-table fyld-table">
                 <thead>
                   <tr>
                     <th scope="col">Parameter</th>
-                    <th scope="col" className="num">
+                    <th scope="colgroup" colSpan={2}>
                       Karakteristisk
                     </th>
-                    <th scope="col" className="num">
+                    <th scope="colgroup" colSpan={2}>
                       Regningsmæssig
                     </th>
                   </tr>
@@ -409,26 +409,46 @@ export function Opdriftssikring() {
                 <tbody>
                   {(
                     [
-                      ['Rumvægt, våd γ_{våd}', `${tal(i.gamma)} kN/m³`, `${tal(r.gammaD)} kN/m³`],
                       [
-                        'Rumvægt, tør γ_{tør}',
+                        'Rumvægt, våd',
+                        'γ_{våd}',
+                        `${tal(i.gamma)} kN/m³`,
+                        'γ_{våd,d}',
+                        `${tal(r.gammaD)} kN/m³`,
+                      ],
+                      [
+                        'Rumvægt, tør',
+                        'γ_{tør}',
                         `${tal(i.gammaTor)} kN/m³`,
+                        'γ_{tør,d}',
                         `${tal(r.gammaTorD)} kN/m³`,
                       ],
                       [
-                        'Effektiv rumvægt under vand γ′ = γ_{våd} − γ_{w}',
+                        'Effektiv rumvægt under vand',
+                        'γ′ = γ_{våd} − γ_{w}',
                         `${tal(i.gamma - gammaW)} kN/m³`,
+                        'γ′_{d} = γ_{våd,d} − γ_{w}',
                         `${tal(r.gammaEffD)} kN/m³`,
                       ],
-                      ['Friktionsvinkel φ', `${tal(i.phi)}°`, `${tal(r.phiD)}°`],
-                      ['Egenvægt E', `${tal(i.roervaegt)} kg/m`, `${tal(r.roervaegtD)} kg/m`],
+                      ['Friktionsvinkel', 'φ_{k}', `${tal(i.phi)}°`, 'φ_{d}', `${tal(r.phiD)}°`],
+                      [
+                        'Rørets egenvægt',
+                        'E_{k}',
+                        `${tal(i.roervaegt)} kg/m`,
+                        'E_{d}',
+                        `${tal(r.roervaegtD)} kg/m`,
+                      ],
                     ] as const
-                  ).map(([p, k, d]) => (
+                  ).map(([p, symK, k, symD, d]) => (
                     <tr key={p}>
-                      <th scope="row">
-                        <Fmt text={p} />
-                      </th>
+                      <th scope="row">{p}</th>
+                      <td className="symbol">
+                        <Fmt text={symK} />
+                      </td>
                       <td className="num">{k}</td>
+                      <td className="symbol">
+                        <Fmt text={symD} />
+                      </td>
                       <td className="num">{d}</td>
                     </tr>
                   ))}

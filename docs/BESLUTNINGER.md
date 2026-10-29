@@ -186,3 +186,12 @@ Brugerens ønske: »'rumvægt, våd γ' skal hedde 'rumvægt, mættet γ_m'. 'Ru
 - Den regningsmæssige værdi er som i arket γ′_d = γ_våd,d − γ_w = 0,9 · γ_våd − γ_w, fx 15,30 − 10 = 5,30 kN/m³. Faktoren 0,9 ganges altså kun på γ_våd, ikke på γ′. Noten under tabellen viser udregningen.
 
 Valgt af Claude og kan ændres: feltteksterne i motorens fejlbeskeder bruger samme navne og vises med sænket skrift, fx »γ_våd skal opfylde γ_våd · 0,9 > γ_w«. Motorens interne navne (`gamma`, `gammaTor`) er uændrede.
+
+## 29. oktober 2026 — symboler i tabellen over fyldparametre
+
+Brugerens ønske: »du må gerne lige indsætte parameterangivelsen i en kolonne foran 'karakteristisk' og 'regningsmæssig' - bare så man ikke er i tvivl om hvilken parameter der er tale om. Altså fx så der foran den våde rumvægt, karakteristisk står 'γvåd' og foran den regningsmæssige værdi står 'γvåd,d'«.
+
+- Tabellen i kort 4 har nu et symbol foran hver værdi: γ_våd/γ_våd,d, γ_tør/γ_tør,d, γ′ = γ_våd − γ_w/γ′_d = γ_våd,d − γ_w, φ_k/φ_d og E_k/E_d.
+- Overskrifterne »Karakteristisk« og »Regningsmæssig« dækker hver symbol og værdi. Parameterkolonnen har kun navnet, fx »Rumvægt, våd«.
+
+Valgt af Claude og kan ændres: symbol og værdi står tæt sammen i højre side af tabellen, og »Egenvægt E« hedder nu »Rørets egenvægt« som i feltet.
