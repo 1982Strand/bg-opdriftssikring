@@ -53,9 +53,9 @@ export function Partialkoefficienter() {
     <>
       <p className="settings-prose">
         Partialkoefficienterne følger DS/EN 1997-1 DK NA:2021 (Eurocode 7), tabel A.4-1 NA for
-        løftning (UPL) med trækelementer. Konsekvensfaktoren K<sub>FI</sub> følger af afsnit A.1:
-        CC2 giver 1,0, og CC3 giver 1,1. K<sub>FI</sub> indgår kun i den ugunstige last, dvs.
-        opdriften. Regnearket svarer til CC2.
+        løftning (UPL) med trækelementer. Opdriften regnes med γ<sub>G;dst</sub> = 1,1 · K
+        <sub>FI</sub>, hvor kun konsekvensfaktoren K<sub>FI</sub> afhænger af konsekvensklassen: 1,0
+        i CC2 og 1,1 i CC3 (afsnit A.1).
       </p>
       <SettingField
         field={{

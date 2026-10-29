@@ -268,3 +268,9 @@ Brugerens ønske: »ændr advarslen i kort 3, sætningen skal ændres fra 'Hvis 
 - Regnearkets kontrolcase »CC1: case 1« kontrolleres nu ved, at motoren afviser CC1. Samme input i CC2 er »Case 1«, som fortsat sammenlignes med arket. De øvrige 41 cases er uændrede.
 
 Valgt af Claude og kan ændres: noten om statikerkontrol står i kort 2 ved valget, og forklaringen om GVS står i kort 3 ved felterne. Rapporten i fase 4 skal have noten om statikerkontrol med, når CC3 er valgt.
+
+## 29. oktober 2026 — tekst om partialkoefficienterne i kort 2
+
+Brugerens ønske: »Ordlyden skal lige ændres lidt. Partial koefficienten regnes altid 1,1 * KFI, hvor det bare er KFI der ændrer sig ift konsekvensklassen. Kom lige med et forslag til omskrivning. Fjern i øvrigt teksten 'Regnearket svarer til CC2'«. Brugerens valg: forslag 2.
+
+Teksten i kort 2 lyder nu: »Partialkoefficienterne følger DS/EN 1997-1 DK NA:2021 (Eurocode 7), tabel A.4-1 NA for løftning (UPL) med trækelementer. Opdriften regnes med γ_G;dst = 1,1 · K_FI, hvor kun konsekvensfaktoren K_FI afhænger af konsekvensklassen: 1,0 i CC2 og 1,1 i CC3 (afsnit A.1).«
