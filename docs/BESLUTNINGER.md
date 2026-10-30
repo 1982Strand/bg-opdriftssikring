@@ -414,3 +414,9 @@ Claude påpegede, at CC3 hidtil kunne vælges i begge beregningsmetoder. Brugere
 
 Valgt af Claude og kan ændres:
 - Sammenligningstabellen i kort 2 viser fortsat både CC2 og CC3 i standardberegningen. CC3 regnes altid med GVS i terræn, hvor de to metoder giver samme tal.
+
+## 30. oktober 2026 — noten i bunden af kort 4 fjernet
+
+Brugerens ønske: »i kort 4, fjern den forklarende teskt i bunden: 'Konsekvensklasse CC2: γG;stb = 0,90 på fyld og egenvægt, γφ = 1,20 på tan φ og γf = 1,10 på opdriften.'«
+
+- Noten under tabellen med fyldparametre er fjernet. Partialkoefficienterne står fortsat i kort 2.
