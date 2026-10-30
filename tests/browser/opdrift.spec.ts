@@ -240,21 +240,20 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
     'Kontrolpunkter',
   ]);
   await expect(page.getByRole('heading', { name: 'Projekteringsansvar' })).toBeVisible();
-  await expect(
-    page.getByText(
-      'Opdriften regnes med γG;dst = 1,1 · KFI, hvor kun konsekvensfaktoren KFI afhænger af konsekvensklassen: 1,0 i CC2 og 1,1 i CC3 (afsnit A.1).',
-      { exact: false },
-    ),
-  ).toBeVisible();
+  await expect(page.getByText(/Opdriften regnes med/)).toHaveCount(0);
+  await expect(page.locator('.klasse-kfi')).toHaveText('KFI = 1,0');
   await expect(page.getByText(/Regnearket svarer til CC2/)).toHaveCount(0);
   await expect(page.getByText('Analysen sker i konsekvensklasse CC2 (middel')).toBeVisible();
   await page.getByRole('radio', { name: 'CC3' }).click();
   await expect(page.getByText('Analysen sker i konsekvensklasse CC3 (høj')).toBeVisible();
+  await expect(page.locator('.klasse-kfi')).toHaveText('KFI = 1,1');
   await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('59,40');
   await expect(flise(page, 'Regningsmæssig opdrift').locator('p')).toHaveText('γf = 1,21');
   await page.getByRole('button', { name: 'Konsekvens for den aktuelle beregning' }).click();
-  await expect(page.getByRole('row', { name: /Regningsmæssig opdrift/ })).toContainText(
-    '59,40 kN/m',
+  const sammenligning = page.locator('table.class-compare').last();
+  await expect(sammenligning.locator('thead th')).toHaveText(['Størrelse', 'CC2', 'CC3']);
+  await expect(sammenligning.getByRole('row', { name: /Regningsmæssig opdrift/ })).toHaveText(
+    /54,00 kN\/m\s*59,40 kN\/m/,
   );
   await page.getByRole('button', { name: 'Nulstil beregning' }).click();
   await expect(page.getByRole('radio', { name: 'CC2' })).toBeChecked();

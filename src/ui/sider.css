@@ -154,6 +154,18 @@
 .solution-table {
   margin-top: 0;
 }
+/* K_FI står til højre for valget af konsekvensklasse, ud for knaprækken. */
+.klasse-valg {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+.klasse-kfi {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  font-size: var(--fs-body);
+}
 .solution-table td .m9-badge {
   margin-left: 8px;
 }
