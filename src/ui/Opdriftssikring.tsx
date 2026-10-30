@@ -692,6 +692,7 @@ export function Opdriftssikring() {
                   <Formler
                     linjer={[
                       `γ_{f} = γ_{G;dst} = ${tal(standarder.gammaGdst, 1)} · K_{FI} = ${tal(standarder.gammaGdst, 1)} · ${tal(pk.KFI, 1)} = ${tal(pk.gammaF)} (konsekvensklasse ${session.konsekvensklasse})`,
+                      `T₃ = h₁ + d/2 = ${tal(input.h1)} + ${tal(input.d)}/2 = ${tal(r.T3)} m, dybden fra terræn til rørmidten`,
                       ...opdriftLinjer(r, input, zone),
                       ...ballastLinjer(r, zone),
                       r.S1 === null
@@ -718,8 +719,8 @@ export function Opdriftssikring() {
                     til rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
                   </p>
                   <p className="calc-note">
-                    T₃ = h₁ + d/2 = {tal(r.T3)} m. Rørets egenvægt omregnes fra kg/m til kN/m med g
-                    = {tal(g)} m/s², som er tyngdeaccelerationen i Danmark.
+                    Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = {tal(g)}{' '}
+                    m/s².
                   </p>
                 </div>
                 {arealfigur && (
