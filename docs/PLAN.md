@@ -56,18 +56,18 @@ Kortene har samme rækkefølge som rapporten:
    - Et levende tværsnit med T₁, T₂, T₃, h₁, h₂ og d.
    - T₁ = 0 er fast (K-18). Felterne afviser kun værdier uden fysisk mening, fx diameter ≤ 0. Ellers er der ingen grænser, som i arket.
 4. **Egenvægt og fyldmateriale.** Rørets egenvægt i kg/m, γ_våd, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier, også γ′ = γ_våd − γ_w, og de anvendte partialkoefficienter. Regningsmæssige værdier får indekset d, fx γ_våd,d, γ_tør,d og γ′_d.
-5. **Opdrift uden geonet.** O, B og S₁ med statusmærke og arkets konklusionstekst.
+5. **Opdrift og stabiliserende ballast.** O_d, B_d og S₁ = B_d/O_d med statusmærke og arkets konklusionstekst.
 6. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
 7. **Forankring.**
    - F_bund, F_top og K vises.
    - Alle fire løsninger vises under hinanden: uden og med omslag for én ledning (A og C) og derefter for to ledninger (B og D). Kortene for to ledninger viser arkets forudsætninger: største diameter og mindste egenvægt.
    - Hver løsning har en målsat figur til venstre og til højre L pr. side, afstand mellem ledninger, L_a, L_geonet,tot, arkets kontrol, hvor arket har en, og mellemregningerne.
 
-Er S₁ > 1, tones kort 6–7 ned i gråtoner, så kontrasten bevares, men tallene vises som i arket.
+Er S₁ ≥ 1, tones kort 6–7 ned i gråtoner, så kontrasten bevares. Tallene vises til orientering, og styrkekontrollen viser »Ikke relevant«.
 
 **Avanceret beregning.** En afkrydsning øverst på siden skifter til den avancerede beregning (fund K-05, mulighed c, [FORSLAG_K-05.md](FORSLAG_K-05.md)). Den ændrer formler, mellemregninger, forklaringer og noter. Uden afkrydsning regnes som arket. Valget gemmes sammen med beregningen, og »Nulstil beregning« vælger standardberegningen. Den avancerede beregning omfatter også K-19: forankringen regnes med den faktiske effektive spænding i nettets niveau. Senere afvigelser fra arket kan samles her efter beslutning.
 
-Under resultaterne står kortet **Kontrolpunkter**, når der er aktive fund. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-03, K-05, K-12, K-13). Kontrolpunkterne ændrer ikke beregningen og kommer ikke med i rapporten.
+Under resultaterne står kortet **Kontrolpunkter**, når der er aktive fund. Her vises en oplysning, når et fund er aktivt for den aktuelle beregning (K-05, K-08, K-12). Kontrolpunkterne ændrer ikke beregningen. Om de skal med i rapporten, afklares i fase 4.
 
 Figurerne tegnes som SVG ud fra de aktuelle mål, ligesom opbygningsfiguren i MSL. Samme figur bruges på skærmen og i rapporten. Arkets billeder bruges kun som forlæg.
 
@@ -82,7 +82,7 @@ Figurerne tegnes som SVG ud fra de aktuelle mål, ligesom opbygningsfiguren i MS
 
 Konsekvensklassen vælges i kort 2 på beregningssiden. Siden Indstillinger bevares som pladsholder til senere indstillinger, fx fra fundlisten (K-14).
 
-**Konsekvensklasse.** Klassen vælges blandt CC2 og CC3, og standarden er CC2, som i arket. Opdrift kan pr. definition ikke regnes i CC1 (EC7), så CC1 findes ikke. Klassen giver konsekvensfaktoren K_FI efter DS/EN 1997-1 DK NA:2021, A.1: CC2 giver 1,0, CC3 giver 1,1.
+**Konsekvensklasse.** Klassen vælges blandt CC2 og CC3, og standarden er CC2, som i arket. Appen regner kun i CC2 og CC3; det er appens eget valg, da DK NA:2021 også har CC1 med K_FI = 1,0. Klassen giver konsekvensfaktoren K_FI efter DS/EN 1997-1 DK NA:2021, A.1: CC2 giver 1,0, CC3 giver 1,1.
 
 Ved CC3 kræves særskilt kontrol fra certificeret statiker, godkendt til KK3/CC3, og der regnes altid med GVS i terræn. Det gælder både standard og avanceret beregning, fordi der skal tages højde for ekstremhændelser.
 
@@ -119,6 +119,7 @@ Rapportens indhold følger arkets afsnit og tal:
 7. Regningsmæssig designtrækstyrke og eftervisning, med en eventuel manuel overstyring af geonettet
 8. Kraftoverførsel i sand
 9. Løsningerne. Hvilke af de fire løsninger rapporten tager med, og om nogle kan fravælges, afklares i fase 4.
+10. Kontrolpunkterne. Kritiske kontrolpunkter som K-08 bør følge resultatet i rapporten (forslag fra gennemgangen 30. oktober 2026).
 
 Rapporten skal oplyse, om der er regnet med standardberegningen eller den avancerede beregning, og ved CC3 have noten om særskilt kontrol fra certificeret statiker. Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden får sagsbehandleren fra kartoteket i stedet for »Bruger«.
 

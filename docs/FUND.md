@@ -13,17 +13,17 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 |---|---|---|---|
 | K-01 | Teksten om γ_f passer ikke med værdien | Tekst | 1,1 · K_FI, teksten viser værdien |
 | K-02 | Forkert grænse for X-GRID 150 | Valg af geonet | Afgjort: grænsen er UTS/RF (K-21) |
-| K-03 | Netvalg og kontrol bruger forskellige krav | Valg af geonet | Som arket |
+| K-03 | Netvalg og kontrol bruger forskellige krav | Valg af geonet | Afgjort: valget bruger kravet 1,01 |
 | K-04 | Kun ét lag geonet | Valg af geonet | Afgjort: som arket, 2 lag manuelt |
-| K-05 | GVS under rørtoppen | Opdrift og ballast | Afgjort: som arket, c) som avanceret beregning |
+| K-05 | GVS under rørtoppen | Opdrift og ballast | Afgjort: c) som avanceret beregning; standarden låst til GVS i terræn |
 | K-06 | π = 3,14 | Alle tal (0,05 %) | Afgjort: π |
 | K-07 | g = 9,82 for rørvægt | Ballast (lille) | Afgjort: som arket |
-| K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Som arket |
-| K-09 | Omslag: tillæg på 1,2 m i netlængden | Netlængde | Som arket |
+| K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Afgjort: som arket med kontrolpunkt |
+| K-09 | Omslag: tillæg på 1,2 m i netlængden | Netlængde | Afgjort: som arket, tillægget nævnes |
 | K-10 | To rør: ingen kontrol, forskellig mellemlængde | Længder, kontrol | Som arket |
 | K-11 | Kontrollen uden omslag kan ikke give EJ OK | Kontrol | Som arket |
-| K-12 | Arket regner videre, når sikring ikke er nødvendig | Rapport | Som arket |
-| K-13 | Den viste 2L er mindre end den anvendte | Visning | Som arket |
+| K-12 | Arket regner videre, når sikring ikke er nødvendig | Rapport | Afgjort: S₁ ≥ 1 er OK, »Ikke relevant« |
+| K-13 | Den viste 2L er mindre end den anvendte | Visning | Afgjort: beregnet og anvendt vises hver for sig |
 | K-14 | S₂ og faktoren mellem rør er faste | Længder | Som arket |
 | K-15 | Forældet tekst og dobbelte data i Navne tabel | Data | Data ét sted |
 | K-16 | Faste sidetal og »Udarbejdet af Bruger« | Rapport | Løses i appen |
@@ -33,6 +33,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-20 | h₁ og h₂ har tre forskellige betydninger | Tekst | h₁ = jorddækning |
 | K-21 | Produktlisten mangler X-GRID 130 og 200 | Valg af geonet | Afgjort: 130 og 200 tilføjet |
 | K-22 | Reduktionsfaktorerne pr. net bruges ikke | Data, P_till | Afgjort: ét fælles sæt |
+| K-23 | Omslag over terræn ved lav rørmidte | Løsning C og D | Afgjort: omslag ikke muligt |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -52,7 +53,7 @@ Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kont
 | S₁ | 0,49 | 0,51 |
 | F_opdrift | 27,53 kN/m | 25,07 kN/m |
 
-**Afgjort.** γ_f = 1,1 · K_FI følger konsekvensklassen, som vælges i kort 2 Partialkoefficienter på beregningssiden (beslutning 28. oktober 2026). CC2 giver arkets 1,1, og CC3 giver 1,21. CC1 er udgået, fordi opdrift ikke kan regnes i CC1 (beslutning 29. oktober 2026). Rapportteksten viser den anvendte værdi, så tekst og tal stemmer.
+**Afgjort.** γ_f = 1,1 · K_FI følger konsekvensklassen, som vælges i kort 2 Partialkoefficienter på beregningssiden (beslutning 28. oktober 2026). CC2 giver arkets 1,1, og CC3 giver 1,21. CC1 er udgået som appens eget valg (beslutninger 29. og 30. oktober 2026). DK NA:2021 har dog CC1 med K_FI = 1,0, så begrundelsen fra 29. oktober om, at opdrift ikke kan regnes i CC1, holder ikke. Rapportteksten viser den anvendte værdi, så tekst og tal stemmer.
 
 ## K-02 Forkert grænse for X-GRID 150
 
@@ -98,6 +99,8 @@ Grænsetabellens UTS for det største produkt er 200 (K22), men produktlisten ha
 - c) Uændret.
 
 **Første version.** Som arket. Kontrolpunkt, når P_till/F_opdrift ligger i båndet.
+
+**Afgjort 30. oktober 2026.** Det automatiske valg tager det mindste produkt, hvor P_till/F_opdrift > 1,01, altså samme krav som eftervisningen. Det valgte net får dermed altid OK, og kontrolpunktet K-03 er udgået. Afvigelsen er dokumenteret for 7 af arkets kontrolcases i `tests/cases/afvigelser.json`.
 
 ## K-04 Kun ét lag geonet
 
@@ -151,6 +154,8 @@ Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af 
 
 **Første version.** Som arket uden afvisning. Kontrolpunkt, når GVS ligger under rørtoppen.
 
+**Låst 30. oktober 2026.** Siden regner standardberegningen altid med GVS i terræn, ligesom CC3. GVS under terræn regnes kun i den avancerede beregning. Motoren kan fortsat regne arkets formler med GVS under terræn, så kontrolcasene kan sammenlignes med arket. Kontrolpunktet K-05 opstår derfor ikke på siden.
+
 **Afgjort 29. oktober 2026.** Standardberegningen regner som arket og viser kontrolpunktet. Mulighed c er indført som en særskilt avanceret beregning, der kun gælder, når »Avanceret beregning« er afkrydset. Formler, eksempler og beslutninger står i [FORSLAG_K-05.md](FORSLAG_K-05.md).
 
 ## K-06 π = 3,14
@@ -194,6 +199,8 @@ Regnes dimensioneringen omvendt med fuld F_top, falder L i case 1 fra 1,36 m til
 
 **Første version.** Som arket.
 
+**Afgjort 30. oktober 2026.** Kontrollen regnes som arket. Når sikring er nødvendig, viser kontrolpunktet K-08, at kontrollen bruger et større topbidrag end dimensioneringen. Længderne påvirkes ikke, og kontrollen kan ikke give EJ OK (som K-11).
+
 ## K-09 Omslag: tillæg på 1,2 m i netlængden
 
 **Arket.** Løsning C: L_geonet,tot = 4 · (L + 0,4) + πd/2 = 4L + 1,6 + πd/2. To sider med bundlag, 0,2 m op og toplag giver geometrisk 4L + 0,4 + πd/2. Løsning D: 4 · (2L + 0,4) + πd = 8L + 1,6 + πd, mens fire sider giver 8L + 0,8 + πd. D er heller ikke det dobbelte af C.
@@ -215,6 +222,8 @@ Strimlerne til sprinklertanken i e-mailene (14,86 m og 18,99 m) følger arkets f
 - c) Tillægget bliver en indstilling.
 
 **Første version.** Som arket.
+
+**Afgjort 30. oktober 2026.** Mulighed a: Tillægget bevares og nævnes ved netlængden: »inkl. 1,2 m tillæg til omslag og overlæg« for én ledning og »inkl. 0,8 m tillæg …« for to ledninger.
 
 ## K-10 To rør: ingen kontrol og forskellig mellemlængde
 
@@ -264,6 +273,8 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 
 **Første version.** Tallene er som i arket. På beregningssiden tones kortene om geonet og forankring ned, og der vises et kontrolpunkt. Rapporten følger arket.
 
+**Afgjort 30. oktober 2026.** S₁ ≥ 1 er OK som i EC7's ulighed for løftning, så status og konklusion er enige ved S₁ = 1. Det afviger kun fra arket ved præcis lighed, og ingen af arkets kontrolcases rammer den. Når F_opdrift ≤ 0, viser styrkekontrollen for geonettet »Ikke relevant« i stedet for et negativt forhold og EJ OK. Motoren regner fortsat videre som arket; ændringen er kun i visningen.
+
 ## K-13 Den viste 2L er mindre end den anvendte
 
 **Arket.** Løsning A viser 2L = max(1; K/F_bund) i G312, men bruger L = max(1; G312/2) pr. side. Når K/F_bund < 2, er den viste værdi mindre end 2 · L.
@@ -273,6 +284,8 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 **Muligheder.** a) Der vises 2 · L. b) Uændret.
 
 **Første version.** Som arket. Kontrolpunkt, når de to værdier er forskellige.
+
+**Afgjort 30. oktober 2026.** Mellemregningerne viser den beregnede længde og den anvendte mindstelængde hver for sig, fx »Beregnet 2L = K/F_bund = 1,12 m« og »L_geonet = max(1,0; 2L/2) = 1,00 m pr. side, mindstelængden er bestemmende«. Det samme gælder med omslag, hvor arkets regel »2L = 1,2 m, hvis den beregnede værdi er under 1,0« aldrig ændrer L. Kontrolpunktet K-13 er udgået. Regningen er uændret.
 
 ## K-14 S₂ og faktoren mellem rør er faste
 
@@ -409,3 +422,11 @@ Faktorerne i H24:K27 bruges ingen steder. Da alle kolonner og kopien i Rapporten
 **Spørgsmål.** Angiver BBA-certifikatet forskellige faktorer for de enkelte net, fx f_d for mekanisk beskadigelse?
 
 **Afgjort 28. oktober 2026.** Mulighed b: appen beholder ét fælles sæt faktorer som i arket.
+
+## K-23 Omslag over terræn ved lav rørmidte
+
+**Arket.** Ved omslag ligger det øverste lag i h_top = T₃ − 0,2 m. Ligger rørmidten 0,2 m eller mindre under terræn, er h_top ≤ 0, og det øverste lag ville ligge i eller over terræn. Arket regner alligevel videre med negativ F_top.
+
+**Eksempel.** d = 0,10 m og h₁ = 0: T₃ = 0,05 m, h_top = −0,15 m, F_top < 0, og kontrollen for løsning C giver −4,23.
+
+**Afgjort 30. oktober 2026.** Omslag er ikke muligt, når h_top ≤ 0. Motoren giver `losninger.C` og `losninger.D` = `null`, og kortene med omslag viser »Omslag kræver, at rørmidten ligger mere end 0,2 m under terræn.« Løsningerne uden omslag regnes som før. Ingen af arkets kontrolcases rammer grænsen.

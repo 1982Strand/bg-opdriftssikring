@@ -26,7 +26,7 @@ Felterne afviser kun værdier uden fysisk mening. Hver fejl er knyttet til sit f
 - γ_tør skal være > 0, og φ_k skal ligge mellem 0° og 90° (begge udelukket);
 - γ_våd · 0,9 skal være > γ_w, da den effektive rumvægt under vand ellers ikke er positiv;
 - en overstyring skal være et produkt fra listen i 1 eller 2 lag. Et net i midten af flere lag kan ikke udnyttes;
-- konsekvensklassen skal være CC2 eller CC3, fordi opdrift ikke kan regnes i CC1;
+- konsekvensklassen skal være CC2 eller CC3, fordi appen kun regner i de to klasser;
 - i CC3 skal GVS ligge i terræn, i begge beregningsmetoder.
 
 ## Resultat
@@ -36,7 +36,7 @@ Resultatet indeholder alle mellemværdier, så skærm og rapport kan vise dem ud
 - O, B med sine fire led (`ballastLed`), S₁ og arkets konklusion;
 - F_opdrift og geonettets UTS, navn, P_till, sikkerheden P_till/F_opdrift og status;
 - F_bund, F_top og K;
-- løsningerne `losninger.A`–`D` (afsnit 9–12 i arket) med længder og kontrol.
+- løsningerne `losninger.A`–`D` (afsnit 9–12 i arket) med længder og kontrol. A og C har også den beregnede 2L før mindstelængden (`toLBeregnet`). C og D er `null`, når omslag ikke er muligt (h_top ≤ 0, K-23).
 
 Hvor arket viser `#VALUE!`, fx P_till, når intet produkt kan vælges, er værdien `null`.
 
@@ -44,17 +44,16 @@ Hvor arket viser `#VALUE!`, fx P_till, når intet produkt kan vælges, er værdi
 
 | Kontrolpunkt | Betingelse |
 |---|---|
-| K-03 | Automatisk valg, 0 < F_opdrift < P_till, og P_till/F_opdrift ≤ 1,01 |
-| K-05 | GVS-dybden er større end h₁ (GVS under rørtoppen) |
+| K-05 | Standardberegning, og GVS-dybden er større end h₁ (GVS under rørtoppen). Siden låser standardberegningen til GVS i terræn, så K-05 opstår kun ved direkte brug af motoren |
+| K-08 | Omslag er muligt, S₁ < 1, og kontrollen for løsning C kan regnes |
 | K-12 | S₁ ≥ 1 |
-| K-13 | Den viste 2L (G312) er forskellig fra 2 · L (C315) |
 
 ## Særheder bevaret fra arket
 
 - g = 9,82 for rørets egenvægt (K-07). Det er tyngdeaccelerationen i Danmark.
-- Netvalget og kontrollen bruger forskellige krav (K-03).
-- Der regnes videre med negativ F_opdrift, når S₁ ≥ 1 (K-12).
-- Tillægget på 0,4 m i netlængden med omslag (K-09) står som `netTillaegOmslag`.
+- Der regnes videre med negativ F_opdrift, når S₁ ≥ 1 (K-12). Siden viser »Ikke relevant« for styrkekontrollen.
+- Tillægget på 0,4 m i netlængden med omslag (K-09) står som `netTillaegOmslag`. Siden nævner tillægget ved netlængden.
+- Kontrollen med omslag bruger et større topbidrag end dimensioneringen (K-08).
 
 En ændring af disse kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
 
@@ -62,6 +61,9 @@ En ændring af disse kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
 
 - **K-21 (og K-02).** Produktlisten er X-GRID 35, 55, 80, 110, 130, 150 og 200 fra databladet. Valggrænsen er P_till = UTS/RF for alle produkter uden afrunding.
 - **K-06.** Motoren regner med π (`konstanter` i `opdrift.ts`). `beregnOpdrift(input, arketsKonstanter)` regner med arkets 3,14 og bruges kun i kontrollen mod arket.
+- **K-03.** Det automatiske valg tager det mindste produkt med 1,01 · F_opdrift < P_till, så P_till/F_opdrift > 1,01 som i eftervisningen.
+- **K-12.** S₁ ≥ 1 er OK (arket: S₁ > 1). Konklusionen bruger S₁ < 1, så de to er enige.
+- **K-23.** Omslag er ikke muligt, når h_top ≤ 0; løsning C og D er da `null`.
 
 ## Avanceret beregning
 

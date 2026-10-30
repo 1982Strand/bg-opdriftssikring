@@ -28,7 +28,9 @@ Casene dækker:
 
 Kontrollen mod arket regner med arkets π = 3,14 (`arketsKonstanter`), mens appen regner med π (K-06). Det samme gælder testene af kontrolpunkterne, som bruger arkets tal. En særskilt test kontrollerer, at appen bruger π.
 
-CC1 er udgået (beslutning 29. oktober 2026). Casen »CC1: case 1« sammenlignes derfor ikke med arket, men kontrolleres ved, at motoren afviser CC1. Samme input i CC2 er »Case 1«, som sammenlignes med arket.
+CC1 er udgået, fordi appen kun regner i CC2 og CC3 (beslutninger 29. og 30. oktober 2026). Casen »CC1: case 1« sammenlignes derfor ikke med arket, men kontrolleres ved, at motoren afviser CC1. Samme input i CC2 er »Case 1«, som sammenlignes med arket.
+
+Bevidste afvigelser fra arket står i `tests/cases/afvigelser.json` med beslutning og en forventning, der er beregnet uden motoren. Excels facit ændres ikke. Afvigelserne er K-21 (produktlisten) og K-03 (netvalget med kravet 1,01, 7 cases).
 
 Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Tolerancen dækker kun afrundingsstøj i kommatal, fordi motoren og Excel kan udføre de samme regneoperationer i lidt forskellig rækkefølge. Valgt geonet, OK/EJ OK og tekster skal stemme præcist.
 
@@ -48,16 +50,22 @@ Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
 
 Øvrige enhedstests dækker:
 - validering og kontrolpunkter i motoren;
+- at det automatiske netvalg altid opfylder kravet 1,01 (K-03);
+- at S₁-status og konklusionen er enige, også tæt på S₁ = 1;
+- at omslag ikke er muligt ved h_top ≤ 0 (K-23);
+- at mindstelængderne svarer til max(mindstelængde; beregnet 2L/2);
 - figurerne for de 41 cases i CC2 og CC3;
-- at CC1 afvises, og at CC3 kræver GVS i terræn i begge beregningsmetoder;
+- at CC1 afvises, at CC3 kræver GVS i terræn i begge beregningsmetoder, og at standardberegningen på siden altid regner med GVS i terræn;
 - teksterne til kontrolpunkterne og forudsætningerne;
 - talformatet;
 - lagringen i browseren.
 
 Browsertestene dækker:
-- standardresultatet for case 1;
+- standardresultatet for case 1 med de nye navne, noterne på løsningskortene, tillægget i netlængden og kontrolpunktet K-08;
 - feltfejl, nulstilling og genindlæsning;
-- GVS under terræn med kontrolpunkter og nedtoning;
+- låsen af GVS i standardberegningen og GVS under terræn i den avancerede beregning med »Ikke relevant« og nedtoning;
+- at det automatiske netvalg opfylder kravet 1,01;
+- at omslag ikke er muligt ved lav rørmidte;
 - alle fire løsninger uden valg af antal eller konstruktion;
 - manuelt valg af 2 lag X-GRID 150;
 - forudsætningerne og konsekvensklasse CC3 i kort 1–2;

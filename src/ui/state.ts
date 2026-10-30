@@ -41,8 +41,9 @@ export function tilMotorInput(s: Session): OpdriftInput {
   return {
     d: i.d,
     h1: i.h1,
-    // CC3 regnes altid med GVS i terræn; den indtastede GVS gemmes til CC2.
-    gvs: i.gvsITerraen || s.konsekvensklasse === 'CC3' ? 0 : i.gvs,
+    // Standardberegningen og CC3 regnes altid med GVS i terræn; den indtastede GVS gemmes til den
+    // avancerede beregning i CC2.
+    gvs: i.gvsITerraen || s.konsekvensklasse === 'CC3' || !s.avanceret ? 0 : i.gvs,
     roervaegt: i.roervaegt,
     gamma: i.gamma,
     gammaTor: i.gammaTor,

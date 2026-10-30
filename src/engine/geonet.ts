@@ -32,8 +32,9 @@ export function vaelgGeonet(
     const uts = overstyring.uts * overstyring.lag;
     return resultat(uts, `${overstyring.uts} (${overstyring.lag} lag)`, false, Fopdrift);
   }
-  // G207: mindste UTS, hvor F_opdrift < valggrænsen.
-  const produkt = geonetProdukter.find((p) => Fopdrift < p.graense);
+  // G207 valgte det mindste produkt med F_opdrift < P_till. Appen vælger det mindste produkt, der
+  // også opfylder kravet P_till/F_opdrift > 1,01 (fund K-03, beslutning 30. oktober 2026).
+  const produkt = geonetProdukter.find((p) => Fopdrift * standarder.krav.geonet < p.graense);
   if (!produkt) {
     return {
       uts: null,

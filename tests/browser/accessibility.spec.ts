@@ -13,7 +13,7 @@ for (const width of [1440, 390]) {
   }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/#opdriftssikring');
-    // GVS under rørtoppen giver kontrolpunkter og nedtonede kort.
+    // Standardberegningen regner med GVS i terræn og viser låsebeskeden og kontrolpunktet K-08.
     await page.evaluate(() =>
       localStorage.setItem(
         'opdrift.session',
@@ -44,9 +44,11 @@ for (const width of [1440, 390]) {
       page.locator('[data-slot="accordion-content"][data-state="open"]').first(),
     ).toBeVisible();
     expect(await axe(page)).toEqual([]);
-    // Avanceret beregning med GVS mellem rørtop og rørmidte: note om vandstand og nye mellemregninger.
+    // Avanceret beregning med GVS mellem rørtop og rørmidte: note om vandstand, nye mellemregninger,
+    // nedtonede kort og »Ikke relevant«.
     await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
     await expect(page.getByText(/Beregninger på eget ansvar/)).toBeVisible();
+    await expect(page.getByText('Ikke relevant', { exact: true }).first()).toBeVisible();
     expect(await axe(page)).toEqual([]);
 
     for (const side of pladsholdere) {

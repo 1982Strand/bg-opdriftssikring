@@ -29,6 +29,63 @@
           "H238": "OK"
         }
       }
+    },
+    {
+      "id": "K-03",
+      "dato": "2026-10-30",
+      "beslutning": "Det automatiske valg tager det mindste produkt, hvor P_till/F_opdrift > 1,01, altså samme krav som eftervisningen. Arket valgte efter F_opdrift < P_till, så et produkt med forhold mellem 1,00 og 1,01 blev valgt og fik EJ OK. Se docs/BESLUTNINGER.md.",
+      "beregning": "Forventningerne er beregnet uden motoren ud fra arkets F_opdrift (G177) og RF (G213): mindste UTS i {35, 55, 80, 110, 130, 150, 200} med 1,01 · F_opdrift < UTS/RF, P_till = UTS/RF, udnyttelse = P_till/F_opdrift og OK, hvis udnyttelsen er over 1,01. Kun cases, hvor valget ændres, er med.",
+      "celler": {
+        "Gitter: d = 2,0 m, h1 = 0,3 m": {
+          "G207": 80,
+          "G199": 80,
+          "G229": 37.97580419105723,
+          "E238": 1.456346359999556,
+          "H238": "OK"
+        },
+        "Gitter: d = 3,0 m, h1 = 2,0 m": {
+          "G207": 110,
+          "G199": 110,
+          "G229": 52.21673076270369,
+          "E238": 1.3820410430670547,
+          "H238": "OK"
+        },
+        "K-03: bånd for X-GRID 35": {
+          "G207": 55,
+          "G199": 55,
+          "G229": 26.108365381351845,
+          "E238": 1.5799165100155261,
+          "H238": "OK"
+        },
+        "K-03: bånd for X-GRID 55": {
+          "G207": 80,
+          "G199": 80,
+          "G229": 37.97580419105723,
+          "E238": 1.4609752557806557,
+          "H238": "OK"
+        },
+        "K-03: bånd for X-GRID 80": {
+          "G207": 110,
+          "G199": 110,
+          "G229": 52.21673076270369,
+          "E238": 1.3823890936645278,
+          "H238": "OK"
+        },
+        "K-03: bånd for X-GRID 110": {
+          "G207": 130,
+          "G199": 130,
+          "G229": 61.710681810467996,
+          "E238": 1.1873929647678327,
+          "H238": "OK"
+        },
+        "K-03: bånd for X-GRID 150": {
+          "G207": 200,
+          "G199": 200,
+          "G229": 94.93951047764307,
+          "E238": 1.3404145405482726,
+          "H238": "OK"
+        }
+      }
     }
   ]
 }

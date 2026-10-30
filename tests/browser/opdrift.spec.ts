@@ -15,38 +15,78 @@ const flise = (page: Page, label: string) =>
   page.locator('.m9-result-cards > div', { hasText: label }).first();
 const losning = (page: Page, titel: string) =>
   page.locator('.solution-card', { has: page.getByRole('heading', { name: titel, exact: true }) });
+const laasTekst =
+  'Standardberegningen regner altid med GVS i terræn. GVS under terræn kan regnes med avanceret beregning.';
 
 test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await start(page);
   await expect(page.getByRole('status').filter({ hasText: 'Standarddata' })).toBeVisible();
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('54,00');
-  await expect(flise(page, 'Opdrift O').locator('p')).toHaveText('γf = 1,10');
-  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('26,43');
-  await expect(flise(page, 'Sikkerhed S₁').locator('strong')).toHaveText('0,49');
-  await expect(flise(page, 'Sikkerhed S₁').locator('.m9-badge')).toHaveText('EJ OK');
+  await expect(
+    page.getByText(
+      'Opdrift og ballast for rør, nødvendigt geonet og forankringslængder for X-GRID.',
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      'Beregningen gælder pr. løbende meter for et tomt, cirkulært rør i homogent friktionsfyld med geonettet ført symmetrisk om røret.',
+    ),
+  ).toBeVisible();
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('54,00');
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('p')).toHaveText('γf = 1,10');
+  await expect(flise(page, 'Stabiliserende ballast').locator('strong')).toHaveText('26,43');
+  await expect(flise(page, 'Kontrol uden geonet').locator('strong')).toHaveText('0,49');
+  await expect(flise(page, 'Kontrol uden geonet').locator('.m9-badge')).toHaveText('EJ OK');
+  await expect(flise(page, 'Kontrol uden geonet').locator('p')).toHaveText('Krav ≥ 1,0');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 80');
-  await expect(flise(page, 'Krav til geonettets trækstyrke').locator('strong')).toHaveText('27,56');
-  await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,38');
-  await expect(flise(page, 'Sikkerhed Ptill').locator('p')).toHaveText(
-    'Krav: Ptill/Fopdrift > 1,01 (Ptill udnyttet 73%)',
+  await expect(flise(page, 'Restopdrift').locator('strong')).toHaveText('27,56');
+  await expect(flise(page, 'Styrkekontrol').locator('strong')).toHaveText('1,38');
+  await expect(flise(page, 'Styrkekontrol').locator('p')).toHaveText(
+    'Krav: Pd/Fop,d > 1,01 (Pd udnyttet 73%)',
   );
+  await expect(
+    page.getByText(
+      'Geonettet rulles ud på tværs af ledningen, så nettets styrke på langs af rullen udnyttes.',
+    ),
+  ).toBeVisible();
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,50');
+  const udenOmslag = losning(page, 'Uden omslag, én ledning');
+  await expect(udenOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText(
+    '1,70 m',
+  );
   await expect(
-    losning(page, 'Uden omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
-  ).toContainText('1,70 m');
+    udenOmslag.getByText('Der forankres altid med mindst 1,0 m på hver side.'),
+  ).toBeVisible();
+  await udenOmslag.getByRole('button', { name: 'Mellemregninger' }).click();
+  await expect(udenOmslag.getByText('Beregnet 2L = K/Fbund = 28,94/8,50 = 3,40 m')).toBeVisible();
+  const medOmslag = losning(page, 'Med omslag, én ledning');
+  await expect(medOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText('1,36 m');
   await expect(
-    losning(page, 'Med omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
-  ).toContainText('1,36 m');
-  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
-  // Mellemregningerne for geonet viser RF og P_till for det valgte net, ikke de øvrige net.
+    medOmslag.getByRole('row', { name: /inkl. 1,2 m tillæg til omslag og overlæg/ }),
+  ).toContainText('10,98 m');
+  await expect(
+    losning(page, 'Med omslag, to ledninger').getByRole('row', { name: /inkl. 0,8 m tillæg/ }),
+  ).toContainText('20,35 m');
+  // Kontrollen ved omslag regnes som arket med en forklaring (K-08).
+  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toBeVisible();
+  await expect(page.getByText(/større margin end dimensioneringen \(fund K-08\)/)).toBeVisible();
+  const forankring = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '7 Forankring' }),
+  });
+  await forankring.getByRole('button', { name: 'Mellemregninger for kraftoverførsel' }).click();
+  await expect(
+    forankring.getByText(
+      'Geonettet ligger under GVS, så kraftoverførslen regnes med γ′d. Forankringen på begge sider skal tilsammen optage K = Fop,d · S₂.',
+    ),
+  ).toBeVisible();
+  // Mellemregningerne for geonet viser RF og P_d for det valgte net, ikke de øvrige net.
   const geonet = page.locator('section.calc-card', {
     has: page.getByRole('heading', { name: '6 Geonet' }),
   });
   await geonet.getByRole('button', { name: 'Mellemregninger', exact: true }).click();
   await expect(geonet.getByRole('row', { name: /Samlet reduktionsfaktor/ })).toContainText('2,11');
   await expect(geonet.getByRole('row', { name: /Kemisk påvirkning/ })).toContainText('1,22');
-  await expect(geonet.getByText('Fopdrift = O − B = 54,00 − 26,43 = 27,56 kN/m')).toBeVisible();
-  await expect(geonet.getByText('Ptill = UTS/RF = 80/2,11 = 37,98 kN/m')).toBeVisible();
+  await expect(geonet.getByText('Fop,d = Od − Bd = 54,00 − 26,43 = 27,56 kN/m')).toBeVisible();
+  await expect(geonet.getByText('Pd = UTS/RF = 80/2,11 = 37,98 kN/m')).toBeVisible();
   await expect(geonet.getByText('RF beregnes som produktet af følgende faktorer:')).toBeVisible();
   await expect(
     geonet.getByText(
@@ -57,21 +97,23 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     'href',
     'https://www.byggros.com',
   );
-  await expect(flise(page, 'Valgt geonet').locator('p')).toHaveText('Ultimal styrke UTS = 80 kN/m');
+  await expect(flise(page, 'Valgt geonet').locator('p')).toHaveText(
+    'Medregnet korttidstrækstyrke UTS = 80 kN/m',
+  );
   await expect(geonet.getByRole('row', { name: /X-GRID/ })).toHaveCount(0);
 });
 
 test('ændring, feltfejl, nulstilling og genindlæsning', async ({ page }) => {
   await start(page);
   await saet(page, 'Rørdiameter d (m)', '3');
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('77,75');
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('77,75');
   await saet(page, 'Rørdiameter d (m)', '0');
   const d = page.getByRole('spinbutton', { name: 'Rørdiameter d (m)' });
   await expect(d).toHaveAttribute('aria-invalid', 'true');
   await expect(page.getByText('Diameteren d skal være større end 0 m.')).toBeVisible();
   await expect(page.getByText('Beregningen vises, når inddata er rettet.')).toBeVisible();
   await page.getByRole('button', { name: 'Nulstil beregning' }).click();
-  await expect(flise(page, 'Sikkerhed S₁').locator('strong')).toHaveText('0,49');
+  await expect(flise(page, 'Kontrol uden geonet').locator('strong')).toHaveText('0,49');
   await saet(page, 'Jorddækning h₁ (m)', '1');
   await expect(page.getByRole('status').filter({ hasText: 'Gemt i denne browser' })).toBeVisible();
   await page.reload();
@@ -79,19 +121,30 @@ test('ændring, feltfejl, nulstilling og genindlæsning', async ({ page }) => {
   await expect(page.getByRole('status').filter({ hasText: 'Gemt i denne browser' })).toBeVisible();
 });
 
-test('GVS under terræn, kontrolpunkter og S₁ over 1,0', async ({ page }) => {
+test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ikke relevant«', async ({
+  page,
+}) => {
   await start(page);
   const gvsFelt = page.getByRole('spinbutton', { name: 'GVS under terræn (m)' });
+  const iTerraen = page.getByRole('checkbox', { name: 'GVS i terræn' });
+  await expect(page.getByText(laasTekst)).toBeVisible();
+  await expect(iTerraen).toBeChecked();
+  await expect(iTerraen).toBeDisabled();
   await expect(gvsFelt).toBeDisabled();
-  await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
+
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await expect(page.getByText(laasTekst)).toHaveCount(0);
+  await iTerraen.click();
   await expect(gvsFelt).toBeEnabled();
   await saet(page, 'GVS under terræn (m)', '2');
-  await expect(page.getByText(/GVS ligger under toppen af røret/)).toBeVisible();
   await expect(
     page.getByText(
-      'S₁ > 1,0: opdriftssikring er ikke nødvendig. Tallene nedenfor vises som i regnearket.',
+      'S₁ ≥ 1,0: opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.',
     ),
   ).toBeVisible();
+  await expect(flise(page, 'Styrkekontrol').locator('strong')).toHaveText('Ikke relevant');
+  await expect(flise(page, 'Styrkekontrol').locator('.m9-badge')).toHaveCount(0);
+  await expect(page.getByText(/fund K-12/)).toBeVisible();
   const kort = page.locator('section.calc-card');
   await expect(kort.filter({ has: page.getByRole('heading', { name: '6 Geonet' }) })).toHaveClass(
     /is-dimmed/,
@@ -99,11 +152,20 @@ test('GVS under terræn, kontrolpunkter og S₁ over 1,0', async ({ page }) => {
   await expect(
     kort.filter({ has: page.getByRole('heading', { name: '7 Forankring' }) }),
   ).toHaveClass(/is-dimmed/);
-  await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
+
+  // Tilbage i standardberegningen regnes igen med GVS i terræn.
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await expect(iTerraen).toBeChecked();
+  await expect(gvsFelt).toBeDisabled();
+  await expect(flise(page, 'Kontrol uden geonet').locator('strong')).toHaveText('0,49');
+});
+
+test('det automatiske netvalg opfylder kravet 1,01 (K-03)', async ({ page }) => {
+  await start(page);
   await saet(page, 'Rørdiameter d (m)', '2.6');
   await saet(page, 'Jorddækning h₁ (m)', '1');
-  await expect(page.getByText(/1,005 er under kravet 1,01/)).toBeVisible();
-  await expect(flise(page, 'Sikkerhed Ptill').locator('.m9-badge')).toHaveText('EJ OK');
+  await expect(flise(page, 'Styrkekontrol').locator('.m9-badge')).toHaveText('OK');
+  await expect(page.getByText(/er under kravet 1,01/)).toHaveCount(0);
 });
 
 test('alle fire løsninger vises, og der er ingen valg af antal eller konstruktion', async ({
@@ -120,10 +182,28 @@ test('alle fire løsninger vises, og der er ingen valg af antal eller konstrukti
     losning(page, 'Uden omslag, to ledninger').getByRole('row', { name: /Mellem ledningerne/ }),
   ).toBeVisible();
   await expect(
-    losning(page, 'Med omslag, to ledninger').getByText(/den største diameter/),
+    losning(page, 'Med omslag, to ledninger').getByText(
+      'Der er ingen opdriftskontrol for to ledninger. Ved to forskellige ledninger angives den største diameter og den mindste egenvægt.',
+    ),
+  ).toBeVisible();
+  await expect(
+    losning(page, 'Med omslag, to ledninger').getByText(
+      'Afstanden mellem rørene skal være mindst 2 · Lgeonet.',
+      { exact: false },
+    ),
   ).toBeVisible();
   await expect(page.getByRole('radio')).toHaveText(['CC2', 'CC3']);
   await expect(page.getByText(/tank/i)).toHaveCount(0);
+
+  // Omslag er ikke muligt, når rørmidten ligger højst 0,2 m under terræn.
+  await saet(page, 'Rørdiameter d (m)', '0.1');
+  await saet(page, 'Jorddækning h₁ (m)', '0');
+  await expect(
+    page.getByText('Omslag kræver, at rørmidten ligger mere end 0,2 m under terræn.'),
+  ).toHaveCount(2);
+  await expect(
+    losning(page, 'Uden omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
+  ).toBeVisible();
 });
 
 test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
@@ -135,10 +215,10 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
   await page.getByRole('combobox', { name: 'Produkt i 2 lag' }).click();
   await page.getByRole('option', { name: 'X-GRID 150 · UTS 300 kN/m' }).click();
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 150 (2 lag)');
-  await expect(flise(page, 'Tilladelig træklast i geonet').locator('strong')).toHaveText('142,41');
-  await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,26');
-  await expect(flise(page, 'Sikkerhed Ptill').locator('p')).toHaveText(
-    'Krav: Ptill/Fopdrift > 1,01 (Ptill udnyttet 80%)',
+  await expect(flise(page, 'Designtrækstyrke').locator('strong')).toHaveText('142,41');
+  await expect(flise(page, 'Styrkekontrol').locator('strong')).toHaveText('1,26');
+  await expect(flise(page, 'Styrkekontrol').locator('p')).toHaveText(
+    'Krav: Pd/Fop,d > 1,01 (Pd udnyttet 80%)',
   );
   await expect(
     losning(page, 'Uden omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
@@ -154,9 +234,10 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
     '2 Partialkoefficienter',
     '3 Geometri og grundvand',
     '4 Egenvægt og fyldmateriale',
-    '5 Opdrift uden geonet',
+    '5 Opdrift og stabiliserende ballast',
     '6 Geonet',
     '7 Forankring',
+    'Kontrolpunkter',
   ]);
   await expect(page.getByRole('heading', { name: 'Projekteringsansvar' })).toBeVisible();
   await expect(
@@ -169,10 +250,12 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
   await expect(page.getByText('Analysen sker i konsekvensklasse CC2 (middel')).toBeVisible();
   await page.getByRole('radio', { name: 'CC3' }).click();
   await expect(page.getByText('Analysen sker i konsekvensklasse CC3 (høj')).toBeVisible();
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('59,40');
-  await expect(flise(page, 'Opdrift O').locator('p')).toHaveText('γf = 1,21');
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('59,40');
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('p')).toHaveText('γf = 1,21');
   await page.getByRole('button', { name: 'Konsekvens for den aktuelle beregning' }).click();
-  await expect(page.getByRole('row', { name: /Opdrift O/ })).toContainText('59,40 kN/m');
+  await expect(page.getByRole('row', { name: /Regningsmæssig opdrift/ })).toContainText(
+    '59,40 kN/m',
+  );
   await page.getByRole('button', { name: 'Nulstil beregning' }).click();
   await expect(page.getByRole('radio', { name: 'CC2' })).toBeChecked();
   await page.goto('/#indstillinger');
@@ -185,46 +268,50 @@ test('X-GRID 200 vælges automatisk over X-GRID 150 (K-21)', async ({ page }) =>
   await saet(page, 'Rørdiameter d (m)', '3.4');
   await saet(page, 'Jorddækning h₁ (m)', '1');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 200');
-  await expect(flise(page, 'Sikkerhed Ptill').locator('strong')).toHaveText('1,31');
-  await expect(flise(page, 'Sikkerhed Ptill').locator('.m9-badge')).toHaveText('OK');
-  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
+  await expect(flise(page, 'Styrkekontrol').locator('strong')).toHaveText('1,31');
+  await expect(flise(page, 'Styrkekontrol').locator('.m9-badge')).toHaveText('OK');
 });
 
 test('CC3 kræver statikerkontrol og regner altid med GVS i terræn', async ({ page }) => {
   await start(page);
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
   await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
   await saet(page, 'GVS under terræn (m)', '1');
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('54,00');
-  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('49,18');
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('54,00');
+  await expect(flise(page, 'Stabiliserende ballast').locator('strong')).toHaveText('49,18');
   await page.getByRole('radio', { name: 'CC3' }).click();
   await expect(page.getByText(/kræves særskilt kontrol fra certificeret statiker/)).toBeVisible();
   await expect(page.getByText(/100-års hændelser for skybrud og oversvømmelse/)).toBeVisible();
   await expect(page.getByRole('checkbox', { name: 'GVS i terræn' })).toBeChecked();
   await expect(page.getByRole('checkbox', { name: 'GVS i terræn' })).toBeDisabled();
   await expect(page.getByRole('spinbutton', { name: 'GVS under terræn (m)' })).toBeDisabled();
-  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('26,43');
-  // Tilbage i CC2 gælder den indtastede GVS igen.
+  await expect(flise(page, 'Stabiliserende ballast').locator('strong')).toHaveText('26,43');
+  // Tilbage i CC2 gælder den indtastede GVS igen i den avancerede beregning.
   await page.getByRole('radio', { name: 'CC2' }).click();
   await expect(page.getByText(/kræves særskilt kontrol fra certificeret statiker/)).toHaveCount(0);
-  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('49,18');
+  await expect(flise(page, 'Stabiliserende ballast').locator('strong')).toHaveText('49,18');
 });
 
 test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await start(page);
   await saet(page, 'Rørdiameter d (m)', '4');
   await saet(page, 'Jorddækning h₁ (m)', '0.6');
-  await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
-  await saet(page, 'GVS under terræn (m)', '1.6');
-  // Standardberegningen regner som regnearket og viser kontrolpunkt K-05.
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('138,23');
-  await expect(page.getByText(/GVS ligger under toppen af røret/)).toBeVisible();
+  // Standardberegningen regner med GVS i terræn.
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('138,23');
   await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);
   await expect(page.getByText(/Avanceret beregning er valgt/)).toHaveCount(0);
 
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
-  await expect(page.getByText(/Avanceret beregning er valgt/)).toBeVisible();
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('111,21');
-  await expect(flise(page, 'Ballast B').locator('strong')).toHaveText('60,71');
+  await expect(
+    page.getByText(
+      'Avanceret beregning er valgt. Ved GVS under terræn regnes forankringen med tør fyld over GVS.',
+      { exact: false },
+    ),
+  ).toBeVisible();
+  await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
+  await saet(page, 'GVS under terræn (m)', '1.6');
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('111,21');
+  await expect(flise(page, 'Stabiliserende ballast').locator('strong')).toHaveText('60,71');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 110');
   await expect(page.getByText(/Beregninger på eget ansvar/)).toBeVisible();
   await expect(page.getByText(/GVS ligger under toppen af røret/)).toHaveCount(0);
@@ -250,14 +337,14 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(
     page.getByText('GVS ligger ved eller under rørbunden', { exact: false }),
   ).toBeVisible();
-  await expect(flise(page, 'Sikkerhed S₁').locator('strong')).toHaveText('–');
-  await expect(flise(page, 'Sikkerhed S₁').locator('p')).toHaveText('Ingen opdrift');
+  await expect(flise(page, 'Kontrol uden geonet').locator('strong')).toHaveText('–');
+  await expect(flise(page, 'Kontrol uden geonet').locator('p')).toHaveText('Ingen opdrift');
 
-  // Uden afkrydsning regnes igen som regnearket.
+  // Uden afkrydsning regnes igen som standardberegningen med GVS i terræn.
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
-  await expect(flise(page, 'Opdrift O').locator('strong')).toHaveText('138,23');
+  await expect(page.getByText(laasTekst)).toBeVisible();
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('138,23');
   await expect(page.getByRole('img', { name: /Rørets tværsnit delt af GVS/ })).toHaveCount(0);
-  await expect(page.getByText(/GVS ligger under toppen af røret/)).toBeVisible();
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,04');
   await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);
 });

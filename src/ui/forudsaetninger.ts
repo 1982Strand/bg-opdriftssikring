@@ -7,6 +7,7 @@ const klassenavn: Record<Konsekvensklasse, string> = { CC2: 'middel', CC3: 'høj
 
 export const betingelser = (klasse: Konsekvensklasse) => [
   'Forudsætninger vedrørende geometri, materialeparametre, belastninger m.v., som måtte have indflydelse på konstruktionen, er baseret på kundens oplysninger.',
+  'Beregningen gælder pr. løbende meter for et tomt, cirkulært rør i homogent friktionsfyld med geonettet ført symmetrisk om røret.',
   'Dimensionering af geonet er baseret på en designmæssig levetid på 120 år, indbygget i < 35 mm tilfyldsjord med en pH-værdi i området 4,1–8,9.',
   'Partialkoefficienter indregnes i henhold til British Board of Agrément (BBA).',
   'Analysen foretages under anvendelse af DS/EN 1997-1 DK NA:2021 (Eurocode 7).',

@@ -339,3 +339,52 @@ Claude påpegede ved gennemgangen af arkets afsnit 8, at noten i kort 7 »Hele o
 Brugerens svar: »Nej, lad den stå«.
 
 - Noten i kort 7 er uændret.
+
+## 30. oktober 2026 — rettelser efter gennemgang af appens syv kort
+
+Grundlag: en teknisk gennemgang af appen, som brugeren lagde i projektmappen (ikke i Git). Claude vurderede hvert fund mod koden, regnearket og DS/EN 1997-1 DK NA:2021, og brugeren valgte kort for kort. Brugerens svar står i citat. Den samlede oversigt blev godkendt med »ok«.
+
+**Kort 1.**
+- Ny betingelse: »Beregningen gælder pr. løbende meter for et tomt, cirkulært rør i homogent friktionsfyld med geonettet ført symmetrisk om røret.« (»Tilføj hele linjen«).
+- Linjen om BBA og partialkoefficienter er uændret (»Uændret som arket«). Der kommer ingen linje om modellens begrænsninger (»Ingen tilføjelse«).
+
+**Kort 2.**
+- DK NA:2021 har slettet teksten om, at CC1 ikke gælder for geotekniske konstruktioner, og angiver CC1 med K_FI = 1,0. Begrundelsen fra 29. oktober (»pr. definition, jf. EC7«) holder derfor ikke. CC1 forbliver ude som appens eget valg (»Behold CC2/CC3, ret tekst«). Motorens fejltekst er nu »Appen regner kun i konsekvensklasse CC2 og CC3.«
+- Statikerteksten (»Uændret«), teksten om CC3 og GVS (»Uændret«) og sammenligningstabellen (»Ingen note«) er uændrede.
+
+**Kort 3.**
+- Standardberegningen er låst til GVS i terræn (»Lås til GVS i terræn«) med besked og låste felter (»Besked og låste felter«): »Standardberegningen regner altid med GVS i terræn. GVS under terræn kan regnes med avanceret beregning.« Låsen er kun i brugerfladen. Motoren regner fortsat arkets kontrolcases med GVS under terræn, og den indtastede GVS gemmes til den avancerede beregning.
+- Beskeden og hjælpeteksten for avanceret beregning nævner nu forankringen (»Ret som foreslået, men udelad reference til regnearket«). Hjælpeteksten for GVS i standardberegningen er »Dybden fra terræn til grundvandsspejlet. Bruges kun i den avancerede beregning.« (»ret som foreslået, men udelad referencer ril regnearket« og låsen).
+- h₁, T₂ og T₃ beholdes (»Behold h₁, T₂, T₃«).
+
+**Kort 4.**
+- Hjælpeteksten for egenvægten: »… Med 0 kg/m ses der bort fra rørets egenvægt, hvilket er på den sikre side.« (»Ret hjælpetekst«). γ_tør: »… Bruges kun i den avancerede beregning ved GVS under terræn.« (»Hjælpetekst«).
+- Omslag er ikke muligt, når rørmidten ligger 0,2 m eller mindre under terræn (»Omslag ikke muligt«), fund K-23.
+
+**Kort 5.**
+- S₁ ≥ 1 er OK som i EC7 (»Følg EC7: ≥ 1 er OK«), fund K-12.
+- Gennemgangens navne (»Gennemgangens navne«) overalt (»Overalt«): kortet hedder »Opdrift og stabiliserende ballast«, O og B hedder O_d og B_d, og fliserne hedder »Regningsmæssig opdrift O_d«, »Stabiliserende ballast B_d« og »Kontrol uden geonet S₁ = B_d/O_d« med »Krav ≥ 1,0«.
+- Sætningsdelen om K-05 er fjernet fra noten om O (»Fjern sætningsdelen«). Der kommer ingen note om hydrostatisk grundvand (»Nej«).
+
+**Kort 6.**
+- Når F_op,d ≤ 0, viser styrkekontrollen »Ikke relevant« (»»Ikke relevant««), og noten lyder »S₁ ≥ 1,0: opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.« Kun i visningen.
+- Det automatiske netvalg bruger kravet P_d/F_op,d > 1,01 (»Valg med krav 1,01«), fund K-03.
+- Teksten ved manglende produkt (»Uændret«) og hjælpeteksten om 2 lag (»Behold«) er uændrede.
+- Gennemgangens navne (»Gennemgangens navne«): »Restopdrift F_op,d«, »Designtrækstyrke P_d«, »Styrkekontrol P_d/F_op,d« og »Medregnet korttidstrækstyrke UTS«, også i kort 2 og 7.
+- Ny note: »Geonettet rulles ud på tværs af ledningen, så nettets styrke på langs af rullen udnyttes.« (»Tilføj note«).
+
+**Kort 7.** Brugeren bad om en gennemgang fra bunden: »Som udgangspunkt antager jeg at regnearket regner rigtigt, så jeg skal være helt sikker på hvad der skal ændres og hvorfor«. Gennemgangen viste, at appen regner som arket i alle fire løsninger, og at punkterne kun gælder visning og tekst. Svar: »1b, 2b, 3a, 4a«.
+- 1b: Mellemregningerne viser den beregnede længde og den anvendte mindstelængde hver for sig, og kontrolpunktet K-13 er udgået.
+- 2b: Kontrollen ved omslag regnes som arket med kontrolpunktet K-08.
+- 3a: Arkets forskrifter står som noter på løsningskortene (mindstelængder, omslag ved pladsproblemer, lige meget i top og bund med 0,2 m mellem lagene, midterstykket som opdriftsproblem med faktoren 1,2, afstanden mindst 2 · L_geonet mellem rør med omslag).
+- 4a: Netlængden nævner tillægget: »inkl. 1,2 m tillæg til omslag og overlæg« for én ledning og 0,8 m for to ledninger (K-09).
+- Noten om tovkraften er nu »Forankringen på begge sider skal tilsammen optage K = F_op,d · S₂.« (»Ny tekst«), og noten om γ′_d er forenklet til »Geonettet ligger under GVS, så kraftoverførslen regnes med γ′_d.«
+- Navne og enheder for F_bund og F_top (»lad det være«), »Opdriftskontrol« (»Behold«) og netlængden ved 2 lag (»Uændret«) er uændrede.
+
+**Tværgående.** Indledningen er »Opdrift og ballast for rør, nødvendigt geonet og forankringslængder for X-GRID.« (»Uden regnearket«). Noten om to ledninger nævner ikke regnearket. Til fase 4: kritiske kontrolpunkter som K-08 bør følge resultatet i rapporten.
+
+Valgt af Claude og kan ændres:
+- K-08 vises kun, når sikring er nødvendig (S₁ < 1).
+- Opsummeringen af kort 6 og sammenligningstabellen i kort 2 viser »Ikke relevant« ved F_op,d ≤ 0, og tabellen viser »Omslag ikke muligt« for løsningerne med omslag, når de ikke kan regnes.
+- Mellemregningen ved manglende produkt lyder »Intet produkt i ét lag opfylder P_d/F_op,d > 1,01 ved F_op,d = … kN/m.«
+- Tillægget står i rækkenavnet for netlængden, og værdierne i løsningstabellerne står på én linje.

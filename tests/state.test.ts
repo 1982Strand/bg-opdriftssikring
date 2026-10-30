@@ -29,7 +29,7 @@ test('validerer og falder tilbage felt for felt', () => {
   assert.equal(p.session.inddata.produkt, 150);
   assert.equal(p.session.konsekvensklasse, 'CC3');
 });
-test('CC1 indlæses som CC2, og CC3 regnes altid med GVS i terræn', () => {
+test('CC1 indlæses som CC2, og CC3 og standardberegningen regner altid med GVS i terræn', () => {
   assert.equal(
     parseSession(JSON.stringify({ inddata: {}, konsekvensklasse: 'CC1' })).session.konsekvensklasse,
     'CC2',
@@ -39,7 +39,9 @@ test('CC1 indlæses som CC2, og CC3 regnes altid med GVS i terræn', () => {
   ).session;
   assert.equal(tilMotorInput(s).gvs, 0);
   assert.equal(s.inddata.gvs, 1.6);
-  assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC2' }).gvs, 1.6);
+  assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC2' }).gvs, 0);
+  assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC2', avanceret: true }).gvs, 1.6);
+  assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC3', avanceret: true }).gvs, 0);
 });
 test('alle produkter i listen kan gemmes som manuelt valg', () => {
   for (const uts of [35, 55, 80, 110, 130, 150, 200])

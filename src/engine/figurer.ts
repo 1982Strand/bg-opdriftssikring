@@ -241,9 +241,11 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   const T3 = r.T3;
   const to = losning === 'B' || losning === 'D';
   const omslag = losning === 'C' || losning === 'D';
-  const L = r.losninger[losning].L;
-  const mellem =
-    losning === 'B' ? r.losninger.B.toLMellem : losning === 'D' ? r.losninger.D.toLMellem : 0;
+  const valgt = r.losninger[losning];
+  // Siden tegner kun løsninger, der findes; omslag er ikke muligt ved h_top ≤ 0.
+  if (!valgt) throw new Error(`Løsning ${losning} findes ikke i denne beregning.`);
+  const L = valgt.L;
+  const mellem = 'toLMellem' in valgt ? valgt.toLMellem : 0;
   const centre = to ? [-(mellem / 2 + d / 2), mellem / 2 + d / 2] : [0];
   const ydre = (to ? mellem / 2 + d : d / 2) + L;
   const t = tegning({ indreHalv: ydre, bundHalv: to ? mellem / 2 + d : d / 2, T3, d });
@@ -288,9 +290,7 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   );
 
   // L_a over terræn.
-  t.dele.push(
-    vandretMaal(t.X(-ydre), t.X(ydre), t.Y(0) - 22, `L_{a} = ${m(r.losninger[losning].La)}`),
-  );
+  t.dele.push(vandretMaal(t.X(-ydre), t.X(ydre), t.Y(0) - 22, `L_{a} = ${m(valgt.La)}`));
   // Forankringslængder under graven, med hjælpelinjer fra nettet.
   const yl = t.Y(t.bund) + 22;
   const stykker: [number, number, string][] = to
