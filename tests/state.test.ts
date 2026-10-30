@@ -21,6 +21,7 @@ test('validerer og falder tilbage felt for felt', () => {
     JSON.stringify({
       inddata: { d: -2, h1: 0.8, gvs: 2, gvsITerraen: false, phi: 95, produkt: 12, lag: 0 },
       konsekvensklasse: 'CC3',
+      avanceret: true,
     }),
   );
   assert.equal(p.session.inddata.d, 2.5);
@@ -34,12 +35,22 @@ test('CC1 indlæses som CC2, og CC3 og standardberegningen regner altid med GVS 
     parseSession(JSON.stringify({ inddata: {}, konsekvensklasse: 'CC1' })).session.konsekvensklasse,
     'CC2',
   );
+  // CC3 kan kun vælges i avanceret beregning; en gemt standardberegning i CC3 indlæses som CC2.
+  assert.equal(
+    parseSession(JSON.stringify({ inddata: {}, konsekvensklasse: 'CC3' })).session.konsekvensklasse,
+    'CC2',
+  );
   const s = parseSession(
-    JSON.stringify({ inddata: { gvs: 1.6, gvsITerraen: false }, konsekvensklasse: 'CC3' }),
+    JSON.stringify({
+      inddata: { gvs: 1.6, gvsITerraen: false },
+      konsekvensklasse: 'CC3',
+      avanceret: true,
+    }),
   ).session;
+  assert.equal(s.konsekvensklasse, 'CC3');
   assert.equal(tilMotorInput(s).gvs, 0);
   assert.equal(s.inddata.gvs, 1.6);
-  assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC2' }).gvs, 0);
+  assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC2', avanceret: false }).gvs, 0);
   assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC2', avanceret: true }).gvs, 1.6);
   assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC3', avanceret: true }).gvs, 0);
 });

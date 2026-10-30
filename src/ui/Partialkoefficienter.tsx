@@ -72,7 +72,13 @@ export function Partialkoefficienter() {
             label: 'Konsekvensklasse',
             kind: 'radio',
             segmented: true,
-            options: klasser.map((k) => ({ value: k, label: k })),
+            help: 'CC3 kan kun vælges i avanceret beregning.',
+            // CC3 kun i avanceret beregning (beslutning 30. oktober 2026).
+            options: klasser.map((k) => ({
+              value: k,
+              label: k,
+              disabled: k === 'CC3' && !session.avanceret,
+            })),
           }}
           value={valgt}
           change={(v) => update({ ...session, konsekvensklasse: v as Konsekvensklasse })}

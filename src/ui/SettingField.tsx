@@ -21,7 +21,7 @@ export interface SettingDefinition {
   key: string;
   label: string;
   kind: 'select' | 'radio' | 'checkbox' | 'number';
-  options?: { value: SettingValue; label: string }[];
+  options?: { value: SettingValue; label: string; disabled?: boolean }[];
   help?: string;
   min?: number;
   max?: number;
@@ -101,7 +101,12 @@ export function SettingField({
               onValueChange={(i) => change(options[Number(i)].value)}
             >
               {options.map((option, i) => (
-                <RadioGroupPrimitive.Item key={i} value={String(i)} className="segmented-item">
+                <RadioGroupPrimitive.Item
+                  key={i}
+                  value={String(i)}
+                  className="segmented-item"
+                  disabled={option.disabled}
+                >
                   {option.label}
                 </RadioGroupPrimitive.Item>
               ))}

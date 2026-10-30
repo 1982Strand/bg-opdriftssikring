@@ -91,7 +91,8 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
           overstyringAktiv: typeof i.overstyringAktiv === 'boolean' ? i.overstyringAktiv : false,
           produkt: standarder.geonet.produkter.some((p) => p.uts === i.produkt) ? i.produkt : 150,
         },
-        konsekvensklasse: ['CC2', 'CC3'].includes(x.konsekvensklasse) ? x.konsekvensklasse : 'CC2',
+        // CC3 kan kun vælges i avanceret beregning; ellers indlæses CC2.
+        konsekvensklasse: x.konsekvensklasse === 'CC3' && x.avanceret === true ? 'CC3' : 'CC2',
         avanceret: x.avanceret === true,
       },
       error: false,

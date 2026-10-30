@@ -160,6 +160,11 @@
   align-items: flex-end;
   gap: 16px;
 }
+/* CC3 er låst i standardberegningen og skal se låst ud. */
+.klasse-valg .segmented-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 .klasse-kfi {
   display: flex;
   align-items: center;

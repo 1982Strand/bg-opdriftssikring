@@ -55,7 +55,7 @@ Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
 - at omslag ikke er muligt ved h_top ≤ 0 (K-23);
 - at mindstelængderne svarer til max(mindstelængde; beregnet 2L/2);
 - figurerne for de 41 cases i CC2 og CC3;
-- at CC1 afvises, at CC3 kræver GVS i terræn i begge beregningsmetoder, og at standardberegningen på siden altid regner med GVS i terræn;
+- at CC1 afvises, at CC3 kræver GVS i terræn i begge beregningsmetoder, at standardberegningen på siden altid regner med GVS i terræn, og at en gemt standardberegning i CC3 indlæses som CC2;
 - teksterne til kontrolpunkterne og forudsætningerne;
 - talformatet;
 - lagringen i browseren.
@@ -68,7 +68,7 @@ Browsertestene dækker:
 - at omslag ikke er muligt ved lav rørmidte;
 - alle fire løsninger uden valg af antal eller konstruktion;
 - manuelt valg af 2 lag X-GRID 150;
-- forudsætningerne og konsekvensklasse CC3 i kort 1–2;
+- forudsætningerne og konsekvensklasse CC3 i kort 1–2, herunder at CC3 kun kan vælges i avanceret beregning;
 - CC3 med note om statikerkontrol og låst GVS i terræn;
 - avanceret beregning til og fra med GVS under rørtoppen og ved rørbunden;
 - navigationen;

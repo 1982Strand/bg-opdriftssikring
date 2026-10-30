@@ -399,3 +399,18 @@ Brugerens ønske: »Slet følgende fra den indledende tekst-del: 'Opdriften regn
 
 Valgt af Claude og kan ændres:
 - Hver kolonne regnes med klassens egne regler. CC3 regnes derfor altid med GVS i terræn, mens CC2 bruger den indtastede GVS i den avancerede beregning.
+
+## 30. oktober 2026 — hjælpeteksten ved »Avanceret beregning«
+
+Brugerens ønske: »oppe ved afkrydsningsfeltet 'avanceret beregning', skal teksten i tooltippet ændres fra 'Regner med den faktiske vandstand: tør fyld over GVS i forankringen og opdrift kun af den del af røret, der står under vand.' til 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3.'«
+
+- Hjælpeteksten er ændret ordret.
+
+Claude påpegede, at CC3 hidtil kunne vælges i begge beregningsmetoder. Brugerens svar: »Det skal ikke være muligt at vælge CC3 i standard beregningen«.
+
+- CC3 kan kun vælges i avanceret beregning. I standardberegningen er knappen CC3 låst, og hjælpeteksten ved »Konsekvensklasse« siger »CC3 kan kun vælges i avanceret beregning.«
+- Slås avanceret beregning fra, skifter klassen til CC2. En gemt standardberegning i CC3 indlæses som CC2.
+- Låsen er kun i brugerfladen. Motoren regner fortsat arkets kontrolcases i CC3.
+
+Valgt af Claude og kan ændres:
+- Sammenligningstabellen i kort 2 viser fortsat både CC2 og CC3 i standardberegningen. CC3 regnes altid med GVS i terræn, hvor de to metoder giver samme tal.

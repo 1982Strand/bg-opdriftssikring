@@ -435,10 +435,17 @@ export function Opdriftssikring() {
             key: 'avanceret',
             label: 'Avanceret beregning',
             kind: 'checkbox',
-            help: 'Regner med den faktiske vandstand: tør fyld over GVS i forankringen og opdrift kun af den del af røret, der står under vand.',
+            help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3.',
           }}
           value={session.avanceret}
-          change={(v) => update({ ...session, avanceret: Boolean(v) })}
+          // CC3 kan kun vælges i avanceret beregning, så standardberegningen går tilbage til CC2.
+          change={(v) =>
+            update({
+              ...session,
+              avanceret: Boolean(v),
+              konsekvensklasse: v ? session.konsekvensklasse : 'CC2',
+            })
+          }
         />
         <Button variant="outline" onClick={() => update(standardSession())}>
           <RotateCcw aria-hidden="true" />
