@@ -388,3 +388,14 @@ Valgt af Claude og kan ændres:
 - Opsummeringen af kort 6 og sammenligningstabellen i kort 2 viser »Ikke relevant« ved F_op,d ≤ 0, og tabellen viser »Omslag ikke muligt« for løsningerne med omslag, når de ikke kan regnes.
 - Mellemregningen ved manglende produkt lyder »Intet produkt i ét lag opfylder P_d/F_op,d > 1,01 ved F_op,d = … kN/m.«
 - Tillægget står i rækkenavnet for netlængden, og værdierne i løsningstabellerne står på én linje.
+
+## 30. oktober 2026 — K_FI ved valget af konsekvensklasse og sammenligning af CC2 og CC3
+
+Brugerens ønske: »Slet følgende fra den indledende tekst-del: 'Opdriften regnes med γG;dst = 1,1 · KFI, hvor kun konsekvensfaktoren KFI afhænger af konsekvensklassen: 1,0 i CC2 og 1,1 i CC3 (afsnit A.1).'. Vis bare hvad Kfi er, til højre for den lille knap hvor man vælger konsekvensklasse, så det vises hvad værdien er, alt efter jvilken klasse man har valgt. Når nu vi har valgt kun at have cc2 og cc3, så vis bare de to nede i 'konsekvens for den aktuelle beregning'.«
+
+- Indledningen i kort 2 er nu kun første sætning om DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA.
+- K_FI for den valgte klasse står til højre for knaprækken, fx »K_FI = 1,0« ved CC2 og »K_FI = 1,1« ved CC3.
+- »Konsekvens for den aktuelle beregning« har kolonnerne CC2 og CC3 i stedet for »Standard (CC2)« og »Valgt«.
+
+Valgt af Claude og kan ændres:
+- Hver kolonne regnes med klassens egne regler. CC3 regnes derfor altid med GVS i terræn, mens CC2 bruger den indtastede GVS i den avancerede beregning.

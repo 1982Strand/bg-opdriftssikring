@@ -49,7 +49,7 @@ Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«,
 Kortene har samme rækkefølge som rapporten:
 
 1. **Generelle beregningsforudsætninger.** Arkets Betingelser og Projekteringsansvar (A39:A69) med rettet stavning. Betingelserne nævner den valgte konsekvensklasse i stedet for arkets faste »middel konsekvensklasse«.
-2. **Partialkoefficienter.** Valg af konsekvensklasse og koefficienterne fra tabel A.4-1 NA, se afsnit 5. Et udfoldeligt felt sammenligner den valgte klasse med standarden CC2 for den aktuelle beregning.
+2. **Partialkoefficienter.** Valg af konsekvensklasse med K_FI ved siden af og koefficienterne fra tabel A.4-1 NA, se afsnit 5. Et udfoldeligt felt sammenligner CC2 og CC3 for den aktuelle beregning.
 3. **Geometri og grundvand.**
    - Der regnes på rør. Der er hverken valg af konstruktion eller antal ledninger.
    - Diameter d, jorddækning h₁ og GVS-dybde, med valget »GVS i terræn«.

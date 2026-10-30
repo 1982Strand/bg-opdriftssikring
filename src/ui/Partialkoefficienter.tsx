@@ -9,7 +9,6 @@ import { Udfold } from './Udfold';
 import { useSession } from './SessionContext';
 import { tilMotorInput } from './state';
 
-const STANDARD: Konsekvensklasse = 'CC2';
 const klasser: Konsekvensklasse[] = ['CC2', 'CC3'];
 const losninger = ['A', 'C', 'B', 'D'] as const;
 const navn = {
@@ -19,17 +18,17 @@ const navn = {
   D: 'med omslag, to ledninger',
 };
 
-/** Indholdet af afsnittet Partialkoefficienter: valg af konsekvensklasse, koefficienterne fra
- * tabel A.4-1 NA og klassens konsekvens for den aktuelle beregning. */
+/** Indholdet af afsnittet Partialkoefficienter: valg af konsekvensklasse med K_FI, koefficienterne
+ * fra tabel A.4-1 NA og en sammenligning af CC2 og CC3 for den aktuelle beregning. */
 export function Partialkoefficienter() {
   const { session, update } = useSession();
   const valgt = session.konsekvensklasse;
+  // Hver klasse regnes med sine egne regler, så CC3 altid regnes med GVS i terræn.
   const beregn = (klasse: Konsekvensklasse) => {
-    const b = beregnOpdrift({ ...tilMotorInput(session), konsekvensklasse: klasse });
+    const b = beregnOpdrift(tilMotorInput({ ...session, konsekvensklasse: klasse }));
     return b.ok ? b.resultat : null;
   };
-  const standard = beregn(STANDARD);
-  const aktuel = beregn(valgt);
+  const resultater = klasser.map(beregn);
   const KFI = standarder.KFI[valgt];
   const raekker: [string, (r: OpdriftResultat) => string][] = [
     ['Regningsmæssig opdrift O_{d}', (r) => `${tal(r.O)} kN/m`],
@@ -64,21 +63,27 @@ export function Partialkoefficienter() {
     <>
       <p className="settings-prose">
         Partialkoefficienterne følger DS/EN 1997-1 DK NA:2021 (Eurocode 7), tabel A.4-1 NA for
-        løftning (UPL) med trækelementer. Opdriften regnes med γ<sub>G;dst</sub> = 1,1 · K
-        <sub>FI</sub>, hvor kun konsekvensfaktoren K<sub>FI</sub> afhænger af konsekvensklassen: 1,0
-        i CC2 og 1,1 i CC3 (afsnit A.1).
+        løftning (UPL) med trækelementer.
       </p>
-      <SettingField
-        field={{
-          key: 'konsekvensklasse',
-          label: 'Konsekvensklasse',
-          kind: 'radio',
-          segmented: true,
-          options: klasser.map((k) => ({ value: k, label: k })),
-        }}
-        value={valgt}
-        change={(v) => update({ ...session, konsekvensklasse: v as Konsekvensklasse })}
-      />
+      <div className="klasse-valg">
+        <SettingField
+          field={{
+            key: 'konsekvensklasse',
+            label: 'Konsekvensklasse',
+            kind: 'radio',
+            segmented: true,
+            options: klasser.map((k) => ({ value: k, label: k })),
+          }}
+          value={valgt}
+          change={(v) => update({ ...session, konsekvensklasse: v as Konsekvensklasse })}
+        />
+        {/* Ekstra span, så mellemrummene i teksten ikke forsvinder i flex-boksen. */}
+        <span className="klasse-kfi">
+          <span>
+            <Fmt text={`K_{FI} = ${tal(KFI, 1)}`} />
+          </span>
+        </span>
+      </div>
       {valgt === 'CC3' && (
         <Notice kind="warning">
           Ved konsekvensklasse CC3 kræves særskilt kontrol fra certificeret statiker, godkendt til
@@ -122,18 +127,17 @@ export function Partialkoefficienter() {
         </table>
       </TabelRamme>
       <Udfold titel="Konsekvens for den aktuelle beregning">
-        {standard && aktuel ? (
+        {resultater.every((r) => r !== null) ? (
           <TabelRamme label="Konsekvens for den aktuelle beregning">
             <table className="data-table class-compare">
               <thead>
                 <tr>
                   <th scope="col">Størrelse</th>
-                  <th scope="col" className="num">
-                    Standard ({STANDARD})
-                  </th>
-                  <th scope="col" className="num">
-                    Valgt ({valgt})
-                  </th>
+                  {klasser.map((k) => (
+                    <th scope="col" className="num" key={k}>
+                      {k}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -142,8 +146,11 @@ export function Partialkoefficienter() {
                     <th scope="row">
                       <Fmt text={navnet} />
                     </th>
-                    <td className="num">{vis(standard)}</td>
-                    <td className="num">{vis(aktuel)}</td>
+                    {resultater.map((r, i) => (
+                      <td className="num" key={klasser[i]}>
+                        {vis(r!)}
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
