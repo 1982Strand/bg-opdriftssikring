@@ -650,11 +650,6 @@ export function Opdriftssikring() {
                 </tbody>
               </table>
             </TabelRamme>
-            <p className="calc-note">
-              <Fmt
-                text={`Konsekvensklasse ${session.konsekvensklasse}: γ_{G;stb} = ${tal(pk.gammaGstb)} på fyld og egenvægt, γ_{φ} = ${tal(pk.gammaPhi)} på tan φ og γ_{f} = ${tal(pk.gammaF)} på opdriften.`}
-              />
-            </p>
           </>
         )}
       </Trin>
