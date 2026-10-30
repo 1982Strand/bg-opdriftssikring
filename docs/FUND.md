@@ -176,7 +176,7 @@ Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af 
 
 **Muligheder.** a) 9,81. b) 10, som vandet. c) Uændret.
 
-**Afgjort.** Mulighed c): g = 9,82 bevares (beslutning 29. oktober 2026). Det er tyngdeaccelerationen i Danmark, ca. 9,816 m/s², og ikke en fejl. Mellemregningerne forklarer det. 10 ville give mere ballast og dermed ligge på den usikre side.
+**Afgjort.** Mulighed c): g = 9,82 bevares (beslutning 29. oktober 2026). Det er tyngdeaccelerationen i Danmark, ca. 9,816 m/s², og ikke en fejl. Mellemregningerne skriver »med tyngdeaccelerationen g = 9,82 m/s²« (beslutning 30. oktober 2026). 10 ville give mere ballast og dermed ligge på den usikre side.
 
 ## K-08 Omslag: kontrollen passer ikke til dimensioneringen
 

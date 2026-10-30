@@ -49,6 +49,18 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     ),
   ).toBeVisible();
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,50');
+  const opdrift = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '5 Opdrift og stabiliserende ballast' }),
+  });
+  await opdrift.getByRole('button', { name: 'Mellemregninger', exact: true }).click();
+  await expect(
+    opdrift.getByText('T₃ = h₁ + d/2 = 1,50 + 2,50/2 = 2,75 m, dybden fra terræn til rørmidten'),
+  ).toBeVisible();
+  await expect(
+    opdrift.getByText(
+      'Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = 9,82 m/s².',
+    ),
+  ).toBeVisible();
   const udenOmslag = losning(page, 'Uden omslag, én ledning');
   await expect(udenOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText(
     '1,70 m',

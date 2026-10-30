@@ -420,3 +420,13 @@ Valgt af Claude og kan ændres:
 Brugerens ønske: »i kort 4, fjern den forklarende teskt i bunden: 'Konsekvensklasse CC2: γG;stb = 0,90 på fyld og egenvægt, γφ = 1,20 på tan φ og γf = 1,10 på opdriften.'«
 
 - Noten under tabellen med fyldparametre er fjernet. Partialkoefficienterne står fortsat i kort 2.
+
+## 30. oktober 2026 — T₃ og g i mellemregningerne i kort 5
+
+Brugerens ønske: »omskriv dette i kort 5 fra ' Rørets egenvægt omregnes fra kg/m til kN/m med g = 9,82 m/s², som er tyngdeaccelerationen i Danmark.' til ' Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = 9,82 m/s²'. Flyt T3 beregningen til en linje for sig selv med forklaring på hvad det er.«
+
+- Noten lyder nu »Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = 9,82 m/s².«
+- T₃ har sin egen linje i mellemregningerne: »T₃ = h₁ + d/2 = 1,50 + 2,50/2 = 2,75 m, dybden fra terræn til rørmidten«.
+
+Valgt af Claude og kan ændres:
+- T₃-linjen står i listen over mellemregninger lige efter γ_f, før opdriften, fordi T₃ bruges i både O_d (avanceret beregning) og B_d. Noten har fået punktum til sidst som de øvrige noter.
