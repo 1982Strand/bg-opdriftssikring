@@ -244,6 +244,9 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
   await expect(page.locator('.klasse-kfi')).toHaveText('KFI = 1,0');
   await expect(page.getByText(/Regnearket svarer til CC2/)).toHaveCount(0);
   await expect(page.getByText('Analysen sker i konsekvensklasse CC2 (middel')).toBeVisible();
+  // CC3 kan kun vælges i avanceret beregning.
+  await expect(page.getByRole('radio', { name: 'CC3' })).toBeDisabled();
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
   await page.getByRole('radio', { name: 'CC3' }).click();
   await expect(page.getByText('Analysen sker i konsekvensklasse CC3 (høj')).toBeVisible();
   await expect(page.locator('.klasse-kfi')).toHaveText('KFI = 1,1');
@@ -255,6 +258,11 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
   await expect(sammenligning.getByRole('row', { name: /Regningsmæssig opdrift/ })).toHaveText(
     /54,00 kN\/m\s*59,40 kN\/m/,
   );
+  // Tilbage i standardberegningen gælder CC2 igen.
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await expect(page.getByRole('radio', { name: 'CC2' })).toBeChecked();
+  await expect(page.getByRole('radio', { name: 'CC3' })).toBeDisabled();
+  await expect(page.locator('.klasse-kfi')).toHaveText('KFI = 1,0');
   await page.getByRole('button', { name: 'Nulstil beregning' }).click();
   await expect(page.getByRole('radio', { name: 'CC2' })).toBeChecked();
   await page.goto('/#indstillinger');

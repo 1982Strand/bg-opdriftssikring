@@ -82,7 +82,7 @@ Figurerne tegnes som SVG ud fra de aktuelle mål, ligesom opbygningsfiguren i MS
 
 Konsekvensklassen vælges i kort 2 på beregningssiden. Siden Indstillinger bevares som pladsholder til senere indstillinger, fx fra fundlisten (K-14).
 
-**Konsekvensklasse.** Klassen vælges blandt CC2 og CC3, og standarden er CC2, som i arket. Appen regner kun i CC2 og CC3; det er appens eget valg, da DK NA:2021 også har CC1 med K_FI = 1,0. Klassen giver konsekvensfaktoren K_FI efter DS/EN 1997-1 DK NA:2021, A.1: CC2 giver 1,0, CC3 giver 1,1.
+**Konsekvensklasse.** Klassen vælges blandt CC2 og CC3, og standarden er CC2, som i arket. CC3 kan kun vælges i avanceret beregning. Appen regner kun i CC2 og CC3; det er appens eget valg, da DK NA:2021 også har CC1 med K_FI = 1,0. Klassen giver konsekvensfaktoren K_FI efter DS/EN 1997-1 DK NA:2021, A.1: CC2 giver 1,0, CC3 giver 1,1.
 
 Ved CC3 kræves særskilt kontrol fra certificeret statiker, godkendt til KK3/CC3, og der regnes altid med GVS i terræn. Det gælder både standard og avanceret beregning, fordi der skal tages højde for ekstremhændelser.
 
