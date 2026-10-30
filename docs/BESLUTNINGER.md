@@ -331,3 +331,11 @@ Brugerens ønske: »ændr teksten 'RF beregnes som produktet af følgende faktor
 - Noten under mellemregningerne er erstattet af kildehenvisningen med link til https://www.byggros.com, som åbnes i en ny fane. Sætningen om, at det automatiske valg tager det mindste produkt, hvor F_opdrift er under P_till, er dermed udgået af noten.
   På spørgsmålet, om sætningen skal tilbage, svarede brugeren: »Nej, sætningen om det automatiske valg skal ikke tilbage.«
 - Links i noter understreges som i MSL Dimensionering.
+
+## 30. oktober 2026 — noten om tovkraften i kort 7 bevares
+
+Claude påpegede ved gennemgangen af arkets afsnit 8, at noten i kort 7 »Hele opdriften bruges til forankringen, selv om tovkraften på hver side er halvdelen.« kan læses, som om forankringen har en ekstrasikkerhed med faktor 2. Ifølge arkets note (A184) gælder faktor 2 kun valget af geonet; ved forankringen optager hver side K/2 = F_opdrift/2 · S₂. Claude foreslog en ny ordlyd.
+
+Brugerens svar: »Nej, lad den stå«.
+
+- Noten i kort 7 er uændret.
