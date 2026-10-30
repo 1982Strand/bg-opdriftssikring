@@ -144,6 +144,116 @@ const losningTitel: Record<Losning, string> = {
   D: 'Med omslag, to ledninger',
 };
 
+const { mindstelaengder: mindste, omslagAfstand, netTillaegOmslag, faktorMellemRoer } = standarder;
+
+/** Arkets forskrifter for løsningerne (Rapporten A308, A358:A362, A398:A400 og A440:A449). */
+const losningNote: Record<Losning, string> = {
+  A: `Der forankres altid med mindst ${tal(mindste.udenOmslag.prSide, 1)} m på hver side.`,
+  B: `Der forankres altid med mindst ${tal(mindste.udenOmslag.prSide, 1)} m yderst på hver side. Mellem ledningerne holdes nettet nede af fyldets vægt, så længden dér er et opdriftsproblem og ikke et forankringsproblem. Der regnes med en partialkoefficient på ${tal(faktorMellemRoer, 1)} mellem ledningerne.`,
+  C: `Omslag kan bruges ved pladsproblemer. Der forankres altid med mindst ${tal(mindste.medOmslag.prSide, 1)} m på hver side. Der armeres lige meget i top og bund med ${tal(omslagAfstand, 1)} m mellem lagene.`,
+  D: 'Som med omslag ved én ledning. Afstanden mellem rørene skal være mindst 2 · L_{geonet}.',
+};
+
+/** Arkets tillæg i netlængden med omslag ud over de lodrette stykker på 0,2 m (fund K-09). */
+const tillaegOmslag = {
+  C: 4 * netTillaegOmslag - 2 * omslagAfstand,
+  D: 4 * netTillaegOmslag - 4 * omslagAfstand,
+};
+
+/** Rækker og mellemregninger for én løsning. null, når omslag ikke er muligt. */
+function losningIndhold(
+  r: OpdriftResultat,
+  input: ReturnType<typeof tilMotorInput>,
+  losning: Losning,
+): { raekker: [string, string, (Status | null)?][]; formler: string[] } | null {
+  const { A, B, C, D } = r.losninger;
+  const torTilMidte = r.gvsZone !== null && r.gvsZone.zone >= 3;
+  const ingenKontrol = 'Kontrollen kan ikke regnes, da røret ikke påvirkes af opdrift.';
+  const d = input.d;
+  const faelles = (x: { La: number; Ltot: number }, tillaeg?: number): [string, string][] => [
+    ['Samlet bredde L_{a}', `${tal(x.La)} m`],
+    [
+      tillaeg === undefined
+        ? 'Samlet netlængde L_{geonet,tot}'
+        : `Samlet netlængde L_{geonet,tot} inkl. ${tal(tillaeg, 1)} m tillæg til omslag og overlæg`,
+      `${tal(x.Ltot)} m`,
+    ],
+  ];
+  // Den beregnede længde og den anvendte mindstelængde vises hver for sig (beslutning 30. oktober 2026).
+  const bestemmende = (L: number, beregnet: number) =>
+    L > beregnet / 2 ? ', mindstelængden er bestemmende' : '';
+  switch (losning) {
+    case 'A':
+      return {
+        raekker: [
+          ['Forankring pr. side L_{geonet}', `${tal(A.L)} m`],
+          ...faelles(A),
+          ['Opdriftskontrol', tal(A.kontrol), A.status],
+        ],
+        formler: [
+          `Beregnet 2L = K/F_{bund} = ${tal(r.K)}/${tal(r.Fbund)} = ${tal(A.toLBeregnet)} m`,
+          `L_{geonet} = max(${tal(mindste.udenOmslag.prSide, 1)}; 2L/2) = max(${tal(mindste.udenOmslag.prSide, 1)}; ${tal(A.toLBeregnet / 2)}) = ${tal(A.L)} m pr. side${bestemmende(A.L, A.toLBeregnet)}`,
+          `L_{a} = 2 · L_{geonet} + d = 2 · ${tal(A.L)} + ${tal(d)} = ${tal(A.La)} m`,
+          `L_{geonet,tot} = 2 · L_{geonet} + π · d/2 = ${tal(A.Ltot)} m`,
+          A.kontrol === null
+            ? ingenKontrol
+            : `Kontrol = (B_{d} + F_{bund} · 2 · L_{geonet})/O_{d} = (${tal(r.B)} + ${tal(r.Fbund)} · 2 · ${tal(A.L)})/${tal(r.O)} = ${tal(A.kontrol)} (krav > 1,0)`,
+        ],
+      };
+    case 'B':
+      return {
+        raekker: [
+          ['Forankring yderst L_{geonet}', `${tal(B.L)} m`],
+          ['Mellem ledningerne 2 · L_{geonet}', `${tal(B.toLMellem)} m`],
+          ...faelles(B),
+        ],
+        formler: [
+          torTilMidte
+            ? `σ′_{v} = T₃ · γ_{tør,d} = ${tal(r.T3)} · ${tal(r.gammaTorD)} = ${tal(B.sigmaV)} kN/m², da GVS ligger under rørmidten`
+            : `σ′_{v} = T₂ · γ_{tør,d} + (T₃ − T₂) · γ′_{d} = ${tal(B.sigmaV)} kN/m²`,
+          `2 · L_{geonet} mellem = max(0,5; F_{op,d} · 1,2/σ′_{v}) = max(0,5; ${tal(r.Fopdrift)} · 1,2/${tal(B.sigmaV)}) = ${tal(B.toLMellem)} m`,
+          `L_{geonet} yderst = ${tal(B.L)} m, som uden omslag`,
+          `L_{a} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + 2 · d = ${tal(B.La)} m`,
+          `L_{geonet,tot} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + π · d = ${tal(B.Ltot)} m`,
+        ],
+      };
+    case 'C':
+      return (
+        C && {
+          raekker: [
+            ['Forankring pr. side L_{geonet}', `${tal(C.L)} m`],
+            ...faelles(C, tillaegOmslag.C),
+            ['Opdriftskontrol', tal(C.kontrol), C.status],
+          ],
+          formler: [
+            `Beregnet 2L = K/(F_{bund} + F_{top}/2) + 2 · 0,2 = ${tal(r.K)}/(${tal(r.Fbund)} + ${tal(r.Ftop)}/2) + 0,4 = ${tal(C.toLBeregnet)} m`,
+            `L_{geonet} = max(${tal(mindste.medOmslag.prSide, 1)}; 2L/2) = max(${tal(mindste.medOmslag.prSide, 1)}; ${tal(C.toLBeregnet / 2)}) = ${tal(C.L)} m pr. side${bestemmende(C.L, C.toLBeregnet)}`,
+            `L_{a} = 2 · L_{geonet} + d = ${tal(C.La)} m`,
+            `L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2 = ${tal(C.Ltot)} m`,
+            C.kontrol === null
+              ? ingenKontrol
+              : `Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d} = ${tal(C.kontrol)} (krav > 1,0)`,
+          ],
+        }
+      );
+    case 'D':
+      return (
+        D && {
+          raekker: [
+            ['Forankring yderst L_{geonet}', `${tal(D.L)} m`],
+            ['Mellem ledningerne 2 · L_{geonet}', `${tal(D.toLMellem)} m`],
+            ...faelles(D, tillaegOmslag.D),
+          ],
+          formler: [
+            `2 · L_{geonet} mellem = 2 · L_{geonet} = ${tal(D.toLMellem)} m, som med omslag`,
+            `L_{a} = 2 · (2 · L_{geonet} + d) = ${tal(D.La)} m`,
+            `L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d = ${tal(D.Ltot)} m`,
+          ],
+        }
+      );
+  }
+}
+
 function LosningKort({
   r,
   input,
@@ -153,89 +263,38 @@ function LosningKort({
   input: ReturnType<typeof tilMotorInput>;
   losning: Losning;
 }) {
-  const { A, B, C, D } = r.losninger;
   const titel = losningTitel[losning];
-  const torTilMidte = r.gvsZone !== null && r.gvsZone.zone >= 3;
-  const ingenKontrol = 'Kontrollen kan ikke regnes, da røret ikke påvirkes af opdrift.';
-  const d = input.d;
-  const faelles = (x: { La: number; Ltot: number }): [string, string][] => [
-    ['Samlet bredde L_{a}', `${tal(x.La)} m`],
-    ['Samlet netlængde L_{geonet,tot}', `${tal(x.Ltot)} m`],
-  ];
-  const raekker: [string, string, (Status | null)?][] =
-    losning === 'A'
-      ? [
-          ['Forankring pr. side L_{geonet}', `${tal(A.L)} m`],
-          ...faelles(A),
-          ['Opdriftskontrol', tal(A.kontrol), A.status],
-        ]
-      : losning === 'C'
-        ? [
-            ['Forankring pr. side L_{geonet}', `${tal(C.L)} m`],
-            ...faelles(C),
-            ['Opdriftskontrol', tal(C.kontrol), C.status],
-          ]
-        : [
-            ['Forankring yderst L_{geonet}', `${tal(r.losninger[losning].L)} m`],
-            [
-              'Mellem ledningerne 2 · L_{geonet}',
-              `${tal(losning === 'B' ? B.toLMellem : D.toLMellem)} m`,
-            ],
-            ...faelles(r.losninger[losning]),
-          ];
-  const formler = {
-    A: [
-      `2L = max(1,0; K/F_{bund}) = max(1,0; ${tal(r.K)}/${tal(r.Fbund)}) = ${tal(A.toLVist)} m`,
-      `L_{geonet} = max(1,0; 2L/2) = ${tal(A.L)} m pr. side`,
-      `L_{a} = 2 · L_{geonet} + d = 2 · ${tal(A.L)} + ${tal(d)} = ${tal(A.La)} m`,
-      `L_{geonet,tot} = 2 · L_{geonet} + π · d/2 = ${tal(A.Ltot)} m`,
-      A.kontrol === null
-        ? ingenKontrol
-        : `Kontrol = (B + F_{bund} · 2 · L_{geonet})/O = (${tal(r.B)} + ${tal(r.Fbund)} · 2 · ${tal(A.L)})/${tal(r.O)} = ${tal(A.kontrol)} (krav > 1,0)`,
-    ],
-    B: [
-      torTilMidte
-        ? `σ′_{v} = T₃ · γ_{tør,d} = ${tal(r.T3)} · ${tal(r.gammaTorD)} = ${tal(B.sigmaV)} kN/m², da GVS ligger under rørmidten`
-        : `σ′_{v} = T₂ · γ_{tør,d} + (T₃ − T₂) · γ′_{d} = ${tal(B.sigmaV)} kN/m²`,
-      `2 · L_{geonet} mellem = max(0,5; F_{opdrift} · 1,2/σ′_{v}) = max(0,5; ${tal(r.Fopdrift)} · 1,2/${tal(B.sigmaV)}) = ${tal(B.toLMellem)} m`,
-      `L_{geonet} yderst = ${tal(B.L)} m, som uden omslag`,
-      `L_{a} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + 2 · d = ${tal(B.La)} m`,
-      `L_{geonet,tot} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + π · d = ${tal(B.Ltot)} m`,
-    ],
-    C: [
-      `2L = K/(F_{bund} + F_{top}/2) + 2 · 0,2 = ${tal(r.K)}/(${tal(r.Fbund)} + ${tal(r.Ftop)}/2) + 0,4 = ${tal(C.toL)} m (mindst 1,2 m)`,
-      `L_{geonet} = max(0,6; 2L/2) = ${tal(C.L)} m pr. side`,
-      `L_{a} = 2 · L_{geonet} + d = ${tal(C.La)} m`,
-      `L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2 = ${tal(C.Ltot)} m`,
-      C.kontrol === null
-        ? ingenKontrol
-        : `Kontrol = (B + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O = ${tal(C.kontrol)} (krav > 1,0)`,
-    ],
-    D: [
-      `2 · L_{geonet} mellem = 2 · L_{geonet} = ${tal(D.toLMellem)} m, som med omslag`,
-      `L_{a} = 2 · (2 · L_{geonet} + d) = ${tal(D.La)} m`,
-      `L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d = ${tal(D.Ltot)} m`,
-    ],
-  }[losning];
+  const indhold = losningIndhold(r, input, losning);
   return (
     <article className="solution-card" aria-labelledby={`losning-${losning}`}>
       <h3 id={`losning-${losning}`}>{titel}</h3>
-      <Figur
-        svg={losningSvg(r, input, losning)}
-        label={`${titel}: geonet med forankringslængder og samlet bredde`}
-      />
-      <div className="solution-details">
-        <Talraekke raekker={raekker} />
-        {(losning === 'B' || losning === 'D') && (
-          <p className="calc-note">
-            Regnearket har ingen opdriftskontrol for to ledninger. Ved to forskellige ledninger
-            angives den største diameter og den mindste egenvægt, som regnearket forudsætter.
-          </p>
-        )}
-        <Udfold titel="Mellemregninger">
-          <Formler linjer={formler} />
-        </Udfold>
-      </div>
+      {indhold ? (
+        <>
+          <Figur
+            svg={losningSvg(r, input, losning)}
+            label={`${titel}: geonet med forankringslængder og samlet bredde`}
+          />
+          <div className="solution-details">
+            <Talraekke raekker={indhold.raekker} />
+            <p className="calc-note">
+              <Fmt text={losningNote[losning]} />
+            </p>
+            {(losning === 'B' || losning === 'D') && (
+              <p className="calc-note">
+                Der er ingen opdriftskontrol for to ledninger. Ved to forskellige ledninger angives
+                den største diameter og den mindste egenvægt.
+              </p>
+            )}
+            <Udfold titel="Mellemregninger">
+              <Formler linjer={indhold.formler} />
+            </Udfold>
+          </div>
+        </>
+      ) : (
+        <Notice>
+          Omslag kræver, at rørmidten ligger mere end {tal(omslagAfstand, 1)} m under terræn.
+        </Notice>
+      )}
     </article>
   );
 }
@@ -249,17 +308,17 @@ function opdriftLinjer(
   const { gammaF } = r.partialkoefficienter;
   if (!zone || zone.zone === 1)
     return [
-      `O = π/4 · d² · γ_{w} · γ_{f} = π/4 · ${tal(input.d)}² · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m`,
+      `O_{d} = π/4 · d² · γ_{w} · γ_{f} = π/4 · ${tal(input.d)}² · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m`,
     ];
   if (zone.zone === 4)
     return [
-      `O = 0, da GVS ligger ved eller under rørbunden: T₂ = ${tal(input.gvs)} m ≥ h₁ + d = ${tal(input.h1 + input.d)} m`,
+      `O_{d} = 0, da GVS ligger ved eller under rørbunden: T₂ = ${tal(input.gvs)} m ≥ h₁ + d = ${tal(input.h1 + input.d)} m`,
     ];
   return [
     `r = d/2 = ${tal(input.d / 2)} m og a = T₃ − T₂ = ${tal(r.T3)} − ${tal(input.gvs)} = ${tal(zone.a)} m`,
     `A_{tør} = r² · arccos(a/r) − a · √(r² − a²) = ${tal(zone.Ator, 4)} m²`,
     `A_{våd} = π/4 · d² − A_{tør} = ${tal(zone.Avaad + zone.Ator, 4)} − ${tal(zone.Ator, 4)} = ${tal(zone.Avaad, 4)} m²`,
-    `O = A_{våd} · γ_{w} · γ_{f} = ${tal(zone.Avaad, 4)} · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m`,
+    `O_{d} = A_{våd} · γ_{w} · γ_{f} = ${tal(zone.Avaad, 4)} · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m`,
   ];
 }
 
@@ -291,17 +350,17 @@ function ballastLinjer(r: OpdriftResultat, zone: GvsZone | null): string[] {
   const b = r.ballastLed;
   if (zone && zone.zone >= 3)
     return [
-      'B = (T₃ · d − π · r²/2) · γ_{tør,d} + E_{d} · g/1000, da GVS ligger under rørmidten',
-      `B = ${tal(b.torFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+      'B_{d} = (T₃ · d − π · r²/2) · γ_{tør,d} + E_{d} · g/1000, da GVS ligger under rørmidten',
+      `B_{d} = ${tal(b.torFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
     ];
   if (b.roerDele)
     return [
-      'B = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − A_{tør} · γ_{tør,d} − (π · r²/2 − A_{tør}) · γ′_{d} + E_{d} · g/1000',
-      `B = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerDele.tor)} − ${tal(b.roerDele.vaad)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+      'B_{d} = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − A_{tør} · γ_{tør,d} − (π · r²/2 − A_{tør}) · γ′_{d} + E_{d} · g/1000',
+      `B_{d} = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerDele.tor)} − ${tal(b.roerDele.vaad)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
     ];
   return [
-    'B = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − (π/4 · d² · γ′_{d})/2 + E_{d} · g/1000',
-    `B = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+    'B_{d} = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − (π/4 · d² · γ′_{d})/2 + E_{d} · g/1000',
+    `B_{d} = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
   ];
 }
 
@@ -341,6 +400,9 @@ export function Opdriftssikring() {
   const avanceret = session.avanceret;
   const zone = r?.gvsZone ?? null;
   const cc3 = session.konsekvensklasse === 'CC3';
+  // Standardberegningen og CC3 regner altid med GVS i terræn (beslutning 30. oktober 2026).
+  const gvsLaast = cc3 || !avanceret;
+  const ikkeRelevant = r !== null && r.Fopdrift <= 0;
   // Kun i avanceret beregning med GVS mellem rørtop og rørbund.
   const arealfigur = r ? opdriftsarealSvg(r, input) : null;
 
@@ -349,7 +411,7 @@ export function Opdriftssikring() {
       <PageHeader
         page="opdriftssikring"
         title="Opdriftssikring"
-        intro="Opdrift og ballast for rør, nødvendigt geonet og forankringslængder. Beregningen følger regnearket for X-GRID."
+        intro="Opdrift og ballast for rør, nødvendigt geonet og forankringslængder for X-GRID."
         status={<SaveState />}
       />
       <div className="settings-start">
@@ -373,7 +435,7 @@ export function Opdriftssikring() {
             key: 'avanceret',
             label: 'Avanceret beregning',
             kind: 'checkbox',
-            help: 'Regner opdrift og ballast for den del af røret, der står under GVS. Standardberegningen følger regnearket.',
+            help: 'Regner med den faktiske vandstand: tør fyld over GVS i forankringen og opdrift kun af den del af røret, der står under vand.',
           }}
           value={session.avanceret}
           change={(v) => update({ ...session, avanceret: Boolean(v) })}
@@ -385,8 +447,10 @@ export function Opdriftssikring() {
       </div>
       {avanceret && (
         <Notice className="calc-mode-notice">
-          Avanceret beregning er valgt. Opdrift og ballast regnes for den del af røret, der står
-          under GVS, og afviger fra regnearket, når GVS ligger under rørtoppen.
+          Avanceret beregning er valgt. Ved GVS under terræn regnes forankringen med tør fyld over
+          GVS. Ligger GVS under rørtoppen, regnes opdrift og ballast desuden ud fra den del af
+          røret, der står under vand. Ved GVS i terræn er resultatet det samme som i
+          standardberegningen.
         </Notice>
       )}
 
@@ -437,8 +501,8 @@ export function Opdriftssikring() {
                 kind: 'checkbox',
                 help: 'Grundvandsspejlet ligger i terræn. Det er normalt den ugunstigste realistiske vandstand.',
               }}
-              value={i.gvsITerraen || cc3}
-              disabled={cc3}
+              value={i.gvsITerraen || gvsLaast}
+              disabled={gvsLaast}
               change={(v) => saet({ gvsITerraen: Boolean(v) })}
             />
             {talfelt(
@@ -446,8 +510,8 @@ export function Opdriftssikring() {
               'GVS under terræn (m)',
               avanceret
                 ? 'Dybden fra terræn til grundvandsspejlet. Ligger GVS under rørtoppen, giver kun den del af røret, der står under vand, opdrift.'
-                : 'Dybden fra terræn til grundvandsspejlet. Regnearket forudsætter GVS over midten af røret (fund K-05).',
-              { disabled: i.gvsITerraen || cc3 },
+                : 'Dybden fra terræn til grundvandsspejlet. Bruges kun i den avancerede beregning.',
+              { disabled: i.gvsITerraen || gvsLaast },
             )}
           </div>
           {r && (
@@ -462,6 +526,12 @@ export function Opdriftssikring() {
             Ved konsekvensklasse CC3 regnes altid med GVS i terræn, da der skal tages højde for
             ekstremhændelser: 100-års hændelser for skybrud og oversvømmelse, stigning i havvands-
             og grundvandsspejl og risiko for svigt af drænsystemer.
+          </Notice>
+        )}
+        {!avanceret && !cc3 && (
+          <Notice>
+            Standardberegningen regner altid med GVS i terræn. GVS under terræn kan regnes med
+            avanceret beregning.
           </Notice>
         )}
         {avanceret && input.gvs > 0 && (
@@ -483,7 +553,7 @@ export function Opdriftssikring() {
           {talfelt(
             'roervaegt',
             'Rørets egenvægt E_{k} (kg/m)',
-            'Karakteristisk egenvægt pr. meter. Den regnes til gunst med faktoren 0,9. 0 kg/m giver den største sikkerhed.',
+            'Karakteristisk egenvægt pr. meter. Den regnes til gunst med faktoren 0,9. Med 0 kg/m ses der bort fra rørets egenvægt, hvilket er på den sikre side.',
             { step: 1 },
           )}
           {talfelt(
@@ -494,7 +564,7 @@ export function Opdriftssikring() {
           {talfelt(
             'gammaTor',
             'Rumvægt, tør γ_{tør} (kN/m³)',
-            'Karakteristisk rumvægt af fyldet over GVS.',
+            'Karakteristisk rumvægt af fyldet over GVS. Bruges kun i den avancerede beregning ved GVS under terræn.',
           )}
           {talfelt(
             'phi',
@@ -590,22 +660,27 @@ export function Opdriftssikring() {
         <>
           <Trin
             nr={5}
-            titel="Opdrift uden geonet"
+            titel="Opdrift og stabiliserende ballast"
             opsummering={r.S1 === null ? 'Ingen opdrift' : `S₁ = ${tal(r.S1)} · ${r.S1Status}`}
           >
             <div className="dim-results m9-result-cards">
               <Flise
-                label="Opdrift O"
+                label="Regningsmæssig opdrift O_{d}"
                 vaerdi={tal(r.O)}
                 enhed="kN/m"
                 note={`γ_{f} = ${tal(pk.gammaF)}`}
               />
-              <Flise label="Ballast B" vaerdi={tal(r.B)} enhed="kN/m" note="Fyld og egenvægt" />
               <Flise
-                label="Sikkerhed S₁ = B/O"
+                label="Stabiliserende ballast B_{d}"
+                vaerdi={tal(r.B)}
+                enhed="kN/m"
+                note="Fyld og egenvægt"
+              />
+              <Flise
+                label="Kontrol uden geonet S₁ = B_{d}/O_{d}"
                 vaerdi={tal(r.S1)}
                 status={r.S1Status}
-                note={r.S1 === null ? 'Ingen opdrift' : 'Krav > 1,0'}
+                note={r.S1 === null ? 'Ingen opdrift' : `Krav ≥ ${tal(standarder.krav.S1, 1)}`}
               />
             </div>
             <p className="calc-conclusion">{r.konklusion.join(' ')}</p>
@@ -619,7 +694,7 @@ export function Opdriftssikring() {
                       ...ballastLinjer(r, zone),
                       r.S1 === null
                         ? 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.'
-                        : `S₁ = B/O = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
+                        : `S₁ = B_{d}/O_{d} = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
                     ]}
                   />
                   <p className="calc-note">
@@ -631,14 +706,14 @@ export function Opdriftssikring() {
                     <Fmt
                       text={
                         avanceret
-                          ? 'Opdriften O er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
-                          : 'Opdriften O er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand, også når GVS ligger under rørtoppen (fund K-05).'
+                          ? 'Opdriften O_{d} er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
+                          : 'Opdriften O_{d} er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand.'
                       }
                     />
                   </p>
                   <p className="calc-note">
-                    Ballasten B er fyldet i en lodret søjle med rørets bredde fra terræn til
-                    rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
+                    Ballasten B<sub>d</sub> er fyldet i en lodret søjle med rørets bredde fra terræn
+                    til rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
                   </p>
                   <p className="calc-note">
                     T₃ = h₁ + d/2 = {tal(r.T3)} m. Rørets egenvægt omregnes fra kg/m til kN/m med g
@@ -661,7 +736,9 @@ export function Opdriftssikring() {
             opsummering={
               r.geonet.uts === null
                 ? 'Kontakt leverandør'
-                : `X-GRID ${r.geonet.navn} · P_{till}/F_{opdrift} = ${tal(r.geonet.sikkerhed)}`
+                : ikkeRelevant
+                  ? 'Ikke relevant'
+                  : `X-GRID ${r.geonet.navn} · P_{d}/F_{op,d} = ${tal(r.geonet.sikkerhed)}`
             }
             dimmed={ikkeNoedvendig}
           >
@@ -669,15 +746,15 @@ export function Opdriftssikring() {
               <Notice>
                 {r.S1 === null
                   ? 'Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.'
-                  : 'S₁ > 1,0: opdriftssikring er ikke nødvendig. Tallene nedenfor vises som i regnearket.'}
+                  : `S₁ ≥ ${tal(standarder.krav.S1, 1)}: opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.`}
               </Notice>
             )}
             <div className="dim-results m9-result-cards">
               <Flise
-                label="Krav til geonettets trækstyrke F_{opdrift}"
+                label="Restopdrift F_{op,d}"
                 vaerdi={tal(r.Fopdrift)}
                 enhed="kN/m"
-                note="F_{opdrift} = O − B"
+                note="F_{op,d} = O_{d} − B_{d}"
               />
               <Flise
                 label="Valgt geonet"
@@ -685,26 +762,31 @@ export function Opdriftssikring() {
                 note={
                   r.geonet.uts === null
                     ? 'Der produceres ikke geonet med den nødvendige styrke.'
-                    : `Ultimal styrke UTS = ${tal(r.geonet.uts, 0)} kN/m`
+                    : `Medregnet korttidstrækstyrke UTS = ${tal(r.geonet.uts, 0)} kN/m`
                 }
               />
               <Flise
-                label="Tilladelig træklast i geonet P_{till}"
+                label="Designtrækstyrke P_{d}"
                 vaerdi={tal(r.geonet.Ptill)}
                 enhed={r.geonet.Ptill === null ? undefined : 'kN/m'}
-                note="P_{till} = UTS/RF"
+                note="P_{d} = UTS/RF"
               />
+              {/* Ved F_op,d ≤ 0 er der intet at kontrollere (beslutning 30. oktober 2026). */}
               <Flise
-                label="Sikkerhed P_{till}/F_{opdrift}"
-                vaerdi={tal(r.geonet.sikkerhed)}
-                status={r.geonet.status}
+                label="Styrkekontrol P_{d}/F_{op,d}"
+                vaerdi={ikkeRelevant ? 'Ikke relevant' : tal(r.geonet.sikkerhed)}
+                status={ikkeRelevant ? null : r.geonet.status}
                 note={
-                  r.geonet.sikkerhed !== null && r.Fopdrift > 0
-                    ? `Krav: P_{till}/F_{opdrift} > ${tal(standarder.krav.geonet)} (P_{till} udnyttet ${tal(100 / r.geonet.sikkerhed, 0)}%)`
-                    : `Krav: P_{till}/F_{opdrift} > ${tal(standarder.krav.geonet)}`
+                  r.geonet.sikkerhed !== null && !ikkeRelevant
+                    ? `Krav: P_{d}/F_{op,d} > ${tal(standarder.krav.geonet)} (P_{d} udnyttet ${tal(100 / r.geonet.sikkerhed, 0)}%)`
+                    : `Krav: P_{d}/F_{op,d} > ${tal(standarder.krav.geonet)}`
                 }
               />
             </div>
+            <p className="calc-note">
+              Geonettet rulles ud på tværs af ledningen, så nettets styrke på langs af rullen
+              udnyttes.
+            </p>
             <div className="calc-override">
               <SettingField
                 field={{
@@ -735,10 +817,10 @@ export function Opdriftssikring() {
             <Udfold titel="Mellemregninger">
               <Formler
                 linjer={[
-                  `F_{opdrift} = O − B = ${tal(r.O)} − ${tal(r.B)} = ${tal(r.Fopdrift)} kN/m`,
+                  `F_{op,d} = O_{d} − B_{d} = ${tal(r.O)} − ${tal(r.B)} = ${tal(r.Fopdrift)} kN/m`,
                   r.geonet.uts === null
-                    ? `Intet produkt har en valggrænse over F_{opdrift} = ${tal(r.Fopdrift)} kN/m.`
-                    : `P_{till} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF)} = ${tal(r.geonet.Ptill)} kN/m`,
+                    ? `Intet produkt i ét lag opfylder P_{d}/F_{op,d} > ${tal(standarder.krav.geonet)} ved F_{op,d} = ${tal(r.Fopdrift)} kN/m.`
+                    : `P_{d} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF)} = ${tal(r.geonet.Ptill)} kN/m`,
                 ]}
               />
               <h3 className="mellemregninger-overskrift">Reduktionsfaktor (RF)</h3>
@@ -819,7 +901,7 @@ export function Opdriftssikring() {
                 label="Kraftoptagelse K"
                 vaerdi={tal(r.K)}
                 enhed="kN/m"
-                note={`K = F_{opdrift} · S₂, S₂ = ${tal(standarder.S2)}`}
+                note={`K = F_{op,d} · S₂, S₂ = ${tal(standarder.S2)}`}
               />
             </div>
             <Udfold titel="Mellemregninger for kraftoverførsel">
@@ -827,19 +909,13 @@ export function Opdriftssikring() {
                 linjer={[
                   `φ_{d} = arctan(tan φ_{k}/γ_{φ}) = arctan(tan ${tal(i.phi)}°/${tal(pk.gammaPhi)}) = ${tal(r.phiD)}°`,
                   ...forankringLinjer(r, input),
-                  `K = F_{opdrift} · S₂ = ${tal(r.Fopdrift)} · ${tal(standarder.S2)} = ${tal(r.K)} kN/m`,
+                  `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(standarder.S2)} = ${tal(r.K)} kN/m`,
                 ]}
               />
               <p className="calc-note">
-                {avanceret ? (
-                  'Kraftoverførslen regnes med den effektive lodrette spænding i nettets niveau: tør fyld over GVS og effektiv rumvægt under.'
-                ) : (
-                  <>
-                    Geonettet antages forankret i våd jord, så γ′<sub>d</sub> bruges uanset GVS.
-                  </>
-                )}{' '}
-                Hele opdriften bruges til forankringen, selv om tovkraften på hver side er
-                halvdelen.
+                <Fmt
+                  text={`${avanceret ? 'Kraftoverførslen regnes med den effektive lodrette spænding i nettets niveau: tør fyld over GVS og effektiv rumvægt under.' : 'Geonettet ligger under GVS, så kraftoverførslen regnes med γ′_{d}.'} Forankringen på begge sider skal tilsammen optage K = F_{op,d} · S₂.`}
+                />
               </p>
             </Udfold>
             <div className="solutions">

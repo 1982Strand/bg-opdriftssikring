@@ -97,31 +97,39 @@ test('produkterne følger databladet, og valggrænsen er UTS/RF (K-21)', () => {
   assert.notEqual(geonetProdukter[5].graense, g['200']);
 });
 
-test('geonettet vælges med streng ulighed lige under og over hver valggrænse', () => {
+test('geonettet vælges, så P_till/F_opdrift > 1,01, lige under og over hver grænse (K-03)', () => {
   for (const [i, produkt] of geonetProdukter.entries()) {
-    const under = produkt.graense * (1 - 1e-12);
-    const over = produkt.graense * (1 + 1e-12);
-    assert.equal(vaelgGeonet(under, null).uts, produkt.uts, `under ${produkt.graense}`);
-    assert.equal(vaelgGeonet(produkt.graense, null).uts, geonetProdukter[i + 1]?.uts ?? null);
-    assert.equal(vaelgGeonet(over, null).uts, geonetProdukter[i + 1]?.uts ?? null);
+    const graense = produkt.graense / 1.01;
+    assert.equal(vaelgGeonet(graense * (1 - 1e-12), null).uts, produkt.uts, `under ${graense}`);
+    assert.equal(vaelgGeonet(graense * (1 + 1e-12), null).uts, geonetProdukter[i + 1]?.uts ?? null);
   }
-  // Uden afrunding af grænsen: 26,109 ligger over 55/RF = 26,1084 og giver 80 som i arket.
-  assert.equal(vaelgGeonet(26.109, null).uts, 80);
+  // Arkets bånd: F_opdrift lige under P_till for X-GRID 80 giver nu X-GRID 110.
+  assert.equal(vaelgGeonet(37.77, null).uts, 110);
+});
+
+test('det automatiske valg opfylder altid kravet 1,01', () => {
+  for (let F = 0.5; F < 96; F += 0.137) {
+    const g = vaelgGeonet(F, null);
+    if (g.uts !== null) {
+      assert.ok(g.sikkerhed! > 1.01, `F = ${F}`);
+      assert.equal(g.status, 'OK');
+    }
+  }
 });
 
 test('kontrolpunkter følger udvalgte Excel-cases', () => {
   const forventninger: [string, string[]][] = [
-    ['Case 1:', []],
-    ['Case 2: Ø4000', []],
-    ['K-02: grænsen 78,9', []],
-    ['K-03: bånd for X-GRID 35', ['K-03']],
-    ['K-03: bånd for X-GRID 80', ['K-03']],
-    ['K-03: bånd for X-GRID 150', ['K-03']],
-    ['Over grænsen: kontakt leverandør', []],
-    ['GVS i 1,0 m', ['K-13']],
-    ['GVS i 1,5 m', ['K-12', 'K-13']],
-    ['GVS i 2,0 m', ['K-05', 'K-12', 'K-13']],
-    ['GVS i 4,5 m', ['K-05', 'K-12', 'K-13']],
+    ['Case 1:', ['K-08']],
+    ['Case 2: Ø4000', ['K-08']],
+    ['K-02: grænsen 78,9', ['K-08']],
+    ['K-03: bånd for X-GRID 35', ['K-08']],
+    ['K-03: bånd for X-GRID 80', ['K-08']],
+    ['K-03: bånd for X-GRID 150', ['K-08']],
+    ['Over grænsen: kontakt leverandør', ['K-08']],
+    ['GVS i 1,0 m', ['K-08']],
+    ['GVS i 1,5 m', ['K-12']],
+    ['GVS i 2,0 m', ['K-05', 'K-12']],
+    ['GVS i 4,5 m', ['K-05', 'K-12']],
   ];
   for (const [delnavn, kontrolpunkter] of forventninger) {
     const sag = caseMed(delnavn);
@@ -132,13 +140,43 @@ test('kontrolpunkter følger udvalgte Excel-cases', () => {
   }
 });
 
-test('overstyring giver ingen kontrolpunkter for netvalget', () => {
-  const resultat = beregnOpdrift({
-    ...caseMed('K-02: grænsen 78,9').input,
-    overstyring: { uts: 150, lag: 1 },
-  });
-  assert.equal(resultat.ok, true);
-  if (resultat.ok) assert.deepEqual(resultat.resultat.kontrolpunkter, []);
+test('S₁-status og konklusionen er enige, også tæt på S₁ = 1', () => {
+  for (let roervaegt = 0; roervaegt <= 6000; roervaegt += 25) {
+    const b = beregnOpdrift({ ...basis, roervaegt });
+    assert.ok(b.ok);
+    const ikkeNoedvendig = b.resultat.konklusion[0].includes('IKKE nødvendig');
+    assert.equal(b.resultat.S1Status === 'OK', ikkeNoedvendig, `egenvægt ${roervaegt}`);
+    assert.equal(b.resultat.S1Status === 'OK', b.resultat.S1! >= 1);
+  }
+});
+
+test('omslag er ikke muligt, når det øverste lag ville ligge over terræn', () => {
+  const lav = beregnOpdrift({ ...basis, d: 0.1, h1: 0 });
+  assert.ok(lav.ok);
+  assert.equal(lav.resultat.hTop < 0, true);
+  assert.equal(lav.resultat.losninger.C, null);
+  assert.equal(lav.resultat.losninger.D, null);
+  assert.ok(lav.resultat.losninger.A.L > 0 && lav.resultat.losninger.B.L > 0);
+  assert.equal(lav.resultat.kontrolpunkter.includes('K-08'), false);
+  // h_top = 0 er heller ikke muligt; lige under er det muligt.
+  const graense = beregnOpdrift({ ...basis, d: 0.4, h1: 0 });
+  assert.ok(graense.ok);
+  assert.equal(graense.resultat.losninger.C, null);
+  const lige = beregnOpdrift({ ...basis, d: 0.4, h1: 0.001 });
+  assert.ok(lige.ok);
+  assert.notEqual(lige.resultat.losninger.C, null);
+});
+
+test('mindstelængderne svarer til max(mindstelængde; beregnet 2L/2)', () => {
+  for (const d of [0.3, 0.8, 1.2, 2.5, 4])
+    for (const h1 of [0.3, 0.6, 1, 2]) {
+      const b = beregnOpdrift({ ...basis, d, h1 });
+      assert.ok(b.ok);
+      const { A, C } = b.resultat.losninger;
+      assert.equal(A.L, Math.max(1, A.toLBeregnet / 2));
+      assert.equal(A.toLBeregnet, b.resultat.K / b.resultat.Fbund);
+      if (C) assert.equal(C.L, Math.max(0.6, C.toLBeregnet / 2));
+    }
 });
 
 test('CC2 giver γ_f = 1,1, og CC3 giver γ_f = 1,1 · 1,1', () => {
@@ -149,14 +187,14 @@ test('CC2 giver γ_f = 1,1, og CC3 giver γ_f = 1,1 · 1,1', () => {
   assert.equal(cc3.resultat.partialkoefficienter.gammaF, 1.1 * 1.1);
 });
 
-test('CC1 afvises, fordi opdrift ikke kan regnes i CC1', () => {
+test('CC1 afvises, fordi appen kun regner i CC2 og CC3', () => {
   const cc1 = beregnOpdrift({ ...basis, konsekvensklasse: 'CC1' as never });
   assert.equal(cc1.ok, false);
   if (!cc1.ok)
     assert.deepEqual(cc1.fejl, [
       {
         felt: 'konsekvensklasse',
-        tekst: 'Opdrift kan ikke regnes i konsekvensklasse CC1. Vælg CC2 eller CC3.',
+        tekst: 'Appen regner kun i konsekvensklasse CC2 og CC3.',
       },
     ]);
 });

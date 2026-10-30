@@ -118,7 +118,7 @@ test('håndregningen for case 2 med GVS i 1,6 m (zone 2)', () => {
   naer(r.Fbund, (1.6 * 14.4 + 1.0 * 5.3) * tanPhiD);
   naer(r.Ftop, (1.6 * 14.4 + 0.8 * 5.3) * tanPhiD);
   assert.deepEqual(
-    [r.Fbund, r.Ftop, r.losninger.A.L, r.losninger.C.L, r.losninger.B.toLMellem].map((x) =>
+    [r.Fbund, r.Ftop, r.losninger.A.L, r.losninger.C?.L ?? NaN, r.losninger.B.toLMellem].map((x) =>
       x.toFixed(2),
     ),
     ['16.54', '15.92', '1.60', '1.28', '2.14'],
@@ -144,7 +144,9 @@ test('med K-19 bliver F_bund aldrig mindre og L aldrig større end i standardber
         assert.ok(a.Fbund >= s.Fbund - 1e-12 && a.Ftop >= s.Ftop - 1e-12);
         if (a.Fopdrift > 0) {
           assert.ok(a.losninger.A.L <= s.losninger.A.L + 1e-12);
-          assert.ok(a.losninger.C.L <= s.losninger.C.L + 1e-12);
+          // Omslag er ikke muligt ved h_top ≤ 0, og det afhænger kun af geometrien.
+          assert.equal(a.losninger.C === null, s.losninger.C === null);
+          if (a.losninger.C && s.losninger.C) assert.ok(a.losninger.C.L <= s.losninger.C.L + 1e-12);
         }
       }
 });
@@ -236,8 +238,8 @@ test('GVS ved eller under rørbunden giver ingen opdrift', () => {
     ]);
     assert.equal(r.losninger.A.kontrol, null);
     assert.equal(r.losninger.A.status, null);
-    assert.equal(r.losninger.C.kontrol, null);
-    assert.equal(r.losninger.C.status, null);
+    assert.equal(r.losninger.C?.kontrol, null);
+    assert.equal(r.losninger.C?.status, null);
     assert.ok(r.Fopdrift < 0);
     assert.deepEqual(
       r.kontrolpunkter.filter((k) => k === 'K-05' || k === 'K-12'),

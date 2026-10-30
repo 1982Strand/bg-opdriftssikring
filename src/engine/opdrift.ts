@@ -1,11 +1,11 @@
-/** Opdriftssikring med geonet, regnet præcis som regnearket (docs/EXCEL_KORTLAEGNING.md).
+/** Opdriftssikring med geonet, regnet som regnearket (docs/EXCEL_KORTLAEGNING.md).
  * Kommentarerne henviser til arkets celler i »Rapporten«. Afvigelser fra arket står i docs/FUND.md
- * og indføres kun efter beslutning. Den avancerede beregning (docs/FORSLAG_K-05.md) er en særskilt
+ * og er indført efter beslutning. Den avancerede beregning (docs/FORSLAG_K-05.md) er en særskilt
  * metode; standardberegningen er uændret. */
 import standarder from './defaults.json' with { type: 'json' };
 import { geonetProdukter, vaelgGeonet, type GeonetValg } from './geonet.ts';
 
-/** Opdrift kan pr. definition ikke regnes i CC1 (EC7), så kun CC2 og CC3 findes. */
+/** Appen regner kun i CC2 og CC3. Det er appens eget valg; DK NA:2021 har også CC1 med K_FI = 1,0. */
 export type Konsekvensklasse = 'CC2' | 'CC3';
 /** 'standard' regner som regnearket. 'avanceret' regner opdrift og ballast for den del af røret,
  * der står under GVS (fund K-05, mulighed c). */
@@ -35,7 +35,7 @@ export interface OpdriftInput {
   metode?: Beregningsmetode; // 'standard', hvis den mangler
 }
 export type Status = 'OK' | 'EJ OK';
-export type Kontrolpunkt = 'K-03' | 'K-05' | 'K-12' | 'K-13';
+export type Kontrolpunkt = 'K-05' | 'K-08' | 'K-12';
 export interface Inputfejl {
   felt: keyof OpdriftInput;
   tekst: string;
@@ -88,6 +88,9 @@ export interface OpdriftResultat {
   losninger: {
     /** Afsnit 9: ét rør uden omslag. */
     A: {
+      /** K/F_bund før mindstelængden. */
+      toLBeregnet: number;
+      /** G312: max(1,0; K/F_bund), som arket viser. */
       toLVist: number;
       L: number;
       La: number;
@@ -105,8 +108,11 @@ export interface OpdriftResultat {
       La: number;
       Ltot: number;
     };
-    /** Afsnit 11: ét rør med omslag. */
+    /** Afsnit 11: ét rør med omslag. null, når det øverste lag ville ligge over terræn (h_top ≤ 0). */
     C: {
+      /** K/(F_bund + F_top/2) + 2 · 0,2 før mindstelængden. */
+      toLBeregnet: number;
+      /** G404: 1,2, hvis den beregnede værdi er under 1,0. */
       toL: number;
       L: number;
       La: number;
@@ -114,9 +120,9 @@ export interface OpdriftResultat {
       ballastForankring: number;
       kontrol: number | null;
       status: Status | null;
-    };
-    /** Afsnit 12: to rør med omslag. */
-    D: { toLMellem: number; L: number; La: number; Ltot: number };
+    } | null;
+    /** Afsnit 12: to rør med omslag. null som C. */
+    D: { toLMellem: number; L: number; La: number; Ltot: number } | null;
   };
   kontrolpunkter: Kontrolpunkt[];
 }
@@ -155,6 +161,8 @@ function gvsZone(d: number, h1: number, gvs: number, fuld: number): GvsZone {
 
 const { gammaW, mu, krav, mindstelaengder: min } = standarder;
 const status = (vaerdi: number, graense: number): Status => (vaerdi > graense ? 'OK' : 'EJ OK');
+/** S₁ ≥ 1 er OK som i EC7's ulighed for løftning (beslutning 30. oktober 2026). Arket kræver S₁ > 1. */
+const statusS1 = (S1: number): Status => (S1 >= krav.S1 ? 'OK' : 'EJ OK');
 /** Tal i fejltekster med dansk decimalkomma, fx 0,9. */
 const dansk = (x: number) => String(x).replace('.', ',');
 
@@ -231,7 +239,8 @@ export function beregnOpdrift(
   const K = Fopdrift * standarder.S2; // F299
 
   // Afsnit 9: G312, C315, B319, B320, A333, E333
-  const toLVist = Math.max(min.udenOmslag.iAlt, K / Fbund);
+  const toLBeregnetA = K / Fbund;
+  const toLVist = Math.max(min.udenOmslag.iAlt, toLBeregnetA);
   const LA = Math.max(min.udenOmslag.prSide, toLVist / 2);
   const ballastForankringA = B + Fbund * LA * 2;
   const kontrolA = ingenOpdrift ? null : ballastForankringA / O;
@@ -242,12 +251,14 @@ export function beregnOpdrift(
   const toLMellemBeregnet = (0.5 * Fopdrift * 2 * standarder.faktorMellemRoer) / sigmaV;
   const toLMellem = Math.max(min.udenOmslag.mellemRoer, toLMellemBeregnet);
 
-  // Afsnit 11: G404, C407, B411, B412, A427, E427
+  // Afsnit 11: G404, C407, B411, B412, A427, E427. Omslag er kun muligt, når det øverste lag ligger
+  // under terræn (beslutning 30. oktober 2026).
+  const omslagMuligt = hTop > 0;
   const x = K / (Fbund + Ftop / 2) + standarder.omslagAfstand * 2;
   const toL = x < min.medOmslag.naarXUnder ? min.medOmslag.iAlt : x;
   const LC = Math.max(min.medOmslag.prSide, toL / 2);
   const ballastForankringC = B + ((Fbund + Ftop) / 2) * LC * 4;
-  const kontrolC = ingenOpdrift ? null : ballastForankringC / O;
+  const kontrolC = ingenOpdrift || !omslagMuligt ? null : ballastForankringC / O;
   const tillaeg = standarder.netTillaegOmslag; // 0,4 i B412 og B470 (K-09)
 
   return {
@@ -272,7 +283,7 @@ export function beregnOpdrift(
       ballastLed,
       B,
       S1,
-      S1Status: S1 === null ? 'OK' : status(S1, krav.S1), // H167
+      S1Status: S1 === null ? 'OK' : statusS1(S1), // H167
       konklusion:
         S1 === null
           ? konklusionIngenOpdrift
@@ -289,6 +300,7 @@ export function beregnOpdrift(
       K,
       losninger: {
         A: {
+          toLBeregnet: toLBeregnetA,
           toLVist,
           L: LA,
           La: LA * 2 + d,
@@ -305,23 +317,28 @@ export function beregnOpdrift(
           La: 2 * LA + toLMellem + 2 * d,
           Ltot: 2 * LA + toLMellem + pi * d,
         },
-        C: {
-          toL,
-          L: LC,
-          La: LC * 2 + d,
-          Ltot: 4 * (LC + tillaeg) + (pi * d) / 2,
-          ballastForankring: ballastForankringC,
-          kontrol: kontrolC,
-          status: kontrolC === null ? null : status(kontrolC, krav.kontrol), // H427
-        },
-        D: {
-          toLMellem: 2 * LC, // C452
-          L: LC, // C455 = C407
-          La: 2 * (LC * 2 + d),
-          Ltot: 4 * (2 * LC + tillaeg) + pi * d,
-        },
+        C: omslagMuligt
+          ? {
+              toLBeregnet: x,
+              toL,
+              L: LC,
+              La: LC * 2 + d,
+              Ltot: 4 * (LC + tillaeg) + (pi * d) / 2,
+              ballastForankring: ballastForankringC,
+              kontrol: kontrolC,
+              status: kontrolC === null ? null : status(kontrolC, krav.kontrol), // H427
+            }
+          : null,
+        D: omslagMuligt
+          ? {
+              toLMellem: 2 * LC, // C452
+              L: LC, // C455 = C407
+              La: 2 * (LC * 2 + d),
+              Ltot: 4 * (2 * LC + tillaeg) + pi * d,
+            }
+          : null,
       },
-      kontrolpunkter: kontrolpunkter(input, metode, geonet, Fopdrift, S1, toLVist, LA),
+      kontrolpunkter: kontrolpunkter(input, metode, S1, kontrolC),
     },
   };
 }
@@ -330,20 +347,16 @@ export function beregnOpdrift(
 function kontrolpunkter(
   input: OpdriftInput,
   metode: Beregningsmetode,
-  geonet: GeonetValg,
-  Fopdrift: number,
   S1: number | null,
-  toLVist: number,
-  LA: number,
+  kontrolC: number | null,
 ): Kontrolpunkt[] {
   const k: Kontrolpunkt[] = [];
-  const valgt = geonet.automatisk && geonet.Ptill !== null ? geonet.Ptill : null;
-  if (valgt !== null && Fopdrift > 0 && Fopdrift < valgt && valgt / Fopdrift <= krav.geonet)
-    k.push('K-03');
   // Den avancerede beregning regner GVS under rørtoppen korrekt, så K-05 gælder kun standarden.
+  // Siden låser standardberegningen til GVS i terræn, så K-05 opstår kun ved direkte brug af motoren.
   if (metode === 'standard' && input.gvs > input.h1) k.push('K-05');
+  // Kun når sikring er nødvendig; ellers vises tallene til orientering, og K-12 gælder.
+  if (kontrolC !== null && S1 !== null && S1 < krav.S1) k.push('K-08');
   if (S1 !== null && S1 >= krav.S1) k.push('K-12');
-  if (toLVist !== 2 * LA) k.push('K-13');
   return k;
 }
 
@@ -383,12 +396,12 @@ function valider(input: OpdriftInput): Inputfejl[] {
         tekst: `Antallet af lag skal være 1 eller ${standarder.geonet.lagVedManueltValg}. Et net i midten af flere lag kan ikke udnyttes.`,
       });
   }
-  // Opdrift kan ikke regnes i CC1 (EC7). CC3 skal tage højde for ekstremhændelser, så der regnes
-  // altid med GVS i terræn.
+  // Appen regner kun i CC2 og CC3. CC3 skal tage højde for ekstremhændelser, så der regnes altid
+  // med GVS i terræn.
   if (!(input.konsekvensklasse in standarder.KFI))
     fejl.push({
       felt: 'konsekvensklasse',
-      tekst: `Opdrift kan ikke regnes i konsekvensklasse ${input.konsekvensklasse}. Vælg CC2 eller CC3.`,
+      tekst: 'Appen regner kun i konsekvensklasse CC2 og CC3.',
     });
   else if (input.konsekvensklasse === 'CC3' && input.gvs > 0)
     fejl.push({ felt: 'gvs', tekst: 'Ved konsekvensklasse CC3 regnes altid med GVS i terræn.' });

@@ -32,20 +32,31 @@ export function Partialkoefficienter() {
   const aktuel = beregn(valgt);
   const KFI = standarder.KFI[valgt];
   const raekker: [string, (r: OpdriftResultat) => string][] = [
-    ['Opdrift O', (r) => `${tal(r.O)} kN/m`],
-    ['Sikkerhed S₁', (r) => (r.S1 === null ? 'Ingen opdrift' : `${tal(r.S1)} · ${r.S1Status}`)],
-    ['F_{opdrift}', (r) => `${tal(r.Fopdrift)} kN/m`],
+    ['Regningsmæssig opdrift O_{d}', (r) => `${tal(r.O)} kN/m`],
+    [
+      'Kontrol uden geonet S₁',
+      (r) => (r.S1 === null ? 'Ingen opdrift' : `${tal(r.S1)} · ${r.S1Status}`),
+    ],
+    ['Restopdrift F_{op,d}', (r) => `${tal(r.Fopdrift)} kN/m`],
     [
       'Valgt geonet',
       (r) => (r.geonet.uts === null ? 'Kontakt leverandør' : `X-GRID ${r.geonet.navn}`),
     ],
     [
-      'P_{till}/F_{opdrift}',
-      (r) => (r.geonet.status ? `${tal(r.geonet.sikkerhed)} · ${r.geonet.status}` : '–'),
+      'Styrkekontrol P_{d}/F_{op,d}',
+      (r) =>
+        r.Fopdrift <= 0
+          ? 'Ikke relevant'
+          : r.geonet.status
+            ? `${tal(r.geonet.sikkerhed)} · ${r.geonet.status}`
+            : '–',
     ],
     ...losninger.map((l): [string, (r: OpdriftResultat) => string] => [
       `L_{geonet}, ${navn[l]}`,
-      (r) => `${tal(r.losninger[l].L)} m`,
+      (r) => {
+        const valgt = r.losninger[l];
+        return valgt ? `${tal(valgt.L)} m` : 'Omslag ikke muligt';
+      },
     ]),
   ];
 

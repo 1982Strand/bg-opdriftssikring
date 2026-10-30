@@ -157,6 +157,10 @@
 .solution-table td .m9-badge {
   margin-left: 8px;
 }
+/* Værdi og status står på én linje, også når rækketeksten er lang. */
+.solution-table td {
+  white-space: nowrap;
+}
 
 /* Mellemregninger med en figur til højre; på smalle skærme står figuren under teksten. */
 .mellemregninger-med-figur {

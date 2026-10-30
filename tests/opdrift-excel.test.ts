@@ -71,22 +71,22 @@ const celleTilFelt: Record<string, (r: OpdriftResultat) => number | string | nul
   C369: (r) => r.losninger.B.L,
   B384: (r) => r.losninger.B.La,
   B385: (r) => r.losninger.B.Ltot,
-  G404: (r) => r.losninger.C.toL,
-  C407: (r) => r.losninger.C.L,
-  B411: (r) => r.losninger.C.La,
-  B412: (r) => r.losninger.C.Ltot,
-  A427: (r) => r.losninger.C.ballastForankring,
-  E427: (r) => r.losninger.C.kontrol,
-  H427: (r) => r.losninger.C.status,
-  C452: (r) => r.losninger.D.toLMellem,
-  C455: (r) => r.losninger.D.L,
-  B469: (r) => r.losninger.D.La,
-  B470: (r) => r.losninger.D.Ltot,
+  G404: (r) => r.losninger.C?.toL ?? null,
+  C407: (r) => r.losninger.C?.L ?? null,
+  B411: (r) => r.losninger.C?.La ?? null,
+  B412: (r) => r.losninger.C?.Ltot ?? null,
+  A427: (r) => r.losninger.C?.ballastForankring ?? null,
+  E427: (r) => r.losninger.C?.kontrol ?? null,
+  H427: (r) => r.losninger.C?.status ?? null,
+  C452: (r) => r.losninger.D?.toLMellem ?? null,
+  C455: (r) => r.losninger.D?.L ?? null,
+  B469: (r) => r.losninger.D?.La ?? null,
+  B470: (r) => r.losninger.D?.Ltot ?? null,
 };
 
 for (const sag of cases.cases) {
-  // CC1 er udgået, fordi opdrift ikke kan regnes i CC1 (beslutning 29. oktober 2026). Casen
-  // kontrolleres derfor ved, at motoren afviser den. Samme input i CC2 er »Case 1«.
+  // CC1 er udgået, fordi appen kun regner i CC2 og CC3 (beslutninger 29. og 30. oktober 2026).
+  // Casen kontrolleres derfor ved, at motoren afviser den. Samme input i CC2 er »Case 1«.
   if ((sag.input.konsekvensklasse as string) === 'CC1') {
     test(sag.navn, () => {
       const beregning = beregnOpdrift(sag.input, arketsKonstanter);

@@ -15,21 +15,20 @@ const tekster = (delnavn: string) => {
   return kontrolpunktTekster(r.resultat);
 };
 
-test('K-03 viser P_till/F_opdrift med tre decimaler', () => {
-  const [k] = tekster('K-03: bånd for X-GRID 80');
-  assert.equal(k.kode, 'K-03');
-  assert.match(k.tekst, /^P_\{till\}\/F_\{opdrift\} = 1,005 er under kravet 1,01/);
+test('K-08 forklarer, at kontrollen ved omslag viser en større margin end dimensioneringen', () => {
+  assert.deepEqual(tekster('Case 1:'), [
+    {
+      kode: 'K-08',
+      tekst:
+        'Kontrollen ved omslag regner det øverste lag med fuld F_{top} over hele L_{geonet}, mens længden dimensioneres med F_{top}/2 og uden 0,2 m pr. side. Kontrollen viser derfor en større margin end dimensioneringen (fund K-08).',
+    },
+  ]);
 });
 
-test('GVS under rørtoppen giver K-05, K-12 og K-13 i den rækkefølge', () => {
+test('GVS under rørtoppen giver K-05 og K-12 i den rækkefølge', () => {
   assert.deepEqual(
     tekster('GVS i 2,0 m').map((k) => k.kode),
-    ['K-05', 'K-12', 'K-13'],
-  );
-  const k13 = tekster('GVS i 1,0 m')[0];
-  assert.equal(
-    k13.tekst,
-    'Uden omslag viser regnearket 2 · L_{geonet} = 1,00 m, men regner med mindst 1,00 m pr. side, dvs. 2,00 m i alt (fund K-13).',
+    ['K-05', 'K-12'],
   );
 });
 
@@ -37,10 +36,13 @@ test('K-12 viser S₁ og den negative F_opdrift', () => {
   const k12 = tekster('GVS i 1,5 m').find((k) => k.kode === 'K-12')!;
   assert.equal(
     k12.tekst,
-    'S₁ = 1,12 ≥ 1,0, så opdriftssikring er ikke nødvendig. Regnearket regner alligevel videre med F_{opdrift} = −6,60 kN/m (fund K-12).',
+    'S₁ = 1,12 ≥ 1,0, så opdriftssikring er ikke nødvendig. Regnearket regner alligevel videre med F_{op,d} = −6,60 kN/m (fund K-12).',
   );
 });
 
-test('ingen kontrolpunkter for case 1', () => {
-  assert.deepEqual(tekster('Case 1:'), []);
+test('K-08 vises ikke, når sikring ikke er nødvendig', () => {
+  assert.deepEqual(
+    tekster('GVS i 1,5 m').map((k) => k.kode),
+    ['K-12'],
+  );
 });
