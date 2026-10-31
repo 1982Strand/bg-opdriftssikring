@@ -110,7 +110,7 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   ).toBeVisible();
   await expect(
     geonet.getByText(
-      'Pd = UTS/RF = 80/2,11 = 37,98 kN/m, den trækstyrke geonettet kan regnes med i hele levetiden',
+      'Pd = UTS/RF = 80/2,11 = 37,98 kN/m, den regningsmæssige trækstyrke geonettet kan levere',
       { exact: true },
     ),
   ).toBeVisible();

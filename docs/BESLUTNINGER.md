@@ -481,4 +481,8 @@ Brugerens ønske: »tilføj lige en kort beskrivelse til de to linjer med mellem
 - Linjen for F_op,d slutter med »…, den resterende opdrift som skal optages af geonet«.
 
 Valgt af Claude og kan ændres:
-- Linjen for P_d slutter med »…, den trækstyrke geonettet kan regnes med i hele levetiden«.
+- Linjen for P_d sluttede først med »…, den trækstyrke geonettet kan regnes med i hele levetiden«.
+
+Brugerens rettelse: »ændr den supplerende tekst for Pd fra 'den trækstyrke geonettet kan regnes med i hele levetiden' til 'den regningsmæssige trækstyrke geonettet kan levere.'«
+
+- Linjen for P_d slutter nu med »…, den regningsmæssige trækstyrke geonettet kan levere«. Punktummet er udeladt som i de øvrige linjer med mellemregninger.
