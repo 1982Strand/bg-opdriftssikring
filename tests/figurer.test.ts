@@ -62,7 +62,7 @@ test('løsningerne viser de beregnede længder med dansk komma og sænket skrift
   const c = tekst(losningSvg(r, i, 'C'));
   assert.ok(c.includes('htop = 2,55 m') && c.includes('hbund = 2,75 m'));
   const b = tekst(losningSvg(r, i, 'B'));
-  assert.ok(b.includes(`2·Lgeonet = ${tal(r.losninger.B.toLMellem)} m`));
+  assert.ok(b.includes(`Lmellem = ${tal(r.losninger.B.toLMellem)} m`));
   assert.ok(tekst(losningSvg(r, i, 'D')).includes(`La = ${tal(r.losninger.D?.La)} m`));
 });
 

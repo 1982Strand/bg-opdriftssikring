@@ -581,3 +581,14 @@ Valgt af Claude og kan ændres:
 - I kort 5 er kolonnen 200 px, når arealfiguren vises, fordi forklaringerne dér er korte og formlerne skal have plads ved siden af figuren.
 - På løsningskortene står de lange tilføjelser med lille skrift under forklaringen, så alle kort kan bruge samme kolonne: »inkl. omslag og overlæg«, »med omslag«, »hvor fyldets vægt holder nettet nede«, »som uden omslag«, »som med omslag« og »i nettets niveau« ved den effektive lodrette spænding mellem ledningerne.
 - Ved 1440 og 1920 px brydes hverken forklaringer eller formler. På mobil står forklaringen over formel og resultat og kan brydes.
+
+## 31. oktober 2026 — L_mellem for længden mellem rørene
+
+Brugeren spurgte, hvorfor længden mellem rørene kun er 0,81 m, når L_geonet yderst er 1,00 m, og formlen siger 2 · L_geonet. Claude forklarede, at længden mellem rørene uden omslag beregnes særskilt ud fra ballasten, og at betegnelsen er misvisende. Brugerens notat om 2 × Lgeonet foreslog betegnelserne L_ud og L_mellem. Brugerens svar: »jeg synes vi kun skal indføre L_mellem og ikke ændre betegnelsen for den ydre del, Lgeonet.«
+
+- Længden mellem rørene hedder L_mellem i figurerne, i tabellerne (»Mellem ledningerne L_mellem«), i mellemregningerne og i noterne for løsning B og D. Den udvendige forankring hedder fortsat L_geonet. Fund K-24.
+- Uden omslag: »L_mellem = max(0,5; F_op,d · 1,2/σ′_v) = …«, og noten siger »… så L_mellem er et opdriftsproblem og ikke et forankringsproblem.«
+- Med omslag: »L_mellem = 2 · L_geonet«, og noten siger »Afstanden mellem rørene L_mellem skal være mindst 2 · L_geonet.«
+
+Valgt af Claude og kan ændres:
+- L_a skrives »L_a = 2 · L_geonet + L_mellem + 2 · d« for begge løsninger med to ledninger, og netlængden uden omslag »L_geonet,tot = 2 · L_geonet + L_mellem + π · d«. Netlængden med omslag er uændret.
