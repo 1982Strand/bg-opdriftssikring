@@ -576,3 +576,39 @@ test('dybere forankring ved begrænset plads findes kun i avanceret beregning (K
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
   await expect(overskrift).toHaveCount(0);
 });
+
+test('S₂ kan ændres i kort 7 med arkets note (K-14), og kontrollen har en note (K-11)', async ({
+  page,
+}) => {
+  await start(page);
+  const forankring = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '7 Forankring' }),
+  });
+  const s2 = page.getByRole('spinbutton', { name: 'Partialkoefficient for kraftoptagelse S₂' });
+  await expect(s2).toHaveValue('1.05');
+  await expect(
+    forankring.getByText(
+      'S₂ er partialkoefficienten for kraftoptagelse. Den fastlægges beregningsteknisk ved skøn (1,05–1,20) afhængig af rørdimensionen og påvirker forankringslængden.',
+    ),
+  ).toBeVisible();
+  await expect(flise(page, 'Kraftoptagelse K').locator('strong')).toHaveText('28,94');
+  await saet(page, 'Partialkoefficient for kraftoptagelse S₂', '1.2');
+  await expect(flise(page, 'Kraftoptagelse K').locator('strong')).toHaveText('33,07');
+  await expect(flise(page, 'Kraftoptagelse K').locator('p')).toHaveText(
+    'K = Fop,d · S₂, S₂ = 1,20',
+  );
+  // Uden for intervallet afvises værdien i feltet, og beregningen beholder 1,20.
+  await saet(page, 'Partialkoefficient for kraftoptagelse S₂', '1.3');
+  await expect(forankring.getByText('Angiv et gyldigt tal fra 1,05 til 1,2.')).toBeVisible();
+  await expect(flise(page, 'Kraftoptagelse K').locator('strong')).toHaveText('33,07');
+
+  const udenOmslag = losning(page, 'Uden omslag, én ledning');
+  await udenOmslag.getByRole('button', { name: 'Mellemregninger' }).click();
+  await expect(
+    udenOmslag.getByText(
+      'Kontrollen er eftervisningen for løftning: Od ≤ Bd + Fbund · 2 · Lgeonet. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = Fop,d · S₂, og viser tillægget fra S₂ (fund K-11).',
+    ),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Nulstil beregning' }).click();
+  await expect(s2).toHaveValue('1.05');
+});

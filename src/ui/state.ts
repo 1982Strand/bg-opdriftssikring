@@ -14,6 +14,8 @@ export interface Session {
     overstyringAktiv: boolean;
     /** UTS pr. lag ved manuelt valg; der regnes altid med 2 lag. */
     produkt: number;
+    /** Partialkoefficient for kraftoptagelse S₂ (fund K-14). */
+    S2: number;
     /** Dybere forankring ved begrænset plads (fund K-25); kun i avanceret beregning. */
     dybForankringAktiv: boolean;
     /** Forankringslængden pr. side, der er plads til, m. */
@@ -36,6 +38,7 @@ export const standardSession = (): Session => ({
     phi: 35,
     overstyringAktiv: false,
     produkt: 150,
+    S2: standarder.S2,
     dybForankringAktiv: false,
     dybForankringL: 2,
   },
@@ -59,6 +62,7 @@ export function tilMotorInput(s: Session): OpdriftInput {
       ? { uts: i.produkt, lag: standarder.geonet.lagVedManueltValg }
       : null,
     metode: s.avanceret ? 'avanceret' : 'standard',
+    S2: i.S2,
   };
 }
 const num = (v: unknown, d: number, min = -Infinity, max = Infinity) =>
@@ -96,6 +100,7 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
               : 35,
           overstyringAktiv: typeof i.overstyringAktiv === 'boolean' ? i.overstyringAktiv : false,
           produkt: standarder.geonet.produkter.some((p) => p.uts === i.produkt) ? i.produkt : 150,
+          S2: num(i.S2, standarder.S2, standarder.S2Interval.min, standarder.S2Interval.max),
           dybForankringAktiv:
             typeof i.dybForankringAktiv === 'boolean' ? i.dybForankringAktiv : false,
           dybForankringL: num(i.dybForankringL, 2, 0),

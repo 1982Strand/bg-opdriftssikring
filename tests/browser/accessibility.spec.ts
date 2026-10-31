@@ -11,6 +11,8 @@ for (const width of [1440, 390]) {
   test(`ingen axe-fund ved ${width} px med resultater, udfoldede kort og kontrolpunkter`, async ({
     page,
   }) => {
+    // Testen gennemgår mange tilstande med axe og tager tæt på standardgrænsen på 30 s.
+    test.setTimeout(60_000);
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/#opdriftssikring');
     // Standardberegningen regner med GVS i terræn og viser låsebeskeden og kontrolpunktet K-08.

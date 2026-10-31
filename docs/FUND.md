@@ -21,10 +21,10 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Afgjort: som arket med kontrolpunkt |
 | K-09 | Omslag: tillæg på 1,2 m i netlængden | Netlængde | Afgjort: som arket, tillægget nævnes |
 | K-10 | To rør: ingen kontrol, forskellig mellemlængde | Længder, kontrol | Som arket, ingen afklaring nu |
-| K-11 | Kontrollen uden omslag kan ikke give EJ OK | Kontrol | Som arket |
+| K-11 | Kontrollen uden omslag kan ikke give EJ OK | Kontrol | Afgjort: som arket med note |
 | K-12 | Arket regner videre, når sikring ikke er nødvendig | Rapport | Afgjort: S₁ ≥ 1 er OK, »Ikke relevant« |
 | K-13 | Den viste 2L er mindre end den anvendte | Visning | Afgjort: beregnet og anvendt vises hver for sig |
-| K-14 | S₂ og faktoren mellem rør er faste | Længder | Besluttet: S₂ redigerbar med arkets note, ikke indført |
+| K-14 | S₂ og faktoren mellem rør er faste | Længder | Afgjort: S₂ redigerbar 1,05–1,20, standard 1,05 |
 | K-15 | Forældet tekst og dobbelte data i Navne tabel | Data | Data ét sted |
 | K-16 | Faste sidetal og »Udarbejdet af Bruger« | Rapport | Løses i appen |
 | K-17 | Friktion på én side af nettet | Længder | Som arket |
@@ -259,6 +259,8 @@ Strimlerne til sprinklertanken i e-mailene (14,86 m og 18,99 m) følger arkets f
 
 **Første version.** Som arket.
 
+**Afgjort 31. oktober 2026 (b).** Brugeren valgte at følge anbefalingen: kontrollen bevares som dokumentation. Den er Eurocode 7's eftervisning for løftning, O_d ≤ B_d + forankringen, og er altid opfyldt, når forankringslængden er dimensioneret efter K = F_op,d · S₂: med kraften bestemmende bliver den 1 + (S₂ − 1) · (1 − S₁). Mellemregningerne for løsning A, løsning C og kort 8 har en note om det.
+
 ## K-12 Arket regner videre, når sikring ikke er nødvendig
 
 **Arket.** Ved S₁ ≥ 1 skriver arket, at opdriftssikring ikke er nødvendig, men regner afsnit 5–12 videre med negativ F_opdrift. Ved S₁ = 1,00 præcist står der EJ OK (kravet er > 1), mens konklusionen siger »ikke nødvendig« (kravet er < 1).
@@ -304,7 +306,7 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 
 **Første version.** Som arket.
 
-**Besluttet 31. oktober 2026.** Brugeren: »K14, der vil jeg gerne tilføje noten fra regnearket, og gøre faktoren til en redigerbar værdi, der som standard er sat til 1,05.« S₂ bliver en redigerbar værdi med standarden 1,05, og arkets note fra A300 tilføjes: »Note: S2 er partialkoefficient for kraftoptagelse fastlægges beregningsteknisk ved skøn (1,05-1,2) afhængig af rørdimension. Påvirker forankringslængde.« Faktoren 1,2 mellem rør er uændret. Ikke indført endnu.
+**Besluttet 31. oktober 2026.** Brugeren: »K14, der vil jeg gerne tilføje noten fra regnearket, og gøre faktoren til en redigerbar værdi, der som standard er sat til 1,05.« S₂ bliver en redigerbar værdi med standarden 1,05, og arkets note fra A300 tilføjes: »Note: S2 er partialkoefficient for kraftoptagelse fastlægges beregningsteknisk ved skøn (1,05-1,2) afhængig af rørdimension. Påvirker forankringslængde.« Faktoren 1,2 mellem rør er uændret. Indført samme dag: feltet »Partialkoefficient for kraftoptagelse S₂« i kort 7 i begge beregningsmetoder, interval 1,05–1,20 og en sprogligt tilrettet note (brugerens svar: »Følg anbefalingerne«).
 
 ## K-15 Forældet tekst og dobbelte data i Navne tabel
 

@@ -33,6 +33,8 @@ export interface OpdriftInput {
   konsekvensklasse: Konsekvensklasse;
   overstyring: GeonetOverstyring | null;
   metode?: Beregningsmetode; // 'standard', hvis den mangler
+  /** D299, partialkoefficient for kraftoptagelse; arkets 1,05, hvis den mangler (fund K-14). */
+  S2?: number;
 }
 export type Status = 'OK' | 'EJ OK';
 export type Kontrolpunkt = 'K-05' | 'K-08' | 'K-12';
@@ -84,6 +86,8 @@ export interface OpdriftResultat {
   Ftop: number;
   /** Effektiv lodret spænding i nettets niveau ved h_bund og h_top, kN/m². */
   forankringsspaending: { bund: number; top: number };
+  /** Den anvendte S₂ (fund K-14). */
+  S2: number;
   K: number;
   losninger: {
     /** Afsnit 9: ét rør uden omslag. */
@@ -236,7 +240,8 @@ export function beregnOpdrift(
   const forankringsspaending = { bund: spaending(hBund), top: spaending(hTop) };
   const Fbund = forankringsspaending.bund * mu * tanPhiD; // C289
   const Ftop = forankringsspaending.top * mu * tanPhiD; // E289
-  const K = Fopdrift * standarder.S2; // F299
+  const S2 = input.S2 ?? standarder.S2; // D299, redigerbar (fund K-14)
+  const K = Fopdrift * S2; // F299
 
   // Afsnit 9: G312, C315, B319, B320, A333, E333
   const toLBeregnetA = K / Fbund;
@@ -297,6 +302,7 @@ export function beregnOpdrift(
       Fbund,
       Ftop,
       forankringsspaending,
+      S2,
       K,
       losninger: {
         A: {
@@ -396,6 +402,13 @@ function valider(input: OpdriftInput): Inputfejl[] {
         tekst: `Antallet af lag skal være 1 eller ${standarder.geonet.lagVedManueltValg}. Et net i midten af flere lag kan ikke udnyttes.`,
       });
   }
+  // S₂ fastlægges ved skøn inden for arkets interval 1,05–1,2 (A300, fund K-14).
+  const { min: s2Min, max: s2Max } = standarder.S2Interval;
+  if (input.S2 !== undefined && !(input.S2 >= s2Min && input.S2 <= s2Max))
+    fejl.push({
+      felt: 'S2',
+      tekst: `S₂ skal være mellem ${dansk(s2Min)} og ${dansk(s2Max)}.`,
+    });
   // Appen regner kun i CC2 og CC3. CC3 skal tage højde for ekstremhændelser, så der regnes altid
   // med GVS i terræn.
   if (!(input.konsekvensklasse in standarder.KFI))
