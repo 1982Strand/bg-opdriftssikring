@@ -430,3 +430,18 @@ Brugerens ønske: »omskriv dette i kort 5 fra ' Rørets egenvægt omregnes fra 
 
 Valgt af Claude og kan ændres:
 - T₃-linjen står i listen over mellemregninger lige efter γ_f, før opdriften, fordi T₃ bruges i både O_d (avanceret beregning) og B_d. Noten har fået punktum til sidst som de øvrige noter.
+
+## 31. oktober 2026 — kort 6, når opdriftssikring ikke er nødvendig
+
+Brugerens ønske: »når opdriftssikring ikke er nødvendig, ændr teksten i infoboksen til: 'S₁ ≥ 1,0: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.'. Boksene nedenunder skal bare vise 'Ikke relevant', ligesom der står ved styrkekontrollen, og man skal ikke kunne vælge geonet manuelt eller folde 'mellemregninger' ud«
+
+- Noten lyder »S₁ ≥ 1,0: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.«
+- Fliserne »Restopdrift F_op,d«, »Valgt geonet«, »Designtrækstyrke P_d« og »Styrkekontrol P_d/F_op,d« viser »Ikke relevant« uden enhed.
+- »Vælg geonet manuelt i 2 lag« og produktlisten er låst, og »Mellemregninger« i kort 6 kan ikke foldes ud.
+- Ændringen er kun i visningen. Motoren regner fortsat videre som arket (fund K-12).
+
+Valgt af Claude og kan ændres:
+- Formlerne under fliserne for F_op,d og P_d og kravet under styrkekontrollen står fortsat. Noten om medregnet UTS under »Valgt geonet« udgår.
+- Når røret ikke påvirkes af opdrift, så S₁ ikke kan regnes, lyder noten »Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig.« Sætningen »Tallene nedenfor vises til orientering.« er fjernet, fordi kortet ikke længere viser tal.
+- Et gemt manuelt netvalg bevares. Mens kortet er låst, vises afkrydsningen tom, og valget vises igen, når sikring bliver nødvendig.
+- Kort 7 er uændret og viser fortsat forankringen nedtonet til orientering.

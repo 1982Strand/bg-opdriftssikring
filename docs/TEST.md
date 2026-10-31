@@ -63,7 +63,7 @@ Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
 Browsertestene dækker:
 - standardresultatet for case 1 med de nye navne, noterne på løsningskortene, tillægget i netlængden og kontrolpunktet K-08;
 - feltfejl, nulstilling og genindlæsning;
-- låsen af GVS i standardberegningen og GVS under terræn i den avancerede beregning med »Ikke relevant« og nedtoning;
+- låsen af GVS i standardberegningen og GVS under terræn i den avancerede beregning med »Ikke relevant« i fliserne i kort 6, låst netvalg og låste mellemregninger, nedtoning og det bevarede manuelle valg;
 - at det automatiske netvalg opfylder kravet 1,01;
 - at omslag ikke er muligt ved lav rørmidte;
 - alle fire løsninger uden valg af antal eller konstruktion;

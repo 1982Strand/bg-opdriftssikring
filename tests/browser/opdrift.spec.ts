@@ -133,10 +133,19 @@ test('ændring, feltfejl, nulstilling og genindlæsning', async ({ page }) => {
   await expect(page.getByRole('status').filter({ hasText: 'Gemt i denne browser' })).toBeVisible();
 });
 
-test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ikke relevant«', async ({
+test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ikke relevant« i kort 6', async ({
   page,
 }) => {
   await start(page);
+  const geonet = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '6 Geonet' }),
+  });
+  const manuelt = page.getByRole('checkbox', { name: 'Vælg geonet manuelt i 2 lag' });
+  const mellemregninger = geonet.getByRole('button', { name: 'Mellemregninger', exact: true });
+  // Et manuelt valg og åbne mellemregninger låses, når sikring ikke er nødvendig.
+  await manuelt.click();
+  await mellemregninger.click();
+  await expect(geonet.getByText('RF beregnes som produktet af følgende faktorer:')).toBeVisible();
   const gvsFelt = page.getByRole('spinbutton', { name: 'GVS under terræn (m)' });
   const iTerraen = page.getByRole('checkbox', { name: 'GVS i terræn' });
   await expect(page.getByText(laasTekst)).toBeVisible();
@@ -151,11 +160,19 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
   await saet(page, 'GVS under terræn (m)', '2');
   await expect(
     page.getByText(
-      'S₁ ≥ 1,0: opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.',
+      'S₁ ≥ 1,0: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.',
     ),
   ).toBeVisible();
-  await expect(flise(page, 'Styrkekontrol').locator('strong')).toHaveText('Ikke relevant');
+  for (const label of ['Restopdrift', 'Valgt geonet', 'Designtrækstyrke', 'Styrkekontrol'])
+    await expect(flise(page, label).locator('strong')).toHaveText('Ikke relevant');
+  await expect(flise(page, 'Restopdrift').locator('.m9-result-value span')).toHaveCount(0);
+  await expect(flise(page, 'Designtrækstyrke').locator('.m9-result-value span')).toHaveCount(0);
   await expect(flise(page, 'Styrkekontrol').locator('.m9-badge')).toHaveCount(0);
+  await expect(manuelt).toBeDisabled();
+  await expect(manuelt).not.toBeChecked();
+  await expect(page.getByRole('combobox', { name: 'Produkt i 2 lag' })).toBeDisabled();
+  await expect(mellemregninger).toBeDisabled();
+  await expect(geonet.getByText('RF beregnes som produktet af følgende faktorer:')).toHaveCount(0);
   await expect(page.getByText(/fund K-12/)).toBeVisible();
   const kort = page.locator('section.calc-card');
   await expect(kort.filter({ has: page.getByRole('heading', { name: '6 Geonet' }) })).toHaveClass(
@@ -170,6 +187,11 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
   await expect(iTerraen).toBeChecked();
   await expect(gvsFelt).toBeDisabled();
   await expect(flise(page, 'Kontrol uden geonet').locator('strong')).toHaveText('0,49');
+  // Det gemte manuelle valg vises igen, når sikring er nødvendig.
+  await expect(manuelt).toBeEnabled();
+  await expect(manuelt).toBeChecked();
+  await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 150 (2 lag)');
+  await expect(mellemregninger).toBeEnabled();
 });
 
 test('det automatiske netvalg opfylder kravet 1,01 (K-03)', async ({ page }) => {
