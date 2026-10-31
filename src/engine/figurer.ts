@@ -296,7 +296,7 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   const stykker: [number, number, string][] = to
     ? [
         [-ydre, centre[0] - d / 2, `L_{geonet} = ${m(L)}`],
-        [centre[0] + d / 2, centre[1] - d / 2, `2·L_{geonet} = ${m(mellem)}`],
+        [centre[0] + d / 2, centre[1] - d / 2, `L_{mellem} = ${m(mellem)}`],
         [centre[1] + d / 2, ydre, `L_{geonet} = ${m(L)}`],
       ]
     : [

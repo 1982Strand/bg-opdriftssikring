@@ -34,6 +34,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-21 | Produktlisten mangler X-GRID 130 og 200 | Valg af geonet | Afgjort: 130 og 200 tilføjet |
 | K-22 | Reduktionsfaktorerne pr. net bruges ikke | Data, P_till | Afgjort: ét fælles sæt |
 | K-23 | Omslag over terræn ved lav rørmidte | Løsning C og D | Afgjort: omslag ikke muligt |
+| K-24 | Betegnelsen »2xLgeonet« mellem rørene | Tekst, løsning B og D | Afgjort: L_mellem |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -430,3 +431,14 @@ Faktorerne i H24:K27 bruges ingen steder. Da alle kolonner og kopien i Rapporten
 **Eksempel.** d = 0,10 m og h₁ = 0: T₃ = 0,05 m, h_top = −0,15 m, F_top < 0, og kontrollen for løsning C giver −4,23.
 
 **Afgjort 30. oktober 2026.** Omslag er ikke muligt, når h_top ≤ 0. Motoren giver `losninger.C` og `losninger.D` = `null`, og kortene med omslag viser »Omslag kræver, at rørmidten ligger mere end 0,2 m under terræn.« Løsningerne uden omslag regnes som før. Ingen af arkets kontrolcases rammer grænsen.
+
+## K-24 Betegnelsen for længden mellem rørene
+
+**Arket.** Ved to ledninger betegnes længden mellem rørene »2xLgeonet«, mens den udvendige forankring pr. side betegnes Lgeonet. Det giver indtryk af, at længden mellem rørene altid er det dobbelte af den udvendige forankring.
+
+- Uden omslag beregnes længden mellem rørene særskilt ud fra ballasten: max(0,5; F_opdrift · 1,2/σ′_v) (G363 og C366). Arket skriver selv i A358: »2xLgeonet er et opdrift problem og ikke et forankringsproblem«.
+- Med omslag kræver arket, at længden mellem rørene er mindst 2 · Lgeonet (A448:A449 og C452).
+
+**Eksempel.** Case 1 uden omslag: L_geonet = 1,70 m pr. side og 2,27 m mellem rørene.
+
+**Afgjort 31. oktober 2026.** Længden mellem rørene hedder L_mellem i figurer, tabeller, mellemregninger og noter. Den udvendige forankring hedder fortsat L_geonet. Med omslag står kravet »Afstanden mellem rørene L_mellem skal være mindst 2 · L_geonet.« Kun visningen er ændret.

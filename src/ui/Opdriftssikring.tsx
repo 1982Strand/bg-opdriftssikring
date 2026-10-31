@@ -198,9 +198,9 @@ const { mindstelaengder: mindste, omslagAfstand, netTillaegOmslag, faktorMellemR
 /** Arkets forskrifter for løsningerne (Rapporten A308, A358:A362, A398:A400 og A440:A449). */
 const losningNote: Record<Losning, string> = {
   A: `Der forankres altid med mindst ${tal(mindste.udenOmslag.prSide, 1)} m på hver side.`,
-  B: `Der forankres altid med mindst ${tal(mindste.udenOmslag.prSide, 1)} m yderst på hver side. Mellem ledningerne holdes nettet nede af fyldets vægt, så længden dér er et opdriftsproblem og ikke et forankringsproblem. Der regnes med en partialkoefficient på ${tal(faktorMellemRoer, 1)} mellem ledningerne.`,
+  B: `Der forankres altid med mindst ${tal(mindste.udenOmslag.prSide, 1)} m yderst på hver side. Mellem ledningerne holdes nettet nede af fyldets vægt, så L_{mellem} er et opdriftsproblem og ikke et forankringsproblem. Der regnes med en partialkoefficient på ${tal(faktorMellemRoer, 1)} mellem ledningerne.`,
   C: `Omslag kan bruges ved pladsproblemer. Der forankres altid med mindst ${tal(mindste.medOmslag.prSide, 1)} m på hver side. Der armeres lige meget i top og bund med ${tal(omslagAfstand, 1)} m mellem lagene.`,
-  D: 'Som med omslag ved én ledning. Afstanden mellem rørene skal være mindst 2 · L_{geonet}.',
+  D: 'Som med omslag ved én ledning. Afstanden mellem rørene L_{mellem} skal være mindst 2 · L_{geonet}.',
 };
 
 /** Arkets tillæg i netlængden med omslag ud over de lodrette stykker på 0,2 m (fund K-09). */
@@ -292,7 +292,7 @@ function losningIndhold(
       return {
         raekker: [
           ['Forankring yderst L_{geonet}', `${tal(B.L)} m`],
-          ['Mellem ledningerne 2 · L_{geonet}', `${tal(B.toLMellem)} m`],
+          ['Mellem ledningerne L_{mellem}', `${tal(B.toLMellem)} m`],
           ...faelles(B),
         ],
         beregning: [
@@ -307,7 +307,7 @@ function losningIndhold(
           {
             forklaring: 'Nettets længde mellem ledningerne',
             detalje: 'hvor fyldets vægt holder nettet nede',
-            formel: `2 · L_{geonet} mellem = max(0,5; F_{op,d} · 1,2/σ′_{v}) = max(0,5; ${tal(r.Fopdrift)} · 1,2/${tal(B.sigmaV)})`,
+            formel: `L_{mellem} = max(0,5; F_{op,d} · 1,2/σ′_{v}) = max(0,5; ${tal(r.Fopdrift)} · 1,2/${tal(B.sigmaV)})`,
             resultat: meter(B.toLMellem),
           },
           {
@@ -316,10 +316,10 @@ function losningIndhold(
             formel: 'L_{geonet} yderst = L_{geonet} uden omslag',
             resultat: meter(B.L),
           },
-          bredde('L_{a} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + 2 · d', B.La),
+          bredde('L_{a} = 2 · L_{geonet} + L_{mellem} + 2 · d', B.La),
           netlaengde(
             'Samlet længde geonet på tværs af ledningerne',
-            'L_{geonet,tot} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + π · d',
+            'L_{geonet,tot} = 2 · L_{geonet} + L_{mellem} + π · d',
             B.Ltot,
           ),
         ],
@@ -356,17 +356,17 @@ function losningIndhold(
         D && {
           raekker: [
             ['Forankring yderst L_{geonet}', `${tal(D.L)} m`],
-            ['Mellem ledningerne 2 · L_{geonet}', `${tal(D.toLMellem)} m`],
+            ['Mellem ledningerne L_{mellem}', `${tal(D.toLMellem)} m`],
             ...faelles(D, tillaegOmslag.D),
           ],
           beregning: [
             {
               forklaring: 'Nettets længde mellem ledningerne',
               detalje: 'som med omslag',
-              formel: '2 · L_{geonet} mellem = 2 · L_{geonet}',
+              formel: 'L_{mellem} = 2 · L_{geonet}',
               resultat: meter(D.toLMellem),
             },
-            bredde('L_{a} = 2 · (2 · L_{geonet} + d)', D.La),
+            bredde('L_{a} = 2 · L_{geonet} + L_{mellem} + 2 · d', D.La),
             netlaengde(
               'Samlet længde geonet på tværs af ledningerne',
               'L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d',

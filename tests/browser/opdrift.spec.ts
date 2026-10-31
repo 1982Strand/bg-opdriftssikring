@@ -311,7 +311,9 @@ test('alle fire løsninger vises, og der er ingen valg af antal eller konstrukti
     'Med omslag, to ledninger',
   ]);
   await expect(
-    losning(page, 'Uden omslag, to ledninger').getByRole('row', { name: /Mellem ledningerne/ }),
+    losning(page, 'Uden omslag, to ledninger').getByRole('row', {
+      name: /Mellem ledningerne Lmellem/,
+    }),
   ).toBeVisible();
   await expect(
     losning(page, 'Med omslag, to ledninger').getByText(
@@ -320,7 +322,7 @@ test('alle fire løsninger vises, og der er ingen valg af antal eller konstrukti
   ).toBeVisible();
   await expect(
     losning(page, 'Med omslag, to ledninger').getByText(
-      'Afstanden mellem rørene skal være mindst 2 · Lgeonet.',
+      'Afstanden mellem rørene Lmellem skal være mindst 2 · Lgeonet.',
       { exact: false },
     ),
   ).toBeVisible();
