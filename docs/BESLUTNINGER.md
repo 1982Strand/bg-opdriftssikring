@@ -592,3 +592,18 @@ Brugeren spurgte, hvorfor længden mellem rørene kun er 0,81 m, når L_geonet y
 
 Valgt af Claude og kan ændres:
 - L_a skrives »L_a = 2 · L_geonet + L_mellem + 2 · d« for begge løsninger med to ledninger, og netlængden uden omslag »L_geonet,tot = 2 · L_geonet + L_mellem + π · d«. Netlængden med omslag er uændret.
+
+## 31. oktober 2026 — dybere forankring ved begrænset plads (K-25)
+
+Brugeren bad om en vurdering af en beregningsbeskrivelse for dybere forankring og præciserede: »jeg tænker, det skal dreje sig om, at man kan lave en beregning på dybden af forankringen af 1 rør, med omslag, ud fra en brugerangivet forankringslængde (da man netop er i denne situation selv da den løsning med omslag der giver den korteste forankringslængde ikke er tilstrækkelig). Dvs. en særskilt beregning i si eget kort forestiller jeg mig, noget med 'Manuel forankringslængde' eller noget andet der passer til. Jeg tænker lige nu, at det ikke skal være en mulighed at vælge selve forankringsdybden.«
+
+Claude stillede syv valg. Brugerens svar: »1a, 2b, 3a, 4a, 5a med henvisning til den pågældende tilstrækkelige beregning. 6a, 7a«.
+
+- Kortet hedder »Dybere forankring ved begrænset plads« og findes kun i avanceret beregning.
+- Brugeren angiver forankringslængden pr. side; appen finder den nødvendige dybde. Selve dybden kan ikke vælges. Kun én ledning med omslag.
+- Ingen fast grænse for dybden, men en ekstra advarsel, når nettet ligger under rørbunden.
+- Den samlede netlængde medregner 2 · (h_bund − T₃) for nettets sider ned langs røret.
+- Er længden tilstrækkelig ved rørmidten, vises en besked med henvisning til løsningen »Med omslag, én ledning« i kort 7.
+- Kortet har en figur med nettet ført ned langs rørets sider, en fast advarsel og kontrolpunktet K-25.
+
+Planen, teksterne og kontroltallene står i [FORSLAG_DYB_FORANKRING.md](FORSLAG_DYB_FORANKRING.md). Teksterne og kontroltallene afventer brugerens godkendelse, før der kodes.
