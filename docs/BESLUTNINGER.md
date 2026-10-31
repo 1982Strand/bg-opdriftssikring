@@ -486,3 +486,19 @@ Valgt af Claude og kan ændres:
 Brugerens rettelse: »ændr den supplerende tekst for Pd fra 'den trækstyrke geonettet kan regnes med i hele levetiden' til 'den regningsmæssige trækstyrke geonettet kan levere.'«
 
 - Linjen for P_d slutter nu med »…, den regningsmæssige trækstyrke geonettet kan levere«. Punktummet er udeladt som i de øvrige linjer med mellemregninger.
+
+## 31. oktober 2026 — forklaringer i mellemregningerne i kort 7
+
+Brugerens ønske: »lav tilsvarende supplerende forklarende tekster til mellemregningslinjerne i kort 8«. Der er intet kort 8, og brugeren bekræftede »hov, min fejl, fortsæt bare«, så ændringen gælder kort 7.
+
+Valgt af Claude og kan ændres. Hver linje slutter med en kort forklaring efter resultatet:
+- φ_d: »den regningsmæssige friktionsvinkel for fyldet«.
+- F_bund: »kraftoverførslen pr. meter forankringslængde i nettets niveau ved rørmidten«. F_top: »kraftoverførslen pr. meter forankringslængde i det øverste netlags niveau ved omslag«.
+- σ′_v,bund og σ′_v,top i avanceret beregning: »den effektive lodrette spænding i nettets niveau ved rørmidten« og »… i det øverste netlags niveau«.
+- K: »den kraft forankringen skal dimensioneres for«.
+- Beregnet 2L: »den samlede forankringslængde der skal til for at optage K«, ved omslag tilføjet »med omslag«.
+- L_geonet: »den anvendte forankringslængde«. Når mindstelængden er bestemmende, står der »…, da mindstelængden er bestemmende« i stedet for »…, mindstelængden er bestemmende«.
+- L_a: »den vandrette bredde fra nettets ene ende til den anden«.
+- L_geonet,tot: »den samlede længde geonet på tværs af ledningen« (to ledninger: »ledningerne«), ved omslag tilføjet »inkl. omslag og overlæg«.
+- Kontrol: »ballast og forankring i forhold til opdriften«.
+- To ledninger: σ′_v »den effektive lodrette spænding i nettets niveau mellem ledningerne«, 2 · L_geonet mellem »nettets længde mellem ledningerne, hvor fyldets vægt holder nettet nede« og ved omslag »nettets længde mellem ledningerne, som med omslag«, L_geonet yderst »forankringslængden yderst på hver side, som uden omslag«.

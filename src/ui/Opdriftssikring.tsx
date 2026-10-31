@@ -181,7 +181,10 @@ function losningIndhold(
   ];
   // Den beregnede længde og den anvendte mindstelængde vises hver for sig (beslutning 30. oktober 2026).
   const bestemmende = (L: number, beregnet: number) =>
-    L > beregnet / 2 ? ', mindstelængden er bestemmende' : '';
+    L > beregnet / 2 ? ', da mindstelængden er bestemmende' : '';
+  // Forklaringer efter mellemregningerne (beslutning 31. oktober 2026).
+  const bredde = 'den vandrette bredde fra nettets ene ende til den anden';
+  const kontrolTekst = 'ballast og forankring i forhold til opdriften';
   switch (losning) {
     case 'A':
       return {
@@ -191,13 +194,13 @@ function losningIndhold(
           ['Opdriftskontrol', tal(A.kontrol), A.status],
         ],
         formler: [
-          `Beregnet 2L = K/F_{bund} = ${tal(r.K)}/${tal(r.Fbund)} = ${tal(A.toLBeregnet)} m`,
-          `L_{geonet} = max(${tal(mindste.udenOmslag.prSide, 1)}; 2L/2) = max(${tal(mindste.udenOmslag.prSide, 1)}; ${tal(A.toLBeregnet / 2)}) = ${tal(A.L)} m pr. side${bestemmende(A.L, A.toLBeregnet)}`,
-          `L_{a} = 2 · L_{geonet} + d = 2 · ${tal(A.L)} + ${tal(d)} = ${tal(A.La)} m`,
-          `L_{geonet,tot} = 2 · L_{geonet} + π · d/2 = ${tal(A.Ltot)} m`,
+          `Beregnet 2L = K/F_{bund} = ${tal(r.K)}/${tal(r.Fbund)} = ${tal(A.toLBeregnet)} m, den samlede forankringslængde der skal til for at optage K`,
+          `L_{geonet} = max(${tal(mindste.udenOmslag.prSide, 1)}; 2L/2) = max(${tal(mindste.udenOmslag.prSide, 1)}; ${tal(A.toLBeregnet / 2)}) = ${tal(A.L)} m pr. side, den anvendte forankringslængde${bestemmende(A.L, A.toLBeregnet)}`,
+          `L_{a} = 2 · L_{geonet} + d = 2 · ${tal(A.L)} + ${tal(d)} = ${tal(A.La)} m, ${bredde}`,
+          `L_{geonet,tot} = 2 · L_{geonet} + π · d/2 = ${tal(A.Ltot)} m, den samlede længde geonet på tværs af ledningen`,
           A.kontrol === null
             ? ingenKontrol
-            : `Kontrol = (B_{d} + F_{bund} · 2 · L_{geonet})/O_{d} = (${tal(r.B)} + ${tal(r.Fbund)} · 2 · ${tal(A.L)})/${tal(r.O)} = ${tal(A.kontrol)} (krav > 1,0)`,
+            : `Kontrol = (B_{d} + F_{bund} · 2 · L_{geonet})/O_{d} = (${tal(r.B)} + ${tal(r.Fbund)} · 2 · ${tal(A.L)})/${tal(r.O)} = ${tal(A.kontrol)} (krav > 1,0), ${kontrolTekst}`,
         ],
       };
     case 'B':
@@ -209,12 +212,12 @@ function losningIndhold(
         ],
         formler: [
           torTilMidte
-            ? `σ′_{v} = T₃ · γ_{tør,d} = ${tal(r.T3)} · ${tal(r.gammaTorD)} = ${tal(B.sigmaV)} kN/m², da GVS ligger under rørmidten`
-            : `σ′_{v} = T₂ · γ_{tør,d} + (T₃ − T₂) · γ′_{d} = ${tal(B.sigmaV)} kN/m²`,
-          `2 · L_{geonet} mellem = max(0,5; F_{op,d} · 1,2/σ′_{v}) = max(0,5; ${tal(r.Fopdrift)} · 1,2/${tal(B.sigmaV)}) = ${tal(B.toLMellem)} m`,
-          `L_{geonet} yderst = ${tal(B.L)} m, som uden omslag`,
-          `L_{a} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + 2 · d = ${tal(B.La)} m`,
-          `L_{geonet,tot} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + π · d = ${tal(B.Ltot)} m`,
+            ? `σ′_{v} = T₃ · γ_{tør,d} = ${tal(r.T3)} · ${tal(r.gammaTorD)} = ${tal(B.sigmaV)} kN/m², den effektive lodrette spænding i nettets niveau mellem ledningerne, da GVS ligger under rørmidten`
+            : `σ′_{v} = T₂ · γ_{tør,d} + (T₃ − T₂) · γ′_{d} = ${tal(B.sigmaV)} kN/m², den effektive lodrette spænding i nettets niveau mellem ledningerne`,
+          `2 · L_{geonet} mellem = max(0,5; F_{op,d} · 1,2/σ′_{v}) = max(0,5; ${tal(r.Fopdrift)} · 1,2/${tal(B.sigmaV)}) = ${tal(B.toLMellem)} m, nettets længde mellem ledningerne, hvor fyldets vægt holder nettet nede`,
+          `L_{geonet} yderst = ${tal(B.L)} m, forankringslængden yderst på hver side, som uden omslag`,
+          `L_{a} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + 2 · d = ${tal(B.La)} m, ${bredde}`,
+          `L_{geonet,tot} = 2 · L_{geonet} + 2 · L_{geonet,mellem} + π · d = ${tal(B.Ltot)} m, den samlede længde geonet på tværs af ledningerne`,
         ],
       };
     case 'C':
@@ -226,13 +229,13 @@ function losningIndhold(
             ['Opdriftskontrol', tal(C.kontrol), C.status],
           ],
           formler: [
-            `Beregnet 2L = K/(F_{bund} + F_{top}/2) + 2 · 0,2 = ${tal(r.K)}/(${tal(r.Fbund)} + ${tal(r.Ftop)}/2) + 0,4 = ${tal(C.toLBeregnet)} m`,
-            `L_{geonet} = max(${tal(mindste.medOmslag.prSide, 1)}; 2L/2) = max(${tal(mindste.medOmslag.prSide, 1)}; ${tal(C.toLBeregnet / 2)}) = ${tal(C.L)} m pr. side${bestemmende(C.L, C.toLBeregnet)}`,
-            `L_{a} = 2 · L_{geonet} + d = ${tal(C.La)} m`,
-            `L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2 = ${tal(C.Ltot)} m`,
+            `Beregnet 2L = K/(F_{bund} + F_{top}/2) + 2 · 0,2 = ${tal(r.K)}/(${tal(r.Fbund)} + ${tal(r.Ftop)}/2) + 0,4 = ${tal(C.toLBeregnet)} m, den samlede forankringslængde der skal til for at optage K med omslag`,
+            `L_{geonet} = max(${tal(mindste.medOmslag.prSide, 1)}; 2L/2) = max(${tal(mindste.medOmslag.prSide, 1)}; ${tal(C.toLBeregnet / 2)}) = ${tal(C.L)} m pr. side, den anvendte forankringslængde${bestemmende(C.L, C.toLBeregnet)}`,
+            `L_{a} = 2 · L_{geonet} + d = ${tal(C.La)} m, ${bredde}`,
+            `L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2 = ${tal(C.Ltot)} m, den samlede længde geonet på tværs af ledningen inkl. omslag og overlæg`,
             C.kontrol === null
               ? ingenKontrol
-              : `Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d} = ${tal(C.kontrol)} (krav > 1,0)`,
+              : `Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d} = ${tal(C.kontrol)} (krav > 1,0), ${kontrolTekst}`,
           ],
         }
       );
@@ -245,9 +248,9 @@ function losningIndhold(
             ...faelles(D, tillaegOmslag.D),
           ],
           formler: [
-            `2 · L_{geonet} mellem = 2 · L_{geonet} = ${tal(D.toLMellem)} m, som med omslag`,
-            `L_{a} = 2 · (2 · L_{geonet} + d) = ${tal(D.La)} m`,
-            `L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d = ${tal(D.Ltot)} m`,
+            `2 · L_{geonet} mellem = 2 · L_{geonet} = ${tal(D.toLMellem)} m, nettets længde mellem ledningerne, som med omslag`,
+            `L_{a} = 2 · (2 · L_{geonet} + d) = ${tal(D.La)} m, ${bredde}`,
+            `L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d = ${tal(D.Ltot)} m, den samlede længde geonet på tværs af ledningerne inkl. omslag og overlæg`,
           ],
         }
       );
@@ -338,21 +341,25 @@ function opdriftLinjer(
 function forankringLinjer(r: OpdriftResultat, input: ReturnType<typeof tilMotorInput>): string[] {
   const mu = tal(standarder.mu);
   const tanPhi = `tan ${tal(r.phiD)}°`;
+  // Forklaringer efter mellemregningerne (beslutning 31. oktober 2026).
+  const niveau = { bund: 'i nettets niveau ved rørmidten', top: 'i det øverste netlags niveau' };
+  const fBund = `kraftoverførslen pr. meter forankringslængde ${niveau.bund}`;
+  const fTop = `kraftoverførslen pr. meter forankringslængde ${niveau.top} ved omslag`;
   if (r.metode === 'standard')
     return [
-      `F_{bund} = h_{bund} · γ′_{d} · μ · tan φ_{d} = ${tal(r.hBund)} · ${tal(r.gammaEffD)} · ${mu} · ${tanPhi} = ${tal(r.Fbund)} kN/m`,
-      `F_{top} = h_{top} · γ′_{d} · μ · tan φ_{d} = ${tal(r.hTop)} · ${tal(r.gammaEffD)} · ${mu} · ${tanPhi} = ${tal(r.Ftop)} kN/m`,
+      `F_{bund} = h_{bund} · γ′_{d} · μ · tan φ_{d} = ${tal(r.hBund)} · ${tal(r.gammaEffD)} · ${mu} · ${tanPhi} = ${tal(r.Fbund)} kN/m, ${fBund}`,
+      `F_{top} = h_{top} · γ′_{d} · μ · tan φ_{d} = ${tal(r.hTop)} · ${tal(r.gammaEffD)} · ${mu} · ${tanPhi} = ${tal(r.Ftop)} kN/m, ${fTop}`,
     ];
   const T2 = input.gvs;
-  const spaending = (navn: string, h: number, sigma: number) =>
+  const spaending = (navn: 'bund' | 'top', h: number, sigma: number) =>
     T2 >= h
-      ? `σ′_{v,${navn}} = h_{${navn}} · γ_{tør,d} = ${tal(h)} · ${tal(r.gammaTorD)} = ${tal(sigma)} kN/m², da GVS ligger under nettet`
-      : `σ′_{v,${navn}} = T₂ · γ_{tør,d} + (h_{${navn}} − T₂) · γ′_{d} = ${tal(T2)} · ${tal(r.gammaTorD)} + ${tal(h - T2)} · ${tal(r.gammaEffD)} = ${tal(sigma)} kN/m²`;
+      ? `σ′_{v,${navn}} = h_{${navn}} · γ_{tør,d} = ${tal(h)} · ${tal(r.gammaTorD)} = ${tal(sigma)} kN/m², den effektive lodrette spænding ${niveau[navn]}, da GVS ligger under nettet`
+      : `σ′_{v,${navn}} = T₂ · γ_{tør,d} + (h_{${navn}} − T₂) · γ′_{d} = ${tal(T2)} · ${tal(r.gammaTorD)} + ${tal(h - T2)} · ${tal(r.gammaEffD)} = ${tal(sigma)} kN/m², den effektive lodrette spænding ${niveau[navn]}`;
   return [
     spaending('bund', r.hBund, r.forankringsspaending.bund),
-    `F_{bund} = σ′_{v,bund} · μ · tan φ_{d} = ${tal(r.forankringsspaending.bund)} · ${mu} · ${tanPhi} = ${tal(r.Fbund)} kN/m`,
+    `F_{bund} = σ′_{v,bund} · μ · tan φ_{d} = ${tal(r.forankringsspaending.bund)} · ${mu} · ${tanPhi} = ${tal(r.Fbund)} kN/m, ${fBund}`,
     spaending('top', r.hTop, r.forankringsspaending.top),
-    `F_{top} = σ′_{v,top} · μ · tan φ_{d} = ${tal(r.forankringsspaending.top)} · ${mu} · ${tanPhi} = ${tal(r.Ftop)} kN/m`,
+    `F_{top} = σ′_{v,top} · μ · tan φ_{d} = ${tal(r.forankringsspaending.top)} · ${mu} · ${tanPhi} = ${tal(r.Ftop)} kN/m, ${fTop}`,
   ];
 }
 
@@ -936,9 +943,9 @@ export function Opdriftssikring() {
             <Udfold titel="Mellemregninger for kraftoverførsel" laast={ikkeNoedvendig}>
               <Formler
                 linjer={[
-                  `φ_{d} = arctan(tan φ_{k}/γ_{φ}) = arctan(tan ${tal(i.phi)}°/${tal(pk.gammaPhi)}) = ${tal(r.phiD)}°`,
+                  `φ_{d} = arctan(tan φ_{k}/γ_{φ}) = arctan(tan ${tal(i.phi)}°/${tal(pk.gammaPhi)}) = ${tal(r.phiD)}°, den regningsmæssige friktionsvinkel for fyldet`,
                   ...forankringLinjer(r, input),
-                  `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(standarder.S2)} = ${tal(r.K)} kN/m`,
+                  `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(standarder.S2)} = ${tal(r.K)} kN/m, den kraft forankringen skal dimensioneres for`,
                 ]}
               />
               <p className="calc-note">

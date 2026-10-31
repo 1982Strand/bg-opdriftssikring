@@ -74,7 +74,21 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     udenOmslag.getByText('Der forankres altid med mindst 1,0 m på hver side.'),
   ).toBeVisible();
   await udenOmslag.getByRole('button', { name: 'Mellemregninger' }).click();
-  await expect(udenOmslag.getByText('Beregnet 2L = K/Fbund = 28,94/8,50 = 3,40 m')).toBeVisible();
+  await expect(
+    udenOmslag.getByText(
+      'Beregnet 2L = K/Fbund = 28,94/8,50 = 3,40 m, den samlede forankringslængde der skal til for at optage K',
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await expect(
+    udenOmslag.getByText(
+      'Lgeonet = max(1,0; 2L/2) = max(1,0; 1,70) = 1,70 m pr. side, den anvendte forankringslængde',
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await expect(
+    udenOmslag.getByText(/= 1,03 \(krav > 1,0\), ballast og forankring i forhold til opdriften$/),
+  ).toBeVisible();
   const medOmslag = losning(page, 'Med omslag, én ledning');
   await expect(medOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText('1,36 m');
   await expect(
@@ -90,6 +104,14 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     has: page.getByRole('heading', { name: '7 Forankring' }),
   });
   await forankring.getByRole('button', { name: 'Mellemregninger for kraftoverførsel' }).click();
+  await expect(
+    forankring.getByText(
+      /= 8,50 kN\/m, kraftoverførslen pr\. meter forankringslængde i nettets niveau ved rørmidten$/,
+    ),
+  ).toBeVisible();
+  await expect(
+    forankring.getByText(/= 28,94 kN\/m, den kraft forankringen skal dimensioneres for$/),
+  ).toBeVisible();
   await expect(
     forankring.getByText(
       'Geonettet ligger under GVS, så kraftoverførslen regnes med γ′d. Forankringen på begge sider skal tilsammen optage K = Fop,d · S₂.',
