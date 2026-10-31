@@ -224,12 +224,15 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
   await iTerraen.click();
   await expect(gvsFelt).toBeEnabled();
   await saet(page, 'GVS under terræn (m)', '2');
-  // Kort 6 og 7 har samme note.
+  // Kort 6, 7 og 8 (avanceret beregning) har samme note, og kort 8 er låst.
   await expect(
     page.getByText(
       'S₁ ≥ 1,0: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.',
     ),
-  ).toHaveCount(2);
+  ).toHaveCount(3);
+  await expect(
+    page.getByRole('checkbox', { name: 'Beregn nødvendig forankringsdybde' }),
+  ).toBeDisabled();
   for (const label of [
     'Restopdrift',
     'Valgt geonet',
@@ -499,4 +502,77 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(page.getByRole('img', { name: /Rørets tværsnit delt af GVS/ })).toHaveCount(0);
   await expect(flise(page, 'Kraftoverførsel Fbund').locator('strong')).toHaveText('8,04');
   await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);
+});
+
+test('dybere forankring ved begrænset plads findes kun i avanceret beregning (K-25)', async ({
+  page,
+}) => {
+  await start(page);
+  const overskrift = page.getByRole('heading', { name: '8 Dybere forankring ved begrænset plads' });
+  await expect(overskrift).toHaveCount(0);
+  await saet(page, 'Rørdiameter d (m)', '4');
+  await saet(page, 'Jorddækning h₁ (m)', '0.6');
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  const kort = page.locator('section.calc-card', { has: overskrift });
+  const laengde = 'Mulig forankringslængde pr. side Lgeonet (m)';
+  await expect(kort.getByText(/^Dybere forankring er ikke en dokumenteret metode/)).toBeVisible();
+  await expect(page.getByRole('spinbutton', { name: laengde })).toBeDisabled();
+  await kort.getByRole('checkbox', { name: 'Beregn nødvendig forankringsdybde' }).click();
+  await saet(page, laengde, '2.5');
+
+  // Kontroltal nr. 2 i docs/FORSLAG_DYB_FORANKRING.md.
+  await expect(flise(page, 'Nødvendig dybde').locator('strong')).toHaveText('5,65');
+  await expect(flise(page, 'Nødvendig dybde').locator('p')).toHaveText(
+    'hbund, øverste netlag htop = 5,45 m',
+  );
+  await expect(flise(page, 'Sænkning under rørmidten').locator('p')).toHaveText(
+    'Δh, 1,05 m under rørbunden',
+  );
+  await expect(flise(page, 'Samlet netlængde Lgeonet,tot').locator('strong')).toHaveText('23,98');
+  await expect(flise(page, 'Opdriftskontrol').locator('.m9-badge')).toHaveText('OK');
+  await expect(
+    kort.getByText(
+      'Det nederste netlag ligger 1,05 m under rørbunden. Udgravning, indbygning og komprimering under røret skal vurderes særskilt.',
+    ),
+  ).toBeVisible();
+  await expect(kort.getByRole('img', { name: /Dybere forankring med omslag/ })).toBeVisible();
+  await kort.getByRole('button', { name: 'Mellemregninger' }).click();
+  await mellemregning(kort, 'Nødvendig kraftoverførsel', [
+    'Fbund + Ftop/2 = K/(2 · Lgeonet − 2 · 0,2) = 119,08/(2 · 2,50 − 0,4)',
+    '25,89 kN/m',
+  ]);
+  await mellemregning(kort, 'Nødvendig dybde til nederste netlag', [
+    'hbund, hvor Fbund + Ftop/2 = 17,46 + 16,85/2 = 25,89 kN/m',
+    '5,65 m',
+  ]);
+  await mellemregning(kort, 'Længden med dybden indsat igen', [
+    '2L = K/(Fbund + Ftop/2) + 2 · 0,2 = 119,08/(17,46 + 16,85/2) + 0,4',
+    '5,00 m',
+  ]);
+  await expect(
+    page.getByText(
+      'Dybere forankring ved begrænset plads giver hbund = 5,65 m for Lgeonet = 2,50 m pr. side. Metoden er ikke i regnearket og kræver særskilt statisk og geoteknisk eftervisning (fund K-25).',
+    ),
+  ).toBeVisible();
+
+  // Tilstrækkelig ved rørmidten: henvisning til løsningen med omslag i kort 7.
+  await saet(page, laengde, '6');
+  await expect(
+    kort.getByText(
+      'Løsningen »Med omslag, én ledning« i kort 7 giver Lgeonet = 5,27 m pr. side med forankring ved rørmidten. Den angivne længde på 6,00 m er tilstrækkelig, så dybere forankring er ikke nødvendig.',
+    ),
+  ).toBeVisible();
+  await expect(page.getByText(/fund K-25/)).toHaveCount(0);
+  await saet(page, laengde, '0.5');
+  await expect(
+    kort.getByText(
+      'Forankringslængden skal være mindst 0,6 m pr. side, som er mindstelængden med omslag.',
+    ),
+  ).toBeVisible();
+
+  // Valget gemmes, og kortet findes ikke i standardberegningen.
+  await page.reload();
+  await expect(page.getByRole('spinbutton', { name: laengde })).toHaveValue('0.5');
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await expect(overskrift).toHaveCount(0);
 });

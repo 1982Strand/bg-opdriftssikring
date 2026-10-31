@@ -7,7 +7,8 @@ Motoren ligger i `src/engine/` og kører i TypeScript i browseren. Brugerflade, 
 | `defaults.json` | Arkets faste værdier: partialkoefficienter, K_FI for konsekvensklasserne, γ_w, g = 9,82, S₂, mindstelængder, krav og X-GRID-produkterne med reduktionsfaktorer |
 | `geonet.ts` | Reduktionsfaktor RF, valggrænser, automatisk valg af geonet og manuel overstyring |
 | `opdrift.ts` | `beregnOpdrift(input)`: validering, opdrift, ballast, S₁, geonet, kraftoverførsel, de fire løsninger og kontrolpunkter |
-| `figurer.ts` | Målsatte SVG-figurer til skærm og rapport: tværsnittet og de fire løsninger |
+| `dybforankring.ts` | `beregnDybForankring(resultat, input, L)`: dybere forankring ved begrænset plads for én ledning med omslag (fund K-25). Ændrer ikke `beregnOpdrift` |
+| `figurer.ts` | Målsatte SVG-figurer til skærm og rapport: tværsnittet, de fire løsninger og den dybere forankring |
 | `format.ts` | Tal med dansk komma, tusindtalspunktum og minustegn |
 
 ## Inddata

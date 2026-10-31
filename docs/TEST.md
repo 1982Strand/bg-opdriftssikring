@@ -32,6 +32,8 @@ CC1 er udgået, fordi appen kun regner i CC2 og CC3 (beslutninger 29. og 30. okt
 
 Bevidste afvigelser fra arket står i `tests/cases/afvigelser.json` med beslutning og en forventning, der er beregnet uden motoren. Excels facit ændres ikke. Afvigelserne er K-21 (produktlisten) og K-03 (netvalget med kravet 1,01, 7 cases).
 
+Dybere forankring ved begrænset plads (K-25) er ikke i arket. Kontroltallene står i `tests/cases/dyb-forankring.json` og er godkendt af brugeren 31. oktober 2026 (docs/FORSLAG_DYB_FORANKRING.md, afsnit 8). De er regnet uden motoren og omfatter beregningsbeskrivelsens eksempel med π = 3,14, GVS i terræn, over og mellem netlagene, en længde, der er tilstrækkelig ved rørmidten, og en længde under mindstelængden. `tests/dybforankring.test.ts` kontrollerer desuden tilstandene uden sikringsbehov og uden mulighed for omslag, at `beregnOpdrift` er uændret, og at dybden vokser, når længden bliver kortere.
+
 Tal sammenlignes med en relativ tolerance på 1e-9 og en absolut nedre grænse på 1e-12. Tolerancen dækker kun afrundingsstøj i kommatal, fordi motoren og Excel kan udføre de samme regneoperationer i lidt forskellig rækkefølge. Valgt geonet, OK/EJ OK og tekster skal stemme præcist.
 
 Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
@@ -71,8 +73,9 @@ Browsertestene dækker:
 - forudsætningerne og konsekvensklasse CC3 i kort 1–2, herunder at CC3 kun kan vælges i avanceret beregning;
 - CC3 med note om statikerkontrol og låst GVS i terræn;
 - avanceret beregning til og fra med GVS under rørtoppen og ved rørbunden;
+- kort 8 med dybere forankring: kun i avanceret beregning, fliser, advarsler, figur, mellemregninger, K-25, beskeden ved tilstrækkelig længde, feltfejlen og lagringen;
 - navigationen;
-- tilgængelighed med axe ved 1440 og 390 px, også med avanceret beregning.
+- tilgængelighed med axe ved 1440 og 390 px, også med avanceret beregning og kort 8 med dybere forankring.
 
 Input og forventninger må ikke ændres for at få en ændring til at bestå. En bevidst afvigelse fra arket kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).
 

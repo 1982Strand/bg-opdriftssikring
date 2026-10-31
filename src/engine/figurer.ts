@@ -50,11 +50,13 @@ interface Opsaetning {
   bundHalv: number;
   T3: number;
   d: number;
+  /** Dybden til det nederste netlag, når det ligger under rørmidten (fund K-25). */
+  netDybde?: number;
 }
 
-function tegning({ indreHalv, bundHalv, T3, d }: Opsaetning) {
-  const bund = T3 + d / 2 + BUNDLAG;
-  const hwBund = Math.max(bundHalv + 0.3, indreHalv + 0.2 - (bund - T3) * HAELDNING);
+function tegning({ indreHalv, bundHalv, T3, d, netDybde = T3 }: Opsaetning) {
+  const bund = Math.max(T3 + d / 2, netDybde) + BUNDLAG;
+  const hwBund = Math.max(bundHalv + 0.3, indreHalv + 0.2 - (bund - netDybde) * HAELDNING);
   const hw = (y: number) => hwBund + (bund - y) * HAELDNING;
   const xHalv = hw(0) + 0.4;
   const dybde = bund + 0.3;
@@ -410,4 +412,83 @@ export function opdriftsarealSvg(r: OpdriftResultat, i: OpdriftInput): string | 
   }
   const label = 'Rørets tværsnit delt af GVS: arealet over og under GVS';
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 530 250" width="530" height="250" aria-hidden="true" font-family="'Segoe UI', system-ui, sans-serif" font-size="12"><title>${esc(label)}</title>${dele.join('')}</svg>`;
+}
+
+/** Løsningen med omslag for én ledning, hvor nettet er ført ned langs rørets sider og forankret i
+ * dybden h_bund (fund K-25, docs/FORSLAG_DYB_FORANKRING.md). Lodrette sidestykker og skarpe hjørner
+ * er en idealisering. */
+export function dybForankringSvg(
+  r: OpdriftResultat,
+  i: OpdriftInput,
+  dyb: { L: number; hBund: number; hTop: number; dh: number },
+): string {
+  const { d } = i;
+  const T3 = r.T3;
+  const { L, hBund, hTop, dh } = dyb;
+  const ydre = d / 2 + L;
+  const t = tegning({ indreHalv: ydre, bundHalv: d / 2, T3, d, netDybde: hBund });
+  t.dele.push(gvs(t, i.gvs));
+  t.dele.push(roer(t, 0, T3, d));
+
+  // Nettet går over røret, lodret ned langs rørets sider til h_bund, ud til enden og tilbage i h_top.
+  const radius = (d / 2) * t.s + roerKant((d / 2) * t.s) / 2 + 2;
+  const yMidt = t.Y(T3);
+  const yBund = t.Y(hBund);
+  const yTop = px(yBund - Math.max(OMSLAG * t.s, 16));
+  const xVenstre = t.X(-ydre);
+  const xHoejre = t.X(ydre);
+  const xRoerV = px(t.X(0) - radius);
+  const xRoerH = px(t.X(0) + radius);
+  const tilbage = TOPLAG * L * t.s;
+  const sti =
+    `M ${px(xVenstre + tilbage)} ${yTop} H ${xVenstre} V ${yBund} H ${xRoerV} V ${yMidt}` +
+    ` A ${px(radius)} ${px(radius)} 0 0 1 ${xRoerH} ${yMidt} V ${yBund} H ${xHoejre} V ${yTop}` +
+    ` H ${px(xHoejre - tilbage)}`;
+  t.dele.push(
+    `<path d="${sti}" fill="none" stroke="${farve.net}" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="miter"/>`,
+  );
+
+  // L_a over terræn og forankringslængderne under graven.
+  t.dele.push(vandretMaal(xVenstre, xHoejre, t.Y(0) - 22, `L_{a} = ${m(2 * L + d)}`));
+  const yl = t.Y(t.bund) + 22;
+  for (const [x1, x2] of [
+    [-ydre, -d / 2],
+    [d / 2, ydre],
+  ])
+    t.dele.push(
+      linje(t.X(x1), yBund, t.X(x1), yl, farve.muted, 1, ' stroke-dasharray="2 3"'),
+      linje(t.X(x2), yBund, t.X(x2), yl, farve.muted, 1, ' stroke-dasharray="2 3"'),
+      vandretMaal(t.X(x1), t.X(x2), yl, `L_{geonet} = ${m(L)}`, true),
+    );
+  // Sænkningen fra rørmidten til det nederste netlag, til venstre for røret.
+  const xDh = xRoerV - 12;
+  if (yBund - yMidt >= 24)
+    t.dele.push(
+      linje(xVenstre, yMidt, xRoerV, yMidt, farve.muted, 1, ' stroke-dasharray="4 3"'),
+      lodretMaal(xDh, yMidt, yBund, ''),
+      tekst(xDh - 8, (yMidt + yBund) / 2 + 4, `Δh = ${m(dh)}`, 'end'),
+    );
+  // Højder til højre for graven.
+  const xh = BREDDE - MARGEN.hoejre + 12;
+  const midt = (t.Y(0) + yBund) / 2;
+  t.dele.push(
+    lodretMaal(xh, t.Y(0), yTop, ''),
+    lodretMaal(xh + 14, t.Y(0), yBund, ''),
+    tekst(xh + 24, midt - 5, `h_{top} = ${m(hTop)}`, 'start'),
+    tekst(xh + 24, midt + 11, `h_{bund} = ${m(hBund)}`, 'start'),
+  );
+  const ys = t.hoejde - 10;
+  t.dele.push(
+    linje(
+      MARGEN.venstre,
+      ys - 4,
+      MARGEN.venstre + 28,
+      ys - 4,
+      farve.net,
+      2.5,
+      ' stroke-dasharray="6 4"',
+    ),
+    tekst(MARGEN.venstre + 34, ys, 'Geonet', 'start'),
+  );
+  return svg(t, 'Dybere forankring med omslag');
 }

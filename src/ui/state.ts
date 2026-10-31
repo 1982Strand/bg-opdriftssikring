@@ -14,6 +14,10 @@ export interface Session {
     overstyringAktiv: boolean;
     /** UTS pr. lag ved manuelt valg; der regnes altid med 2 lag. */
     produkt: number;
+    /** Dybere forankring ved begrænset plads (fund K-25); kun i avanceret beregning. */
+    dybForankringAktiv: boolean;
+    /** Forankringslængden pr. side, der er plads til, m. */
+    dybForankringL: number;
   };
   konsekvensklasse: Konsekvensklasse;
   /** Avanceret beregning (docs/FORSLAG_K-05.md); ellers regnes som regnearket. */
@@ -32,6 +36,8 @@ export const standardSession = (): Session => ({
     phi: 35,
     overstyringAktiv: false,
     produkt: 150,
+    dybForankringAktiv: false,
+    dybForankringL: 2,
   },
   konsekvensklasse: 'CC2',
   avanceret: false,
@@ -90,6 +96,9 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
               : 35,
           overstyringAktiv: typeof i.overstyringAktiv === 'boolean' ? i.overstyringAktiv : false,
           produkt: standarder.geonet.produkter.some((p) => p.uts === i.produkt) ? i.produkt : 150,
+          dybForankringAktiv:
+            typeof i.dybForankringAktiv === 'boolean' ? i.dybForankringAktiv : false,
+          dybForankringL: num(i.dybForankringL, 2, 0),
         },
         // CC3 kan kun vælges i avanceret beregning; ellers indlæses CC2.
         konsekvensklasse: x.konsekvensklasse === 'CC3' && x.avanceret === true ? 'CC3' : 'CC2',

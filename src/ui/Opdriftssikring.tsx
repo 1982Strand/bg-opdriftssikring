@@ -2,9 +2,16 @@ import type { ReactNode } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { beregnOpdrift, type GvsZone, type OpdriftResultat, type Status } from '../engine/opdrift';
+import { beregnDybForankring, type DybForankring } from '../engine/dybforankring';
 import { geonetProdukter } from '../engine/geonet';
 import standarder from '../engine/defaults.json' with { type: 'json' };
-import { losningSvg, opdriftsarealSvg, tvaersnitSvg, type Losning } from '../engine/figurer';
+import {
+  dybForankringSvg,
+  losningSvg,
+  opdriftsarealSvg,
+  tvaersnitSvg,
+  type Losning,
+} from '../engine/figurer';
 import { tal } from '../engine/format';
 import { Fmt } from './Fmt';
 import { Notice } from './Notice';
@@ -13,7 +20,7 @@ import { PageFooter, PageHeader } from './page';
 import { SaveState } from './SaveState';
 import { useSession } from './SessionContext';
 import { SettingField } from './SettingField';
-import { kontrolpunktTekster } from './kontrolpunkter';
+import { dybKontrolpunktTekst, kontrolpunktTekster } from './kontrolpunkter';
 import { betingelser, projekteringsansvar } from './forudsaetninger';
 import { Partialkoefficienter } from './Partialkoefficienter';
 import { Udfold } from './Udfold';
@@ -621,6 +628,238 @@ function forankringRaekker(
   ];
 }
 
+/** Kort 8: dybere forankring ved begrænset plads for én ledning med omslag (fund K-25,
+ * docs/FORSLAG_DYB_FORANKRING.md). Teksterne er godkendt 31. oktober 2026. */
+function DybForankringKort({
+  r,
+  input,
+  session,
+  saet,
+  ikkeNoedvendigNote,
+  omslagIkkeMuligt,
+  dyb,
+}: {
+  r: OpdriftResultat;
+  input: ReturnType<typeof tilMotorInput>;
+  session: Session;
+  saet: (aendring: Partial<Session['inddata']>) => void;
+  ikkeNoedvendigNote: string | null;
+  omslagIkkeMuligt: boolean;
+  dyb: { ok: true; resultat: DybForankring } | { ok: false; fejl: string } | null;
+}) {
+  const i = session.inddata;
+  const laast = ikkeNoedvendigNote !== null || omslagIkkeMuligt;
+  const res = dyb?.ok ? dyb.resultat : null;
+  const C = r.losninger.C;
+  return (
+    <>
+      <p className="calc-note">
+        Når der ikke er plads til forankringslængden fra løsningen med omslag for én ledning, kan
+        nettet føres længere ned langs rørets sider og forankres dybere. Beregningen finder den
+        dybde, hvor den angivne forankringslængde er tilstrækkelig.
+      </p>
+      {ikkeNoedvendigNote && <Notice>{ikkeNoedvendigNote}</Notice>}
+      {omslagIkkeMuligt && (
+        <Notice>
+          Omslag kræver, at rørmidten ligger mere end {tal(omslagAfstand, 1)} m under terræn.
+        </Notice>
+      )}
+      {!laast && (
+        <Notice kind="warning">
+          Dybere forankring er ikke en dokumenteret metode og indgår ikke i regnearket. Længden
+          regnes med samme friktionsmodel som løsningen med omslag. Lokal jordreaktion ved nettets
+          retningsændringer, jordbrud, netkræfter og deformationer er ikke eftervist og skal
+          eftervises særskilt, før løsningen bruges til udførelse.
+        </Notice>
+      )}
+      <div className="calc-override">
+        <SettingField
+          field={{
+            key: 'input-dyb-aktiv',
+            label: 'Beregn nødvendig forankringsdybde',
+            kind: 'checkbox',
+            help: 'Angiv den forankringslængde pr. side, der er plads til. Gælder én ledning med omslag.',
+          }}
+          disabled={laast}
+          value={i.dybForankringAktiv && !laast}
+          change={(v) => saet({ dybForankringAktiv: Boolean(v) })}
+        />
+        <SettingField
+          field={{
+            key: 'input-dyb-L',
+            label: 'Mulig forankringslængde pr. side L_{geonet} (m)',
+            kind: 'number',
+            min: 0,
+            step: 0.01,
+          }}
+          disabled={laast || !i.dybForankringAktiv}
+          value={i.dybForankringL}
+          error={dyb && !dyb.ok ? dyb.fejl : undefined}
+          change={(v) => saet({ dybForankringL: Number(v) })}
+        />
+      </div>
+      {res?.tilstand === 'tilstraekkelig' && C && (
+        <Notice>
+          <Fmt
+            text={`Løsningen »Med omslag, én ledning« i kort 7 giver L_{geonet} = ${tal(C.L)} m pr. side med forankring ved rørmidten. Den angivne længde på ${tal(res.L)} m er tilstrækkelig, så dybere forankring er ikke nødvendig.`}
+          />
+        </Notice>
+      )}
+      {res?.tilstand === 'dybere' && <DybResultat r={r} input={input} dyb={res} />}
+    </>
+  );
+}
+
+function DybResultat({
+  r,
+  input,
+  dyb,
+}: {
+  r: OpdriftResultat;
+  input: ReturnType<typeof tilMotorInput>;
+  dyb: Extract<DybForankring, { tilstand: 'dybere' }>;
+}) {
+  const { d, gvs } = input;
+  const mu = tal(standarder.mu);
+  const tanPhi = `tan ${tal(r.phiD)}°`;
+  const roerbund =
+    Math.abs(dyb.underRoerbund) < 0.005
+      ? 'ved rørbunden'
+      : dyb.underRoerbund > 0
+        ? `${tal(dyb.underRoerbund)} m under rørbunden`
+        : `${tal(-dyb.underRoerbund)} m over rørbunden`;
+  const spaending = (
+    navn: 'bund' | 'top',
+    h: number,
+    sigma: number,
+    lag: string,
+  ): Mellemregning => ({
+    forklaring: `Effektiv lodret spænding i ${lag} netlag`,
+    detalje: gvs >= h ? 'GVS ligger under nettet' : undefined,
+    formel:
+      gvs >= h
+        ? `σ′_{v,${navn}} = h_{${navn}} · γ_{tør,d} = ${tal(h)} · ${tal(r.gammaTorD)}`
+        : `σ′_{v,${navn}} = T₂ · γ_{tør,d} + (h_{${navn}} − T₂) · γ′_{d} = ${tal(gvs)} · ${tal(r.gammaTorD)} + ${tal(h - gvs)} · ${tal(r.gammaEffD)}`,
+    resultat: `${tal(sigma)} kN/m²`,
+  });
+  const kraft = (navn: 'bund' | 'top', sigma: number, F: number, lag: string): Mellemregning => ({
+    forklaring: `Kraftoverførsel i ${lag} netlag`,
+    detalje: 'pr. meter forankringslængde',
+    formel: `F_{${navn}} = σ′_{v,${navn}} · μ · tan φ_{d} = ${tal(sigma)} · ${mu} · ${tanPhi}`,
+    resultat: kNm(F),
+  });
+  return (
+    <>
+      {dyb.underRoerbund > 0 && (
+        <Notice kind="warning">
+          Det nederste netlag ligger {tal(dyb.underRoerbund)} m under rørbunden. Udgravning,
+          indbygning og komprimering under røret skal vurderes særskilt.
+        </Notice>
+      )}
+      <div className="dim-results m9-result-cards">
+        {/* Fliseoverskrifter skrives med store bogstaver, så symbolerne h_bund og Δh står i noten. */}
+        <Flise
+          label="Nødvendig dybde"
+          vaerdi={tal(dyb.hBund)}
+          enhed="m"
+          note={`h_{bund}, øverste netlag h_{top} = ${tal(dyb.hTop)} m`}
+        />
+        <Flise
+          label="Sænkning under rørmidten"
+          vaerdi={tal(dyb.dh)}
+          enhed="m"
+          note={`Δh, ${roerbund}`}
+        />
+        <Flise
+          label="Samlet netlængde L_{geonet,tot}"
+          vaerdi={tal(dyb.Ltot)}
+          enhed="m"
+          note="inkl. 2 · Δh for siderne"
+        />
+        <Flise
+          label="Opdriftskontrol"
+          vaerdi={tal(dyb.kontrol)}
+          status={dyb.status}
+          note={`Krav > ${tal(standarder.krav.kontrol, 1)}`}
+        />
+      </div>
+      <Figur
+        svg={dybForankringSvg(r, input, dyb)}
+        label="Dybere forankring med omslag: geonettet ført ned langs rørets sider til h_bund"
+      />
+      <Udfold titel="Mellemregninger">
+        <Beregning
+          titel="Nødvendig kraftoverførsel"
+          raekker={[
+            {
+              forklaring: 'Kraft forankringen skal dimensioneres for',
+              detalje: 'fra kort 7',
+              formel: `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(standarder.S2)}`,
+              resultat: kNm(r.K),
+            },
+            {
+              forklaring: 'Mulig forankringslængde pr. side',
+              formel: 'L_{geonet}, angivet',
+              resultat: meter(dyb.L),
+            },
+            {
+              forklaring: 'Nødvendig kraftoverførsel',
+              formel: `F_{bund} + F_{top}/2 = K/(2 · L_{geonet} − 2 · ${tal(omslagAfstand, 1)}) = ${tal(r.K)}/(2 · ${tal(dyb.L)} − ${tal(2 * omslagAfstand, 1)})`,
+              resultat: kNm(dyb.krav),
+              hoved: true,
+            },
+          ]}
+        />
+        <Beregning
+          titel="Nødvendig dybde"
+          raekker={[
+            spaending('bund', dyb.hBund, dyb.spaending.bund, 'nederste'),
+            kraft('bund', dyb.spaending.bund, dyb.Fbund, 'nederste'),
+            spaending('top', dyb.hTop, dyb.spaending.top, 'øverste'),
+            kraft('top', dyb.spaending.top, dyb.Ftop, 'øverste'),
+            {
+              forklaring: 'Nødvendig dybde til nederste netlag',
+              formel: `h_{bund}, hvor F_{bund} + F_{top}/2 = ${tal(dyb.Fbund)} + ${tal(dyb.Ftop)}/2 = ${tal(dyb.krav)} kN/m`,
+              resultat: meter(dyb.hBund),
+              hoved: true,
+            },
+            {
+              forklaring: 'Længden med dybden indsat igen',
+              detalje: `L_{geonet} = 2L/2 = ${tal(dyb.toL / 2)} m`,
+              formel: `2L = K/(F_{bund} + F_{top}/2) + 2 · ${tal(omslagAfstand, 1)} = ${tal(r.K)}/(${tal(dyb.Fbund)} + ${tal(dyb.Ftop)}/2) + ${tal(2 * omslagAfstand, 1)}`,
+              resultat: meter(dyb.toL),
+            },
+          ]}
+        />
+        <Beregning
+          titel="Netlængde og kontrol"
+          raekker={[
+            {
+              forklaring: 'Sænkning under rørmidten',
+              formel: `Δh = h_{bund} − T₃ = ${tal(dyb.hBund)} − ${tal(r.T3)}`,
+              resultat: meter(dyb.dh),
+            },
+            {
+              forklaring: 'Samlet længde geonet på tværs af ledningen',
+              detalje: 'inkl. omslag, overlæg og sider',
+              formel: `L_{geonet,tot} = 4 · (L_{geonet} + ${tal(netTillaegOmslag, 1)}) + π · d/2 + 2 · Δh = 4 · (${tal(dyb.L)} + ${tal(netTillaegOmslag, 1)}) + π · ${tal(d)}/2 + 2 · ${tal(dyb.dh)}`,
+              resultat: meter(dyb.Ltot),
+            },
+            {
+              forklaring: 'Ballast og forankring i forhold til opdriften',
+              formel:
+                'Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d} (krav > 1,0)',
+              resultat: tal(dyb.kontrol),
+              status: dyb.status,
+              hoved: true,
+            },
+          ]}
+        />
+      </Udfold>
+    </>
+  );
+}
+
 export function Opdriftssikring() {
   const { session, update, externalChange, loadMessage, reload } = useSession();
   const input = tilMotorInput(session);
@@ -666,6 +905,22 @@ export function Opdriftssikring() {
   const gvsLaast = cc3 || !avanceret;
   // Kun i avanceret beregning med GVS mellem rørtop og rørbund.
   const arealfigur = r ? opdriftsarealSvg(r, input) : null;
+  // Dybere forankring ved begrænset plads (fund K-25, docs/FORSLAG_DYB_FORANKRING.md): kun i avanceret
+  // beregning og kun for én ledning med omslag.
+  const omslagIkkeMuligt = r !== null && r.losninger.C === null;
+  const dybLaast = ikkeNoedvendig || omslagIkkeMuligt;
+  const dyb =
+    r && avanceret && i.dybForankringAktiv && !dybLaast
+      ? beregnDybForankring(r, input, i.dybForankringL)
+      : null;
+  const dybRes = dyb?.ok ? dyb.resultat : null;
+  const dybere = dybRes?.tilstand === 'dybere' ? dybRes : null;
+  const punkter = r
+    ? [
+        ...kontrolpunktTekster(r),
+        ...(dybere ? [{ kode: 'K-25', tekst: dybKontrolpunktTekst(dybere) }] : []),
+      ]
+    : [];
 
   return (
     <>
@@ -696,7 +951,7 @@ export function Opdriftssikring() {
             key: 'avanceret',
             label: 'Avanceret beregning',
             kind: 'checkbox',
-            help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3.',
+            help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3 og dybere forankring ved begrænset plads.',
           }}
           value={session.avanceret}
           // CC3 kan kun vælges i avanceret beregning, så standardberegningen går tilbage til CC2.
@@ -1261,7 +1516,36 @@ export function Opdriftssikring() {
             </div>
           </Trin>
 
-          {r.kontrolpunkter.length > 0 && (
+          {avanceret && (
+            <Trin
+              nr={8}
+              titel="Dybere forankring ved begrænset plads"
+              opsummering={
+                ikkeNoedvendig
+                  ? 'Ikke relevant'
+                  : omslagIkkeMuligt
+                    ? 'Omslag ikke muligt'
+                    : dybRes?.tilstand === 'tilstraekkelig'
+                      ? 'Ikke nødvendig'
+                      : dybere
+                        ? `h_{bund} = ${tal(dybere.hBund)} m · L_{geonet} = ${tal(dybere.L)} m`
+                        : undefined
+              }
+              dimmed={ikkeNoedvendig}
+            >
+              <DybForankringKort
+                r={r}
+                input={input}
+                session={session}
+                saet={saet}
+                ikkeNoedvendigNote={ikkeNoedvendig ? ikkeNoedvendigNote : null}
+                omslagIkkeMuligt={omslagIkkeMuligt}
+                dyb={dyb}
+              />
+            </Trin>
+          )}
+
+          {punkter.length > 0 && (
             <section
               className="section-card settings-card calc-card"
               aria-labelledby="kontrolpunkter"
@@ -1271,7 +1555,7 @@ export function Opdriftssikring() {
                 Fund fra regnearket, der påvirker denne beregning. Tallene er regnet som i
                 regnearket. Kontrolpunkterne indgår ikke i rapporten.
               </p>
-              {kontrolpunktTekster(r).map(({ kode, tekst }) => (
+              {punkter.map(({ kode, tekst }) => (
                 <Notice kind="warning" key={kode}>
                   <Fmt text={tekst} />
                 </Notice>
