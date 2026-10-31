@@ -463,3 +463,13 @@ Valgt af Claude og kan ændres:
 - Løsningernes figurer udelades, fordi de er målsat med de beregnede længder. Forskrifterne på løsningskortene står fortsat.
 - Noterne med h_bund og h_top under F_bund og F_top udgår. Formlen under K står fortsat.
 - Løsningerne med omslag viser fortsat »Omslag kræver, at rørmidten ligger mere end 0,2 m under terræn.«, når omslag ikke er muligt.
+
+## 31. oktober 2026 — rødt mærke ved EJ OK
+
+Brugerens ønske: »du må gerne gør farven for 'ej ok' mere rød, så det er mere tydeligt at der er noget galt«
+
+- Mærket »EJ OK« har nu appens røde farve (`--destructive`, #b42318) i stedet for den brune advarselsfarve. Det gælder fliserne og opdriftskontrollen på løsningskortene.
+
+Valgt af Claude og kan ændres:
+- Den hvide tekst på rødt har en kontrast på ca. 6,6:1 og opfylder WCAG AA.
+- MSL Dimensionering har intet EJ OK-mærke, så der er intet at overføre dertil.
