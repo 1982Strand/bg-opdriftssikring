@@ -525,3 +525,7 @@ Hver linje slutter med en kort forklaring efter resultatet:
 - S₁: »(krav ≥ 1,0), ballast i forhold til opdrift uden geonet«.
 - I avanceret beregning med GVS mellem rørtop og rørbund: r og a »rørets radius og GVS' højde over rørmidten«, A_tør »den del af rørets tværsnit der ligger over GVS« og A_våd »den del af rørets tværsnit der ligger under GVS«.
 - Linjerne for T₃, »O_d = 0, da GVS ligger ved eller under rørbunden …« og »S₁ kan ikke regnes …« er uændrede.
+
+Claude påpegede, at linjerne i avanceret beregning brydes over 2–3 linjer, når arealfiguren står ved siden af mellemregningerne, og spurgte, om figuren skal stå under dem. Brugerens svar: »Nej, lad den stå«.
+
+- Arealfiguren står fortsat til højre for mellemregningerne i kort 5.
