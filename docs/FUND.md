@@ -11,7 +11,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 
 | Nr. | Fund | Påvirker | Første version |
 |---|---|---|---|
-| K-01 | Teksten om γ_f passer ikke med værdien | Tekst | 1,1 · K_FI, teksten viser værdien |
+| K-01 | Teksten om γ_f passer ikke med værdien | Tekst | Afgjort: 1,1 · K_FI efter konsekvensklassen |
 | K-02 | Forkert grænse for X-GRID 150 | Valg af geonet | Afgjort: grænsen er UTS/RF (K-21) |
 | K-03 | Netvalg og kontrol bruger forskellige krav | Valg af geonet | Afgjort: valget bruger kravet 1,01 |
 | K-04 | Kun ét lag geonet | Valg af geonet | Afgjort: som arket, 2 lag manuelt |
@@ -20,11 +20,11 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-07 | g = 9,82 for rørvægt | Ballast (lille) | Afgjort: som arket |
 | K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Afgjort: som arket med kontrolpunkt |
 | K-09 | Omslag: tillæg på 1,2 m i netlængden | Netlængde | Afgjort: som arket, tillægget nævnes |
-| K-10 | To rør: ingen kontrol, forskellig mellemlængde | Længder, kontrol | Som arket |
+| K-10 | To rør: ingen kontrol, forskellig mellemlængde | Længder, kontrol | Som arket, ingen afklaring nu |
 | K-11 | Kontrollen uden omslag kan ikke give EJ OK | Kontrol | Som arket |
 | K-12 | Arket regner videre, når sikring ikke er nødvendig | Rapport | Afgjort: S₁ ≥ 1 er OK, »Ikke relevant« |
 | K-13 | Den viste 2L er mindre end den anvendte | Visning | Afgjort: beregnet og anvendt vises hver for sig |
-| K-14 | S₂ og faktoren mellem rør er faste | Længder | Som arket |
+| K-14 | S₂ og faktoren mellem rør er faste | Længder | Besluttet: S₂ redigerbar med arkets note, ikke indført |
 | K-15 | Forældet tekst og dobbelte data i Navne tabel | Data | Data ét sted |
 | K-16 | Faste sidetal og »Udarbejdet af Bruger« | Rapport | Løses i appen |
 | K-17 | Friktion på én side af nettet | Længder | Som arket |
@@ -37,7 +37,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-24 | Betegnelsen »2xLgeonet« mellem rørene | Tekst, løsning B og D | Afgjort: L_mellem |
 | K-25 | Dybere forankring ved begrænset plads | Ny beregning, én ledning med omslag | Afgjort: kort 8 i avanceret beregning |
 
-Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
+Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-05, K-08 og K-12 fra regnearket og K-25 for dybere forankring ved begrænset plads. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
 ---
 
@@ -244,6 +244,8 @@ Strimlerne til sprinklertanken i e-mailene (14,86 m og 18,99 m) følger arkets f
 
 **Første version.** Som arket.
 
+**31. oktober 2026.** Brugeren: »K10 lader vi ligge, der er ingen aflkaring lige nu.« Appen regner fortsat som arket.
+
 ## K-11 Kontrollen uden omslag kan ikke give EJ OK
 
 **Arket.** Kontrollen i løsning A er (B + F_bund · 2L)/O. Når forankringen er bestemt af kraften, er F_bund · 2L = K = 1,05 · (O − B). Kontrollen bliver da 1 + 0,05 · (1 − S₁) og er altid over 1, når S₁ < 1. Den kan kun give et andet resultat, når mindstelængden på 1,0 m er bestemmende, og så bliver den højere.
@@ -302,13 +304,15 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 
 **Første version.** Som arket.
 
+**Besluttet 31. oktober 2026.** Brugeren: »K14, der vil jeg gerne tilføje noten fra regnearket, og gøre faktoren til en redigerbar værdi, der som standard er sat til 1,05.« S₂ bliver en redigerbar værdi med standarden 1,05, og arkets note fra A300 tilføjes: »Note: S2 er partialkoefficient for kraftoptagelse fastlægges beregningsteknisk ved skøn (1,05-1,2) afhængig af rørdimension. Påvirker forankringslængde.« Faktoren 1,2 mellem rør er uændret. Ikke indført endnu.
+
 ## K-15 Forældet tekst og dobbelte data i Navne tabel
 
 **Arket.** Navne tabel nævner Fortrac og BBA 01/R125, mens rapporten nævner X-GRID og BBA 16/H253. Grænsetabellen har UTS 200, mens produktlisten har 150. Reduktionsfaktorerne står både i Navne tabel og i Rapporten (G209:G212). Ud over K-02 har det ingen virkning på beregningen.
 
 **Datablad.** Ja. Databladet for X-GRID (dokument 1221-2/100) har X-GRID 200 og også X-GRID 130, se K-21. Grænsen 78,9 passer hverken til 150 (P_till = 71,20) eller 200 (P_till = 94,94). 78,9 · RF = 166,2 kN/m og 78,9 · 1,43 = 112,8 kN/m svarer heller ikke til noget produkt.
 
-**Første version.** Produktdata står ét sted i appen med arkets værdier, inklusive grænsen 78,9. Geonet-siden viser både P_till og arkets grænse med henvisning til K-02.
+**Første version.** Produktdata står ét sted i appen (`src/engine/defaults.json`) med arkets reduktionsfaktorer og X-GRID-produkterne. Valggrænsen er UTS/RF for alle produkter, så arkets grænse 78,9 og grænsetabellen i Navne tabel bruges ikke (K-02 og K-21).
 
 ## K-16 Faste sidetal og »Udarbejdet af Bruger«
 

@@ -622,3 +622,14 @@ Valgt af Claude og kan ændres:
 - Figuren viser L_a, L_geonet på begge sider, h_top, h_bund og Δh, når der er plads til målet.
 - Indledningen til »Kontrolpunkter« (»Fund fra regnearket …«) er uændret, selv om K-25 ikke stammer fra regnearket.
 - Den angivne længde gemmes, også når den er under mindstelængden, så feltfejlen kan vises; standardværdien er 2,00 m.
+
+## 31. oktober 2026 — status på de åbne fund
+
+Claude rettede tre forældede steder i FUND.md: K-01 står som afgjort i oversigten, K-15 nævner ikke længere grænsen 78,9, og kontrolpunkterne er K-05, K-08, K-12 og K-25.
+
+Brugerens svar om de fire åbne fund: »K10 lader vi ligge, der er ingen aflkaring lige nu. K11, den er jeg usikker på, jeg tror vi lige skal gennemgå den sammen. K14, der vil jeg gerne tilføje noten fra regnearket, og gøre faktoren til en redigerbar værdi, der som standard er sat til 1,05. K17, den tager vi til sidst, jeg vil gerne høre mere om BS 8006.«
+
+- K-10: ingen afklaring nu; appen regner fortsat som arket.
+- K-11: gennemgås sammen med brugeren.
+- K-14: S₂ bliver en redigerbar værdi med standarden 1,05, og arkets note fra A300 tilføjes. Faktoren 1,2 mellem rør er uændret. Placering og gyldigt interval afklares, før der kodes.
+- K-17: tages til sidst med en gennemgang af BS 8006.
