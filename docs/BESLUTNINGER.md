@@ -444,4 +444,7 @@ Valgt af Claude og kan ændres:
 - Formlerne under fliserne for F_op,d og P_d og kravet under styrkekontrollen står fortsat. Noten om medregnet UTS under »Valgt geonet« udgår.
 - Når røret ikke påvirkes af opdrift, så S₁ ikke kan regnes, lyder noten »Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig.« Sætningen »Tallene nedenfor vises til orientering.« er fjernet, fordi kortet ikke længere viser tal.
 - Et gemt manuelt netvalg bevares. Mens kortet er låst, vises afkrydsningen tom, og valget vises igen, når sikring bliver nødvendig.
+
+Claude spurgte, om kort 7 også skal vise »Ikke relevant«, når sikring ikke er nødvendig. Brugerens svar: »Nej, lad kort 7 være«.
+
 - Kort 7 er uændret og viser fortsat forankringen nedtonet til orientering.
