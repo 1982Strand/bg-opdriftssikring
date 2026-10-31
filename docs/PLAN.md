@@ -61,7 +61,7 @@ Kortene har samme rækkefølge som rapporten:
 7. **Forankring.**
    - F_bund, F_top og K vises.
    - Alle fire løsninger vises under hinanden: uden og med omslag for én ledning (A og C) og derefter for to ledninger (B og D). Kortene for to ledninger viser arkets forudsætninger: største diameter og mindste egenvægt.
-   - Hver løsning har en målsat figur til venstre og til højre L pr. side, afstand mellem ledninger, L_a, L_geonet,tot, arkets kontrol, hvor arket har en, og mellemregningerne.
+   - Hver løsning har en målsat figur til venstre og til højre L pr. side, afstand mellem ledninger, L_a, L_geonet,tot og arkets kontrol, hvor arket har en. Mellemregningerne står nederst i kortets fulde bredde.
 
 Er S₁ ≥ 1, tones kort 6–7 ned i gråtoner, så kontrasten bevares. Begge kort har en note om, at sikring ikke er nødvendig. Fliserne og løsningernes rækker viser »Ikke relevant«, løsningernes figurer udelades, og manuelt netvalg og mellemregningerne er låst.
 
