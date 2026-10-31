@@ -321,19 +321,21 @@ function opdriftLinjer(
   zone: GvsZone | null,
 ): string[] {
   const { gammaF } = r.partialkoefficienter;
+  // Forklaringer efter mellemregningerne (beslutning 31. oktober 2026).
+  const opdrift = 'den regningsmæssige opdrift pr. meter rør';
   if (!zone || zone.zone === 1)
     return [
-      `O_{d} = π/4 · d² · γ_{w} · γ_{f} = π/4 · ${tal(input.d)}² · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m`,
+      `O_{d} = π/4 · d² · γ_{w} · γ_{f} = π/4 · ${tal(input.d)}² · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m, ${opdrift}`,
     ];
   if (zone.zone === 4)
     return [
       `O_{d} = 0, da GVS ligger ved eller under rørbunden: T₂ = ${tal(input.gvs)} m ≥ h₁ + d = ${tal(input.h1 + input.d)} m`,
     ];
   return [
-    `r = d/2 = ${tal(input.d / 2)} m og a = T₃ − T₂ = ${tal(r.T3)} − ${tal(input.gvs)} = ${tal(zone.a)} m`,
-    `A_{tør} = r² · arccos(a/r) − a · √(r² − a²) = ${tal(zone.Ator, 4)} m²`,
-    `A_{våd} = π/4 · d² − A_{tør} = ${tal(zone.Avaad + zone.Ator, 4)} − ${tal(zone.Ator, 4)} = ${tal(zone.Avaad, 4)} m²`,
-    `O_{d} = A_{våd} · γ_{w} · γ_{f} = ${tal(zone.Avaad, 4)} · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m`,
+    `r = d/2 = ${tal(input.d / 2)} m og a = T₃ − T₂ = ${tal(r.T3)} − ${tal(input.gvs)} = ${tal(zone.a)} m, rørets radius og GVS' højde over rørmidten`,
+    `A_{tør} = r² · arccos(a/r) − a · √(r² − a²) = ${tal(zone.Ator, 4)} m², den del af rørets tværsnit der ligger over GVS`,
+    `A_{våd} = π/4 · d² − A_{tør} = ${tal(zone.Avaad + zone.Ator, 4)} − ${tal(zone.Ator, 4)} = ${tal(zone.Avaad, 4)} m², den del af rørets tværsnit der ligger under GVS`,
+    `O_{d} = A_{våd} · γ_{w} · γ_{f} = ${tal(zone.Avaad, 4)} · ${tal(gammaW)} · ${tal(gammaF)} = ${tal(r.O)} kN/m, ${opdrift}`,
   ];
 }
 
@@ -367,19 +369,22 @@ function forankringLinjer(r: OpdriftResultat, input: ReturnType<typeof tilMotorI
 /** Mellemregningerne for B efter GVS' placering (docs/FORSLAG_K-05.md, afsnit 5). */
 function ballastLinjer(r: OpdriftResultat, zone: GvsZone | null): string[] {
   const b = r.ballastLed;
+  // Forklaringer efter mellemregningerne (beslutning 31. oktober 2026). Formellinjen nævner leddene i
+  // formlens rækkefølge.
+  const ballast = 'den regningsmæssige stabiliserende ballast pr. meter rør';
   if (zone && zone.zone >= 3)
     return [
-      'B_{d} = (T₃ · d − π · r²/2) · γ_{tør,d} + E_{d} · g/1000, da GVS ligger under rørmidten',
-      `B_{d} = ${tal(b.torFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+      'B_{d} = (T₃ · d − π · r²/2) · γ_{tør,d} + E_{d} · g/1000, tørt fyld til rørmidten − rørets øverste halvdel + rørets egenvægt, da GVS ligger under rørmidten',
+      `B_{d} = ${tal(b.torFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m, ${ballast}`,
     ];
   if (b.roerDele)
     return [
-      'B_{d} = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − A_{tør} · γ_{tør,d} − (π · r²/2 − A_{tør}) · γ′_{d} + E_{d} · g/1000',
-      `B_{d} = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerDele.tor)} − ${tal(b.roerDele.vaad)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+      'B_{d} = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − A_{tør} · γ_{tør,d} − (π · r²/2 − A_{tør}) · γ′_{d} + E_{d} · g/1000, fyld over GVS + fyld under GVS − rørets del over GVS − resten af rørets øverste halvdel + rørets egenvægt',
+      `B_{d} = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerDele.tor)} − ${tal(b.roerDele.vaad)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m, ${ballast}`,
     ];
   return [
-    'B_{d} = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − (π/4 · d² · γ′_{d})/2 + E_{d} · g/1000',
-    `B_{d} = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m`,
+    'B_{d} = T₂ · d · γ_{tør,d} + (T₃ − T₂) · d · γ′_{d} − (π/4 · d² · γ′_{d})/2 + E_{d} · g/1000, fyld over GVS + fyld under GVS − rørets øverste halvdel + rørets egenvægt',
+    `B_{d} = ${tal(b.torFyld)} + ${tal(b.vaadFyld)} − ${tal(b.roerHalvdel)} + ${tal(b.egenvaegt)} = ${tal(r.B)} kN/m, ${ballast}`,
   ];
 }
 
@@ -714,13 +719,13 @@ export function Opdriftssikring() {
                 <div>
                   <Formler
                     linjer={[
-                      `γ_{f} = γ_{G;dst} = ${tal(standarder.gammaGdst, 1)} · K_{FI} = ${tal(standarder.gammaGdst, 1)} · ${tal(pk.KFI, 1)} = ${tal(pk.gammaF)} (konsekvensklasse ${session.konsekvensklasse})`,
+                      `γ_{f} = γ_{G;dst} = ${tal(standarder.gammaGdst, 1)} · K_{FI} = ${tal(standarder.gammaGdst, 1)} · ${tal(pk.KFI, 1)} = ${tal(pk.gammaF)} (konsekvensklasse ${session.konsekvensklasse}), partialkoefficienten på opdriften`,
                       `T₃ = h₁ + d/2 = ${tal(input.h1)} + ${tal(input.d)}/2 = ${tal(r.T3)} m, dybden fra terræn til rørmidten`,
                       ...opdriftLinjer(r, input, zone),
                       ...ballastLinjer(r, zone),
                       r.S1 === null
                         ? 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.'
-                        : `S₁ = B_{d}/O_{d} = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)}`,
+                        : `S₁ = B_{d}/O_{d} = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)} (krav ≥ ${tal(standarder.krav.S1, 1)}), ballast i forhold til opdrift uden geonet`,
                     ]}
                   />
                   <p className="calc-note">
