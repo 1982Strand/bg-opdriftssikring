@@ -402,7 +402,6 @@ export function Opdriftssikring() {
   const cc3 = session.konsekvensklasse === 'CC3';
   // Standardberegningen og CC3 regner altid med GVS i terræn (beslutning 30. oktober 2026).
   const gvsLaast = cc3 || !avanceret;
-  const ikkeRelevant = r !== null && r.Fopdrift <= 0;
   // Kun i avanceret beregning med GVS mellem rørtop og rørbund.
   const arealfigur = r ? opdriftsarealSvg(r, input) : null;
 
@@ -739,7 +738,7 @@ export function Opdriftssikring() {
             opsummering={
               r.geonet.uts === null
                 ? 'Kontakt leverandør'
-                : ikkeRelevant
+                : ikkeNoedvendig
                   ? 'Ikke relevant'
                   : `X-GRID ${r.geonet.navn} · P_{d}/F_{op,d} = ${tal(r.geonet.sikkerhed)}`
             }
@@ -748,39 +747,48 @@ export function Opdriftssikring() {
             {ikkeNoedvendig && (
               <Notice>
                 {r.S1 === null
-                  ? 'Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.'
-                  : `S₁ ≥ ${tal(standarder.krav.S1, 1)}: opdriftssikring er ikke nødvendig. Tallene nedenfor vises til orientering.`}
+                  ? 'Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig.'
+                  : `S₁ ≥ ${tal(standarder.krav.S1, 1)}: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.`}
               </Notice>
             )}
+            {/* Er sikring ikke nødvendig, viser fliserne »Ikke relevant«, og manuelt netvalg og
+                mellemregninger er låst (beslutning 31. oktober 2026). Et gemt manuelt valg bevares. */}
             <div className="dim-results m9-result-cards">
               <Flise
                 label="Restopdrift F_{op,d}"
-                vaerdi={tal(r.Fopdrift)}
-                enhed="kN/m"
+                vaerdi={ikkeNoedvendig ? 'Ikke relevant' : tal(r.Fopdrift)}
+                enhed={ikkeNoedvendig ? undefined : 'kN/m'}
                 note="F_{op,d} = O_{d} − B_{d}"
               />
               <Flise
                 label="Valgt geonet"
-                vaerdi={r.geonet.uts === null ? 'Kontakt leverandør' : `X-GRID ${r.geonet.navn}`}
+                vaerdi={
+                  ikkeNoedvendig
+                    ? 'Ikke relevant'
+                    : r.geonet.uts === null
+                      ? 'Kontakt leverandør'
+                      : `X-GRID ${r.geonet.navn}`
+                }
                 note={
-                  r.geonet.uts === null
-                    ? 'Der produceres ikke geonet med den nødvendige styrke.'
-                    : `Medregnet korttidstrækstyrke UTS = ${tal(r.geonet.uts, 0)} kN/m`
+                  ikkeNoedvendig
+                    ? undefined
+                    : r.geonet.uts === null
+                      ? 'Der produceres ikke geonet med den nødvendige styrke.'
+                      : `Medregnet korttidstrækstyrke UTS = ${tal(r.geonet.uts, 0)} kN/m`
                 }
               />
               <Flise
                 label="Designtrækstyrke P_{d}"
-                vaerdi={tal(r.geonet.Ptill)}
-                enhed={r.geonet.Ptill === null ? undefined : 'kN/m'}
+                vaerdi={ikkeNoedvendig ? 'Ikke relevant' : tal(r.geonet.Ptill)}
+                enhed={ikkeNoedvendig || r.geonet.Ptill === null ? undefined : 'kN/m'}
                 note="P_{d} = UTS/RF"
               />
-              {/* Ved F_op,d ≤ 0 er der intet at kontrollere (beslutning 30. oktober 2026). */}
               <Flise
                 label="Styrkekontrol P_{d}/F_{op,d}"
-                vaerdi={ikkeRelevant ? 'Ikke relevant' : tal(r.geonet.sikkerhed)}
-                status={ikkeRelevant ? null : r.geonet.status}
+                vaerdi={ikkeNoedvendig ? 'Ikke relevant' : tal(r.geonet.sikkerhed)}
+                status={ikkeNoedvendig ? null : r.geonet.status}
                 note={
-                  r.geonet.sikkerhed !== null && !ikkeRelevant
+                  r.geonet.sikkerhed !== null && !ikkeNoedvendig
                     ? `Krav: P_{d}/F_{op,d} > ${tal(standarder.krav.geonet)} (P_{d} udnyttet ${tal(100 / r.geonet.sikkerhed, 0)}%)`
                     : `Krav: P_{d}/F_{op,d} > ${tal(standarder.krav.geonet)}`
                 }
@@ -798,7 +806,8 @@ export function Opdriftssikring() {
                   kind: 'checkbox',
                   help: `Når ét lag ikke er nok, lægges ${standarder.geonet.lagVedManueltValg} net af samme produkt oven på hinanden. Flere lag kan ikke udnyttes, fordi et net i midten ikke kan optage kraft. Forankringslængderne afhænger ikke af nettet.`,
                 }}
-                value={i.overstyringAktiv}
+                disabled={ikkeNoedvendig}
+                value={i.overstyringAktiv && !ikkeNoedvendig}
                 change={(v) => saet({ overstyringAktiv: Boolean(v) })}
               />
               <SettingField
@@ -811,13 +820,13 @@ export function Opdriftssikring() {
                     label: `X-GRID ${p.uts} · UTS ${p.uts * standarder.geonet.lagVedManueltValg} kN/m`,
                   })),
                 }}
-                disabled={!i.overstyringAktiv}
+                disabled={!i.overstyringAktiv || ikkeNoedvendig}
                 value={i.produkt}
                 error={fejl('overstyring')}
                 change={(v) => saet({ produkt: Number(v) })}
               />
             </div>
-            <Udfold titel="Mellemregninger">
+            <Udfold titel="Mellemregninger" laast={ikkeNoedvendig}>
               <Formler
                 linjer={[
                   `F_{op,d} = O_{d} − B_{d} = ${tal(r.O)} − ${tal(r.B)} = ${tal(r.Fopdrift)} kN/m`,
