@@ -61,7 +61,7 @@ Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
 - lagringen i browseren.
 
 Browsertestene dækker:
-- standardresultatet for case 1 med de nye navne, noterne på løsningskortene, tillægget i netlængden og kontrolpunktet K-08;
+- standardresultatet for case 1 med de nye navne, noterne på løsningskortene, tillægget i netlængden og kontrolpunktet K-08, og mellemregningerne i kort 5–7 som tabeller med forklaring, formel og resultat;
 - feltfejl, nulstilling og genindlæsning;
 - låsen af GVS i standardberegningen og GVS under terræn i den avancerede beregning med »Ikke relevant« i kort 6–7, låst netvalg, låste mellemregninger, udeladte løsningsfigurer, nedtoning og det bevarede manuelle valg;
 - at det automatiske netvalg opfylder kravet 1,01;

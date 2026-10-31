@@ -184,26 +184,98 @@
   white-space: nowrap;
 }
 
-/* Mellemregninger med en figur til højre; på smalle skærme står figuren under teksten. */
+/* Mellemregninger med en figur til højre. Tabellen beholder mindst 640 px, og figuren krymper ned til
+   300 px, før den flytter ned under tabellen. Bredden måles på mellemregningerne selv. */
+.mellemregninger {
+  container-type: inline-size;
+}
 .mellemregninger-med-figur {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 530px);
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px 32px;
   align-items: start;
 }
-@media (max-width: 1100px) {
+@container (min-width: 972px) {
   .mellemregninger-med-figur {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(640px, 1fr) minmax(300px, 530px);
   }
 }
-.mellemregninger .formler {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+/* Mellemregninger som tabel: forklaring, formel med indsatte tal og resultat. Gruppens resultat og
+   kontroller fremhæves (beslutning 31. oktober 2026). */
+.beregning-titel {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--primary);
+  margin: 20px 0 6px;
+}
+.mellemregninger > .beregning-titel:first-child,
+.mellemregninger > :first-child > .beregning-titel:first-child {
+  margin-top: 0;
+}
+.beregning-tabel {
+  width: 100%;
+  border-collapse: collapse;
   font-variant-numeric: tabular-nums;
-  line-height: 1.6;
+  line-height: 1.5;
+}
+.beregning-tabel th,
+.beregning-tabel td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: baseline;
+}
+.beregning-tabel th {
+  width: 240px;
+  color: var(--muted-foreground);
+  font-size: var(--fs-small);
+  font-weight: 400;
+}
+.beregning-detalje {
+  display: block;
+  font-size: var(--fs-meta);
+}
+.beregning-tabel td.num {
+  width: 1%;
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.beregning-tabel td.num .m9-badge {
+  margin-left: 4px;
+}
+.beregning-tabel tr.is-hoved > * {
+  background: var(--accent);
+  border-bottom: 0;
+}
+.beregning-tabel tr.is-hoved th {
+  color: var(--foreground);
+  font-weight: 600;
+}
+/* På smalle skærme står forklaringen over formel og resultat. */
+@media (max-width: 700px) {
+  .beregning-tabel tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .beregning-tabel th,
+  .beregning-tabel td {
+    width: auto;
+    border-bottom: 0;
+  }
+  .beregning-tabel th {
+    grid-column: 1 / -1;
+    padding-bottom: 0;
+  }
+  .beregning-tabel td[colspan] {
+    grid-column: 1 / -1;
+  }
+  .beregning-tabel tr.is-hoved {
+    background: var(--accent);
+    border-bottom: 0;
+  }
 }
 
 /* Generelle beregningsforudsætninger og partialkoefficienter */
@@ -260,26 +332,4 @@
 .table-wrap:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
-}
-/* Reduktionsfaktoren i mellemregningerne for geonet: faktorerne med forklaring og summen fremhævet. */
-.mellemregninger-overskrift {
-  font-size: var(--fs-body);
-  font-weight: 600;
-  margin: 16px 0 0;
-}
-.rf-table {
-  max-width: 640px;
-  margin: 8px 0 16px;
-}
-.data-table.rf-table td {
-  vertical-align: middle;
-}
-.rf-table th .rf-note {
-  display: block;
-  color: var(--muted-foreground);
-  font-weight: 400;
-}
-.rf-table tr.rf-sum > * {
-  background: var(--accent);
-  font-weight: 600;
 }

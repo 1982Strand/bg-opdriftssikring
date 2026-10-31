@@ -44,7 +44,7 @@ Menuens fod viser »BG Byggros A/S« og versionsnummeret, som i MSL.
 
 ## 4. Siden Opdriftssikring
 
-Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«, »Nulstil beregning« og nummererede kort. Alt regnes straks ved indtastning. Mellemregninger vises i udfoldelige felter med formel og indsatte tal. »Nulstil beregning« sætter alt tilbage til standard, også konsekvensklassen.
+Siden er opbygget som MSL's Dimensionering: sidehoved, »Gemt i denne browser«, »Nulstil beregning« og nummererede kort. Alt regnes straks ved indtastning. Mellemregninger vises i udfoldelige felter som tabeller med forklaring, formel med indsatte tal og resultat, samlet i grupper. Gruppens resultat og kontroller fremhæves, og intet står kun i tooltips. »Nulstil beregning« sætter alt tilbage til standard, også konsekvensklassen.
 
 Kortene har samme rækkefølge som rapporten:
 

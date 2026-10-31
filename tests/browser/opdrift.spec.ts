@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 
 async function start(page: Page) {
   await page.goto('/#opdriftssikring');
@@ -15,6 +15,13 @@ const flise = (page: Page, label: string) =>
   page.locator('.m9-result-cards > div', { hasText: label }).first();
 const losning = (page: Page, titel: string) =>
   page.locator('.solution-card', { has: page.getByRole('heading', { name: titel, exact: true }) });
+/** Tjekker en række i mellemregningerne: forklaringen, formlen med indsatte tal og resultatet. */
+const mellemregning = (omraade: Locator, forklaring: string, celler: string[]) =>
+  expect(
+    omraade
+      .getByRole('row', { name: new RegExp(`^${forklaring.replace(/[.()]/g, '\\$&')}`) })
+      .getByRole('cell'),
+  ).toHaveText(celler);
 const laasTekst =
   'Standardberegningen regner altid med GVS i terræn. GVS under terræn kan regnes med avanceret beregning.';
 
@@ -58,17 +65,27 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     has: page.getByRole('heading', { name: '5 Opdrift og stabiliserende ballast' }),
   });
   await opdrift.getByRole('button', { name: 'Mellemregninger', exact: true }).click();
-  await expect(
-    opdrift.getByText('T₃ = h₁ + d/2 = 1,50 + 2,50/2 = 2,75 m, dybden fra terræn til rørmidten'),
-  ).toBeVisible();
-  for (const linje of [
-    'γf = γG;dst = 1,1 · KFI = 1,1 · 1,0 = 1,10 (konsekvensklasse CC2), partialkoefficienten på opdriften',
-    'Od = π/4 · d² · γw · γf = π/4 · 2,50² · 10,00 · 1,10 = 54,00 kN/m, den regningsmæssige opdrift pr. meter rør',
-    'Bd = T₂ · d · γtør,d + (T₃ − T₂) · d · γ′d − (π/4 · d² · γ′d)/2 + Ed · g/1000, fyld over GVS + fyld under GVS − rørets øverste halvdel + rørets egenvægt',
-    'Bd = 0,00 + 36,44 − 13,01 + 3,00 = 26,43 kN/m, den regningsmæssige stabiliserende ballast pr. meter rør',
-    'S₁ = Bd/Od = 26,43/54,00 = 0,49 (krav ≥ 1,0), ballast i forhold til opdrift uden geonet',
-  ])
-    await expect(opdrift.getByText(linje, { exact: true })).toBeVisible();
+  // Mellemregningerne står i grupper med forklaring, formel og resultat.
+  await expect(opdrift.locator('.beregning-titel')).toHaveText([
+    'Opdrift',
+    'Stabiliserende ballast',
+    'Kontrol uden geonet',
+  ]);
+  for (const [forklaring, celler] of [
+    ['Partialkoefficient på opdriften', ['γf = γG;dst = 1,1 · KFI = 1,1 · 1,0 (CC2)', '1,10']],
+    ['Dybde fra terræn til rørmidten', ['T₃ = h₁ + d/2 = 1,50 + 2,50/2', '2,75 m']],
+    [
+      'Regningsmæssig opdrift',
+      ['Od = π/4 · d² · γw · γf = π/4 · 2,50² · 10,00 · 1,10', '54,00 kN/m'],
+    ],
+    ['Fyld over GVS', ['T₂ · d · γtør,d = 0,00 · 2,50 · 14,40', '0,00 kN/m']],
+    ['Fyld under GVS', ['(T₃ − T₂) · d · γ′d = 2,75 · 2,50 · 5,30', '36,44 kN/m']],
+    ['Rørets øverste halvdel', ['(π/4 · d² · γ′d)/2 = (π/4 · 2,50² · 5,30)/2', '−13,01 kN/m']],
+    ['Rørets egenvægt', ['Ed · g/1000 = 306,00 · 9,82/1000', '3,00 kN/m']],
+    ['Stabiliserende ballast', ['Bd = 0,00 + 36,44 − 13,01 + 3,00', '26,43 kN/m']],
+    ['Ballast i forhold til opdrift', ['S₁ = Bd/Od = 26,43/54,00 (krav ≥ 1,0)', '0,49 EJ OK']],
+  ] as const)
+    await mellemregning(opdrift, forklaring, [...celler]);
   await expect(
     opdrift.getByText(
       'Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = 9,82 m/s².',
@@ -85,21 +102,18 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     udenOmslag.getByText('Der forankres altid med mindst 1,0 m på hver side.'),
   ).toBeVisible();
   await udenOmslag.getByRole('button', { name: 'Mellemregninger' }).click();
-  await expect(
-    udenOmslag.getByText(
-      'Beregnet 2L = K/Fbund = 28,94/8,50 = 3,40 m, den samlede forankringslængde der skal til for at optage K',
-      { exact: true },
-    ),
-  ).toBeVisible();
-  await expect(
-    udenOmslag.getByText(
-      'Lgeonet = max(1,0; 2L/2) = max(1,0; 1,70) = 1,70 m pr. side, den anvendte forankringslængde',
-      { exact: true },
-    ),
-  ).toBeVisible();
-  await expect(
-    udenOmslag.getByText(/= 1,03 \(krav > 1,0\), ballast og forankring i forhold til opdriften$/),
-  ).toBeVisible();
+  await mellemregning(udenOmslag, 'Samlet forankringslængde der skal til for at optage K', [
+    'Beregnet 2L = K/Fbund = 28,94/8,50',
+    '3,40 m',
+  ]);
+  await mellemregning(udenOmslag, 'Anvendt forankringslængde pr. side', [
+    'Lgeonet = max(1,0; 2L/2) = max(1,0; 1,70)',
+    '1,70 m',
+  ]);
+  await mellemregning(udenOmslag, 'Ballast og forankring i forhold til opdriften', [
+    'Kontrol = (Bd + Fbund · 2 · Lgeonet)/Od = (26,43 + 8,50 · 2 · 1,70)/54,00 (krav > 1,0)',
+    '1,03 OK',
+  ]);
   const medOmslag = losning(page, 'Med omslag, én ledning');
   await expect(medOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText('1,36 m');
   await expect(
@@ -115,14 +129,14 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     has: page.getByRole('heading', { name: '7 Forankring' }),
   });
   await forankring.getByRole('button', { name: 'Mellemregninger for kraftoverførsel' }).click();
-  await expect(
-    forankring.getByText(
-      /= 8,50 kN\/m, kraftoverførslen pr\. meter forankringslængde i nettets niveau ved rørmidten$/,
-    ),
-  ).toBeVisible();
-  await expect(
-    forankring.getByText(/= 28,94 kN\/m, den kraft forankringen skal dimensioneres for$/),
-  ).toBeVisible();
+  await mellemregning(forankring, 'Kraftoverførsel i nettets niveau ved rørmidten', [
+    'Fbund = hbund · γ′d · μ · tan φd = 2,75 · 5,30 · 1,00 · tan 30,26°',
+    '8,50 kN/m',
+  ]);
+  await mellemregning(forankring, 'Kraft forankringen skal dimensioneres for', [
+    'K = Fop,d · S₂ = 27,56 · 1,05',
+    '28,94 kN/m',
+  ]);
   await expect(
     forankring.getByText(
       'Geonettet ligger under GVS, så kraftoverførslen regnes med γ′d. Forankringen på begge sider skal tilsammen optage K = Fop,d · S₂.',
@@ -135,18 +149,18 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await geonet.getByRole('button', { name: 'Mellemregninger', exact: true }).click();
   await expect(geonet.getByRole('row', { name: /Samlet reduktionsfaktor/ })).toContainText('2,11');
   await expect(geonet.getByRole('row', { name: /Kemisk påvirkning/ })).toContainText('1,22');
-  await expect(
-    geonet.getByText(
-      'Fop,d = Od − Bd = 54,00 − 26,43 = 27,56 kN/m, den resterende opdrift som skal optages af geonet',
-      { exact: true },
-    ),
-  ).toBeVisible();
-  await expect(
-    geonet.getByText(
-      'Pd = UTS/RF = 80/2,11 = 37,98 kN/m, den regningsmæssige trækstyrke geonettet kan levere',
-      { exact: true },
-    ),
-  ).toBeVisible();
+  await mellemregning(geonet, 'Resterende opdrift som skal optages af geonet', [
+    'Fop,d = Od − Bd = 54,00 − 26,43',
+    '27,56 kN/m',
+  ]);
+  await mellemregning(geonet, 'Samlet reduktionsfaktor', [
+    'RF = fkryb · fm · fd · fe = 1,43 · 1,05 · 1,15 · 1,22',
+    '2,11',
+  ]);
+  await mellemregning(geonet, 'Regningsmæssig trækstyrke geonettet kan levere', [
+    'Pd = UTS/RF = 80/2,11',
+    '37,98 kN/m',
+  ]);
   await expect(geonet.getByText('RF beregnes som produktet af følgende faktorer:')).toBeVisible();
   await expect(
     geonet.getByText(
@@ -440,13 +454,16 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(page.getByRole('img', { name: /Rørets tværsnit delt af GVS/ })).toBeVisible();
   // Formlerne står ved siden af figuren, og noterne står under dem i fuld bredde.
   await expect(
-    page.locator('.mellemregninger-med-figur').locator('.formler, .calc-figure'),
+    page.locator('.mellemregninger-med-figur').locator('.beregning-tabel, .calc-figure'),
   ).toHaveCount(2);
   await expect(page.locator('.mellemregninger-med-figur .calc-note')).toHaveCount(0);
   await expect(
     page.locator('.mellemregninger:has(> .mellemregninger-med-figur) > p.calc-note'),
   ).toHaveCount(4);
-  await expect(page.getByText(/arccos\(a\/r\).* = 2,4567 m²/)).toBeVisible();
+  await mellemregning(page.locator('.mellemregninger-med-figur'), 'Rørets tværsnit over GVS', [
+    'Atør = r² · arccos(a/r) − a · √(r² − a²)',
+    '2,4567 m²',
+  ]);
   await expect(
     page.getByText(/del af rørets udvendige tværsnit, der ligger under GVS/),
   ).toBeVisible();
