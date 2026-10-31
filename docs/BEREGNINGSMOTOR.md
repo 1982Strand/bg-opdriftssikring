@@ -20,7 +20,8 @@ Motoren ligger i `src/engine/` og kører i TypeScript i browseren. Brugerflade, 
 - konsekvensklasse, CC2 eller CC3;
 - eventuel overstyring af geonettet med produkt og antal lag (1 eller 2; siden bruger altid 2);
 - beregningsmetode: `standard` (som arket, også når feltet mangler) eller `avanceret`;
-- S₂ (`S2`), partialkoefficienten for kraftoptagelse; arkets 1,05, når feltet mangler (K-14).
+- S₂ (`S2`), partialkoefficienten for kraftoptagelse; arkets 1,05, når feltet mangler (K-14);
+- afstanden mellem netlagene ved omslag (`omslagAfstand`) i m; arkets 0,2, når feltet mangler (K-26).
 
 Felterne afviser kun værdier uden fysisk mening. Hver fejl er knyttet til sit felt, så siden kan vise den ved feltet:
 - d skal være > 0;
@@ -28,6 +29,7 @@ Felterne afviser kun værdier uden fysisk mening. Hver fejl er knyttet til sit f
 - γ_tør skal være > 0, og φ_k skal ligge mellem 0° og 90° (begge udelukket);
 - γ_våd · 0,9 skal være > γ_w, da den effektive rumvægt under vand ellers ikke er positiv;
 - S₂ skal ligge mellem 1,05 og 1,20 som i arkets note (A300);
+- afstanden mellem netlagene skal ligge mellem 0,2 og 0,4 m;
 - en overstyring skal være et produkt fra listen i 1 eller 2 lag. Et net i midten af flere lag kan ikke udnyttes;
 - konsekvensklassen skal være CC2 eller CC3, fordi appen kun regner i de to klasser;
 - i CC3 skal GVS ligge i terræn, i begge beregningsmetoder.

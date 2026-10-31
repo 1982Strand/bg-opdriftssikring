@@ -22,7 +22,6 @@ const MAX_HOEJDE = 300;
 const MARGEN = { venstre: 24, hoejre: 150, top: 52, bund: 74 };
 const HAELDNING = 0.6; // gravens sider, vandret pr. lodret
 const BUNDLAG = 0.15; // m under røret
-const OMSLAG = 0.2; // m mellem netlagene ved omslag, som i regnearket
 const TOPLAG = 0.75; // det omslåede lag tegnes som 75 % af forankringslængden
 
 const esc = (t: string) =>
@@ -260,7 +259,7 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   const yBund = t.Y(T3);
   // Afstanden mellem netlagene tegnes mindst 16 px, så omslaget kan ses; målene står med de
   // beregnede værdier.
-  const afstand = Math.max(OMSLAG * t.s, 16);
+  const afstand = Math.max((r.hBund - r.hTop) * t.s, 16);
   const yTop = px(yBund - afstand);
   const over = (cx: number) =>
     ` L ${px(t.X(cx) - radius)} ${yBund} A ${px(radius)} ${px(radius)} 0 0 1 ${px(t.X(cx) + radius)} ${yBund}`;
@@ -434,7 +433,7 @@ export function dybForankringSvg(
   const radius = (d / 2) * t.s + roerKant((d / 2) * t.s) / 2 + 2;
   const yMidt = t.Y(T3);
   const yBund = t.Y(hBund);
-  const yTop = px(yBund - Math.max(OMSLAG * t.s, 16));
+  const yTop = px(yBund - Math.max((hBund - hTop) * t.s, 16));
   const xVenstre = t.X(-ydre);
   const xHoejre = t.X(ydre);
   const xRoerV = px(t.X(0) - radius);

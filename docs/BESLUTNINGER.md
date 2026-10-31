@@ -655,3 +655,15 @@ Valgt af Claude og kan ændres:
 Claude gennemgik BS 8006 og sammenlignede med arkets kraftoverførsel ud fra X-GRID's BBA-certifikat og DANVA-teksten. Mulighederne var a) uændret, b) μ redigerbar inden for 0,5–1,0 og c) en model efter BS 8006 i avanceret beregning. Brugerens svar: »Lad den være«.
 
 - Kraftoverførslen regnes fortsat som arket og DANVA med μ = 1,0 og friktion på én flade.
+
+## 31. oktober 2026 — afstanden mellem netlagene ved omslag (K-26)
+
+Brugeren spurgte: »hvis man ændrer den lodrette afstand imellem nettene når der laves forankring med omslag, fra 0,2 til 0,4 meter, hvad ville det så betyde for beregningerne?« Claude viste, at forankringen med omslag bliver 6–17 % længere i kontrolcasene. Brugerens svar: »Ja, gør den redigerbar«.
+
+- Feltet »Afstand mellem netlagene ved omslag (m)« står i kort 7 ved siden af S₂, mellem 0,2 og 0,4 m med standarden 0,2 m, i både standard og avanceret beregning. Det gemmes med beregningen og nulstilles med »Nulstil beregning«.
+- Afstanden bruges i h_top, i formlen for løsning C, i løsning D, i grænsen for omslag (K-23) og i kort 8. Med 0,2 m regnes som arket.
+
+Valgt af Claude og kan ændres:
+- Noten: »Den lodrette afstand mellem netlagene ved omslag er mindst 0,2 m. I praksis udføres den ofte med 0,2–0,4 m, så fyldet kan komprimeres. En større afstand giver længere forankring med omslag.«
+- Netlængden får de længere lodrette stykker med: + 2 · (afstand − 0,2) for løsning C og kort 8 og + 4 · (afstand − 0,2) for løsning D. Arkets tillæg på 1,2 m og 0,8 m til omslag og overlæg er uændret. Leddet vises kun i mellemregningerne, når afstanden ikke er 0,2 m.
+- Afstanden vises med én decimal, når den anden er nul, fx »0,2« og »0,35«, også i noterne om omslag og i K-08.

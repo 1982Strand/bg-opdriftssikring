@@ -10,6 +10,7 @@
   "S2Interval": { "min": 1.05, "max": 1.2 },
   "faktorMellemRoer": 1.2,
   "omslagAfstand": 0.2,
+  "omslagInterval": { "min": 0.2, "max": 0.4 },
   "netTillaegOmslag": 0.4,
   "krav": { "S1": 1, "geonet": 1.01, "kontrol": 1 },
   "mindstelaengder": {
