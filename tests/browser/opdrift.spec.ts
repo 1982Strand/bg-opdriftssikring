@@ -36,6 +36,11 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await expect(flise(page, 'Stabiliserende ballast').locator('strong')).toHaveText('26,43');
   await expect(flise(page, 'Kontrol uden geonet').locator('strong')).toHaveText('0,49');
   await expect(flise(page, 'Kontrol uden geonet').locator('.m9-badge')).toHaveText('EJ OK');
+  // EJ OK står med rødt (--destructive).
+  await expect(flise(page, 'Kontrol uden geonet').locator('.m9-badge')).toHaveCSS(
+    'background-color',
+    'rgb(180, 35, 24)',
+  );
   await expect(flise(page, 'Kontrol uden geonet').locator('p')).toHaveText('Krav ≥ 1,0');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 80');
   await expect(flise(page, 'Restopdrift').locator('strong')).toHaveText('27,56');

@@ -99,8 +99,9 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+/* EJ OK står med rødt, så det er tydeligt, at kravet ikke er opfyldt (beslutning 31. oktober 2026). */
 .m9-badge.is-warning {
-  background: var(--warning-foreground);
+  background: var(--destructive);
 }
 .m9-result-label h3 sub {
   text-transform: none;
