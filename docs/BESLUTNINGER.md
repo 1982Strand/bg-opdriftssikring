@@ -512,3 +512,16 @@ Brugerens ønske: »du må gerne gør mellemregninger-boksen bredere, så tekste
 
 Valgt af Claude og kan ændres:
 - Figuren og tallene står fortsat side om side over mellemregningerne.
+
+## 31. oktober 2026 — forklaringer i mellemregningerne i kort 5
+
+Brugerens ønske: »Du må i øvrigt gerne tilføje de manglende supplerende forklarende tekster til mellemregningerne i kort 5 også. Men, vis lige forslaget til ændring af tekster først, så jeg lige kan nå at rette noget hvis det er.« Claude viste forslaget i chatten. Brugerens svar: »Ja, indfør det«.
+
+Hver linje slutter med en kort forklaring efter resultatet:
+- γ_f: »partialkoefficienten på opdriften«.
+- O_d: »den regningsmæssige opdrift pr. meter rør«.
+- Formellinjen for B_d nævner leddene i formlens rækkefølge: »fyld over GVS + fyld under GVS − rørets øverste halvdel + rørets egenvægt«. Med GVS mellem rørtop og rørmidte: »fyld over GVS + fyld under GVS − rørets del over GVS − resten af rørets øverste halvdel + rørets egenvægt«. Med GVS under rørmidten: »tørt fyld til rørmidten − rørets øverste halvdel + rørets egenvægt, da GVS ligger under rørmidten«.
+- Linjen med tallene for B_d: »den regningsmæssige stabiliserende ballast pr. meter rør«.
+- S₁: »(krav ≥ 1,0), ballast i forhold til opdrift uden geonet«.
+- I avanceret beregning med GVS mellem rørtop og rørbund: r og a »rørets radius og GVS' højde over rørmidten«, A_tør »den del af rørets tværsnit der ligger over GVS« og A_våd »den del af rørets tværsnit der ligger under GVS«.
+- Linjerne for T₃, »O_d = 0, da GVS ligger ved eller under rørbunden …« og »S₁ kan ikke regnes …« er uændrede.

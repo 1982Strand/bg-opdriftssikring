@@ -61,6 +61,14 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await expect(
     opdrift.getByText('T₃ = h₁ + d/2 = 1,50 + 2,50/2 = 2,75 m, dybden fra terræn til rørmidten'),
   ).toBeVisible();
+  for (const linje of [
+    'γf = γG;dst = 1,1 · KFI = 1,1 · 1,0 = 1,10 (konsekvensklasse CC2), partialkoefficienten på opdriften',
+    'Od = π/4 · d² · γw · γf = π/4 · 2,50² · 10,00 · 1,10 = 54,00 kN/m, den regningsmæssige opdrift pr. meter rør',
+    'Bd = T₂ · d · γtør,d + (T₃ − T₂) · d · γ′d − (π/4 · d² · γ′d)/2 + Ed · g/1000, fyld over GVS + fyld under GVS − rørets øverste halvdel + rørets egenvægt',
+    'Bd = 0,00 + 36,44 − 13,01 + 3,00 = 26,43 kN/m, den regningsmæssige stabiliserende ballast pr. meter rør',
+    'S₁ = Bd/Od = 26,43/54,00 = 0,49 (krav ≥ 1,0), ballast i forhold til opdrift uden geonet',
+  ])
+    await expect(opdrift.getByText(linje, { exact: true })).toBeVisible();
   await expect(
     opdrift.getByText(
       'Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = 9,82 m/s².',
