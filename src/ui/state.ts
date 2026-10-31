@@ -16,6 +16,8 @@ export interface Session {
     produkt: number;
     /** Partialkoefficient for kraftoptagelse S₂ (fund K-14). */
     S2: number;
+    /** Lodret afstand mellem netlagene ved omslag, m (fund K-26). */
+    omslagAfstand: number;
     /** Dybere forankring ved begrænset plads (fund K-25); kun i avanceret beregning. */
     dybForankringAktiv: boolean;
     /** Forankringslængden pr. side, der er plads til, m. */
@@ -39,6 +41,7 @@ export const standardSession = (): Session => ({
     overstyringAktiv: false,
     produkt: 150,
     S2: standarder.S2,
+    omslagAfstand: standarder.omslagAfstand,
     dybForankringAktiv: false,
     dybForankringL: 2,
   },
@@ -63,6 +66,7 @@ export function tilMotorInput(s: Session): OpdriftInput {
       : null,
     metode: s.avanceret ? 'avanceret' : 'standard',
     S2: i.S2,
+    omslagAfstand: i.omslagAfstand,
   };
 }
 const num = (v: unknown, d: number, min = -Infinity, max = Infinity) =>
@@ -101,6 +105,12 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
           overstyringAktiv: typeof i.overstyringAktiv === 'boolean' ? i.overstyringAktiv : false,
           produkt: standarder.geonet.produkter.some((p) => p.uts === i.produkt) ? i.produkt : 150,
           S2: num(i.S2, standarder.S2, standarder.S2Interval.min, standarder.S2Interval.max),
+          omslagAfstand: num(
+            i.omslagAfstand,
+            standarder.omslagAfstand,
+            standarder.omslagInterval.min,
+            standarder.omslagInterval.max,
+          ),
           dybForankringAktiv:
             typeof i.dybForankringAktiv === 'boolean' ? i.dybForankringAktiv : false,
           dybForankringL: num(i.dybForankringL, 2, 0),

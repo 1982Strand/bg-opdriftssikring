@@ -257,3 +257,38 @@ test('S₂ kan ændres inden for 1,05–1,2 og påvirker kun K og længderne (K-
   assert.deepEqual(fejlFelter({ ...basis, S2: 1.21 }), ['S2']);
   assert.deepEqual(fejlFelter({ ...basis, S2: Number.NaN }), ['S2']);
 });
+
+test('afstanden mellem netlagene ved omslag kan ændres fra 0,2 til 0,4 m (K-26)', () => {
+  // Forventningerne er regnet uden motoren med arkets formler for løsning C og D.
+  const naer = (a: number, b: number) =>
+    assert.ok(Math.abs(a - b) < 1e-9 * Math.max(1, Math.abs(b)), `${a} ≠ ${b}`);
+  const s02 = beregnOpdrift(basis);
+  const s04 = beregnOpdrift({ ...basis, omslagAfstand: 0.4 });
+  assert.ok(s02.ok && s04.ok);
+  assert.equal(s02.resultat.omslagAfstand, 0.2);
+  assert.deepEqual(beregnOpdrift({ ...basis, omslagAfstand: 0.2 }), s02);
+  const r = s04.resultat;
+  naer(r.hTop, 2.35);
+  naer(r.Ftop, 7.267570740334947);
+  naer(r.losninger.C!.L, 1.5920837614920922);
+  naer(r.losninger.C!.Ltot, 12.295325862955611);
+  naer(r.losninger.C!.kontrol!, 1.4196483817270766);
+  naer(r.losninger.D!.toLMellem, 3.1841675229841844);
+  naer(r.losninger.D!.Ltot, 22.99065172591122);
+  // Løsningerne uden omslag er uændrede.
+  assert.deepEqual(r.losninger.A, s02.resultat.losninger.A);
+  assert.deepEqual(r.losninger.B, s02.resultat.losninger.B);
+  const case2 = beregnOpdrift({ ...basis, d: 4, h1: 0.6, omslagAfstand: 0.4 });
+  assert.ok(case2.ok);
+  naer(case2.resultat.losninger.C!.L, 5.603221993073176);
+  naer(case2.resultat.losninger.C!.Ltot, 30.69607327947229);
+  // Omslag kræver, at rørmidten ligger dybere end afstanden mellem netlagene (K-23).
+  const lav = { ...basis, d: 0.6, h1: 0.05 };
+  const lav02 = beregnOpdrift(lav);
+  const lav04 = beregnOpdrift({ ...lav, omslagAfstand: 0.4 });
+  assert.ok(lav02.ok && lav04.ok);
+  assert.notEqual(lav02.resultat.losninger.C, null);
+  assert.equal(lav04.resultat.losninger.C, null);
+  assert.deepEqual(fejlFelter({ ...basis, omslagAfstand: 0.19 }), ['omslagAfstand']);
+  assert.deepEqual(fejlFelter({ ...basis, omslagAfstand: 0.41 }), ['omslagAfstand']);
+});

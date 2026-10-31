@@ -109,3 +109,18 @@ test('dybden vokser, når den angivne længde bliver kortere', () => {
     forrige = d.resultat.hBund;
   }
 });
+
+test('dybere forankring følger afstanden mellem netlagene (K-26)', () => {
+  const input = { ...motorInput(4, 0.6, 0.8), omslagAfstand: 0.4 };
+  const b = beregnOpdrift(input);
+  assert.ok(b.ok);
+  const d = beregnDybForankring(b.resultat, input, 2.5);
+  assert.ok(d.ok && d.resultat.tilstand === 'dybere');
+  naer(d.resultat.hBund - d.resultat.hTop, 0.4, 'h_bund − h_top');
+  naer(d.resultat.toL / 2, 2.5, 'L igen');
+  naer(
+    d.resultat.Ltot,
+    4 * (2.5 + 0.4) + 2 * (0.4 - 0.2) + (Math.PI * 4) / 2 + 2 * d.resultat.dh,
+    'Ltot',
+  );
+});

@@ -12,7 +12,7 @@ import {
   tvaersnitSvg,
   type Losning,
 } from '../engine/figurer';
-import { tal } from '../engine/format';
+import { tal, talKort } from '../engine/format';
 import { Fmt } from './Fmt';
 import { Notice } from './Notice';
 import { TabelRamme } from './TabelRamme';
@@ -203,14 +203,15 @@ const losningTitel: Record<Losning, string> = {
 const { mindstelaengder: mindste, omslagAfstand, netTillaegOmslag, faktorMellemRoer } = standarder;
 
 /** Arkets forskrifter for løsningerne (Rapporten A308, A358:A362, A398:A400 og A440:A449). */
-const losningNote: Record<Losning, string> = {
+const losningNote = (afstand: number): Record<Losning, string> => ({
   A: `Der forankres altid med mindst ${tal(mindste.udenOmslag.prSide, 1)} m på hver side.`,
   B: `Der forankres altid med mindst ${tal(mindste.udenOmslag.prSide, 1)} m yderst på hver side. Mellem ledningerne holdes nettet nede af fyldets vægt, så L_{mellem} er et opdriftsproblem og ikke et forankringsproblem. Der regnes med en partialkoefficient på ${tal(faktorMellemRoer, 1)} mellem ledningerne.`,
-  C: `Omslag kan bruges ved pladsproblemer. Der forankres altid med mindst ${tal(mindste.medOmslag.prSide, 1)} m på hver side. Der armeres lige meget i top og bund med ${tal(omslagAfstand, 1)} m mellem lagene.`,
+  C: `Omslag kan bruges ved pladsproblemer. Der forankres altid med mindst ${tal(mindste.medOmslag.prSide, 1)} m på hver side. Der armeres lige meget i top og bund med ${talKort(afstand)} m mellem lagene.`,
   D: 'Som med omslag ved én ledning. Afstanden mellem rørene L_{mellem} skal være mindst 2 · L_{geonet}.',
-};
+});
 
-/** Arkets tillæg i netlængden med omslag ud over de lodrette stykker på 0,2 m (fund K-09). */
+/** Arkets tillæg i netlængden med omslag ud over de lodrette stykker (fund K-09). Det er det samme
+ * for alle afstande mellem netlagene (fund K-26). */
 const tillaegOmslag = {
   C: 4 * netTillaegOmslag - 2 * omslagAfstand,
   D: 4 * netTillaegOmslag - 4 * omslagAfstand,
@@ -224,6 +225,12 @@ const kontrolNote = {
     'Kontrollen er eftervisningen for løftning med begge netlag. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_{op,d} · S₂ (fund K-11).',
 };
 
+/** Ekstra lodrette stykker i netlængden, når netlagene ligger mere end 0,2 m fra hinanden (K-26). */
+const lodretTillaegTal = (r: OpdriftResultat, antal: number) =>
+  r.omslagAfstand === standarder.omslagAfstand
+    ? ''
+    : ` + ${antal} · (${talKort(r.omslagAfstand)} − ${talKort(standarder.omslagAfstand)})`;
+
 /** Rækker og mellemregninger for én løsning. null, når omslag ikke er muligt. */
 function losningIndhold(
   r: OpdriftResultat,
@@ -236,6 +243,7 @@ function losningIndhold(
 } | null {
   const { A, B, C, D } = r.losninger;
   const torTilMidte = r.gvsZone !== null && r.gvsZone.zone >= 3;
+  const lodretTillaeg = (antal: number) => lodretTillaegTal(r, antal);
   const d = input.d;
   const T2 = input.gvs;
   const faelles = (x: { La: number; Ltot: number }, tillaeg?: number): [string, string][] => [
@@ -357,14 +365,14 @@ function losningIndhold(
             {
               forklaring: 'Samlet forankringslængde der skal til for at optage K',
               detalje: 'med omslag',
-              formel: `Beregnet 2L = K/(F_{bund} + F_{top}/2) + 2 · 0,2 = ${tal(r.K)}/(${tal(r.Fbund)} + ${tal(r.Ftop)}/2) + 0,4`,
+              formel: `Beregnet 2L = K/(F_{bund} + F_{top}/2) + 2 · ${talKort(r.omslagAfstand)} = ${tal(r.K)}/(${tal(r.Fbund)} + ${tal(r.Ftop)}/2) + ${talKort(2 * r.omslagAfstand)}`,
               resultat: meter(C.toLBeregnet),
             },
             forankring(C.L, C.toLBeregnet, mindste.medOmslag.prSide),
             bredde(`L_{a} = 2 · L_{geonet} + d = 2 · ${tal(C.L)} + ${tal(d)}`, C.La),
             netlaengde(
               'Samlet længde geonet på tværs af ledningen',
-              'L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2',
+              `L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2${lodretTillaeg(2)}`,
               C.Ltot,
               'inkl. omslag og overlæg',
             ),
@@ -390,7 +398,7 @@ function losningIndhold(
             bredde('L_{a} = 2 · L_{geonet} + L_{mellem} + 2 · d', D.La),
             netlaengde(
               'Samlet længde geonet på tværs af ledningerne',
-              'L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d',
+              `L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d${lodretTillaeg(4)}`,
               D.Ltot,
               'inkl. omslag og overlæg',
             ),
@@ -434,7 +442,7 @@ function LosningKort({
               }
             />
             <p className="calc-note">
-              <Fmt text={losningNote[losning]} />
+              <Fmt text={losningNote(r.omslagAfstand)[losning]} />
             </p>
             {(losning === 'B' || losning === 'D') && (
               <p className="calc-note">
@@ -455,7 +463,7 @@ function LosningKort({
         </>
       ) : (
         <Notice>
-          Omslag kræver, at rørmidten ligger mere end {tal(omslagAfstand, 1)} m under terræn.
+          Omslag kræver, at rørmidten ligger mere end {talKort(r.omslagAfstand)} m under terræn.
         </Notice>
       )}
     </article>
@@ -680,7 +688,7 @@ function DybForankringKort({
       {ikkeNoedvendigNote && <Notice>{ikkeNoedvendigNote}</Notice>}
       {omslagIkkeMuligt && (
         <Notice>
-          Omslag kræver, at rørmidten ligger mere end {tal(omslagAfstand, 1)} m under terræn.
+          Omslag kræver, at rørmidten ligger mere end {talKort(r.omslagAfstand)} m under terræn.
         </Notice>
       )}
       {!laast && (
@@ -823,7 +831,7 @@ function DybResultat({
             },
             {
               forklaring: 'Nødvendig kraftoverførsel',
-              formel: `F_{bund} + F_{top}/2 = K/(2 · L_{geonet} − 2 · ${tal(omslagAfstand, 1)}) = ${tal(r.K)}/(2 · ${tal(dyb.L)} − ${tal(2 * omslagAfstand, 1)})`,
+              formel: `F_{bund} + F_{top}/2 = K/(2 · L_{geonet} − 2 · ${talKort(r.omslagAfstand)}) = ${tal(r.K)}/(2 · ${tal(dyb.L)} − ${talKort(2 * r.omslagAfstand)})`,
               resultat: kNm(dyb.krav),
               hoved: true,
             },
@@ -845,7 +853,7 @@ function DybResultat({
             {
               forklaring: 'Længden med dybden indsat igen',
               detalje: `L_{geonet} = 2L/2 = ${tal(dyb.toL / 2)} m`,
-              formel: `2L = K/(F_{bund} + F_{top}/2) + 2 · ${tal(omslagAfstand, 1)} = ${tal(r.K)}/(${tal(dyb.Fbund)} + ${tal(dyb.Ftop)}/2) + ${tal(2 * omslagAfstand, 1)}`,
+              formel: `2L = K/(F_{bund} + F_{top}/2) + 2 · ${talKort(r.omslagAfstand)} = ${tal(r.K)}/(${tal(dyb.Fbund)} + ${tal(dyb.Ftop)}/2) + ${talKort(2 * r.omslagAfstand)}`,
               resultat: meter(dyb.toL),
             },
           ]}
@@ -861,7 +869,7 @@ function DybResultat({
             {
               forklaring: 'Samlet længde geonet på tværs af ledningen',
               detalje: 'inkl. omslag, overlæg og sider',
-              formel: `L_{geonet,tot} = 4 · (L_{geonet} + ${tal(netTillaegOmslag, 1)}) + π · d/2 + 2 · Δh = 4 · (${tal(dyb.L)} + ${tal(netTillaegOmslag, 1)}) + π · ${tal(d)}/2 + 2 · ${tal(dyb.dh)}`,
+              formel: `L_{geonet,tot} = 4 · (L_{geonet} + ${tal(netTillaegOmslag, 1)}) + π · d/2 + 2 · Δh = 4 · (${tal(dyb.L)} + ${tal(netTillaegOmslag, 1)}) + π · ${tal(d)}/2 + 2 · ${tal(dyb.dh)}${lodretTillaegTal(r, 2)}`,
               resultat: meter(dyb.Ltot),
             },
             {
@@ -1524,6 +1532,30 @@ export function Opdriftssikring() {
                   S₂ er partialkoefficienten for kraftoptagelse. Den fastlægges beregningsteknisk
                   ved skøn ({tal(standarder.S2Interval.min)}–{tal(standarder.S2Interval.max)})
                   afhængig af rørdimensionen og påvirker forankringslængden.
+                </p>
+              </div>
+              {/* Afstanden mellem netlagene ved omslag (fund K-26). */}
+              <div>
+                <SettingField
+                  field={{
+                    key: 'input-omslagAfstand',
+                    label: 'Afstand mellem netlagene ved omslag (m)',
+                    kind: 'number',
+                    min: standarder.omslagInterval.min,
+                    max: standarder.omslagInterval.max,
+                    step: 0.01,
+                  }}
+                  disabled={ikkeNoedvendig}
+                  value={i.omslagAfstand}
+                  error={fejl('omslagAfstand')}
+                  change={(v) => saet({ omslagAfstand: Number(v) })}
+                />
+                <p className="calc-note">
+                  Den lodrette afstand mellem netlagene ved omslag er mindst{' '}
+                  {talKort(standarder.omslagInterval.min)} m. I praksis udføres den ofte med{' '}
+                  {talKort(standarder.omslagInterval.min)}–{talKort(standarder.omslagInterval.max)}{' '}
+                  m, så fyldet kan komprimeres. En større afstand giver længere forankring med
+                  omslag.
                 </p>
               </div>
             </div>

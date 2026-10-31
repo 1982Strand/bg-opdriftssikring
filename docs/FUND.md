@@ -36,6 +36,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-23 | Omslag over terræn ved lav rørmidte | Løsning C og D | Afgjort: omslag ikke muligt |
 | K-24 | Betegnelsen »2xLgeonet« mellem rørene | Tekst, løsning B og D | Afgjort: L_mellem |
 | K-25 | Dybere forankring ved begrænset plads | Ny beregning, én ledning med omslag | Afgjort: kort 8 i avanceret beregning |
+| K-26 | Afstanden mellem netlagene ved omslag er fast 0,2 m | Løsning C og D, kort 8 | Afgjort: redigerbar 0,2–0,4 m, standard 0,2 m |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-05, K-08 og K-12 fra regnearket og K-25 for dybere forankring ved begrænset plads. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -461,3 +462,13 @@ Faktorerne i H24:K27 bruges ingen steder. Da alle kolonner og kopien i Rapporten
 **Eksempel.** d = 4,00 m, h₁ = 0,60 m og GVS i terræn: løsning C kræver 5,27 m pr. side. Med 2,50 m pr. side skal det nederste netlag ligge 5,65 m under terræn, 1,05 m under rørbunden.
 
 **Besluttet 31. oktober 2026.** Beregningen indføres i et eget kort, kun i avanceret beregning og kun for én ledning med omslag. Metoden er ikke dokumenteret; lokal jordreaktion, jordbrud, netkræfter og deformationer er ikke eftervist. Kortet har derfor en fast advarsel, og kontrolpunktet K-25 vises, når der regnes en dybere forankring. Indført samme dag som kort 8 efter brugerens godkendelse af tekster og kontroltal.
+
+## K-26 Afstanden mellem netlagene ved omslag
+
+**Arket.** Arket regner altid med 0,2 m mellem netlagene ved omslag (E285: h_top = h_bund − 0,2, og G404: 2L = K/(F_bund + F_top/2) + 0,2 · 2). DANVA siger, at afstanden »bør mindst være 0,2 m«, og i praksis udføres den ofte med 0,2–0,4 m, så fyldet kan komprimeres. Udføres omslaget med en større afstand, er arkets forankringslængde for kort.
+
+Afstanden indgår tre steder: det øverste lag kommer højere op, så F_top falder; tillægget for de lodrette stykker ved omslaget vokser; og nettet bliver længere.
+
+**Eksempel.** Løsning C med 0,4 m i stedet for 0,2 m: case 1 giver L_geonet = 1,59 m i stedet for 1,36 m (+17 %), og case 2 giver 5,60 m i stedet for 5,27 m (+6 %). Kun en lille del skyldes det lavere F_top; resten er tillægget for de lodrette stykker.
+
+**Afgjort 31. oktober 2026.** Brugerens svar: »Ja, gør den redigerbar«. Afstanden kan ændres i kort 7 mellem 0,2 og 0,4 m med standarden 0,2 m i begge beregningsmetoder. Den bruges i h_top, i formlen for løsning C, i L_mellem for løsning D, i grænsen for, hvornår omslag er muligt (K-23), og i kort 8. Netlængden for løsning C og D får de længere lodrette stykker med (2 · (afstand − 0,2) for C og 4 · (afstand − 0,2) for D), mens arkets tillæg på 1,2 m og 0,8 m til omslag og overlæg er uændret. Med 0,2 m regnes som arket.

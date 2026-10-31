@@ -360,8 +360,8 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
   await expect(
     losning(page, 'Uden omslag, én ledning').getByRole('row', { name: /Forankring pr. side/ }),
   ).toContainText('7,40 m');
-  // Der regnes altid med 2 lag; antallet kan ikke vælges.
-  await expect(page.getByRole('spinbutton', { name: /lag/ })).toHaveCount(0);
+  // Der regnes altid med 2 lag; antallet kan ikke vælges. Afstanden mellem netlagene er et andet felt.
+  await expect(page.getByRole('spinbutton', { name: /antal lag/i })).toHaveCount(0);
 });
 
 test('forudsætninger og konsekvensklasse står først på beregningssiden', async ({ page }) => {
@@ -611,4 +611,41 @@ test('S₂ kan ændres i kort 7 med arkets note (K-14), og kontrollen har en not
   ).toBeVisible();
   await page.getByRole('button', { name: 'Nulstil beregning' }).click();
   await expect(s2).toHaveValue('1.05');
+});
+
+test('afstanden mellem netlagene ved omslag kan ændres i kort 7 (K-26)', async ({ page }) => {
+  await start(page);
+  const felt = 'Afstand mellem netlagene ved omslag (m)';
+  const forankring = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '7 Forankring' }),
+  });
+  await expect(page.getByRole('spinbutton', { name: felt })).toHaveValue('0.2');
+  await expect(
+    forankring.getByText(
+      'Den lodrette afstand mellem netlagene ved omslag er mindst 0,2 m. I praksis udføres den ofte med 0,2–0,4 m, så fyldet kan komprimeres. En større afstand giver længere forankring med omslag.',
+    ),
+  ).toBeVisible();
+  const medOmslag = losning(page, 'Med omslag, én ledning');
+  await expect(medOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText('1,36 m');
+  await saet(page, felt, '0.4');
+  await expect(medOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText('1,59 m');
+  await expect(
+    medOmslag.getByRole('row', { name: /inkl. 1,2 m tillæg til omslag og overlæg/ }),
+  ).toContainText('12,30 m');
+  await expect(
+    medOmslag.getByText('Der armeres lige meget i top og bund med 0,4 m mellem lagene.', {
+      exact: false,
+    }),
+  ).toBeVisible();
+  await medOmslag.getByRole('button', { name: 'Mellemregninger' }).click();
+  await mellemregning(medOmslag, 'Samlet længde geonet på tværs af ledningen', [
+    'Lgeonet,tot = 4 · (Lgeonet + 0,4) + π · d/2 + 2 · (0,4 − 0,2)',
+    '12,30 m',
+  ]);
+  await expect(flise(page, 'Kraftoverførsel Ftop').locator('p')).toHaveText('htop = 2,35 m');
+  // Uden for intervallet afvises værdien i feltet.
+  await saet(page, felt, '0.5');
+  await expect(forankring.getByText('Angiv et gyldigt tal fra 0,2 til 0,4.')).toBeVisible();
+  await page.getByRole('button', { name: 'Nulstil beregning' }).click();
+  await expect(page.getByRole('spinbutton', { name: felt })).toHaveValue('0.2');
 });

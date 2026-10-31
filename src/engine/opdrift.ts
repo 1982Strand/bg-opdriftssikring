@@ -35,6 +35,8 @@ export interface OpdriftInput {
   metode?: Beregningsmetode; // 'standard', hvis den mangler
   /** D299, partialkoefficient for kraftoptagelse; arkets 1,05, hvis den mangler (fund K-14). */
   S2?: number;
+  /** Lodret afstand mellem netlagene ved omslag, m; arkets 0,2, hvis den mangler (fund K-26). */
+  omslagAfstand?: number;
 }
 export type Status = 'OK' | 'EJ OK';
 export type Kontrolpunkt = 'K-05' | 'K-08' | 'K-12';
@@ -88,6 +90,8 @@ export interface OpdriftResultat {
   forankringsspaending: { bund: number; top: number };
   /** Den anvendte S₂ (fund K-14). */
   S2: number;
+  /** Den anvendte afstand mellem netlagene ved omslag (fund K-26). */
+  omslagAfstand: number;
   K: number;
   losninger: {
     /** Afsnit 9: ét rør uden omslag. */
@@ -231,7 +235,9 @@ export function beregnOpdrift(
   const geonet = vaelgGeonet(Fopdrift, input.overstyring); // G199:H238
 
   const hBund = T3; // C285
-  const hTop = hBund - standarder.omslagAfstand; // E285
+  // Arket regner med 0,2 m mellem netlagene; afstanden kan ændres til 0,4 m (fund K-26).
+  const omslagAfstand = input.omslagAfstand ?? standarder.omslagAfstand;
+  const hTop = hBund - omslagAfstand; // E285
   const tanPhiD = Math.tan((phiD * Math.PI) / 180);
   // Effektiv lodret spænding i dybden z. Arket regner altid med γ′_d, som om nettet ligger under vand
   // (K-19). Den avancerede beregning regner tør fyld over GVS og effektiv rumvægt under.
@@ -259,12 +265,14 @@ export function beregnOpdrift(
   // Afsnit 11: G404, C407, B411, B412, A427, E427. Omslag er kun muligt, når det øverste lag ligger
   // under terræn (beslutning 30. oktober 2026).
   const omslagMuligt = hTop > 0;
-  const x = K / (Fbund + Ftop / 2) + standarder.omslagAfstand * 2;
+  const x = K / (Fbund + Ftop / 2) + omslagAfstand * 2;
   const toL = x < min.medOmslag.naarXUnder ? min.medOmslag.iAlt : x;
   const LC = Math.max(min.medOmslag.prSide, toL / 2);
   const ballastForankringC = B + ((Fbund + Ftop) / 2) * LC * 4;
   const kontrolC = ingenOpdrift || !omslagMuligt ? null : ballastForankringC / O;
   const tillaeg = standarder.netTillaegOmslag; // 0,4 i B412 og B470 (K-09)
+  // Arkets tillæg dækker lodrette stykker på 0,2 m ved hvert omslag; en større afstand forlænger dem.
+  const ekstraLodret = omslagAfstand - standarder.omslagAfstand;
 
   return {
     ok: true,
@@ -303,6 +311,7 @@ export function beregnOpdrift(
       Ftop,
       forankringsspaending,
       S2,
+      omslagAfstand,
       K,
       losninger: {
         A: {
@@ -329,7 +338,7 @@ export function beregnOpdrift(
               toL,
               L: LC,
               La: LC * 2 + d,
-              Ltot: 4 * (LC + tillaeg) + (pi * d) / 2,
+              Ltot: 4 * (LC + tillaeg) + 2 * ekstraLodret + (pi * d) / 2,
               ballastForankring: ballastForankringC,
               kontrol: kontrolC,
               status: kontrolC === null ? null : status(kontrolC, krav.kontrol), // H427
@@ -340,7 +349,7 @@ export function beregnOpdrift(
               toLMellem: 2 * LC, // C452
               L: LC, // C455 = C407
               La: 2 * (LC * 2 + d),
-              Ltot: 4 * (2 * LC + tillaeg) + pi * d,
+              Ltot: 4 * (2 * LC + tillaeg) + 4 * ekstraLodret + pi * d,
             }
           : null,
       },
@@ -402,6 +411,16 @@ function valider(input: OpdriftInput): Inputfejl[] {
         tekst: `Antallet af lag skal være 1 eller ${standarder.geonet.lagVedManueltValg}. Et net i midten af flere lag kan ikke udnyttes.`,
       });
   }
+  // Afstanden mellem netlagene ved omslag er mindst 0,2 m og i praksis højst 0,4 m (fund K-26).
+  const { min: aMin, max: aMax } = standarder.omslagInterval;
+  if (
+    input.omslagAfstand !== undefined &&
+    !(input.omslagAfstand >= aMin && input.omslagAfstand <= aMax)
+  )
+    fejl.push({
+      felt: 'omslagAfstand',
+      tekst: `Afstanden mellem netlagene skal være mellem ${dansk(aMin)} og ${dansk(aMax)} m.`,
+    });
   // S₂ fastlægges ved skøn inden for arkets interval 1,05–1,2 (A300, fund K-14).
   const { min: s2Min, max: s2Max } = standarder.S2Interval;
   if (input.S2 !== undefined && !(input.S2 >= s2Min && input.S2 <= s2Max))

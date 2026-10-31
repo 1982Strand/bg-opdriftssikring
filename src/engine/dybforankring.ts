@@ -11,7 +11,7 @@ import {
   type Status,
 } from './opdrift.ts';
 
-const { mu, krav, omslagAfstand, netTillaegOmslag, mindstelaengder: min } = standarder;
+const { mu, krav, netTillaegOmslag, mindstelaengder: min } = standarder;
 
 export type DybForankring =
   | { tilstand: 'ikke relevant' }
@@ -65,6 +65,7 @@ export function beregnDybForankring(
       ? Math.min(gvs, z) * r.gammaTorD + Math.max(0, z - gvs) * r.gammaEffD
       : z * r.gammaEffD;
   const c = mu * Math.tan((r.phiD * Math.PI) / 180);
+  const omslagAfstand = r.omslagAfstand;
   const Feq = (z: number) => (sigma(z) + sigma(z - omslagAfstand) / 2) * c;
   const kravF = r.K / (2 * L - 2 * omslagAfstand);
 
@@ -107,7 +108,11 @@ export function beregnDybForankring(
       Fbund,
       Ftop,
       toL: r.K / (Fbund + Ftop / 2) + 2 * omslagAfstand,
-      Ltot: 4 * (L + netTillaegOmslag) + (pi * input.d) / 2 + 2 * dh,
+      Ltot:
+        4 * (L + netTillaegOmslag) +
+        2 * (omslagAfstand - standarder.omslagAfstand) +
+        (pi * input.d) / 2 +
+        2 * dh,
       kontrol,
       status: kontrol > krav.kontrol ? 'OK' : 'EJ OK',
     },

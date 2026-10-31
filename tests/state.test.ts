@@ -135,3 +135,14 @@ test('S₂ gemmes og indlæses med 1,05 uden for intervallet (K-14)', () => {
   assert.equal(ind(1), 1.05);
   assert.equal(ind('x'), 1.05);
 });
+
+test('afstanden mellem netlagene gemmes og indlæses med 0,2 uden for intervallet (K-26)', () => {
+  assert.equal(standardSession().inddata.omslagAfstand, 0.2);
+  assert.equal(tilMotorInput(standardSession()).omslagAfstand, 0.2);
+  const ind = (omslagAfstand: unknown) =>
+    parseSession(JSON.stringify({ inddata: { omslagAfstand } })).session.inddata.omslagAfstand;
+  assert.equal(ind(0.4), 0.4);
+  assert.equal(ind(0.3), 0.3);
+  assert.equal(ind(0.5), 0.2);
+  assert.equal(ind(0.1), 0.2);
+});
