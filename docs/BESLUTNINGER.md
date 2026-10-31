@@ -448,3 +448,18 @@ Valgt af Claude og kan ændres:
 Claude spurgte, om kort 7 også skal vise »Ikke relevant«, når sikring ikke er nødvendig. Brugerens svar: »Nej, lad kort 7 være«.
 
 - Kort 7 er uændret og viser fortsat forankringen nedtonet til orientering.
+
+## 31. oktober 2026 — kort 7, når opdriftssikring ikke er nødvendig
+
+Brugerens ønske: »jo, ret også kort 7 på samme vis når opdriftssikring ikke er relevant«. Det erstatter svaret »Nej, lad kort 7 være« i afsnittet ovenfor.
+
+- Kort 7 har samme note som kort 6, og opsummeringen viser »Ikke relevant«.
+- Fliserne »Kraftoverførsel F_bund«, »Kraftoverførsel F_top« og »Kraftoptagelse K« viser »Ikke relevant« uden enhed.
+- Rækkerne på de fire løsningskort viser »Ikke relevant«.
+- »Mellemregninger for kraftoverførsel« og løsningernes »Mellemregninger« kan ikke foldes ud.
+- Ændringen er kun i visningen. Motoren regner fortsat videre som arket (fund K-12).
+
+Valgt af Claude og kan ændres:
+- Løsningernes figurer udelades, fordi de er målsat med de beregnede længder. Forskrifterne på løsningskortene står fortsat.
+- Noterne med h_bund og h_top under F_bund og F_top udgår. Formlen under K står fortsat.
+- Løsningerne med omslag viser fortsat »Omslag kræver, at rørmidten ligger mere end 0,2 m under terræn.«, når omslag ikke er muligt.

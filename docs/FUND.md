@@ -273,7 +273,7 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 
 **Første version.** Tallene er som i arket. På beregningssiden tones kortene om geonet og forankring ned, og der vises et kontrolpunkt. Rapporten følger arket.
 
-**Afgjort 30. oktober 2026.** S₁ ≥ 1 er OK som i EC7's ulighed for løftning, så status og konklusion er enige ved S₁ = 1. Det afviger kun fra arket ved præcis lighed, og ingen af arkets kontrolcases rammer den. Når F_opdrift ≤ 0, viser styrkekontrollen for geonettet »Ikke relevant« i stedet for et negativt forhold og EJ OK. Fra 31. oktober 2026 viser alle fire fliser i kort 6 »Ikke relevant«, når sikring ikke er nødvendig, og manuelt netvalg og mellemregningerne i kort 6 er låst. Motoren regner fortsat videre som arket; ændringen er kun i visningen.
+**Afgjort 30. oktober 2026.** S₁ ≥ 1 er OK som i EC7's ulighed for løftning, så status og konklusion er enige ved S₁ = 1. Det afviger kun fra arket ved præcis lighed, og ingen af arkets kontrolcases rammer den. Når F_opdrift ≤ 0, viser styrkekontrollen for geonettet »Ikke relevant« i stedet for et negativt forhold og EJ OK. Fra 31. oktober 2026 viser fliserne og løsningerne i kort 6–7 »Ikke relevant«, når sikring ikke er nødvendig, og manuelt netvalg og mellemregningerne er låst. Motoren regner fortsat videre som arket; ændringen er kun i visningen.
 
 ## K-13 Den viste 2L er mindre end den anvendte
 

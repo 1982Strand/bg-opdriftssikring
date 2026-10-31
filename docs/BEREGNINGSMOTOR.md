@@ -51,7 +51,7 @@ Hvor arket viser `#VALUE!`, fx P_till, når intet produkt kan vælges, er værdi
 ## Særheder bevaret fra arket
 
 - g = 9,82 for rørets egenvægt (K-07). Det er tyngdeaccelerationen i Danmark.
-- Der regnes videre med negativ F_opdrift, når S₁ ≥ 1 (K-12). Siden viser »Ikke relevant« i fliserne i kort 6.
+- Der regnes videre med negativ F_opdrift, når S₁ ≥ 1 (K-12). Siden viser »Ikke relevant« i kort 6–7.
 - Tillægget på 0,4 m i netlængden med omslag (K-09) står som `netTillaegOmslag`. Siden nævner tillægget ved netlængden.
 - Kontrollen med omslag bruger et større topbidrag end dimensioneringen (K-08).
 
