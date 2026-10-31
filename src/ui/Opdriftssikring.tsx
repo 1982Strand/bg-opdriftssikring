@@ -258,24 +258,35 @@ function LosningKort({
   r,
   input,
   losning,
+  ikkeRelevant,
 }: {
   r: OpdriftResultat;
   input: ReturnType<typeof tilMotorInput>;
   losning: Losning;
+  ikkeRelevant: boolean;
 }) {
   const titel = losningTitel[losning];
   const indhold = losningIndhold(r, input, losning);
+  // Er sikring ikke nødvendig, udelades den målsatte figur, og rækkerne viser »Ikke relevant«.
   return (
     <article className="solution-card" aria-labelledby={`losning-${losning}`}>
       <h3 id={`losning-${losning}`}>{titel}</h3>
       {indhold ? (
         <>
-          <Figur
-            svg={losningSvg(r, input, losning)}
-            label={`${titel}: geonet med forankringslængder og samlet bredde`}
-          />
+          {!ikkeRelevant && (
+            <Figur
+              svg={losningSvg(r, input, losning)}
+              label={`${titel}: geonet med forankringslængder og samlet bredde`}
+            />
+          )}
           <div className="solution-details">
-            <Talraekke raekker={indhold.raekker} />
+            <Talraekke
+              raekker={
+                ikkeRelevant
+                  ? indhold.raekker.map(([navn]): [string, string] => [navn, 'Ikke relevant'])
+                  : indhold.raekker
+              }
+            />
             <p className="calc-note">
               <Fmt text={losningNote[losning]} />
             </p>
@@ -285,7 +296,7 @@ function LosningKort({
                 den største diameter og den mindste egenvægt.
               </p>
             )}
-            <Udfold titel="Mellemregninger">
+            <Udfold titel="Mellemregninger" laast={ikkeRelevant}>
               <Formler linjer={indhold.formler} />
             </Udfold>
           </div>
@@ -396,6 +407,11 @@ export function Opdriftssikring() {
   );
   const losninger: Losning[] = ['A', 'C', 'B', 'D'];
   const ikkeNoedvendig = r?.S1Status === 'OK';
+  // Noten i kort 6 og 7, når opdriftssikring ikke er nødvendig (beslutning 31. oktober 2026).
+  const ikkeNoedvendigNote =
+    r?.S1 === null
+      ? 'Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig.'
+      : `S₁ ≥ ${tal(standarder.krav.S1, 1)}: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.`;
   const pk = r?.partialkoefficienter;
   const avanceret = session.avanceret;
   const zone = r?.gvsZone ?? null;
@@ -744,13 +760,7 @@ export function Opdriftssikring() {
             }
             dimmed={ikkeNoedvendig}
           >
-            {ikkeNoedvendig && (
-              <Notice>
-                {r.S1 === null
-                  ? 'Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig.'
-                  : `S₁ ≥ ${tal(standarder.krav.S1, 1)}: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.`}
-              </Notice>
-            )}
+            {ikkeNoedvendig && <Notice>{ikkeNoedvendigNote}</Notice>}
             {/* Er sikring ikke nødvendig, viser fliserne »Ikke relevant«, og manuelt netvalg og
                 mellemregninger er låst (beslutning 31. oktober 2026). Et gemt manuelt valg bevares. */}
             <div className="dim-results m9-result-cards">
@@ -893,30 +903,37 @@ export function Opdriftssikring() {
           <Trin
             nr={7}
             titel="Forankring"
-            opsummering={`K = ${tal(r.K)} kN/m · F_{bund} = ${tal(r.Fbund)} kN/m`}
+            opsummering={
+              ikkeNoedvendig
+                ? 'Ikke relevant'
+                : `K = ${tal(r.K)} kN/m · F_{bund} = ${tal(r.Fbund)} kN/m`
+            }
             dimmed={ikkeNoedvendig}
           >
+            {ikkeNoedvendig && <Notice>{ikkeNoedvendigNote}</Notice>}
+            {/* Er sikring ikke nødvendig, viser fliser og løsninger »Ikke relevant«, og
+                mellemregningerne er låst (beslutning 31. oktober 2026). */}
             <div className="dim-results m9-result-cards">
               <Flise
                 label="Kraftoverførsel F_{bund}"
-                vaerdi={tal(r.Fbund)}
-                enhed="kN/m"
-                note={`h_{bund} = ${tal(r.hBund)} m`}
+                vaerdi={ikkeNoedvendig ? 'Ikke relevant' : tal(r.Fbund)}
+                enhed={ikkeNoedvendig ? undefined : 'kN/m'}
+                note={ikkeNoedvendig ? undefined : `h_{bund} = ${tal(r.hBund)} m`}
               />
               <Flise
                 label="Kraftoverførsel F_{top}"
-                vaerdi={tal(r.Ftop)}
-                enhed="kN/m"
-                note={`h_{top} = ${tal(r.hTop)} m`}
+                vaerdi={ikkeNoedvendig ? 'Ikke relevant' : tal(r.Ftop)}
+                enhed={ikkeNoedvendig ? undefined : 'kN/m'}
+                note={ikkeNoedvendig ? undefined : `h_{top} = ${tal(r.hTop)} m`}
               />
               <Flise
                 label="Kraftoptagelse K"
-                vaerdi={tal(r.K)}
-                enhed="kN/m"
+                vaerdi={ikkeNoedvendig ? 'Ikke relevant' : tal(r.K)}
+                enhed={ikkeNoedvendig ? undefined : 'kN/m'}
                 note={`K = F_{op,d} · S₂, S₂ = ${tal(standarder.S2)}`}
               />
             </div>
-            <Udfold titel="Mellemregninger for kraftoverførsel">
+            <Udfold titel="Mellemregninger for kraftoverførsel" laast={ikkeNoedvendig}>
               <Formler
                 linjer={[
                   `φ_{d} = arctan(tan φ_{k}/γ_{φ}) = arctan(tan ${tal(i.phi)}°/${tal(pk.gammaPhi)}) = ${tal(r.phiD)}°`,
@@ -932,7 +949,13 @@ export function Opdriftssikring() {
             </Udfold>
             <div className="solutions">
               {losninger.map((l) => (
-                <LosningKort key={l} r={r} input={input} losning={l} />
+                <LosningKort
+                  key={l}
+                  r={r}
+                  input={input}
+                  losning={l}
+                  ikkeRelevant={ikkeNoedvendig}
+                />
               ))}
             </div>
           </Trin>
