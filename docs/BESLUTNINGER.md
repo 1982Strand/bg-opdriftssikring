@@ -529,3 +529,10 @@ Hver linje slutter med en kort forklaring efter resultatet:
 Claude påpegede, at linjerne i avanceret beregning brydes over 2–3 linjer, når arealfiguren står ved siden af mellemregningerne, og spurgte, om figuren skal stå under dem. Brugerens svar: »Nej, lad den stå«.
 
 - Arealfiguren står fortsat til højre for mellemregningerne i kort 5.
+
+## 31. oktober 2026 — noterne i kort 5 i fuld bredde
+
+Brugerens ønske: »kan de sidste 4 linjer i mellemregningerne ikke stå i fuld bredde, så de to med partialkoefficienten og opdriften ikke ombrydes til 2 linjer?«
+
+- De fire noter i mellemregningerne i kort 5 (γ_f, opdriften, ballasten og g) står nu under formler og figur i fuld bredde. Formlerne står fortsat ved siden af arealfiguren i avanceret beregning.
+- Ved 1440 px står hver note på én linje.
