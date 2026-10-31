@@ -27,7 +27,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-14 | S₂ og faktoren mellem rør er faste | Længder | Afgjort: S₂ redigerbar 1,05–1,20, standard 1,05 |
 | K-15 | Forældet tekst og dobbelte data i Navne tabel | Data | Data ét sted |
 | K-16 | Faste sidetal og »Udarbejdet af Bruger« | Rapport | Løses i appen |
-| K-17 | Friktion på én side af nettet | Længder | Som arket |
+| K-17 | Friktion på én side af nettet | Længder | Afgjort: som arket |
 | K-18 | T₁ kan ændres, men indgår ikke i T₃ | Geometri | T₁ = 0 fast |
 | K-19 | Forankring regnes altid som under vand | Længder | Afgjort: som arket, a) i avanceret beregning |
 | K-20 | h₁ og h₂ har tre forskellige betydninger | Tekst | h₁ = jorddækning |
@@ -339,6 +339,8 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 - b) Uændret, da det er på den sikre side og følger DANVA.
 
 **Første version.** Som arket.
+
+**Afgjort 31. oktober 2026 (b).** Claude gennemgik BS 8006 ud fra X-GRID's BBA-certifikat (16/H253, afsnit 6 og tabel 3), der henviser til BS 8006-1:2010. BS 8006 regner udtræksmodstanden med begge flader og en bindingskoefficient f_b under 1 pr. flade. Med certifikatets forsigtige friktion (tan δ/tan φ′ = 0,6 og α_s = 0,871) bliver f_b ≈ 0,52, så begge flader svarer omtrent til arkets μ = 1,0 på én flade; først ribbernes bidrag eller en målt f_b giver kortere forankring. Brugerens svar: »Lad den være«. Appen regner fortsat som arket og DANVA. En model efter BS 8006 vil kræve BS 8006-1 og CIRIA SP123 som grundlag og en faglig godkendelse.
 
 ## K-18 T₁ kan ændres, men indgår ikke i T₃
 

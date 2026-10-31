@@ -649,3 +649,9 @@ Valgt af Claude og kan ændres:
 - Noterne om kontrollen står under mellemregningerne. Uden omslag: »Kontrollen er eftervisningen for løftning: O_d ≤ B_d + F_bund · 2 · L_geonet. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_op,d · S₂, og viser tillægget fra S₂ (fund K-11).« Med omslag og i kort 8: »Kontrollen er eftervisningen for løftning med begge netlag. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_op,d · S₂ (fund K-11).«
 - Feltet afviser selv værdier uden for intervallet med »Angiv et gyldigt tal fra 1,05 til 1,2.«, så kort 7 ikke forsvinder ved en ugyldig værdi. Motoren kontrollerer også intervallet. Feltfejlene skriver nu decimaler med komma i alle talfelter.
 - Feltet er låst, når opdriftssikring ikke er nødvendig.
+
+## 31. oktober 2026 — K-17 afgjort
+
+Claude gennemgik BS 8006 og sammenlignede med arkets kraftoverførsel ud fra X-GRID's BBA-certifikat og DANVA-teksten. Mulighederne var a) uændret, b) μ redigerbar inden for 0,5–1,0 og c) en model efter BS 8006 i avanceret beregning. Brugerens svar: »Lad den være«.
+
+- Kraftoverførslen regnes fortsat som arket og DANVA med μ = 1,0 og friktion på én flade.
