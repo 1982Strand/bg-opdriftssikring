@@ -54,6 +54,24 @@ test('CC1 indlæses som CC2, og CC3 og standardberegningen regner altid med GVS 
   assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC2', avanceret: true }).gvs, 1.6);
   assert.equal(tilMotorInput({ ...s, konsekvensklasse: 'CC3', avanceret: true }).gvs, 0);
 });
+test('dybere forankring gemmes og indlæses slået fra i ældre beregninger', () => {
+  assert.equal(standardSession().inddata.dybForankringAktiv, false);
+  assert.equal(standardSession().inddata.dybForankringL, 2);
+  const gammel = parseSession(JSON.stringify({ inddata: { d: 3 } })).session.inddata;
+  assert.equal(gammel.dybForankringAktiv, false);
+  assert.equal(gammel.dybForankringL, 2);
+  const ny = parseSession(
+    JSON.stringify({ inddata: { dybForankringAktiv: true, dybForankringL: 0.5 } }),
+  ).session.inddata;
+  assert.equal(ny.dybForankringAktiv, true);
+  // En for kort længde gemmes, så feltfejlen kan vises; negative tal afvises.
+  assert.equal(ny.dybForankringL, 0.5);
+  assert.equal(
+    parseSession(JSON.stringify({ inddata: { dybForankringL: -1 } })).session.inddata
+      .dybForankringL,
+    2,
+  );
+});
 test('alle produkter i listen kan gemmes som manuelt valg', () => {
   for (const uts of [35, 55, 80, 110, 130, 150, 200])
     assert.equal(

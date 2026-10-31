@@ -35,7 +35,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-22 | Reduktionsfaktorerne pr. net bruges ikke | Data, P_till | Afgjort: ét fælles sæt |
 | K-23 | Omslag over terræn ved lav rørmidte | Løsning C og D | Afgjort: omslag ikke muligt |
 | K-24 | Betegnelsen »2xLgeonet« mellem rørene | Tekst, løsning B og D | Afgjort: L_mellem |
-| K-25 | Dybere forankring ved begrænset plads | Ny beregning, én ledning med omslag | Besluttet, ikke indført |
+| K-25 | Dybere forankring ved begrænset plads | Ny beregning, én ledning med omslag | Afgjort: kort 8 i avanceret beregning |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-03, K-05, K-12 og K-13. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -452,4 +452,4 @@ Faktorerne i H24:K27 bruges ingen steder. Da alle kolonner og kopien i Rapporten
 
 **Eksempel.** d = 4,00 m, h₁ = 0,60 m og GVS i terræn: løsning C kræver 5,27 m pr. side. Med 2,50 m pr. side skal det nederste netlag ligge 5,65 m under terræn, 1,05 m under rørbunden.
 
-**Besluttet 31. oktober 2026.** Beregningen indføres i et eget kort, kun i avanceret beregning og kun for én ledning med omslag. Metoden er ikke dokumenteret; lokal jordreaktion, jordbrud, netkræfter og deformationer er ikke eftervist. Kortet har derfor en fast advarsel, og kontrolpunktet K-25 vises, når der regnes en dybere forankring. Ikke indført endnu.
+**Besluttet 31. oktober 2026.** Beregningen indføres i et eget kort, kun i avanceret beregning og kun for én ledning med omslag. Metoden er ikke dokumenteret; lokal jordreaktion, jordbrud, netkræfter og deformationer er ikke eftervist. Kortet har derfor en fast advarsel, og kontrolpunktet K-25 vises, når der regnes en dybere forankring. Indført samme dag som kort 8 efter brugerens godkendelse af tekster og kontroltal.

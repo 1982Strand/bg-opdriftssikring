@@ -62,8 +62,9 @@ Kortene har samme rækkefølge som rapporten:
    - F_bund, F_top og K vises.
    - Alle fire løsninger vises under hinanden: uden og med omslag for én ledning (A og C) og derefter for to ledninger (B og D). Kortene for to ledninger viser arkets forudsætninger: største diameter og mindste egenvægt.
    - Hver løsning har en målsat figur til venstre og til højre L pr. side, afstand mellem ledninger, L_a, L_geonet,tot og arkets kontrol, hvor arket har en. Mellemregningerne står nederst i kortets fulde bredde.
+8. **Dybere forankring ved begrænset plads.** Kun i avanceret beregning og kun for én ledning med omslag. Ud fra den forankringslængde pr. side, der er plads til, findes den nødvendige dybde til det nederste netlag (fund K-25, [FORSLAG_DYB_FORANKRING.md](FORSLAG_DYB_FORANKRING.md)). Kortet har en fast advarsel, fliser, en figur med nettet ført ned langs rørets sider og mellemregninger.
 
-Er S₁ ≥ 1, tones kort 6–7 ned i gråtoner, så kontrasten bevares. Begge kort har en note om, at sikring ikke er nødvendig. Fliserne og løsningernes rækker viser »Ikke relevant«, løsningernes figurer udelades, og manuelt netvalg og mellemregningerne er låst.
+Er S₁ ≥ 1, tones kort 6–7 ned i gråtoner, så kontrasten bevares. Kort 8 er da også nedtonet og låst. Begge kort har en note om, at sikring ikke er nødvendig. Fliserne og løsningernes rækker viser »Ikke relevant«, løsningernes figurer udelades, og manuelt netvalg og mellemregningerne er låst.
 
 **Avanceret beregning.** En afkrydsning øverst på siden skifter til den avancerede beregning (fund K-05, mulighed c, [FORSLAG_K-05.md](FORSLAG_K-05.md)). Den ændrer formler, mellemregninger, forklaringer og noter. Uden afkrydsning regnes som arket. Valget gemmes sammen med beregningen, og »Nulstil beregning« vælger standardberegningen. Den avancerede beregning omfatter også K-19: forankringen regnes med den faktiske effektive spænding i nettets niveau. Senere afvigelser fra arket kan samles her efter beslutning.
 

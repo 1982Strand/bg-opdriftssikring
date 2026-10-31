@@ -607,3 +607,18 @@ Claude stillede syv valg. Brugerens svar: »1a, 2b, 3a, 4a, 5a med henvisning ti
 - Kortet har en figur med nettet ført ned langs rørets sider, en fast advarsel og kontrolpunktet K-25.
 
 Planen, teksterne og kontroltallene står i [FORSLAG_DYB_FORANKRING.md](FORSLAG_DYB_FORANKRING.md). Teksterne og kontroltallene afventer brugerens godkendelse, før der kodes.
+
+## 31. oktober 2026 — kort 8 indført (K-25)
+
+Claude viste teksterne og kontroltallene i FORSLAG_DYB_FORANKRING.md. Brugerens svar: »Ja, godkendt«.
+
+- Kort 8 »Dybere forankring ved begrænset plads« er indført i avanceret beregning med de godkendte tekster, den nye hjælpetekst ved »Avanceret beregning« og kontrolpunktet K-25.
+- Beregningen ligger i `src/engine/dybforankring.ts` og ændrer ikke `beregnOpdrift`. Kontroltallene står i `tests/cases/dyb-forankring.json`.
+
+Valgt af Claude og kan ændres:
+- Fliserne hedder »Nødvendig dybde« og »Sænkning under rørmidten« med symbolerne h_bund, h_top og Δh i noten, fordi fliseoverskrifter skrives med store bogstaver og ellers ville vise »H_bund« og »ΔH«.
+- Kontrollen i mellemregningerne står uden indsatte tal, som kontrollen for løsning C i kort 7, så den står på én linje.
+- Mellemregningerne har rækkerne »Kraft forankringen skal dimensioneres for« (fra kort 7), »Mulig forankringslængde pr. side«, »Nødvendig kraftoverførsel«, spænding og kraftoverførsel i begge netlag, »Nødvendig dybde til nederste netlag«, »Længden med dybden indsat igen«, »Sænkning under rørmidten«, netlængden og kontrollen.
+- Figuren viser L_a, L_geonet på begge sider, h_top, h_bund og Δh, når der er plads til målet.
+- Indledningen til »Kontrolpunkter« (»Fund fra regnearket …«) er uændret, selv om K-25 ikke stammer fra regnearket.
+- Den angivne længde gemmes, også når den er under mindstelængden, så feltfejlen kan vises; standardværdien er 2,00 m.

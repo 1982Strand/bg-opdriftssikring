@@ -1,6 +1,6 @@
 # Forslag: Dybere forankring ved begrænset plads
 
-Status: besluttet 31. oktober 2026, ikke indført. Teksterne i afsnit 6 og kontroltallene i afsnit 8 afventer brugerens godkendelse.
+Status: besluttet og indført 31. oktober 2026. Brugeren godkendte teksterne i afsnit 6 og kontroltallene i afsnit 8: »Ja, godkendt«.
 
 ## 1. Formål
 
@@ -68,8 +68,10 @@ Kontrollen har samme forskel mellem dimensionering og kontrol som K-08. Den er i
 **Inddata.** Afkrydsningen »Beregn nødvendig forankringsdybde« og feltet »Mulig forankringslængde pr. side L_geonet (m)«. Valget gemmes med beregningen.
 
 **Fliser.**
-- »Nødvendig dybde h_bund« med noten »h_top = h_bund − 0,2 = … m«.
-- »Sænkning under rørmidten Δh« med noten »… m under rørbunden« eller »… m over rørbunden«.
+- »Nødvendig dybde« med noten »h_bund, øverste netlag h_top = … m«.
+- »Sænkning under rørmidten« med noten »Δh, … m under rørbunden« eller »Δh, … m over rørbunden«.
+
+Fliseoverskrifterne skrives med store bogstaver, så symbolerne står i noten i stedet for i overskriften.
 - »Samlet netlængde L_geonet,tot« med noten »inkl. 2 · Δh for siderne«.
 - »Opdriftskontrol« med OK/EJ OK og noten »Krav > 1,0«.
 

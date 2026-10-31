@@ -1,5 +1,6 @@
 /** Tekster til de kontrolpunkter, motoren melder (docs/FUND.md). Sænket skrift skrives som
  * `F_{top}`. Kontrolpunkterne ændrer ikke beregningen og indgår ikke i rapporten. */
+import type { DybForankring } from '../engine/dybforankring.ts';
 import type { Kontrolpunkt, OpdriftResultat } from '../engine/opdrift.ts';
 import { tal } from '../engine/format.ts';
 
@@ -16,3 +17,7 @@ export function kontrolpunktTekst(k: Kontrolpunkt, r: OpdriftResultat): string {
 
 export const kontrolpunktTekster = (r: OpdriftResultat) =>
   r.kontrolpunkter.map((k) => ({ kode: k, tekst: kontrolpunktTekst(k, r) }));
+
+/** Kontrolpunktet for dybere forankring ved begrænset plads (fund K-25). */
+export const dybKontrolpunktTekst = (dyb: Extract<DybForankring, { tilstand: 'dybere' }>) =>
+  `Dybere forankring ved begrænset plads giver h_{bund} = ${tal(dyb.hBund)} m for L_{geonet} = ${tal(dyb.L)} m pr. side. Metoden er ikke i regnearket og kræver særskilt statisk og geoteknisk eftervisning (fund K-25).`;
