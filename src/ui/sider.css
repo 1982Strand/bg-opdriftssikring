@@ -184,39 +184,20 @@
   white-space: nowrap;
 }
 
-/* Mellemregninger med en figur til højre for den første gruppe. Alle tabeller står i venstre kolonne,
-   så resultaterne flugter, og noterne står i fuld bredde. Tabellerne beholder mindst 640 px, og
-   figuren krymper ned til 300 px, før den flytter ned under den første gruppe. Bredden måles på
-   mellemregningerne selv. */
+/* Mellemregninger med en figur til højre. Tabellen beholder mindst 640 px, og figuren krymper ned til
+   300 px, før den flytter ned under tabellen. Bredden måles på mellemregningerne selv. */
 .mellemregninger {
   container-type: inline-size;
 }
 .mellemregninger-med-figur {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  column-gap: 32px;
+  gap: 16px 32px;
   align-items: start;
-}
-.mellemregninger-med-figur > .calc-figure {
-  margin-top: 16px;
 }
 @container (min-width: 972px) {
   .mellemregninger-med-figur {
     grid-template-columns: minmax(640px, 1fr) minmax(300px, 530px);
-  }
-  .mellemregninger-med-figur > .beregning-gruppe {
-    grid-column: 1;
-  }
-  .mellemregninger-med-figur > .calc-figure {
-    grid-column: 2;
-    grid-row: 1;
-    margin-top: 0;
-  }
-  .mellemregninger-med-figur > .calc-note {
-    grid-column: 1 / -1;
-  }
-  .mellemregninger-med-figur .beregning-tabel th {
-    width: 220px;
   }
 }
 /* Mellemregninger som tabel: forklaring, formel med indsatte tal og resultat. Gruppens resultat og
@@ -228,7 +209,7 @@
   margin: 20px 0 6px;
 }
 .mellemregninger > .beregning-titel:first-child,
-.mellemregninger > :first-child > .beregning-gruppe:first-child > .beregning-titel {
+.mellemregninger > :first-child > .beregning-titel:first-child {
   margin-top: 0;
 }
 .beregning-tabel {

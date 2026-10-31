@@ -452,14 +452,14 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(page.getByText(/GVS ligger under toppen af røret/)).toHaveCount(0);
   await page.getByRole('button', { name: 'Mellemregninger', exact: true }).first().click();
   await expect(page.getByRole('img', { name: /Rørets tværsnit delt af GVS/ })).toBeVisible();
-  // Alle tabeller står i samme kolonne, så resultaterne flugter, og noterne står i fuld bredde.
-  const medFigur = page.locator('.mellemregninger-med-figur');
-  await expect(medFigur.locator('.beregning-tabel')).toHaveCount(3);
-  await expect(medFigur.locator(':scope > p.calc-note')).toHaveCount(4);
-  const hoejrekanter = await medFigur
-    .locator('.beregning-tabel')
-    .evaluateAll((tabeller) => tabeller.map((t) => Math.round(t.getBoundingClientRect().right)));
-  expect(new Set(hoejrekanter).size).toBe(1);
+  // Formlerne står ved siden af figuren, og noterne står under dem i fuld bredde.
+  await expect(
+    page.locator('.mellemregninger-med-figur').locator('.beregning-tabel, .calc-figure'),
+  ).toHaveCount(2);
+  await expect(page.locator('.mellemregninger-med-figur .calc-note')).toHaveCount(0);
+  await expect(
+    page.locator('.mellemregninger:has(> .mellemregninger-med-figur) > p.calc-note'),
+  ).toHaveCount(4);
   await mellemregning(page.locator('.mellemregninger-med-figur'), 'Rørets tværsnit over GVS', [
     'Atør = r² · arccos(a/r) − a · √(r² − a²)',
     '2,4567 m²',
