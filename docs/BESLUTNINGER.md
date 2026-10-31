@@ -565,3 +565,8 @@ Brugerens ønske: »i dette kort må du gerne rykke resultaterne for stabilisren
 
 Valgt af Claude og kan ændres:
 - Forklaringskolonnen er 220 px i stedet for 240 px, når figuren vises, og formlen for »Resten af rørets øverste halvdel« skrives igen (π · r²/2 − A_tør) · γ′_d, så ingen formler brydes ved 1440 px.
+
+Brugeren fortrød: »jeg har fortrudt, du må gerne gå tilbage til visningen hvor resultaterne vises ude til hæjre alligevel, for de nederste mellemregninger«
+
+- Ændringen er rullet tilbage. Tabellerne for »Stabiliserende ballast« og »Kontrol uden geonet« står igen i fuld bredde med resultaterne yderst til højre. Kun tabellen for »Opdrift« står ved siden af figuren.
+- Forklaringskolonnen er igen 240 px, og formlen for »Resten af rørets øverste halvdel« skrives igen ((π/4 · d²)/2 − A_tør) · γ′_d.
