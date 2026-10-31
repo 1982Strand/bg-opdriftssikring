@@ -570,3 +570,14 @@ Brugeren fortrød: »jeg har fortrudt, du må gerne gå tilbage til visningen hv
 
 - Ændringen er rullet tilbage. Tabellerne for »Stabiliserende ballast« og »Kontrol uden geonet« står igen i fuld bredde med resultaterne yderst til højre. Kun tabellen for »Opdrift« står ved siden af figuren.
 - Forklaringskolonnen er igen 240 px, og formlen for »Resten af rørets øverste halvdel« skrives igen ((π/4 · d²)/2 − A_tør) · γ′_d.
+
+## 31. oktober 2026 — forklaringerne i mellemregningerne på én linje
+
+Brugerens ønske: »du må gerne rykke tingene lidt til højre, så beskrivelsen ikke ombrydes til 2 linjer. så altså fx at 'resterende opdrift som skal optages af geonet' bare står på 1 linje«
+
+- Forklaringerne i mellemregningerne står på én linje. Forklaringskolonnen er 330 px og udvides, hvis en forklaring er længere.
+
+Valgt af Claude og kan ændres:
+- I kort 5 er kolonnen 200 px, når arealfiguren vises, fordi forklaringerne dér er korte og formlerne skal have plads ved siden af figuren.
+- På løsningskortene står de lange tilføjelser med lille skrift under forklaringen, så alle kort kan bruge samme kolonne: »inkl. omslag og overlæg«, »med omslag«, »hvor fyldets vægt holder nettet nede«, »som uden omslag«, »som med omslag« og »i nettets niveau« ved den effektive lodrette spænding mellem ledningerne.
+- Ved 1440 og 1920 px brydes hverken forklaringer eller formler. På mobil står forklaringen over formel og resultat og kan brydes.
