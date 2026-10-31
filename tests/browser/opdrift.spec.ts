@@ -67,6 +67,9 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
     ),
   ).toBeVisible();
   const udenOmslag = losning(page, 'Uden omslag, én ledning');
+  // Mellemregningerne står i løsningskortets fulde bredde, ikke i kolonnen med tal.
+  await expect(udenOmslag.locator(':scope > .dim-expander-card')).toHaveCount(1);
+  await expect(udenOmslag.locator('.solution-details .dim-expander-card')).toHaveCount(0);
   await expect(udenOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText(
     '1,70 m',
   );

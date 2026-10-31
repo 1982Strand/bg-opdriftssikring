@@ -502,3 +502,13 @@ Valgt af Claude og kan ændres. Hver linje slutter med en kort forklaring efter 
 - L_geonet,tot: »den samlede længde geonet på tværs af ledningen« (to ledninger: »ledningerne«), ved omslag tilføjet »inkl. omslag og overlæg«.
 - Kontrol: »ballast og forankring i forhold til opdriften«.
 - To ledninger: σ′_v »den effektive lodrette spænding i nettets niveau mellem ledningerne«, 2 · L_geonet mellem »nettets længde mellem ledningerne, hvor fyldets vægt holder nettet nede« og ved omslag »nettets længde mellem ledningerne, som med omslag«, L_geonet yderst »forankringslængden yderst på hver side, som uden omslag«.
+
+## 31. oktober 2026 — mellemregningerne på løsningskortene i fuld bredde
+
+Brugerens ønske: »du må gerne gør mellemregninger-boksen bredere, så teksten for hver linje ikke ombrydes til 2 linjer. Måske bare lav mellemregninger boksene i fuld bredde? Det skal bare se pænt ud visuelt«
+
+- Mellemregningerne på de fire løsningskort i kort 7 står nu nederst i kortets fulde bredde under figur og tal.
+- Ved en skærmbredde på 1440 px og derover brydes ingen linjer. På smallere skærme kan de længste linjer stadig brydes, også i de mellemregninger, der i forvejen har fuld bredde.
+
+Valgt af Claude og kan ændres:
+- Figuren og tallene står fortsat side om side over mellemregningerne.

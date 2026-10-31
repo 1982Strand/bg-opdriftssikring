@@ -299,10 +299,11 @@ function LosningKort({
                 den største diameter og den mindste egenvægt.
               </p>
             )}
-            <Udfold titel="Mellemregninger" laast={ikkeRelevant}>
-              <Formler linjer={indhold.formler} />
-            </Udfold>
           </div>
+          {/* Mellemregningerne står i kortets fulde bredde under figur og tal. */}
+          <Udfold titel="Mellemregninger" laast={ikkeRelevant}>
+            <Formler linjer={indhold.formler} />
+          </Udfold>
         </>
       ) : (
         <Notice>
