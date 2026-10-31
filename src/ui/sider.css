@@ -225,11 +225,18 @@
   text-align: left;
   vertical-align: baseline;
 }
+/* Forklaringen står på én linje. Kolonnen udvides, hvis en forklaring er længere (beslutning
+   31. oktober 2026). */
 .beregning-tabel th {
-  width: 240px;
+  width: 330px;
+  white-space: nowrap;
   color: var(--muted-foreground);
   font-size: var(--fs-small);
   font-weight: 400;
+}
+/* Kort 5 har korte forklaringer, så formlerne får plads ved siden af figuren. */
+.beregning-tabel.is-smal th {
+  width: 200px;
 }
 .beregning-detalje {
   display: block;
@@ -261,13 +268,15 @@
     border-bottom: 1px solid var(--border);
   }
   .beregning-tabel th,
-  .beregning-tabel td {
+  .beregning-tabel td,
+  .beregning-tabel.is-smal th {
     width: auto;
     border-bottom: 0;
   }
   .beregning-tabel th {
     grid-column: 1 / -1;
     padding-bottom: 0;
+    white-space: normal;
   }
   .beregning-tabel td[colspan] {
     grid-column: 1 / -1;

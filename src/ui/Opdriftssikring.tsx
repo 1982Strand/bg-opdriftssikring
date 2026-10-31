@@ -108,11 +108,20 @@ interface Mellemregning {
 }
 
 /** Mellemregninger som tabel med forklaring, formel og resultat (beslutning 31. oktober 2026). */
-function Beregning({ titel, raekker }: { titel?: string; raekker: Mellemregning[] }) {
+function Beregning({
+  titel,
+  raekker,
+  smal = false,
+}: {
+  titel?: string;
+  raekker: Mellemregning[];
+  /** Smal forklaringskolonne, når en figur står ved siden af. */
+  smal?: boolean;
+}) {
   return (
     <>
       {titel && <h3 className="beregning-titel">{titel}</h3>}
-      <table className="beregning-tabel">
+      <table className={`beregning-tabel${smal ? ' is-smal' : ''}`}>
         <tbody>
           {raekker.map((m) => (
             <tr key={`${m.forklaring} ${m.formel}`} className={m.hoved ? 'is-hoved' : undefined}>
@@ -231,8 +240,14 @@ function losningIndhold(
     formel,
     resultat: meter(La),
   });
-  const netlaengde = (forklaring: string, formel: string, Ltot: number): Mellemregning => ({
+  const netlaengde = (
+    forklaring: string,
+    formel: string,
+    Ltot: number,
+    detalje?: string,
+  ): Mellemregning => ({
     forklaring,
+    detalje,
     formel,
     resultat: meter(Ltot),
   });
@@ -282,20 +297,22 @@ function losningIndhold(
         ],
         beregning: [
           {
-            forklaring: 'Effektiv lodret spænding i nettets niveau mellem ledningerne',
-            detalje: torTilMidte ? 'GVS ligger under rørmidten' : undefined,
+            forklaring: 'Effektiv lodret spænding mellem ledningerne',
+            detalje: `i nettets niveau${torTilMidte ? ', GVS ligger under rørmidten' : ''}`,
             formel: torTilMidte
               ? `σ′_{v} = T₃ · γ_{tør,d} = ${tal(r.T3)} · ${tal(r.gammaTorD)}`
               : `σ′_{v} = T₂ · γ_{tør,d} + (T₃ − T₂) · γ′_{d} = ${tal(T2)} · ${tal(r.gammaTorD)} + ${tal(r.T3 - T2)} · ${tal(r.gammaEffD)}`,
             resultat: `${tal(B.sigmaV)} kN/m²`,
           },
           {
-            forklaring: 'Nettets længde mellem ledningerne, hvor fyldets vægt holder nettet nede',
+            forklaring: 'Nettets længde mellem ledningerne',
+            detalje: 'hvor fyldets vægt holder nettet nede',
             formel: `2 · L_{geonet} mellem = max(0,5; F_{op,d} · 1,2/σ′_{v}) = max(0,5; ${tal(r.Fopdrift)} · 1,2/${tal(B.sigmaV)})`,
             resultat: meter(B.toLMellem),
           },
           {
-            forklaring: 'Forankringslængde yderst på hver side, som uden omslag',
+            forklaring: 'Forankringslængde yderst på hver side',
+            detalje: 'som uden omslag',
             formel: 'L_{geonet} yderst = L_{geonet} uden omslag',
             resultat: meter(B.L),
           },
@@ -317,16 +334,18 @@ function losningIndhold(
           ],
           beregning: [
             {
-              forklaring: 'Samlet forankringslængde der skal til for at optage K med omslag',
+              forklaring: 'Samlet forankringslængde der skal til for at optage K',
+              detalje: 'med omslag',
               formel: `Beregnet 2L = K/(F_{bund} + F_{top}/2) + 2 · 0,2 = ${tal(r.K)}/(${tal(r.Fbund)} + ${tal(r.Ftop)}/2) + 0,4`,
               resultat: meter(C.toLBeregnet),
             },
             forankring(C.L, C.toLBeregnet, mindste.medOmslag.prSide),
             bredde(`L_{a} = 2 · L_{geonet} + d = 2 · ${tal(C.L)} + ${tal(d)}`, C.La),
             netlaengde(
-              'Samlet længde geonet på tværs af ledningen inkl. omslag og overlæg',
+              'Samlet længde geonet på tværs af ledningen',
               'L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2',
               C.Ltot,
+              'inkl. omslag og overlæg',
             ),
             kontrol('Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d}', C),
           ],
@@ -342,15 +361,17 @@ function losningIndhold(
           ],
           beregning: [
             {
-              forklaring: 'Nettets længde mellem ledningerne, som med omslag',
+              forklaring: 'Nettets længde mellem ledningerne',
+              detalje: 'som med omslag',
               formel: '2 · L_{geonet} mellem = 2 · L_{geonet}',
               resultat: meter(D.toLMellem),
             },
             bredde('L_{a} = 2 · (2 · L_{geonet} + d)', D.La),
             netlaengde(
-              'Samlet længde geonet på tværs af ledningerne inkl. omslag og overlæg',
+              'Samlet længde geonet på tværs af ledningerne',
               'L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d',
               D.Ltot,
+              'inkl. omslag og overlæg',
             ),
           ],
         }
@@ -931,6 +952,7 @@ export function Opdriftssikring() {
               <div className={arealfigur ? 'mellemregninger-med-figur' : undefined}>
                 <div>
                   <Beregning
+                    smal={Boolean(arealfigur)}
                     titel="Opdrift"
                     raekker={[
                       {
@@ -968,7 +990,11 @@ export function Opdriftssikring() {
                   }
                 />
               </p>
-              <Beregning titel="Stabiliserende ballast" raekker={ballastRaekker(r, input, zone)} />
+              <Beregning
+                smal={Boolean(arealfigur)}
+                titel="Stabiliserende ballast"
+                raekker={ballastRaekker(r, input, zone)}
+              />
               <p className="calc-note">
                 Ballasten B<sub>d</sub> er fyldet i en lodret søjle med rørets bredde fra terræn til
                 rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
@@ -978,6 +1004,7 @@ export function Opdriftssikring() {
                 m/s².
               </p>
               <Beregning
+                smal={Boolean(arealfigur)}
                 titel="Kontrol uden geonet"
                 raekker={[
                   r.S1 === null

@@ -149,6 +149,10 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await geonet.getByRole('button', { name: 'Mellemregninger', exact: true }).click();
   await expect(geonet.getByRole('row', { name: /Samlet reduktionsfaktor/ })).toContainText('2,11');
   await expect(geonet.getByRole('row', { name: /Kemisk påvirkning/ })).toContainText('1,22');
+  // Forklaringerne står på én linje.
+  await expect(
+    geonet.getByRole('rowheader', { name: 'Resterende opdrift som skal optages af geonet' }),
+  ).toHaveCSS('white-space', 'nowrap');
   await mellemregning(geonet, 'Resterende opdrift som skal optages af geonet', [
     'Fop,d = Od − Bd = 54,00 − 26,43',
     '27,56 kN/m',
