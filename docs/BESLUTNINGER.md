@@ -556,3 +556,12 @@ Valgt af Claude og kan ændres:
 - Figuren i kort 5 står til højre for gruppen »Opdrift«. Tabellen beholder mindst 640 px, og figuren krymper ned til 300 px, før den flytter ned under tabellen. Ved 1440 px er figuren ca. 330 px bred, ved 1920 px har den fuld størrelse.
 - På smalle skærme står rækkenavnet over formel og resultat.
 - MSL Dimensionering er ikke ændret. Mellemregningerne dér bør overvejes i samme stil.
+
+## 31. oktober 2026 — resultaterne i kort 5 i samme kolonne
+
+Brugerens ønske: »i dette kort må du gerne rykke resultaterne for stabilisrende ballast og ned, til venstre så de står i samme kolonne som resultater ovenover, for opdriften. Der er ret langt over til højre for at se resultaterne.«
+
+- Når arealfiguren vises i kort 5, står tabellerne for »Opdrift«, »Stabiliserende ballast« og »Kontrol uden geonet« alle i venstre kolonne, så resultaterne flugter. Noterne står fortsat i fuld bredde.
+
+Valgt af Claude og kan ændres:
+- Forklaringskolonnen er 220 px i stedet for 240 px, når figuren vises, og formlen for »Resten af rørets øverste halvdel« skrives igen (π · r²/2 − A_tør) · γ′_d, så ingen formler brydes ved 1440 px.

@@ -529,7 +529,7 @@ function ballastRaekker(
       },
       {
         forklaring: 'Resten af rørets øverste halvdel',
-        formel: `((π/4 · d²)/2 − A_{tør}) · γ′_{d} = (${tal(halvRoer, 4)} − ${tal(zone.Ator, 4)}) · ${eff}`,
+        formel: `(π · r²/2 − A_{tør}) · γ′_{d} = (${tal(halvRoer, 4)} − ${tal(zone.Ator, 4)}) · ${eff}`,
         resultat: kNm(-b.roerDele.vaad),
       },
       egenvaegt,
@@ -927,9 +927,11 @@ export function Opdriftssikring() {
             </div>
             <p className="calc-conclusion">{r.konklusion.join(' ')}</p>
             <Udfold titel="Mellemregninger">
-              {/* Grupper med forklaring, formel og resultat (beslutning 31. oktober 2026). */}
+              {/* Grupper med forklaring, formel og resultat (beslutning 31. oktober 2026). Med figur
+                  står alle tabeller i venstre kolonne, så resultaterne flugter, og noterne står i fuld
+                  bredde. */}
               <div className={arealfigur ? 'mellemregninger-med-figur' : undefined}>
-                <div>
+                <div className="beregning-gruppe">
                   <Beregning
                     titel="Opdrift"
                     raekker={[
@@ -953,48 +955,55 @@ export function Opdriftssikring() {
                     label="Rørets tværsnit delt af GVS: arealet over og under GVS"
                   />
                 )}
+                <p className="calc-note">
+                  <Fmt
+                    text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
+                  />
+                </p>
+                <p className="calc-note">
+                  <Fmt
+                    text={
+                      avanceret
+                        ? 'Opdriften O_{d} er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
+                        : 'Opdriften O_{d} er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand.'
+                    }
+                  />
+                </p>
+                <div className="beregning-gruppe">
+                  <Beregning
+                    titel="Stabiliserende ballast"
+                    raekker={ballastRaekker(r, input, zone)}
+                  />
+                </div>
+                <p className="calc-note">
+                  Ballasten B<sub>d</sub> er fyldet i en lodret søjle med rørets bredde fra terræn
+                  til rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
+                </p>
+                <p className="calc-note">
+                  Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = {tal(g)}{' '}
+                  m/s².
+                </p>
+                <div className="beregning-gruppe">
+                  <Beregning
+                    titel="Kontrol uden geonet"
+                    raekker={[
+                      r.S1 === null
+                        ? {
+                            forklaring: 'Ballast i forhold til opdrift',
+                            formel: 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.',
+                            hoved: true,
+                          }
+                        : {
+                            forklaring: 'Ballast i forhold til opdrift',
+                            formel: `S₁ = B_{d}/O_{d} = ${tal(r.B)}/${tal(r.O)} (krav ≥ ${tal(standarder.krav.S1, 1)})`,
+                            resultat: tal(r.S1),
+                            status: r.S1Status,
+                            hoved: true,
+                          },
+                    ]}
+                  />
+                </div>
               </div>
-              <p className="calc-note">
-                <Fmt
-                  text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
-                />
-              </p>
-              <p className="calc-note">
-                <Fmt
-                  text={
-                    avanceret
-                      ? 'Opdriften O_{d} er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
-                      : 'Opdriften O_{d} er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand.'
-                  }
-                />
-              </p>
-              <Beregning titel="Stabiliserende ballast" raekker={ballastRaekker(r, input, zone)} />
-              <p className="calc-note">
-                Ballasten B<sub>d</sub> er fyldet i en lodret søjle med rørets bredde fra terræn til
-                rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
-              </p>
-              <p className="calc-note">
-                Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = {tal(g)}{' '}
-                m/s².
-              </p>
-              <Beregning
-                titel="Kontrol uden geonet"
-                raekker={[
-                  r.S1 === null
-                    ? {
-                        forklaring: 'Ballast i forhold til opdrift',
-                        formel: 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.',
-                        hoved: true,
-                      }
-                    : {
-                        forklaring: 'Ballast i forhold til opdrift',
-                        formel: `S₁ = B_{d}/O_{d} = ${tal(r.B)}/${tal(r.O)} (krav ≥ ${tal(standarder.krav.S1, 1)})`,
-                        resultat: tal(r.S1),
-                        status: r.S1Status,
-                        hoved: true,
-                      },
-                ]}
-              />
             </Udfold>
           </Trin>
 
