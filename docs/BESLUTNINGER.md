@@ -536,3 +536,23 @@ Brugerens ønske: »kan de sidste 4 linjer i mellemregningerne ikke stå i fuld 
 
 - De fire noter i mellemregningerne i kort 5 (γ_f, opdriften, ballasten og g) står nu under formler og figur i fuld bredde. Formlerne står fortsat ved siden af arealfiguren i avanceret beregning.
 - Ved 1440 px står hver note på én linje.
+
+## 31. oktober 2026 — mellemregninger som tabel (forslag A)
+
+Brugerens ønske: »kan du ikke lave et designforslag, der gør mellemregningerne lidt pænere at se på? altså, lige nu står formler, resultater og forklaringer bare ud i 1. Kan man justere lidt på det, så det er nemmere at overskue? Lav et designforslag. Der må ikke 'gemmes' information i tooltips i mellemregningerne.« Claude viste to skitser: forslag A (tabel) og forslag B (forklaring over formlen) og skrev, at forslaget gælder alle mellemregninger i kort 5–7. Brugerens svar: »jeg vil gerne gå med forslag A« og om de øvrige kort: »det er fint«.
+
+- Alle mellemregninger i kort 5, 6 og 7, også på løsningskortene, står som tabeller med tre kolonner: forklaring, formel med indsatte tal og resultat med enhed.
+- Gruppens resultat og kontroller står med lysegrøn baggrund. S₁ og kontrollerne har OK/EJ OK-mærke ved resultatet.
+- Kort 5 har grupperne »Opdrift«, »Stabiliserende ballast« og »Kontrol uden geonet«. Noterne står under den gruppe, de forklarer. Ballasten vises led for led med γ_tør,d, γ′_d og E_d, og r og a har hver sin række.
+- Kort 6 har grupperne »Restopdrift«, »Reduktionsfaktor (RF)« og »Designtrækstyrke«.
+- Intet står kun i tooltips.
+
+Valgt af Claude og kan ændres:
+- Forklaringerne fra tidligere i dag er gjort til rækkenavne, fx »Resterende opdrift som skal optages af geonet«. Betingelser står med lille skrift under rækkenavnet, fx »mindstelængden er bestemmende«, »GVS ligger under rørmidten« og »pr. meter forankringslængde«.
+- Partialkoefficienten viser »(CC2)« i formlen i stedet for »(konsekvensklasse CC2)«, som i skitsen.
+- I kort 6 står P_d efter RF, fordi P_d bruger RF. Summen af RF viser produktet af faktorerne med tal.
+- Nye indsatte tal i formlerne: σ′_v for to ledninger, når GVS ligger over rørmidten, og L_a for én ledning med omslag.
+- I standardberegningen vises rækken »Fyld over GVS« med 0,00 kN/m, så alle led står.
+- Figuren i kort 5 står til højre for gruppen »Opdrift«. Tabellen beholder mindst 640 px, og figuren krymper ned til 300 px, før den flytter ned under tabellen. Ved 1440 px er figuren ca. 330 px bred, ved 1920 px har den fuld størrelse.
+- På smalle skærme står rækkenavnet over formel og resultat.
+- MSL Dimensionering er ikke ændret. Mellemregningerne dér bør overvejes i samme stil.
