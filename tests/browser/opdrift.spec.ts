@@ -438,6 +438,14 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(page.getByText(/GVS ligger under toppen af røret/)).toHaveCount(0);
   await page.getByRole('button', { name: 'Mellemregninger', exact: true }).first().click();
   await expect(page.getByRole('img', { name: /Rørets tværsnit delt af GVS/ })).toBeVisible();
+  // Formlerne står ved siden af figuren, og noterne står under dem i fuld bredde.
+  await expect(
+    page.locator('.mellemregninger-med-figur').locator('.formler, .calc-figure'),
+  ).toHaveCount(2);
+  await expect(page.locator('.mellemregninger-med-figur .calc-note')).toHaveCount(0);
+  await expect(
+    page.locator('.mellemregninger:has(> .mellemregninger-med-figur) > p.calc-note'),
+  ).toHaveCount(4);
   await expect(page.getByText(/arccos\(a\/r\).* = 2,4567 m²/)).toBeVisible();
   await expect(
     page.getByText(/del af rørets udvendige tværsnit, der ligger under GVS/),

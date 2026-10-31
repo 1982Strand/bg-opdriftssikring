@@ -728,28 +728,6 @@ export function Opdriftssikring() {
                         : `S₁ = B_{d}/O_{d} = ${tal(r.B)}/${tal(r.O)} = ${tal(r.S1)} (krav ≥ ${tal(standarder.krav.S1, 1)}), ballast i forhold til opdrift uden geonet`,
                     ]}
                   />
-                  <p className="calc-note">
-                    <Fmt
-                      text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
-                    />
-                  </p>
-                  <p className="calc-note">
-                    <Fmt
-                      text={
-                        avanceret
-                          ? 'Opdriften O_{d} er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
-                          : 'Opdriften O_{d} er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand.'
-                      }
-                    />
-                  </p>
-                  <p className="calc-note">
-                    Ballasten B<sub>d</sub> er fyldet i en lodret søjle med rørets bredde fra terræn
-                    til rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
-                  </p>
-                  <p className="calc-note">
-                    Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = {tal(g)}{' '}
-                    m/s².
-                  </p>
                 </div>
                 {arealfigur && (
                   <Figur
@@ -758,6 +736,29 @@ export function Opdriftssikring() {
                   />
                 )}
               </div>
+              {/* Noterne står i fuld bredde under formler og figur (beslutning 31. oktober 2026). */}
+              <p className="calc-note">
+                <Fmt
+                  text={`γ_{f} er partialkoefficienten γ_{G;dst} for ugunstig tyngde af (grund)vand i DS/EN 1997-1 DK NA:2021, tabel A.4-1 NA, som gælder for løftning (UPL) med trækelementer som geonet.`}
+                />
+              </p>
+              <p className="calc-note">
+                <Fmt
+                  text={
+                    avanceret
+                      ? 'Opdriften O_{d} er vægten af det vand, røret fortrænger: den del af rørets udvendige tværsnit, der ligger under GVS, gange γ_{w}. Røret regnes tomt.'
+                      : 'Opdriften O_{d} er vægten af det vand, røret fortrænger: rørets udvendige tværsnit π/4 · d² gange γ_{w}. Røret regnes tomt og helt under vand.'
+                  }
+                />
+              </p>
+              <p className="calc-note">
+                Ballasten B<sub>d</sub> er fyldet i en lodret søjle med rørets bredde fra terræn til
+                rørmidte, minus rørets øverste halvdel, plus rørets egenvægt.
+              </p>
+              <p className="calc-note">
+                Rørets egenvægt omregnes fra kg/m til kN/m med tyngdeaccelerationen g = {tal(g)}{' '}
+                m/s².
+              </p>
             </Udfold>
           </Trin>
 
