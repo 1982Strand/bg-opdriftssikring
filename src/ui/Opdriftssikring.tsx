@@ -216,12 +216,24 @@ const tillaegOmslag = {
   D: 4 * netTillaegOmslag - 4 * omslagAfstand,
 };
 
+/** Noter om kontrollen ved løsningerne med én ledning (fund K-11, beslutning 31. oktober 2026). */
+const kontrolNote = {
+  udenOmslag:
+    'Kontrollen er eftervisningen for løftning: O_{d} ≤ B_{d} + F_{bund} · 2 · L_{geonet}. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_{op,d} · S₂, og viser tillægget fra S₂ (fund K-11).',
+  medOmslag:
+    'Kontrollen er eftervisningen for løftning med begge netlag. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_{op,d} · S₂ (fund K-11).',
+};
+
 /** Rækker og mellemregninger for én løsning. null, når omslag ikke er muligt. */
 function losningIndhold(
   r: OpdriftResultat,
   input: ReturnType<typeof tilMotorInput>,
   losning: Losning,
-): { raekker: [string, string, (Status | null)?][]; beregning: Mellemregning[] } | null {
+): {
+  raekker: [string, string, (Status | null)?][];
+  beregning: Mellemregning[];
+  note?: string;
+} | null {
   const { A, B, C, D } = r.losninger;
   const torTilMidte = r.gvsZone !== null && r.gvsZone.zone >= 3;
   const d = input.d;
@@ -276,6 +288,7 @@ function losningIndhold(
           ...faelles(A),
           ['Opdriftskontrol', tal(A.kontrol), A.status],
         ],
+        note: A.kontrol === null ? undefined : kontrolNote.udenOmslag,
         beregning: [
           {
             forklaring: 'Samlet forankringslængde der skal til for at optage K',
@@ -339,6 +352,7 @@ function losningIndhold(
             ...faelles(C, tillaegOmslag.C),
             ['Opdriftskontrol', tal(C.kontrol), C.status],
           ],
+          note: C.kontrol === null ? undefined : kontrolNote.medOmslag,
           beregning: [
             {
               forklaring: 'Samlet forankringslængde der skal til for at optage K',
@@ -432,6 +446,11 @@ function LosningKort({
           {/* Mellemregningerne står i kortets fulde bredde under figur og tal. */}
           <Udfold titel="Mellemregninger" laast={ikkeRelevant}>
             <Beregning raekker={indhold.beregning} />
+            {indhold.note && (
+              <p className="calc-note">
+                <Fmt text={indhold.note} />
+              </p>
+            )}
           </Udfold>
         </>
       ) : (
@@ -794,7 +813,7 @@ function DybResultat({
             {
               forklaring: 'Kraft forankringen skal dimensioneres for',
               detalje: 'fra kort 7',
-              formel: `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(standarder.S2)}`,
+              formel: `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(r.S2)}`,
               resultat: kNm(r.K),
             },
             {
@@ -855,6 +874,9 @@ function DybResultat({
             },
           ]}
         />
+        <p className="calc-note">
+          <Fmt text={kontrolNote.medOmslag} />
+        </p>
       </Udfold>
     </>
   );
@@ -1477,8 +1499,33 @@ export function Opdriftssikring() {
                 label="Kraftoptagelse K"
                 vaerdi={ikkeNoedvendig ? 'Ikke relevant' : tal(r.K)}
                 enhed={ikkeNoedvendig ? undefined : 'kN/m'}
-                note={`K = F_{op,d} · S₂, S₂ = ${tal(standarder.S2)}`}
+                note={`K = F_{op,d} · S₂, S₂ = ${tal(r.S2)}`}
               />
+            </div>
+            {/* S₂ kan ændres inden for arkets interval (fund K-14). Feltet afviser selv værdier uden
+                for intervallet, så kortet ikke forsvinder ved en ugyldig værdi. */}
+            <div className="calc-fields">
+              <div>
+                <SettingField
+                  field={{
+                    key: 'input-S2',
+                    label: 'Partialkoefficient for kraftoptagelse S₂',
+                    kind: 'number',
+                    min: standarder.S2Interval.min,
+                    max: standarder.S2Interval.max,
+                    step: 0.01,
+                  }}
+                  disabled={ikkeNoedvendig}
+                  value={i.S2}
+                  error={fejl('S2')}
+                  change={(v) => saet({ S2: Number(v) })}
+                />
+                <p className="calc-note">
+                  S₂ er partialkoefficienten for kraftoptagelse. Den fastlægges beregningsteknisk
+                  ved skøn ({tal(standarder.S2Interval.min)}–{tal(standarder.S2Interval.max)})
+                  afhængig af rørdimensionen og påvirker forankringslængden.
+                </p>
+              </div>
             </div>
             <Udfold titel="Mellemregninger for kraftoverførsel" laast={ikkeNoedvendig}>
               <Beregning
@@ -1491,7 +1538,7 @@ export function Opdriftssikring() {
                   ...forankringRaekker(r, input),
                   {
                     forklaring: 'Kraft forankringen skal dimensioneres for',
-                    formel: `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(standarder.S2)}`,
+                    formel: `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(r.S2)}`,
                     resultat: kNm(r.K),
                     hoved: true,
                   },

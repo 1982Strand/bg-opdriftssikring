@@ -124,3 +124,14 @@ test('lagring håndterer blokeret lager og én versionsnøgle', () => {
     true,
   );
 });
+
+test('S₂ gemmes og indlæses med 1,05 uden for intervallet (K-14)', () => {
+  assert.equal(standardSession().inddata.S2, 1.05);
+  assert.equal(tilMotorInput(standardSession()).S2, 1.05);
+  const ind = (S2: unknown) => parseSession(JSON.stringify({ inddata: { S2 } })).session.inddata.S2;
+  assert.equal(ind(1.2), 1.2);
+  assert.equal(ind(1.1), 1.1);
+  assert.equal(ind(1.3), 1.05);
+  assert.equal(ind(1), 1.05);
+  assert.equal(ind('x'), 1.05);
+});

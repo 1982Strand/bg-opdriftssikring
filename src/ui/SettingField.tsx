@@ -17,6 +17,8 @@ import { Fmt, ren } from './Fmt';
 export { HelpHint, HintCard } from './Hint';
 
 export type SettingValue = string | number | boolean;
+/** Grænser i feltfejl med dansk decimalkomma, fx 1,05. */
+const dansk = (x: number) => String(x).replace('.', ',');
 export interface SettingDefinition {
   key: string;
   label: string;
@@ -210,8 +212,8 @@ export function SettingField({
       )}
       {invalid && (
         <p className="setting-error" id={`${field.key}-error`} role="alert">
-          Angiv et gyldigt tal{field.min === undefined ? '' : ` fra ${field.min}`}
-          {field.max === undefined ? '' : ` til ${field.max}`}.
+          Angiv et gyldigt tal{field.min === undefined ? '' : ` fra ${dansk(field.min)}`}
+          {field.max === undefined ? '' : ` til ${dansk(field.max)}`}.
         </p>
       )}
       {error && (

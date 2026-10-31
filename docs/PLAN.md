@@ -59,7 +59,7 @@ Kortene har samme rækkefølge som rapporten:
 5. **Opdrift og stabiliserende ballast.** O_d, B_d og S₁ = B_d/O_d med statusmærke og arkets konklusionstekst.
 6. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
 7. **Forankring.**
-   - F_bund, F_top og K vises.
+   - F_bund, F_top og K vises. S₂ kan ændres mellem 1,05 og 1,20 med arkets note; standarden er 1,05 (K-14).
    - Alle fire løsninger vises under hinanden: uden og med omslag for én ledning (A og C) og derefter for to ledninger (B og D). Kortene for to ledninger viser arkets forudsætninger: største diameter og mindste egenvægt.
    - Hver løsning har en målsat figur til venstre og til højre L pr. side, afstand mellem ledninger, L_a, L_geonet,tot og arkets kontrol, hvor arket har en. Mellemregningerne står nederst i kortets fulde bredde.
 8. **Dybere forankring ved begrænset plads.** Kun i avanceret beregning og kun for én ledning med omslag. Ud fra den forankringslængde pr. side, der er plads til, findes den nødvendige dybde til det nederste netlag (fund K-25, [FORSLAG_DYB_FORANKRING.md](FORSLAG_DYB_FORANKRING.md)). Kortet har en fast advarsel, fliser, en figur med nettet ført ned langs rørets sider og mellemregninger.

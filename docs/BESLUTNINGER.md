@@ -633,3 +633,19 @@ Brugerens svar om de fire åbne fund: »K10 lader vi ligge, der er ingen aflkari
 - K-11: gennemgås sammen med brugeren.
 - K-14: S₂ bliver en redigerbar værdi med standarden 1,05, og arkets note fra A300 tilføjes. Faktoren 1,2 mellem rør er uændret. Placering og gyldigt interval afklares, før der kodes.
 - K-17: tages til sidst med en gennemgang af BS 8006.
+
+## 31. oktober 2026 — K-11 og K-14 afgjort
+
+Claude gennemgik K-11 og stillede fire spørgsmål til K-14. Brugerens svar: »Følg anbefalingerne«.
+
+**K-11.** Kontrollen bevares som dokumentation (a i gennemgangen, mulighed b i FUND). Den er eftervisningen for løftning og er altid opfyldt, når længden er dimensioneret efter K.
+
+**K-14.**
+- S₂ kan ændres i kort 7 »Forankring« under fliserne (1a), mellem 1,05 og 1,20 som i arkets note (2a), i både standard og avanceret beregning (3a). Standarden er 1,05.
+- Noten er sprogligt tilrettet (4b): »S₂ er partialkoefficienten for kraftoptagelse. Den fastlægges beregningsteknisk ved skøn (1,05–1,20) afhængig af rørdimensionen og påvirker forankringslængden.«
+- S₂ gemmes med beregningen, og »Nulstil beregning« sætter den tilbage til 1,05. Faktoren 1,2 mellem rør er uændret.
+
+Valgt af Claude og kan ændres:
+- Noterne om kontrollen står under mellemregningerne. Uden omslag: »Kontrollen er eftervisningen for løftning: O_d ≤ B_d + F_bund · 2 · L_geonet. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_op,d · S₂, og viser tillægget fra S₂ (fund K-11).« Med omslag og i kort 8: »Kontrollen er eftervisningen for løftning med begge netlag. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_op,d · S₂ (fund K-11).«
+- Feltet afviser selv værdier uden for intervallet med »Angiv et gyldigt tal fra 1,05 til 1,2.«, så kort 7 ikke forsvinder ved en ugyldig værdi. Motoren kontrollerer også intervallet. Feltfejlene skriver nu decimaler med komma i alle talfelter.
+- Feltet er låst, når opdriftssikring ikke er nødvendig.

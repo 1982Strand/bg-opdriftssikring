@@ -234,3 +234,26 @@ test('motoren importerer ikke kontrolcases', () => {
     .join('\n');
   assert.doesNotMatch(motor, /excel-cases|tests[\\/]cases/);
 });
+
+test('S₂ kan ændres inden for 1,05–1,2 og påvirker kun K og længderne (K-14)', () => {
+  const standard = beregnOpdrift(basis);
+  const s105 = beregnOpdrift({ ...basis, S2: 1.05 });
+  const s120 = beregnOpdrift({ ...basis, S2: 1.2 });
+  assert.ok(standard.ok && s105.ok && s120.ok);
+  // Uden S₂ regnes med arkets 1,05.
+  assert.equal(standard.resultat.S2, 1.05);
+  assert.deepEqual(s105.resultat, standard.resultat);
+  const a = standard.resultat;
+  const b = s120.resultat;
+  assert.equal(b.S2, 1.2);
+  assert.ok(Math.abs(b.K - 1.2 * b.Fopdrift) < 1e-12);
+  // Opdrift, ballast og kraftoverførsel er uændrede; forankringen bliver længere.
+  for (const k of ['O', 'B', 'Fopdrift', 'Fbund', 'Ftop'] as const) assert.equal(b[k], a[k]);
+  assert.ok(b.losninger.A.L > a.losninger.A.L);
+  assert.ok(b.losninger.C!.L > a.losninger.C!.L);
+  // L_mellem ved to ledninger bruger sin egen faktor 1,2 og ændres ikke.
+  assert.equal(b.losninger.B.toLMellem, a.losninger.B.toLMellem);
+  assert.deepEqual(fejlFelter({ ...basis, S2: 1.04 }), ['S2']);
+  assert.deepEqual(fejlFelter({ ...basis, S2: 1.21 }), ['S2']);
+  assert.deepEqual(fejlFelter({ ...basis, S2: Number.NaN }), ['S2']);
+});
