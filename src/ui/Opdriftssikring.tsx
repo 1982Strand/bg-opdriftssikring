@@ -839,10 +839,10 @@ export function Opdriftssikring() {
             <Udfold titel="Mellemregninger" laast={ikkeNoedvendig}>
               <Formler
                 linjer={[
-                  `F_{op,d} = O_{d} − B_{d} = ${tal(r.O)} − ${tal(r.B)} = ${tal(r.Fopdrift)} kN/m`,
+                  `F_{op,d} = O_{d} − B_{d} = ${tal(r.O)} − ${tal(r.B)} = ${tal(r.Fopdrift)} kN/m, den resterende opdrift som skal optages af geonet`,
                   r.geonet.uts === null
                     ? `Intet produkt i ét lag opfylder P_{d}/F_{op,d} > ${tal(standarder.krav.geonet)} ved F_{op,d} = ${tal(r.Fopdrift)} kN/m.`
-                    : `P_{d} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF)} = ${tal(r.geonet.Ptill)} kN/m`,
+                    : `P_{d} = UTS/RF = ${tal(r.geonet.uts, 0)}/${tal(r.geonet.RF)} = ${tal(r.geonet.Ptill)} kN/m, den trækstyrke geonettet kan regnes med i hele levetiden`,
                 ]}
               />
               <h3 className="mellemregninger-overskrift">Reduktionsfaktor (RF)</h3>

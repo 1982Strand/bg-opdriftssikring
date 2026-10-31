@@ -102,8 +102,18 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await geonet.getByRole('button', { name: 'Mellemregninger', exact: true }).click();
   await expect(geonet.getByRole('row', { name: /Samlet reduktionsfaktor/ })).toContainText('2,11');
   await expect(geonet.getByRole('row', { name: /Kemisk påvirkning/ })).toContainText('1,22');
-  await expect(geonet.getByText('Fop,d = Od − Bd = 54,00 − 26,43 = 27,56 kN/m')).toBeVisible();
-  await expect(geonet.getByText('Pd = UTS/RF = 80/2,11 = 37,98 kN/m')).toBeVisible();
+  await expect(
+    geonet.getByText(
+      'Fop,d = Od − Bd = 54,00 − 26,43 = 27,56 kN/m, den resterende opdrift som skal optages af geonet',
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await expect(
+    geonet.getByText(
+      'Pd = UTS/RF = 80/2,11 = 37,98 kN/m, den trækstyrke geonettet kan regnes med i hele levetiden',
+      { exact: true },
+    ),
+  ).toBeVisible();
   await expect(geonet.getByText('RF beregnes som produktet af følgende faktorer:')).toBeVisible();
   await expect(
     geonet.getByText(

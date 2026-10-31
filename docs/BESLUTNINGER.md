@@ -473,3 +473,12 @@ Brugerens ønske: »du må gerne gør farven for 'ej ok' mere rød, så det er m
 Valgt af Claude og kan ændres:
 - Den hvide tekst på rødt har en kontrast på ca. 6,6:1 og opfylder WCAG AA.
 - MSL Dimensionering har intet EJ OK-mærke, så der er intet at overføre dertil.
+
+## 31. oktober 2026 — beskrivelser i mellemregningerne i kort 6
+
+Brugerens ønske: »tilføj lige en kort beskrivelse til de to linjer med mellemregninger for Fop,d og Pd. fx for Fop,d, så der står: 'Fop,d = Od − Bd = 138,23 − 24,82 = 113,41 kN/m, den resterende opdrift som skal optages af geonet' og ligeledes for Pd«
+
+- Linjen for F_op,d slutter med »…, den resterende opdrift som skal optages af geonet«.
+
+Valgt af Claude og kan ændres:
+- Linjen for P_d slutter med »…, den trækstyrke geonettet kan regnes med i hele levetiden«.
