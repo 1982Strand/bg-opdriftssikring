@@ -74,6 +74,7 @@ Browsertestene dækker:
 - CC3 med note om statikerkontrol og låst GVS i terræn;
 - avanceret beregning til og fra med GVS under rørtoppen og ved rørbunden;
 - S₂ i kort 7 med noten, feltfejl uden for 1,05–1,20, nulstilling og noten om kontrollen i løsning A (K-11 og K-14);
+- arkets note om tovkraften i kort 6 og om trissevirkningen i kort 7 (K-27);
 - afstanden mellem netlagene i kort 7 med noten, længden og netlængden for løsning C ved 0,4 m, feltfejlen og nulstilling (K-26);
 - kort 8 med dybere forankring: kun i avanceret beregning, fliser, advarsler, figur, mellemregninger, K-25, beskeden ved tilstrækkelig længde, feltfejlen og lagringen;
 - navigationen;

@@ -218,6 +218,15 @@ const tillaegOmslag = {
 };
 
 /** Noter om kontrollen ved løsningerne med én ledning (fund K-11, beslutning 31. oktober 2026). */
+/** Arkets note i afsnit 5 om kraftens vej (A182:A184 og A186:A191, fund K-27), gengivet ordret
+ * uden »Note:« og med stavefejlen »korrrigres« rettet. */
+const tovkraftNote = {
+  styrke:
+    'Overførsel af den lodrette kraft til det vandrette plan i det armerede ballastlag på hver side af rør, forudsætter at det armerede ballastlag antages at opføre sig som en semirigid enhed. Det skal bemærkes at ”tovkraften” på hver side af røret kun udgør 50% af den beregnede kraft. På den sikre side anvendes den samlede opdrift til bestemmelse af type geonet, dvs. der indbygges en ekstra sikkerhed med en faktor 2 på geonettets styrke.',
+  forankring:
+    'Det antages at geoarmering i overgangen mellem lodret og vandret plan i den indbyggede tilstand tilegner afrundet form (trissevirkning), hvilket betyder at den lodrette kraft i geonet overføres uændret til det vandrette plan. Beregningsteknisk påføres kraften en sikkerhedsfaktor på min. 1,05 som betyder at den beregnede ”tovkraft” korrigeres før bestemmelse af den nødvendige forankringslængde. I tillæg hertil skal nævnes at trykspredning fra ballastlag afleverer en gunstig kraftkomposant, dels i forhold til overgangen, men også på den øvrige ballast, hvilket understøtter den semirigide opfattelse af ballastlaget. Baseret på vores erfaring vurderes det at ovennævnte antagelser er på den sikre side i praksis og understøttes af et stort antal udførte projekter i Danmark siden 1996.',
+};
+
 const kontrolNote = {
   udenOmslag:
     'Kontrollen er eftervisningen for løftning: O_{d} ≤ B_{d} + F_{bund} · 2 · L_{geonet}. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_{op,d} · S₂, og viser tillægget fra S₂ (fund K-11).',
@@ -1370,6 +1379,7 @@ export function Opdriftssikring() {
               Geonettet rulles ud på tværs af ledningen, så nettets styrke på langs af rullen
               udnyttes.
             </p>
+            <p className="calc-note">{tovkraftNote.styrke}</p>
             <div className="calc-override">
               <SettingField
                 field={{
@@ -1559,6 +1569,7 @@ export function Opdriftssikring() {
                 </p>
               </div>
             </div>
+            <p className="calc-note">{tovkraftNote.forankring}</p>
             <Udfold titel="Mellemregninger for kraftoverførsel" laast={ikkeNoedvendig}>
               <Beregning
                 raekker={[
