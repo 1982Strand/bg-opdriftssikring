@@ -14,6 +14,13 @@ test('standardsession og motorinput følger arket', () => {
   assert.equal(s.inddata.h1, 1.5);
   assert.equal(tilMotorInput(s).gvs, 0);
   assert.equal(tilMotorInput(s).overstyring, null);
+  // Manuelt valg af geonet bruges kun i avanceret beregning.
+  const manuelt = { ...s, inddata: { ...s.inddata, overstyringAktiv: true } };
+  assert.equal(tilMotorInput(manuelt).overstyring, null);
+  assert.deepEqual(tilMotorInput({ ...manuelt, avanceret: true }).overstyring, {
+    uts: 150,
+    lag: 2,
+  });
   assert.equal(s.konsekvensklasse, 'CC2');
 });
 test('validerer og falder tilbage felt for felt', () => {
