@@ -733,3 +733,12 @@ Brugerens ønske: »flyt advarslen omkring det nederste netlag der ligger 0,4m u
 
 - Advarslen om, at det nederste netlag ligger under rørbunden, står nu lige over »Mellemregninger« i kort 8.
 - Kontrolpunktet K-25 om dybere forankring er fjernet fra kortet »Kontrolpunkter«. Kortet bevares med K-05, K-08 og K-12.
+
+## 1. november 2026 — advarslen i kort 8 vises ved valg
+
+Brugerens ønske: »du må gerne gøre sådan, at advarslen først kommer frem hvis man tilvælger 'Beregn nødvendig forankringsdybde'«
+
+- Den faste advarsel i kort 8 vises først, når »Beregn nødvendig forankringsdybde« er valgt.
+
+Valgt af Claude og kan ændres:
+- Advarslen står under afkrydsningen og feltet i stedet for over, så afkrydsningen ikke flytter sig, når advarslen kommer frem.
