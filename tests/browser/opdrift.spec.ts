@@ -691,3 +691,14 @@ test('arkets note om tovkraften og trissevirkningen står i kort 6 og 7 (K-27)',
     ),
   ).toBeVisible();
 });
+
+test('hjælpeteksten ved avanceret beregning nævner det, der kun kan vælges dér', async ({
+  page,
+}) => {
+  await start(page);
+  await expect(
+    page.getByText(
+      'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag og dybere forankring ved begrænset plads.',
+    ),
+  ).toHaveCount(1);
+});
