@@ -686,3 +686,9 @@ Brugerens ønske: »indføre noterne fra regnearket, helst ordret, hvor de nu pa
 Valgt af Claude og kan ændres:
 - Teksten er ordret, men uden »Note:« foran, stavefejlen »korrrigres« er rettet til »korrigeres«, og et dobbelt mellemrum er fjernet.
 - Noterne står synligt i kortene og ikke i mellemregningerne, fordi de forklarer forudsætningerne for styrkekravet og S₂.
+
+## 1. november 2026 — arkets note om kraftens vej som infoboks
+
+Brugerens ønske: »du må gerne lave de to nye noter til en af de der grønne infobokse, ligesom dender kommer frem i toppen når man tilvælger 'Avanceret beregning'«
+
+- De to dele af arkets note fra afsnit 5 (K-27) står nu i grønne infobokse i kort 6 og kort 7 på samme pladser som før.

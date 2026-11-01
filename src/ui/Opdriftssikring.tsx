@@ -1379,7 +1379,7 @@ export function Opdriftssikring() {
               Geonettet rulles ud på tværs af ledningen, så nettets styrke på langs af rullen
               udnyttes.
             </p>
-            <p className="calc-note">{tovkraftNote.styrke}</p>
+            <Notice>{tovkraftNote.styrke}</Notice>
             <div className="calc-override">
               <SettingField
                 field={{
@@ -1569,7 +1569,7 @@ export function Opdriftssikring() {
                 </p>
               </div>
             </div>
-            <p className="calc-note">{tovkraftNote.forankring}</p>
+            <Notice>{tovkraftNote.forankring}</Notice>
             <Udfold titel="Mellemregninger for kraftoverførsel" laast={ikkeNoedvendig}>
               <Beregning
                 raekker={[
