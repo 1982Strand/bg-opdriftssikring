@@ -1007,14 +1007,6 @@ export function Opdriftssikring() {
           Nulstil beregning
         </Button>
       </div>
-      {avanceret && (
-        <Notice className="calc-mode-notice">
-          Avanceret beregning er valgt. Ved GVS under terræn regnes forankringen med tør fyld over
-          GVS. Ligger GVS under rørtoppen, regnes opdrift og ballast desuden ud fra den del af
-          røret, der står under vand. Ved GVS i terræn er resultatet det samme som i
-          standardberegningen.
-        </Notice>
-      )}
 
       <Trin
         nr={1}
@@ -1090,12 +1082,7 @@ export function Opdriftssikring() {
             og grundvandsspejl og risiko for svigt af drænsystemer.
           </Notice>
         )}
-        {!avanceret && !cc3 && (
-          <Notice>
-            Standardberegningen regner altid med GVS i terræn. GVS under terræn kan regnes med
-            avanceret beregning.
-          </Notice>
-        )}
+        {!avanceret && !cc3 && <Notice>Standardberegningen regner altid med GVS i terræn.</Notice>}
         {avanceret && input.gvs > 0 && (
           <Notice kind="warning">
             GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved

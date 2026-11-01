@@ -710,3 +710,10 @@ Valgt af Claude og kan ændres:
 Claude spurgte, om hjælpeteksten ved »Avanceret beregning« også skal nævne manuelt valg af geonet. Brugerens svar: »Ja, tilføj det«.
 
 - Hjælpeteksten er nu »I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag og dybere forankring ved begrænset plads.«
+
+## 1. november 2026 — kortere låsetekst og ingen infoboks ved avanceret beregning
+
+Brugerens ønske: »fjern tekst-delen 'GVS under terræn kan regnes med avanceret beregning.' fra infokortet i kort 3. I øvrigt må du gerne fjerne inforkortet helt, når man vælger 'avanceret beregning' i toppen.«
+
+- Infoboksen i kort 3 lyder nu »Standardberegningen regner altid med GVS i terræn.«
+- Infoboksen øverst på siden (»Avanceret beregning er valgt. …«) er fjernet.
