@@ -704,3 +704,9 @@ Brugerens ønske: »ændr teksten i tooltippet ved valg af geonet i 2 lag fra 'N
 Valgt af Claude og kan ændres:
 - I standardberegningen står noten »Standardberegningen vælger altid geonettet automatisk. Geonettet kan vælges manuelt med avanceret beregning.« under valget.
 - Hjælpeteksten ved »Avanceret beregning« nævner ikke manuelt valg af geonet.
+
+## 1. november 2026 — hjælpeteksten ved »Avanceret beregning«
+
+Claude spurgte, om hjælpeteksten ved »Avanceret beregning« også skal nævne manuelt valg af geonet. Brugerens svar: »Ja, tilføj det«.
+
+- Hjælpeteksten er nu »I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag og dybere forankring ved begrænset plads.«

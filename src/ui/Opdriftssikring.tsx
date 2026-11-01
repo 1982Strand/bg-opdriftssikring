@@ -990,7 +990,7 @@ export function Opdriftssikring() {
             key: 'avanceret',
             label: 'Avanceret beregning',
             kind: 'checkbox',
-            help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3 og dybere forankring ved begrænset plads.',
+            help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag og dybere forankring ved begrænset plads.',
           }}
           value={session.avanceret}
           // CC3 kan kun vælges i avanceret beregning, så standardberegningen går tilbage til CC2.
