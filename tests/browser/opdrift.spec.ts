@@ -534,7 +534,11 @@ test('dybere forankring ved begrænset plads findes kun i avanceret beregning (K
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
   const kort = page.locator('section.calc-card', { has: overskrift });
   const laengde = 'Mulig forankringslængde pr. side Lgeonet (m)';
-  await expect(kort.getByText(/^Dybere forankring er ikke en dokumenteret metode/)).toBeVisible();
+  await expect(
+    kort.getByText(
+      'Dybere forankring er ikke en dokumenteret metode og skal betragtes som rent teoretisk. Forankringslængden regnes med samme friktionsmodel som løsningen med omslag. Lokal jordreaktion ved nettets retningsændringer, jordbrud, netkræfter og deformationer er ikke eftervist og skal eftervises særskilt af 3. part, hvis løsningen ønskes brugt til udførelse. Byggros frasiger sig alt ansvar for resultaterne og deres evt. anvendelse.',
+    ),
+  ).toBeVisible();
   await expect(page.getByRole('spinbutton', { name: laengde })).toBeDisabled();
   await kort.getByRole('checkbox', { name: 'Beregn nødvendig forankringsdybde' }).click();
   await saet(page, laengde, '2.5');

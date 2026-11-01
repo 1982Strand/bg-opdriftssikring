@@ -717,3 +717,12 @@ Brugerens ønske: »fjern tekst-delen 'GVS under terræn kan regnes med avancere
 
 - Infoboksen i kort 3 lyder nu »Standardberegningen regner altid med GVS i terræn.«
 - Infoboksen øverst på siden (»Avanceret beregning er valgt. …«) er fjernet.
+
+## 1. november 2026 — ny advarsel i kort 8
+
+Brugerens ønske: »advarslen i kort 8 skal ændres fra 'Dybere forankring er ikke en dokumenteret metode og indgår ikke i regnearket. Længden regnes med samme friktionsmodel som løsningen med omslag. Lokal jordreaktion ved nettets retningsændringer, jordbrud, netkræfter og deformationer er ikke eftervist og skal eftervises særskilt, før løsningen bruges til udførelse.' til 'Dybere forankring er ikke en dokumenteret metode og skal betragtes som rent teoretisk. forankringslængden regnes med samme friktionsmodel som løsningen med omslag. Lokal jordreaktion ved nettets retningsændringer, jordbrud, netkræfter og deformationer er ikke eftervist og skal eftervises særskilt af 3. part, hvis løsningen ønskes brugt til udførelse. Byggros frasiger sig al ansvar for resultaterne og deres evt. anvendelse.'«
+
+- Advarslen lyder nu »Dybere forankring er ikke en dokumenteret metode og skal betragtes som rent teoretisk. Forankringslængden regnes med samme friktionsmodel som løsningen med omslag. Lokal jordreaktion ved nettets retningsændringer, jordbrud, netkræfter og deformationer er ikke eftervist og skal eftervises særskilt af 3. part, hvis løsningen ønskes brugt til udførelse. Byggros frasiger sig alt ansvar for resultaterne og deres evt. anvendelse.«
+
+Valgt af Claude og kan ændres:
+- »forankringslængden« er skrevet med stort, fordi det indleder en sætning, og »al ansvar« er rettet til »alt ansvar«.
