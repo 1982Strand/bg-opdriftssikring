@@ -132,6 +132,8 @@ Forankringslængderne afhænger af F_opdrift og ikke af nettet, så antallet af 
 
 **Afgjort 28. oktober 2026.** Det automatiske valg forbliver som i arket med ét lag og »kontakt leverandør for råd« over grænsen. Mulighed a og b er fravalgt. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, sådan som case 2 er regnet i arket. Overstyringen vises i rapporten.
 
+**1. november 2026.** Manuelt valg af geonet i 2 lag kan kun vælges i avanceret beregning. Standardberegningen vælger altid geonettet automatisk. Motoren regner fortsat arkets case 2 med overstyringen.
+
 ## K-05 GVS under rørtoppen
 
 **Arket.** Opdriften regnes altid for et helt neddykket rør. Ballastformlen forudsætter, at GVS ligger mellem terræn og rørmidte. Indtastningen kontrolleres ikke.

@@ -69,7 +69,7 @@ Browsertestene dækker:
 - at det automatiske netvalg opfylder kravet 1,01;
 - at omslag ikke er muligt ved lav rørmidte;
 - alle fire løsninger uden valg af antal eller konstruktion;
-- manuelt valg af 2 lag X-GRID 150;
+- manuelt valg af 2 lag X-GRID 150, kun i avanceret beregning;
 - forudsætningerne og konsekvensklasse CC3 i kort 1–2, herunder at CC3 kun kan vælges i avanceret beregning;
 - CC3 med note om statikerkontrol og låst GVS i terræn;
 - avanceret beregning til og fra med GVS under rørtoppen og ved rørbunden;

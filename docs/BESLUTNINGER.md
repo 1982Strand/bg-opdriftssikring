@@ -692,3 +692,15 @@ Valgt af Claude og kan ændres:
 Brugerens ønske: »du må gerne lave de to nye noter til en af de der grønne infobokse, ligesom dender kommer frem i toppen når man tilvælger 'Avanceret beregning'«
 
 - De to dele af arkets note fra afsnit 5 (K-27) står nu i grønne infobokse i kort 6 og kort 7 på samme pladser som før.
+
+## 1. november 2026 — manuelt valg af geonet kun i avanceret beregning
+
+Brugerens ønske: »ændr teksten i tooltippet ved valg af geonet i 2 lag fra 'Når ét lag ikke er nok, lægges 2 net af samme produkt oven på hinanden. Flere lag kan ikke udnyttes, fordi et net i midten ikke kan optage kraft. Forankringslængderne afhænger ikke af nettet.' til 'Hvis den krævede trækstyrke ikke er tilstrækkelig med 1 net kan der lægges et ekstra net af samme type ovenpå, for derved at fordoble den regningsmæssige trækstyrke. Påvirker kun kraftoverførslen, ikke forankringslængden.'. Derudover, så skal det ikke være muligt at vælge 'vælg geonet manuelt i 2 lag' i standard beregningen.«
+
+- Hjælpeteksten er ændret ordret.
+- »Vælg geonet manuelt i 2 lag« og produktlisten er låst i standardberegningen, og standardberegningen vælger altid geonettet automatisk. Låsen er kun i brugerfladen; motoren regner fortsat arkets case 2 med overstyringen.
+- Et gemt manuelt valg bevares og bruges igen, når avanceret beregning slås til.
+
+Valgt af Claude og kan ændres:
+- I standardberegningen står noten »Standardberegningen vælger altid geonettet automatisk. Geonettet kan vælges manuelt med avanceret beregning.« under valget.
+- Hjælpeteksten ved »Avanceret beregning« nævner ikke manuelt valg af geonet.

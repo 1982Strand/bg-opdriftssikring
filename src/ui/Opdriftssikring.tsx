@@ -1386,10 +1386,10 @@ export function Opdriftssikring() {
                   key: 'input-overstyring',
                   label: `Vælg geonet manuelt i ${standarder.geonet.lagVedManueltValg} lag`,
                   kind: 'checkbox',
-                  help: `Når ét lag ikke er nok, lægges ${standarder.geonet.lagVedManueltValg} net af samme produkt oven på hinanden. Flere lag kan ikke udnyttes, fordi et net i midten ikke kan optage kraft. Forankringslængderne afhænger ikke af nettet.`,
+                  help: 'Hvis den krævede trækstyrke ikke er tilstrækkelig med 1 net kan der lægges et ekstra net af samme type ovenpå, for derved at fordoble den regningsmæssige trækstyrke. Påvirker kun kraftoverførslen, ikke forankringslængden.',
                 }}
-                disabled={ikkeNoedvendig}
-                value={i.overstyringAktiv && !ikkeNoedvendig}
+                disabled={ikkeNoedvendig || !avanceret}
+                value={i.overstyringAktiv && !ikkeNoedvendig && avanceret}
                 change={(v) => saet({ overstyringAktiv: Boolean(v) })}
               />
               <SettingField
@@ -1402,12 +1402,18 @@ export function Opdriftssikring() {
                     label: `X-GRID ${p.uts} · UTS ${p.uts * standarder.geonet.lagVedManueltValg} kN/m`,
                   })),
                 }}
-                disabled={!i.overstyringAktiv || ikkeNoedvendig}
+                disabled={!i.overstyringAktiv || ikkeNoedvendig || !avanceret}
                 value={i.produkt}
                 error={fejl('overstyring')}
                 change={(v) => saet({ produkt: Number(v) })}
               />
             </div>
+            {!avanceret && (
+              <p className="calc-note">
+                Standardberegningen vælger altid geonettet automatisk. Geonettet kan vælges manuelt
+                med avanceret beregning.
+              </p>
+            )}
             <Udfold titel="Mellemregninger" laast={ikkeNoedvendig}>
               <Beregning
                 titel="Restopdrift"

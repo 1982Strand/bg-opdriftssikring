@@ -208,8 +208,14 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
   });
   const manuelt = page.getByRole('checkbox', { name: 'Vælg geonet manuelt i 2 lag' });
   const mellemregninger = geonet.getByRole('button', { name: 'Mellemregninger', exact: true });
-  // Et manuelt valg og åbne mellemregninger låses, når sikring ikke er nødvendig.
-  await manuelt.click();
+  // Geonettet kan kun vælges manuelt i avanceret beregning.
+  await expect(manuelt).toBeDisabled();
+  await expect(manuelt).not.toBeChecked();
+  await expect(
+    geonet.getByText(
+      'Standardberegningen vælger altid geonettet automatisk. Geonettet kan vælges manuelt med avanceret beregning.',
+    ),
+  ).toBeVisible();
   await mellemregninger.click();
   await expect(geonet.getByText('RF beregnes som produktet af følgende faktorer:')).toBeVisible();
   const gvsFelt = page.getByRole('spinbutton', { name: 'GVS under terræn (m)' });
@@ -221,6 +227,9 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
 
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
   await expect(page.getByText(laasTekst)).toHaveCount(0);
+  // Et manuelt valg og åbne mellemregninger låses, når sikring ikke er nødvendig.
+  await manuelt.click();
+  await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 150 (2 lag)');
   await iTerraen.click();
   await expect(gvsFelt).toBeEnabled();
   await saet(page, 'GVS under terræn (m)', '2');
@@ -287,12 +296,18 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
   await expect(iTerraen).toBeChecked();
   await expect(gvsFelt).toBeDisabled();
   await expect(flise(page, 'Kontrol uden geonet').locator('strong')).toHaveText('0,49');
-  // Det gemte manuelle valg vises igen, når sikring er nødvendig.
+  // Standardberegningen vælger geonettet automatisk.
+  await expect(manuelt).toBeDisabled();
+  await expect(manuelt).not.toBeChecked();
+  await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 80');
+  await expect(mellemregninger).toBeEnabled();
+  await expect(forankring.locator('.calc-figure')).toHaveCount(4);
+  // Det gemte manuelle valg vises igen i avanceret beregning, når sikring er nødvendig.
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await iTerraen.click();
   await expect(manuelt).toBeEnabled();
   await expect(manuelt).toBeChecked();
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 150 (2 lag)');
-  await expect(mellemregninger).toBeEnabled();
-  await expect(forankring.locator('.calc-figure')).toHaveCount(4);
 });
 
 test('det automatiske netvalg opfylder kravet 1,01 (K-03)', async ({ page }) => {
@@ -348,7 +363,16 @@ test('case 2 med 2 lag X-GRID 150 valgt manuelt', async ({ page }) => {
   await saet(page, 'Rørdiameter d (m)', '4');
   await saet(page, 'Jorddækning h₁ (m)', '0.6');
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('Kontakt leverandør');
-  await page.getByRole('checkbox', { name: 'Vælg geonet manuelt i 2 lag' }).click();
+  await expect(
+    page.getByText(
+      'Hvis den krævede trækstyrke ikke er tilstrækkelig med 1 net kan der lægges et ekstra net af samme type ovenpå, for derved at fordoble den regningsmæssige trækstyrke. Påvirker kun kraftoverførslen, ikke forankringslængden.',
+    ),
+  ).toHaveCount(1);
+  // Manuelt valg kræver avanceret beregning; med GVS i terræn er tallene de samme.
+  const manuelt = page.getByRole('checkbox', { name: 'Vælg geonet manuelt i 2 lag' });
+  await expect(manuelt).toBeDisabled();
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await manuelt.click();
   await page.getByRole('combobox', { name: 'Produkt i 2 lag' }).click();
   await page.getByRole('option', { name: 'X-GRID 150 · UTS 300 kN/m' }).click();
   await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 150 (2 lag)');

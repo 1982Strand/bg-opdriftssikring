@@ -57,7 +57,7 @@ Kortene har samme rækkefølge som rapporten:
    - T₁ = 0 er fast (K-18). Felterne afviser kun værdier uden fysisk mening, fx diameter ≤ 0. Ellers er der ingen grænser, som i arket.
 4. **Egenvægt og fyldmateriale.** Rørets egenvægt i kg/m, γ_våd, γ_tør og φ_k. En tabel viser karakteristiske og regningsmæssige værdier, også γ′ = γ_våd − γ_w. Regningsmæssige værdier får indekset d, fx γ_våd,d, γ_tør,d og γ′_d.
 5. **Opdrift og stabiliserende ballast.** O_d, B_d og S₁ = B_d/O_d med statusmærke og arkets konklusionstekst.
-6. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
+6. **Geonet.** F_opdrift, det automatisk valgte X-GRID efter arkets regel, P_till og sikkerheden P_till/F_opdrift med udnyttelsen af P_till i procent. Ved manuelt valg, kun i avanceret beregning, vælges produktet, og der regnes altid med 2 lag, som case 2 er regnet. Over arkets grænse vises »kontakt leverandør for råd«, og forankringen regnes alligevel, som i arket.
 7. **Forankring.**
    - F_bund, F_top og K vises. S₂ kan ændres mellem 1,05 og 1,20 med arkets note; standarden er 1,05 (K-14). Afstanden mellem netlagene ved omslag kan ændres mellem 0,2 og 0,4 m; standarden er 0,2 m (K-26).
    - Alle fire løsninger vises under hinanden: uden og med omslag for én ledning (A og C) og derefter for to ledninger (B og D). Kortene for to ledninger viser arkets forudsætninger: største diameter og mindste egenvægt.

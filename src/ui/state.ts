@@ -61,9 +61,12 @@ export function tilMotorInput(s: Session): OpdriftInput {
     gammaTor: i.gammaTor,
     phi: i.phi,
     konsekvensklasse: s.konsekvensklasse,
-    overstyring: i.overstyringAktiv
-      ? { uts: i.produkt, lag: standarder.geonet.lagVedManueltValg }
-      : null,
+    // Geonettet kan kun vælges manuelt i avanceret beregning (beslutning 1. november 2026); valget
+    // gemmes og bruges igen, når avanceret beregning slås til.
+    overstyring:
+      s.avanceret && i.overstyringAktiv
+        ? { uts: i.produkt, lag: standarder.geonet.lagVedManueltValg }
+        : null,
     metode: s.avanceret ? 'avanceret' : 'standard',
     S2: i.S2,
     omslagAfstand: i.omslagAfstand,
