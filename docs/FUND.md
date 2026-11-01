@@ -37,6 +37,8 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-24 | Betegnelsen »2xLgeonet« mellem rørene | Tekst, løsning B og D | Afgjort: L_mellem |
 | K-25 | Dybere forankring ved begrænset plads | Ny beregning, én ledning med omslag | Afgjort: kort 8 i avanceret beregning |
 | K-26 | Afstanden mellem netlagene ved omslag er fast 0,2 m | Løsning C og D, kort 8 | Afgjort: redigerbar 0,2–0,4 m, standard 0,2 m |
+| K-27 | Kraftens vej: trækket i nettet, knækket og trissevirkningen | Nettets styrke, forankring | Åben: som arket, arkets note vises |
+| K-28 | DANVA kræver forankring på 1,5 · F_opdrift pr. side | Forankring | Åben: som arket |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-05, K-08 og K-12 fra regnearket og K-25 for dybere forankring ved begrænset plads. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -472,3 +474,77 @@ Afstanden indgår tre steder: det øverste lag kommer højere op, så F_top fald
 **Eksempel.** Løsning C med 0,4 m i stedet for 0,2 m: case 1 giver L_geonet = 1,59 m i stedet for 1,36 m (+17 %), og case 2 giver 5,60 m i stedet for 5,27 m (+6 %). Kun en lille del skyldes det lavere F_top; resten er tillægget for de lodrette stykker.
 
 **Afgjort 31. oktober 2026.** Brugerens svar: »Ja, gør den redigerbar«. Afstanden kan ændres i kort 7 mellem 0,2 og 0,4 m med standarden 0,2 m i begge beregningsmetoder. Den bruges i h_top, i formlen for løsning C, i L_mellem for løsning D, i grænsen for, hvornår omslag er muligt (K-23), og i kort 8. Netlængden for løsning C og D får de længere lodrette stykker med (2 · (afstand − 0,2) for C og 4 · (afstand − 0,2) for D), mens arkets tillæg på 1,2 m og 0,8 m til omslag og overlæg er uændret. Med 0,2 m regnes som arket.
+
+## K-27 Kraftens vej: trækket i nettet, knækket og trissevirkningen
+
+**Baggrund.** I oktober 2026 stillede en statiker spørgsmål til eftervisningen af en opdriftssikring med geonet og omslag ved en tank. Spørgsmålene handler om, hvordan kraften går fra røret gennem nettet og ud i forankringen. Fundet samler gennemgangen 1. november 2026, så sammenhængen kan findes igen.
+
+**Statikerens spørgsmål.**
+- Efter montagevejledningen får nettet et knæk med meget lille krumning ved tankens sider. Hvilken deformation (løft) skal der til, før trækket i nettet virker?
+- Kan jorden holde imod, som om nettet var bukket om en trisse? Statikerens skitse af løsningen med omslag viser kræfterne i knækket: F_opdrift/2 lodret, F_opdrift/2 vandret og modholdet fra jorden F_opdrift/2 · 1/cos 45° = F_opdrift/2 · 1,41.
+- DANVA's figur 2.15 viser en mere krum lægning af nettet. Så er forankringen kun virksom med sin lodrette komposant, og kraften i nettet øges med 1/cos 45° = 1,41, hvis nettet forlader røret med 45°.
+
+**Kraftprincipper.**
+- Rørets lodrette ligevægt er 2 · T · cos α = F_opdrift, så T = F_opdrift/(2 · cos α). T er trækket i nettet pr. side, og α er vinklen fra lodret, hvor nettet slipper røret.
+- Følger nettet røret ned til det bredeste punkt og slipper lodret, er α = 0 og T = F_opdrift/2. Slipper det ved 45°, er T = 0,71 · F_opdrift, og ved 60° er T = F_opdrift.
+- Skifter nettet retning 90° med trækket T, skal jorden i knækket presse imod med resultanten T · √2, rettet skråt ind i hjørnet (»trissen«). Med T = F_opdrift/2 er det 0,71 · F_opdrift pr. side.
+- Nettet virker først, når det er strammet. Løftet afhænger af nettets tøjning, slæk ved udlægningen og jordens sammentrykning i knækket.
+
+**Arket.** Afsnit 5 har denne note (A182:A184 og A186:A191), gengivet ordret:
+
+> Note: Overførsel af den lodrette kraft til det vandrette plan i det armerede ballastlag på hver side af rør, forudsætter at det armerede ballastlag antages at opføre sig som en semirigid enhed. Det skal bemærkes at ”tovkraften” på hver side af røret kun udgør 50% af den beregnede kraft. På den sikre side anvendes den samlede opdrift til bestemmelse af type geonet, dvs. der indbygges en ekstra sikkerhed med en faktor 2 på geonettets styrke.
+>
+> Det antages at geoarmering i overgangen mellem lodret og vandret plan i den indbyggede tilstand tilegner afrundet form (trissevirkning), hvilket betyder at den lodrette kraft i geonet overføres uændret til det vandrette plan. Beregningsteknisk påføres kraften en sikkerhedsfaktor på min. 1,05 som betyder at den beregnede ”tovkraft” korrrigres før bestemmelse af den nødvendige forankringslængde. I tillæg hertil skal nævnes at trykspredning fra ballastlag afleverer en gunstig kraftkomposant, dels i forhold til overgangen, men også på den øvrige ballast, hvilket understøtter den semirigide opfattelse af ballastlaget. Baseret på vores erfaring vurderes det at ovennævnte antagelser er på den sikre side i praksis og understøttes af et stort antal udførte projekter i Danmark siden 1996.
+
+**Sådan er det løst i arket og hos Byggros.** Arket regner med T = F_opdrift/2 pr. side og trissevirkning i knækket:
+- Geonettet vælges efter hele F_opdrift: P_till/F_opdrift > 1,01 (K-03). Det giver nettets styrke faktor 2 i forhold til tovkraften, svarende til 1/cos 60°.
+- Forankringen dimensioneres for K = S₂ · F_opdrift for begge sider tilsammen, altså S₂ · F_opdrift/2 pr. side. S₂ er 1,05 i arket og kan ændres til 1,05–1,20 i appen (K-14).
+- Antagelserne begrundes med trissevirkningen, den semirigide opfattelse af det armerede fyld, trykspredningen fra ballastlaget og erfaring fra udførte projekter i Danmark siden 1996. De er ikke eftervist ved beregning.
+
+**Hvad der er dækket.**
+
+| Forhold | Arket og appen |
+|---|---|
+| Nettets styrke ved krum netføring | Dækket op til α = 60° af faktor 2. |
+| Forankringen ved krum netføring | Ikke dækket af S₂: 45° kræver 1,41 · F_opdrift/2 pr. side mod S₂ = 1,05–1,20. Begrundes med trissevirkningen og den semirigide opfattelse. |
+| Jordreaktionen i knækket, T · √2 | Kontrolleres ikke i arket, i DANVA eller i appen. Advarslen i kort 8 (K-25) nævner den. |
+| Løftet, før nettet virker | Beregnes ikke nogen af stederne. |
+
+**Eksempel.** Case 1: F_opdrift = 27,56 kN/m giver T = 13,78 kN/m pr. side, og forankringen dimensioneres for 1,05 · 13,78 = 14,47 kN/m pr. side. Jordreaktionen i knækket er 13,78 · 1,41 = 19,49 kN/m pr. side. Slipper nettet ved 45°, er trækket også 19,49 kN/m pr. side. Nettet (X-GRID 80, P_d = 37,98 kN/m) er valgt efter hele F_opdrift = 27,56 kN/m.
+
+**Nettet ved rørbunden.** En illustration sammenlignede den traditionelle løsning med en lav løsning, hvor nettet går lodret ned langs rørets sider og vandret ud ved rørbunden. I den lave løsning er α = 0 og T = F_opdrift/2 entydigt, og knækket ligger dybere med mere jord over. Illustrationens tal svarer præcis til appens løsning uden omslag med nettet ved rørmidten og ved rørbunden (Ø3500, GVS i terræn, 1,0 m jorddække):
+
+| | Nettet ved rørmidten | Nettet ved rørbunden |
+|---|---:|---:|
+| Dybde h | 2,75 m | 4,50 m |
+| Kraftoverførsel q | 8,51 kN/m² | 13,93 kN/m² |
+| L_geonet pr. side | 4,77 m | 2,91 m |
+| Samlet bredde L_a | 13,0 m | 9,3 m |
+| Samlet net pr. m rør, inkl. de lodrette sider | 15,0 m | 14,8 m |
+
+Ved Ø1000 er begge længder mindstelængden 1,00 m, og nettet er 3,6 og 4,6 m. Illustrationen nævner som ulemper ved den lave løsning en bredere udgravning i bunden, sværere komprimering ved rørets sider, risiko for at beskadige nettet, samme krav til knækradius (r > d/4, uden kilde) og mere løft, før nettet virker. Kort 8 (K-25) regner en dybere forankring med omslag ud fra en angivet længde; en lav løsning uden omslag med nettet ved rørbunden findes ikke i appen.
+
+**Muligheder.**
+- a) Som arket, med arkets note vist i appen.
+- b) Forankringen dimensioneres for T = F_opdrift/(2 · cos α) med en angivet vinkel α.
+- c) En kontrol af jordreaktionen i knækket. Det kræver en model for jordens bæreevne og knækradius.
+- d) Forsøg eller målinger af løft og træk, fx den forsøgsopstilling, der er nævnt i e-mailene.
+
+**Status 1. november 2026.** Registreret efter brugerens ønske: »start med at registrere det hele i FUND, så jeg senere kan gå tilbage og finde ud af hvad der er op og ned, samt hvordan vi har valgt at løse det i byggros med regnearket.« Appen regner som arket. Brugeren ønsker arkets note vist i appen, helst ordret (a). Mulighederne b–d er ikke afgjort.
+
+## K-28 DANVA kræver forankring på 1,5 · F_opdrift pr. side
+
+**DANVA.** Afsnittet om sikring mod opdrift (side 63 i transskriptionen af DANVA-teksten) regner F_forank = h_a · γ_effektiv · μ · tan φ_d · L_geonet. L_geonet er forankringslængden »ud fra rørvæggen«, altså pr. side, så L_a = 2 · L_geonet + d_rør. Sikkerheden S₂ = F_forank/F_opdrift skal være mindst 1,5, så F_forank skal være mindst 1,5 · F_opdrift. Som teksten står, skal hver side for sig optage 1,5 · F_opdrift, og L_geonet bør ikke være mindre end 1,0 m. DANVA bruger desuden γ_f på opdriften og γ_φ på friktionsvinklen og kræver en samlet sikkerhed S₃ ≥ 1,3, hvis formel er uklar i teksten.
+
+**Arket.** Begge sider tilsammen skal optage K = S₂ · F_opdrift med S₂ = 1,05, altså 0,525 · F_opdrift pr. side. Arket kalder S₂ en partialkoefficient, der »fastlægges beregningsteknisk ved skøn (1,05-1,2) afhængig af rørdimension« (A300), og begrunder i noten i afsnit 5, at tovkraften pr. side er 50 % af F_opdrift (K-27). Arket bruger samme partialkoefficienter på opdrift og friktion som DANVA.
+
+**Forskel.** Med samme kraftoverførsel kræver DANVA's tekst en forankringslængde pr. side, der er 1,5/0,525 ≈ 2,9 gange arkets. Case 1: arket giver L_geonet = 1,70 m pr. side (løsning A), DANVA's tekst 1,5 · 27,56/8,50 = 4,86 m pr. side.
+
+**Ikke afklaret.** Om DANVA's S₂ er ment pr. side eller for begge sider tilsammen, og om forskellen er et bevidst skift fra en global sikkerhed til partialkoefficienter. I dokumentmappen ligger en e-mail, der sammenligner DANVA med en beregning efter ny norm. Den er ikke gennemgået.
+
+**Muligheder.**
+- a) Som arket.
+- b) Afklaring med DANVA eller ved gennemgang af e-mailen.
+- c) DANVA's krav indføres som kontrol.
+
+**Status 1. november 2026.** Registreret, ingen beslutning. Appen regner som arket.
