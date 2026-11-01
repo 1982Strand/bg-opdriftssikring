@@ -572,11 +572,15 @@ test('dybere forankring ved begrænset plads findes kun i avanceret beregning (K
     '2L = K/(Fbund + Ftop/2) + 2 · 0,2 = 119,08/(17,46 + 16,85/2) + 0,4',
     '5,00 m',
   ]);
-  await expect(
-    page.getByText(
-      'Dybere forankring ved begrænset plads giver hbund = 5,65 m for Lgeonet = 2,50 m pr. side. Metoden er ikke i regnearket og kræver særskilt statisk og geoteknisk eftervisning (fund K-25).',
-    ),
-  ).toBeVisible();
+  // Den dybere forankring står ikke under »Kontrolpunkter«; advarslen om rørbunden står lige over
+  // mellemregningerne.
+  await expect(page.getByText(/fund K-25/)).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toBeVisible();
+  const advarsel = kort.getByText(/^Det nederste netlag ligger 1,05 m under rørbunden/);
+  const knap = kort.getByRole('button', { name: 'Mellemregninger' });
+  const [ya, yk] = await Promise.all([advarsel.boundingBox(), knap.boundingBox()]);
+  expect(ya!.y).toBeLessThan(yk!.y);
+  expect(yk!.y - ya!.y).toBeLessThan(120);
 
   // Tilstrækkelig ved rørmidten: henvisning til løsningen med omslag i kort 7.
   await saet(page, laengde, '6');

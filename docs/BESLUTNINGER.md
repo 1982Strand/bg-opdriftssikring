@@ -726,3 +726,10 @@ Brugerens ønske: »advarslen i kort 8 skal ændres fra 'Dybere forankring er ik
 
 Valgt af Claude og kan ændres:
 - »forankringslængden« er skrevet med stort, fordi det indleder en sætning, og »al ansvar« er rettet til »alt ansvar«.
+
+## 1. november 2026 — advarslerne i kort 8 og kontrolpunktet K-25
+
+Brugerens ønske: »flyt advarslen omkring det nederste netlag der ligger 0,4m under rørbunden, ned lige over 'mellemregninger' Fjern kortet 'Kontrolpunkter' og deres advarsler«, rettet straks efter: »vent lidt. kortet 'kontrolpunkter', skal ikke fjernes alligevel, kun de dele der hører til advarlserne omkring den dybere forankring«.
+
+- Advarslen om, at det nederste netlag ligger under rørbunden, står nu lige over »Mellemregninger« i kort 8.
+- Kontrolpunktet K-25 om dybere forankring er fjernet fra kortet »Kontrolpunkter«. Kortet bevares med K-05, K-08 og K-12.
