@@ -667,3 +667,11 @@ Valgt af Claude og kan ændres:
 - Noten: »Den lodrette afstand mellem netlagene ved omslag er mindst 0,2 m. I praksis udføres den ofte med 0,2–0,4 m, så fyldet kan komprimeres. En større afstand giver længere forankring med omslag.«
 - Netlængden får de længere lodrette stykker med: + 2 · (afstand − 0,2) for løsning C og kort 8 og + 4 · (afstand − 0,2) for løsning D. Arkets tillæg på 1,2 m og 0,8 m til omslag og overlæg er uændret. Leddet vises kun i mellemregningerne, når afstanden ikke er 0,2 m.
 - Afstanden vises med én decimal, når den anden er nul, fx »0,2« og »0,35«, også i noterne om omslag og i K-08.
+
+## 1. november 2026 — kraftens vej registreret (K-27 og K-28)
+
+Claude gennemgik en illustration af kraftens vej, en statikers spørgsmål om knækket og trissevirkningen og arkets note i afsnit 5. Brugerens ønske: »start med at registrere det hele i FUND, så jeg senere kan gå tilbage og finde ud af hvad der er op og ned, samt hvordan vi har valgt at løse det i byggros med regnearket. Jeg vil gerne have beskrevet det hele, som vi har gennemgået her for ikke at miste kontekst. Dernæst vil jeg gerne indføre noterne fra regnearket, helst ordret, hvor de nu passer ind i appen.«
+
+- K-27 samler kraftprincipperne, statikerens spørgsmål, arkets note og løsning, hvad der er dækket, eksempler og illustrationen af nettet ved rørbunden.
+- K-28 beskriver forskellen mellem DANVA's forankringskrav pr. side og arkets krav for begge sider tilsammen.
+- Navne på personer, firmaer og sager er udeladt.
