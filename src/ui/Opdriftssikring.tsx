@@ -702,10 +702,11 @@ function DybForankringKort({
       )}
       {!laast && (
         <Notice kind="warning">
-          Dybere forankring er ikke en dokumenteret metode og indgår ikke i regnearket. Længden
-          regnes med samme friktionsmodel som løsningen med omslag. Lokal jordreaktion ved nettets
-          retningsændringer, jordbrud, netkræfter og deformationer er ikke eftervist og skal
-          eftervises særskilt, før løsningen bruges til udførelse.
+          Dybere forankring er ikke en dokumenteret metode og skal betragtes som rent teoretisk.
+          Forankringslængden regnes med samme friktionsmodel som løsningen med omslag. Lokal
+          jordreaktion ved nettets retningsændringer, jordbrud, netkræfter og deformationer er ikke
+          eftervist og skal eftervises særskilt af 3. part, hvis løsningen ønskes brugt til
+          udførelse. Byggros frasiger sig alt ansvar for resultaterne og deres evt. anvendelse.
         </Notice>
       )}
       <div className="calc-override">
