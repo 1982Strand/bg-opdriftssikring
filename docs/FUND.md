@@ -530,7 +530,7 @@ Ved Ø1000 er begge længder mindstelængden 1,00 m, og nettet er 3,6 og 4,6 m. 
 - c) En kontrol af jordreaktionen i knækket. Det kræver en model for jordens bæreevne og knækradius.
 - d) Forsøg eller målinger af løft og træk, fx den forsøgsopstilling, der er nævnt i e-mailene.
 
-**Status 1. november 2026.** Registreret efter brugerens ønske: »start med at registrere det hele i FUND, så jeg senere kan gå tilbage og finde ud af hvad der er op og ned, samt hvordan vi har valgt at løse det i byggros med regnearket.« Appen regner som arket. Brugeren ønsker arkets note vist i appen, helst ordret (a). Mulighederne b–d er ikke afgjort.
+**Status 1. november 2026.** Registreret efter brugerens ønske: »start med at registrere det hele i FUND, så jeg senere kan gå tilbage og finde ud af hvad der er op og ned, samt hvordan vi har valgt at løse det i byggros med regnearket.« Appen regner som arket. Arkets note vises ordret i appen (a): første del (A182:A184) i kort 6 under noten om udrulning og anden del (A186:A191) i kort 7 under S₂ og afstanden mellem netlagene. »Note:« er udeladt, og stavefejlen »korrrigres« er rettet til »korrigeres«. Mulighederne b–d er ikke afgjort.
 
 ## K-28 DANVA kræver forankring på 1,5 · F_opdrift pr. side
 

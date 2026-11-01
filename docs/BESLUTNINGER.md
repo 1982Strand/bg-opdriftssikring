@@ -675,3 +675,14 @@ Claude gennemgik en illustration af kraftens vej, en statikers spørgsmål om kn
 - K-27 samler kraftprincipperne, statikerens spørgsmål, arkets note og løsning, hvad der er dækket, eksempler og illustrationen af nettet ved rørbunden.
 - K-28 beskriver forskellen mellem DANVA's forankringskrav pr. side og arkets krav for begge sider tilsammen.
 - Navne på personer, firmaer og sager er udeladt.
+
+## 1. november 2026 — arkets note om kraftens vej i kort 6 og 7
+
+Brugerens ønske: »indføre noterne fra regnearket, helst ordret, hvor de nu passer ind i appen.«
+
+- Første del af noten i afsnit 5 (A182:A184) om tovkraften og faktor 2 på geonettets styrke står i kort 6 »Geonet« under noten om udrulning.
+- Anden del (A186:A191) om trissevirkningen, sikkerhedsfaktoren 1,05 og erfaringen siden 1996 står i kort 7 »Forankring« under felterne for S₂ og afstanden mellem netlagene.
+
+Valgt af Claude og kan ændres:
+- Teksten er ordret, men uden »Note:« foran, stavefejlen »korrrigres« er rettet til »korrigeres«, og et dobbelt mellemrum er fjernet.
+- Noterne står synligt i kortene og ikke i mellemregningerne, fordi de forklarer forudsætningerne for styrkekravet og S₂.

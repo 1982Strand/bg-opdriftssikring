@@ -649,3 +649,21 @@ test('afstanden mellem netlagene ved omslag kan ændres i kort 7 (K-26)', async 
   await page.getByRole('button', { name: 'Nulstil beregning' }).click();
   await expect(page.getByRole('spinbutton', { name: felt })).toHaveValue('0.2');
 });
+
+test('arkets note om tovkraften og trissevirkningen står i kort 6 og 7 (K-27)', async ({
+  page,
+}) => {
+  await start(page);
+  const kort = (navn: string) =>
+    page.locator('section.calc-card', { has: page.getByRole('heading', { name: navn }) });
+  await expect(
+    kort('6 Geonet').getByText(
+      /^Overførsel af den lodrette kraft til det vandrette plan .* der indbygges en ekstra sikkerhed med en faktor 2 på geonettets styrke\.$/,
+    ),
+  ).toBeVisible();
+  await expect(
+    kort('7 Forankring').getByText(
+      /^Det antages at geoarmering i overgangen mellem lodret og vandret plan .* udførte projekter i Danmark siden 1996\.$/,
+    ),
+  ).toBeVisible();
+});
