@@ -22,8 +22,7 @@ const mellemregning = (omraade: Locator, forklaring: string, celler: string[]) =
       .getByRole('row', { name: new RegExp(`^${forklaring.replace(/[.()]/g, '\\$&')}`) })
       .getByRole('cell'),
   ).toHaveText(celler);
-const laasTekst =
-  'Standardberegningen regner altid med GVS i terræn. GVS under terræn kan regnes med avanceret beregning.';
+const laasTekst = 'Standardberegningen regner altid med GVS i terræn.';
 
 test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await start(page);
@@ -470,12 +469,8 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(page.getByText(/Avanceret beregning er valgt/)).toHaveCount(0);
 
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
-  await expect(
-    page.getByText(
-      'Avanceret beregning er valgt. Ved GVS under terræn regnes forankringen med tør fyld over GVS.',
-      { exact: false },
-    ),
-  ).toBeVisible();
+  // Der vises ingen infoboks øverst, når avanceret beregning er valgt.
+  await expect(page.getByText(/Avanceret beregning er valgt/)).toHaveCount(0);
   await page.getByRole('checkbox', { name: 'GVS i terræn' }).click();
   await saet(page, 'GVS under terræn (m)', '1.6');
   await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('111,21');
