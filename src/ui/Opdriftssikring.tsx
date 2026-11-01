@@ -20,7 +20,7 @@ import { PageFooter, PageHeader } from './page';
 import { SaveState } from './SaveState';
 import { useSession } from './SessionContext';
 import { SettingField } from './SettingField';
-import { dybKontrolpunktTekst, kontrolpunktTekster } from './kontrolpunkter';
+import { kontrolpunktTekster } from './kontrolpunkter';
 import { betingelser, projekteringsansvar } from './forudsaetninger';
 import { Partialkoefficienter } from './Partialkoefficienter';
 import { Udfold } from './Udfold';
@@ -787,12 +787,6 @@ function DybResultat({
   });
   return (
     <>
-      {dyb.underRoerbund > 0 && (
-        <Notice kind="warning">
-          Det nederste netlag ligger {tal(dyb.underRoerbund)} m under rørbunden. Udgravning,
-          indbygning og komprimering under røret skal vurderes særskilt.
-        </Notice>
-      )}
       <div className="dim-results m9-result-cards">
         {/* Fliseoverskrifter skrives med store bogstaver, så symbolerne h_bund og Δh står i noten. */}
         <Flise
@@ -824,6 +818,12 @@ function DybResultat({
         svg={dybForankringSvg(r, input, dyb)}
         label="Dybere forankring med omslag: geonettet ført ned langs rørets sider til h_bund"
       />
+      {dyb.underRoerbund > 0 && (
+        <Notice kind="warning">
+          Det nederste netlag ligger {tal(dyb.underRoerbund)} m under rørbunden. Udgravning,
+          indbygning og komprimering under røret skal vurderes særskilt.
+        </Notice>
+      )}
       <Udfold titel="Mellemregninger">
         <Beregning
           titel="Nødvendig kraftoverførsel"
@@ -955,12 +955,9 @@ export function Opdriftssikring() {
       : null;
   const dybRes = dyb?.ok ? dyb.resultat : null;
   const dybere = dybRes?.tilstand === 'dybere' ? dybRes : null;
-  const punkter = r
-    ? [
-        ...kontrolpunktTekster(r),
-        ...(dybere ? [{ kode: 'K-25', tekst: dybKontrolpunktTekst(dybere) }] : []),
-      ]
-    : [];
+  // Den dybere forankring har sine advarsler i kort 8 og ikke under »Kontrolpunkter«
+  // (beslutning 1. november 2026).
+  const punkter = r ? kontrolpunktTekster(r) : [];
 
   return (
     <>

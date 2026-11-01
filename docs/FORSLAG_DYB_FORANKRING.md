@@ -20,7 +20,7 @@ Brugerens svar: »1a, 2b, 3a, 4a, 5a med henvisning til den pågældende tilstr�
 | 4 | Den samlede netlængde medregner 2 · (h_bund − T₃) for nettets sider ned langs røret. |
 | 5 | Er den angivne længde tilstrækkelig ved rørmidten, viser kortet en besked med henvisning til løsningen »Med omslag, én ledning« i kort 7 og ingen dybde. |
 | 6 | Kortet har en figur af løsningen med omslag, hvor nettet er ført ned langs rørets sider. |
-| 7 | Kortet har en fast advarsel, og kontrolpunktet K-25 vises, når der regnes en dybere forankring. |
+| 7 | Kortet har en fast advarsel, og kontrolpunktet K-25 vises, når der regnes en dybere forankring. Kontrolpunktet er fjernet igen 1. november 2026; advarslerne står i kortet. |
 
 Brugeren fravalgte at kunne vælge selve forankringsdybden. Kun én ledning med omslag er med; to ledninger kræver en særskilt model for jorden mellem rørene.
 

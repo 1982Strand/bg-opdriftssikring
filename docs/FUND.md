@@ -40,7 +40,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-27 | Kraftens vej: trækket i nettet, knækket og trissevirkningen | Nettets styrke, forankring | Åben: som arket, arkets note vises |
 | K-28 | DANVA kræver forankring på 1,5 · F_opdrift pr. side | Forankring | Åben: som arket |
 
-Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-05, K-08 og K-12 fra regnearket og K-25 for dybere forankring ved begrænset plads. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
+Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-05, K-08 og K-12. Den dybere forankring (K-25) har sine advarsler i kort 8. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
 ---
 
@@ -466,6 +466,8 @@ Faktorerne i H24:K27 bruges ingen steder. Da alle kolonner og kopien i Rapporten
 **Eksempel.** d = 4,00 m, h₁ = 0,60 m og GVS i terræn: løsning C kræver 5,27 m pr. side. Med 2,50 m pr. side skal det nederste netlag ligge 5,65 m under terræn, 1,05 m under rørbunden.
 
 **Besluttet 31. oktober 2026.** Beregningen indføres i et eget kort, kun i avanceret beregning og kun for én ledning med omslag. Metoden er ikke dokumenteret; lokal jordreaktion, jordbrud, netkræfter og deformationer er ikke eftervist. Kortet har derfor en fast advarsel, og kontrolpunktet K-25 vises, når der regnes en dybere forankring. Indført samme dag som kort 8 efter brugerens godkendelse af tekster og kontroltal.
+
+**1. november 2026.** Kontrolpunktet K-25 er fjernet fra »Kontrolpunkter«. Kort 8 har fortsat den faste advarsel og advarslen, når nettet ligger under rørbunden; den står nu lige over mellemregningerne.
 
 ## K-26 Afstanden mellem netlagene ved omslag
 

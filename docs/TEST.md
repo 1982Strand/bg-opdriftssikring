@@ -76,7 +76,7 @@ Browsertestene dækker:
 - S₂ i kort 7 med noten, feltfejl uden for 1,05–1,20, nulstilling og noten om kontrollen i løsning A (K-11 og K-14);
 - arkets note om tovkraften i kort 6 og om trissevirkningen i kort 7 (K-27);
 - afstanden mellem netlagene i kort 7 med noten, længden og netlængden for løsning C ved 0,4 m, feltfejlen og nulstilling (K-26);
-- kort 8 med dybere forankring: kun i avanceret beregning, fliser, advarsler, figur, mellemregninger, K-25, beskeden ved tilstrækkelig længde, feltfejlen og lagringen;
+- kort 8 med dybere forankring: kun i avanceret beregning, fliser, advarsler, advarslen om rørbunden lige over mellemregningerne, figur, mellemregninger, at K-25 ikke står under »Kontrolpunkter«, beskeden ved tilstrækkelig længde, feltfejlen og lagringen;
 - navigationen;
 - tilgængelighed med axe ved 1440 og 390 px, også med avanceret beregning og kort 8 med dybere forankring.
 
