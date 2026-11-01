@@ -700,15 +700,6 @@ function DybForankringKort({
           Omslag kræver, at rørmidten ligger mere end {talKort(r.omslagAfstand)} m under terræn.
         </Notice>
       )}
-      {!laast && (
-        <Notice kind="warning">
-          Dybere forankring er ikke en dokumenteret metode og skal betragtes som rent teoretisk.
-          Forankringslængden regnes med samme friktionsmodel som løsningen med omslag. Lokal
-          jordreaktion ved nettets retningsændringer, jordbrud, netkræfter og deformationer er ikke
-          eftervist og skal eftervises særskilt af 3. part, hvis løsningen ønskes brugt til
-          udførelse. Byggros frasiger sig alt ansvar for resultaterne og deres evt. anvendelse.
-        </Notice>
-      )}
       <div className="calc-override">
         <SettingField
           field={{
@@ -735,6 +726,17 @@ function DybForankringKort({
           change={(v) => saet({ dybForankringL: Number(v) })}
         />
       </div>
+      {/* Advarslen vises først, når beregningen er slået til (beslutning 1. november 2026). Den står
+          under valget, så afkrydsningen ikke flytter sig. */}
+      {!laast && i.dybForankringAktiv && (
+        <Notice kind="warning">
+          Dybere forankring er ikke en dokumenteret metode og skal betragtes som rent teoretisk.
+          Forankringslængden regnes med samme friktionsmodel som løsningen med omslag. Lokal
+          jordreaktion ved nettets retningsændringer, jordbrud, netkræfter og deformationer er ikke
+          eftervist og skal eftervises særskilt af 3. part, hvis løsningen ønskes brugt til
+          udførelse. Byggros frasiger sig alt ansvar for resultaterne og deres evt. anvendelse.
+        </Notice>
+      )}
       {res?.tilstand === 'tilstraekkelig' && C && (
         <Notice>
           <Fmt
