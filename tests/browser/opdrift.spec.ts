@@ -123,7 +123,9 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   ).toContainText('20,35 m');
   // Kontrollen ved omslag regnes som arket med en forklaring (K-08).
   await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toBeVisible();
-  await expect(page.getByText(/større margin end dimensioneringen \(fund K-08\)/)).toBeVisible();
+  await expect(page.getByText(/større margin end dimensioneringen\./)).toBeVisible();
+  // Appen står alene: ingen henvisninger til regneark eller fund.
+  await expect(page.locator('main')).not.toContainText(/[Rr]egneark|\bfund K-\d\d/);
   const forankring = page.locator('section.calc-card', {
     has: page.getByRole('heading', { name: '7 Forankring' }),
   });
@@ -281,7 +283,8 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
     .getByRole('button', { name: 'Mellemregninger' })
     .all())
     await expect(knap).toBeDisabled();
-  await expect(page.getByText(/fund K-12/)).toBeVisible();
+  await expect(page.getByText(/er kun til orientering/)).toBeVisible();
+  await expect(page.locator('main')).not.toContainText(/[Rr]egneark|\bfund K-\d\d/);
   const kort = page.locator('section.calc-card');
   await expect(kort.filter({ has: page.getByRole('heading', { name: '6 Geonet' }) })).toHaveClass(
     /is-dimmed/,
@@ -634,7 +637,7 @@ test('S₂ kan ændres i kort 7 med arkets note (K-14), og kontrollen har en not
   await udenOmslag.getByRole('button', { name: 'Mellemregninger' }).click();
   await expect(
     udenOmslag.getByText(
-      'Kontrollen er eftervisningen for løftning: Od ≤ Bd + Fbund · 2 · Lgeonet. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = Fop,d · S₂, og viser tillægget fra S₂ (fund K-11).',
+      'Kontrollen er eftervisningen for løftning: Od ≤ Bd + Fbund · 2 · Lgeonet. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = Fop,d · S₂, og viser tillægget fra S₂.',
     ),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Nulstil beregning' }).click();

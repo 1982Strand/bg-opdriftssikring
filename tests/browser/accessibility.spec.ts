@@ -1,7 +1,7 @@
 import { AxeBuilder } from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
-const pladsholdere = ['rapport', 'geonet', 'hjaelp', 'indstillinger'];
+const oevrigeSider = ['rapport', 'geonet', 'hjaelp', 'indstillinger'];
 const axe = async (page: Page) =>
   (
     await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
@@ -75,7 +75,7 @@ for (const width of [1440, 390]) {
     await expect(kort8.getByRole('img', { name: /Dybere forankring med omslag/ })).toBeVisible();
     expect(await axe(page)).toEqual([]);
 
-    for (const side of pladsholdere) {
+    for (const side of oevrigeSider) {
       await page.goto(`/#${side}`);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       expect(await axe(page), side).toEqual([]);

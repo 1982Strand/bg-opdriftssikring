@@ -536,6 +536,8 @@ Ved Ø1000 er begge længder mindstelængden 1,00 m, og nettet er 3,6 og 4,6 m. 
 
 **Status 1. november 2026.** Registreret efter brugerens ønske: »start med at registrere det hele i FUND, så jeg senere kan gå tilbage og finde ud af hvad der er op og ned, samt hvordan vi har valgt at løse det i byggros med regnearket.« Appen regner som arket. Arkets note vises ordret i appen (a): første del (A182:A184) i kort 6 under noten om udrulning og anden del (A186:A191) i kort 7 under S₂ og afstanden mellem netlagene. »Note:« er udeladt, og stavefejlen »korrrigres« er rettet til »korrigeres«. Mulighederne b–d er ikke afgjort.
 
+**4. november 2026.** Kraftens vej er også forklaret som kapitel på hjælpesiden med neutral tekst uden henvisning til arket og dette fund, jf. [BESLUTNINGER.md](BESLUTNINGER.md). Det ændrer ikke beregningen, og mulighederne b–d er stadig ikke afgjort.
+
 ## K-28 DANVA kræver forankring på 1,5 · F_opdrift pr. side
 
 **DANVA.** Afsnittet om sikring mod opdrift (side 63 i transskriptionen af DANVA-teksten) regner F_forank = h_a · γ_effektiv · μ · tan φ_d · L_geonet. L_geonet er forankringslængden »ud fra rørvæggen«, altså pr. side, så L_a = 2 · L_geonet + d_rør. Sikkerheden S₂ = F_forank/F_opdrift skal være mindst 1,5, så F_forank skal være mindst 1,5 · F_opdrift. Som teksten står, skal hver side for sig optage 1,5 · F_opdrift, og L_geonet bør ikke være mindre end 1,0 m. DANVA bruger desuden γ_f på opdriften og γ_φ på friktionsvinklen og kræver en samlet sikkerhed S₃ ≥ 1,3, hvis formel er uklar i teksten.
