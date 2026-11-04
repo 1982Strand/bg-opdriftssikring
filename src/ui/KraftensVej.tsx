@@ -49,22 +49,20 @@ function Figur({ nr, tekst, children }: { nr: number; tekst: ReactNode; children
   );
 }
 
-/** Mærke for, om trækket er inden for den værdi, der er regnet med. */
-function Forhold({ vaerdi }: { vaerdi: number }) {
-  const indenFor = vaerdi <= 1 + 1e-9;
+/** Farvet mærke og procent for trækket i forhold til den værdi, der er regnet med. */
+function Udnyttelse({ forhold, ok, ikkeOk }: { forhold: number; ok: string; ikkeOk: string }) {
+  const erOk = forhold <= 1 + 1e-9;
   return (
     <>
-      <span className={`kv-maerke${indenFor ? ' is-inden' : ''}`}>
-        {indenFor ? 'inden for' : 'over'}
-      </span>
-      {tal(vaerdi)}
+      <span className={`kv-maerke ${erOk ? 'is-ok' : 'is-nej'}`}>{erOk ? ok : ikkeOk}</span>{' '}
+      {tal(forhold * 100, 0)} %
     </>
   );
 }
 
 const kendteVinkler = [
   { alfa: 0, tekst: '0° · som i beregningen' },
-  { alfa: 45, tekst: '45° · skrå netføring' },
+  { alfa: 45, tekst: '45° · DANVA fig. 2.15' },
   { alfa: 60, tekst: '60° · grænsen for faktor 2' },
 ];
 
@@ -119,22 +117,25 @@ function Ligevaegt() {
         </dt>
         <dd>{kNm(a.vandret)}</dd>
         <dt>
-          Eksempel: nettet, {eksempel.netNavn} med <V t="P_{d}" /> = {kNm(eksempel.Pd)}
+          Trækkets udnyttelse af geonettets trækstyrke → {eksempel.netNavn} med <V t="P_{d}" /> ={' '}
+          {kNm(eksempel.Pd)} ({tal(a.T)} / {tal(eksempel.Pd)})
         </dt>
         <dd>
-          <Forhold vaerdi={a.netUdnyttelse} />
+          <Udnyttelse forhold={a.netUdnyttelse} ok="Holder" ikkeOk="Holder ikke" />
         </dd>
         <dt>
-          Eksempel: forankringen, regnet for {S2} · {F}/2 = {kNm(eksempel.forankring)}
+          Trækket i forhold til forankringen, dimensioneret for {S2} · {F}/2 ={' '}
+          {kNm(eksempel.forankring)} ({tal(a.T)} / {tal(eksempel.forankring)})
         </dt>
         <dd>
-          <Forhold vaerdi={a.forankringUdnyttelse} />
+          <Udnyttelse forhold={a.forankringUdnyttelse} ok="Dækket" ikkeOk="Ikke dækket" />
         </dd>
       </dl>
       <figcaption>
         <strong>Figur 2.</strong> Rørets ligevægt. Pilene er tegnet i samme målestok: de stiplede
-        lodrette dele er tilsammen lige så lange som {F}. Tallene for nettet og forankringen er
-        trækket divideret med den værdi, der er regnet med.
+        lodrette dele er tilsammen lige så lange som {F}. Eksemplet er regnet i appen for Ø2500 med
+        1,5 m jorddække og GVS i terræn. Procenterne viser trækket pr. side i forhold til den værdi,
+        der er regnet med. Over 100&nbsp;% er trækket større end værdien.
       </figcaption>
     </figure>
   );
@@ -419,9 +420,9 @@ export function KraftensVej() {
           nr={5}
           tekst={
             <>
-              Til venstre skrå netføring, hvor nettet slipper røret med 45° og bøjer jævnt ud i
-              vandret. Til højre trissevirkning med knæk ved rørmidten, som beregningen regner med.{' '}
-              <V t="F" /> står for {F}.
+              Til venstre nettet som i DANVA's figur 2.15, der slipper røret med 45° og bøjer jævnt
+              ud i vandret. Til højre trissevirkning med knæk ved rørmidten, som beregningen regner
+              med. <V t="F" /> står for {F}.
             </>
           }
         >
@@ -518,7 +519,7 @@ export function KraftensVej() {
             <h5>Knækket</h5>
             <div>
               <p>
-                Jordreaktionen {T} · √2 indgår ikke som en særskilt kontrol i beregningen.
+                Jordreaktionen {T} · √2 kontrolleres hverken i DANVA's metode eller i appen.
                 Antagelsen bygger på trissevirkningen, den semirigide opfattelse af ballastlaget,
                 trykspredningen fra ballasten og erfaring fra udførte projekter i Danmark siden
                 1996.
@@ -530,7 +531,8 @@ export function KraftensVej() {
             <div>
               <p>
                 Nettet virker først, når det er strammet. Løftet afhænger af nettets tøjning, slæk
-                ved udlægningen og jordens sammentrykning i knækket. Det indgår ikke i beregningen.
+                ved udlægningen og jordens sammentrykning i knækket. Det beregnes hverken i DANVA's
+                metode eller i appen.
               </p>
             </div>
           </div>
@@ -582,6 +584,7 @@ export function KraftensVej() {
           Eksemplet er regnet med udvendig diameter 2,50 m, jorddække 1,50 m, GVS i terræn, rørets
           egenvægt 340 kg/m, <V t="γ" /> = 17 kN/m³, <V t="φ" /> = 35° og konsekvensklasse CC2.
         </p>
+        <p className="kv-note">Grundlag for den skrå netføring: DANVA's figur 2.15.</p>
       </section>
     </div>
   );
