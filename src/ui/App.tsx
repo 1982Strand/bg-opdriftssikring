@@ -15,6 +15,7 @@ import {
   SidebarProvider,
   useSidebar,
 } from '../components/ui/sidebar';
+import { Hjaelp } from './Hjaelp';
 import { Notice } from './Notice';
 import { PageFooter, PageHeader, pageIcons } from './page';
 import {
@@ -29,7 +30,7 @@ import { RestartApp } from './RestartApp';
 import { Opdriftssikring } from './Opdriftssikring';
 import { SessionProvider } from './SessionContext';
 
-const pages: Record<PageKey, { intro: string; notice: string }> = {
+const pages: Record<Exclude<PageKey, 'hjaelp'>, { intro: string; notice: string }> = {
   opdriftssikring: {
     intro: 'Beregning af opdrift, ballast, geonet og forankring.',
     notice: 'Beregningen af opdrift, ballast, geonet og forankring bygges i fase 3.',
@@ -38,10 +39,6 @@ const pages: Record<PageKey, { intro: string; notice: string }> = {
   geonet: {
     intro: 'Opslag over geonet og faste værdier.',
     notice: 'Opslag over geonet og faste værdier bygges i fase 5.',
-  },
-  hjaelp: {
-    intro: 'Beregningsgrundlag og brugervejledning.',
-    notice: 'Hjælp og dokumentation bygges i fase 5.',
   },
   indstillinger: {
     intro: 'Indstillinger for beregningen.',
@@ -159,6 +156,8 @@ export function App() {
             <main>
               {page === 'opdriftssikring' ? (
                 <Opdriftssikring />
+              ) : page === 'hjaelp' ? (
+                <Hjaelp />
               ) : (
                 <>
                   <PageHeader page={page} title={pageName(page)} intro={pages[page].intro} />

@@ -24,7 +24,7 @@ const HAELDNING = 0.6; // gravens sider, vandret pr. lodret
 const BUNDLAG = 0.15; // m under røret
 const TOPLAG = 0.75; // det omslåede lag tegnes som 75 % af forankringslængden
 
-const esc = (t: string) =>
+export const esc = (t: string) =>
   t.replace(
     /[&<>"']/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
@@ -37,7 +37,7 @@ const medIndeks = (t: string) =>
 const bredde = (t: string) => t.replace(/_\{([^}]*)\}/g, '$1').length * 6.4;
 
 /** Afviser ugyldige tal i stedet for at tegne dem; motoren leverer kun endelige værdier. */
-function px(x: number) {
+export function px(x: number) {
   if (!Number.isFinite(x)) throw new Error('Figuren kan ikke tegnes: ugyldigt tal.');
   return Math.round(x * 10) / 10;
 }

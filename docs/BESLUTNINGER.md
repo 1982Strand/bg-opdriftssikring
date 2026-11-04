@@ -769,3 +769,28 @@ Ikke afgjort:
 Spørgsmål: Skal de fire tomme sider skjules i den åbne udgave? Brugerens svar: »Nej, lad dem stå«.
 
 - »Rapport«, »Geonet og faste værdier«, »Hjælp og dokumentation« og »Indstillinger« står fortsat i menuen med deres pladsholdertekst, også på den åbne adresse.
+
+## 4. november 2026 — kraftens vej på hjælpesiden
+
+Brugerens ønske: »jeg vil gerne have artifcatet 'Kraftens vej i geonettet - til app' med i min app som en sektion i 'hjælp og dokumentation'« og derefter »ja, indbyg den i appen«.
+
+Spørgsmål om teksten, fordi den åbne adresse viser alt på `main`. Brugerens svar:
+- Forbeholdene om forankringen og jordreaktionen: »ja, men det skal omformuleres. appen bliver offentliggjort, så sproget skal være så neutralt som muligt og der skal ikke være referencer til 'K-27' fx, da ingen ved hvad det er.«
+- Regnearket: »igen nej, der skal ikke stå noget med 'regneark', da ingen ved hvad det drejer sig om. appen er 100% selvstændig.«
+- Interne henvisninger: »ja, de interne henvisninger skal også væk eller omformuleres. I forhold til 'Case 1', så omdøb det til 'Eksempel' som du foreslår.«
+
+Omfang:
+- Siden »Hjælp og dokumentation« har nu foldbare kapitler som i MSL Dimensionering. Kapitel 1 er »Kraftens vej i geonettet« og erstatter pladsholderen. De øvrige tomme sider er uændrede.
+- Beregningen er uændret. Eksemplets tal beregnes med samme motor som resten af appen, og skyderen for vinklen ændrer kun figuren og aflæsningen i kapitlet.
+- Forbeholdene står konstaterende: jordreaktionen »indgår ikke som en særskilt kontrol i beregningen«, og løftet »indgår ikke i beregningen«. Antagelsen bag trissevirkningen er begrundet som i noterne i kort 6 og 7.
+
+Valgt af Claude og kan ændres:
+- Henvisningerne til DANVA's figur 2.15 er også fjernet, fordi publikationen ikke var nævnt, og knappen hedder »45° · skrå netføring«. Knappen for 0° hedder »0° · som i beregningen«.
+- Mærkerne ved skyderen hedder »inden for« (grønt) og »over« (gråt) frem for »holder«, »holder ikke«, »dækket« og »ikke dækket« med rødt.
+- Kravet til nettet står som `P_d/F_op,d > 1,01` begge steder, som i beregningen. Udkastet havde også `P_till` og `P_d ≥ F_op,d`.
+- Kapitlet er åbent, når siden åbnes. Sidens indledning er uændret.
+- Tekststørrelsen følger appen (14 px), og Google-skriften er udeladt. Formler bruger Cambria Math. Skyder, knapper og tabeller er appens egne.
+- Nettet er grønt i kapitlets figurer som i udkastet, så det kan skelnes fra den røde jordreaktion. I beregningsfigurerne er nettet rødt.
+
+Ikke afgjort:
+- Brugerens visuelle kontrol af kapitlet.
