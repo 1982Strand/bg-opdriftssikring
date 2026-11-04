@@ -15,6 +15,10 @@ npm run build
 npm run preview
 ```
 
+## Online
+
+Cloudflare leverer appen uden login på https://opdriftssikring.byggros.workers.dev. Hver ændring på `main`, der består kontrollen, går online. Se [Cloudflare](docs/CLOUDFLARE.md).
+
 ## Kontrol
 
 ```powershell
@@ -35,4 +39,5 @@ Browsertestene bruger port 5186 og genbruger ikke den lokale appserver.
 - [Test og kontrolcases](docs/TEST.md)
 - [Fund i regnearket](docs/FUND.md)
 - [Beslutninger](docs/BESLUTNINGER.md)
+- [Cloudflare](docs/CLOUDFLARE.md)
 - [Arbejdsregler](AGENTS.md)
