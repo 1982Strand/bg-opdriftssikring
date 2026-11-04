@@ -40,6 +40,7 @@ export function SettingField({
   refresh = 0,
   change,
   error,
+  live = false,
 }: {
   field: SettingDefinition;
   value: SettingValue;
@@ -47,13 +48,23 @@ export function SettingField({
   refresh?: number;
   change: (value: SettingValue) => void;
   error?: string;
+  /** Talfelt: gyldige tal meldes, mens der skrives, og ikke først ved Enter eller Tab. */
+  live?: boolean;
 }) {
   const [draft, setDraft] = useState(String(value));
   const [invalid, setInvalid] = useState(false);
   useEffect(() => {
-    setDraft(String(value));
+    // Mens der skrives, bevares det skrevne, så fx 2,0 på vej mod 2,05 ikke bliver til 2.
+    setDraft((d) => (live && d.trim() !== '' && Number(d) === value ? d : String(value)));
     setInvalid(false);
-  }, [value, disabled, refresh]);
+  }, [value, disabled, refresh, live]);
+  const gyldigtTal = (tekst: string, validity: ValidityState) =>
+    tekst.trim() !== '' &&
+    !validity.badInput &&
+    !validity.rangeOverflow &&
+    !validity.rangeUnderflow &&
+    Number.isFinite(Number(tekst)) &&
+    (!field.integer || Number.isInteger(Number(tekst)));
   const helpId = `${field.key}-help`;
   const options = field.options ?? [];
   const index = options.findIndex((o) => o.value === value);
@@ -182,6 +193,8 @@ export function SettingField({
               onChange={(e) => {
                 setDraft(e.target.value);
                 setInvalid(false);
+                if (live && gyldigtTal(e.target.value, e.target.validity))
+                  change(Number(e.target.value));
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') e.currentTarget.blur();
@@ -192,15 +205,7 @@ export function SettingField({
               }}
               onBlur={(e) => {
                 if (draft === String(value)) return;
-                const validity = e.currentTarget.validity;
-                if (
-                  !draft.trim() ||
-                  validity.badInput ||
-                  validity.rangeOverflow ||
-                  validity.rangeUnderflow ||
-                  !Number.isFinite(Number(draft)) ||
-                  (field.integer && !Number.isInteger(Number(draft)))
-                ) {
+                if (!gyldigtTal(draft, e.currentTarget.validity)) {
                   setInvalid(true);
                   return;
                 }

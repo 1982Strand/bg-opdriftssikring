@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Button } from '../components/ui/button';
 import { Slider } from '../components/ui/slider';
 import {
@@ -9,9 +9,23 @@ import {
   figurSkraa,
   figurTrisse,
 } from '../engine/kraftensvej-figurer';
-import { aflaesning, eksempel, s2Interval } from '../engine/kraftensvej';
+import {
+  aflaesning,
+  beregnEksempel,
+  eksempelS2,
+  fasteVaerdier,
+  s2Interval,
+  standardEksempel,
+  traekPrSide,
+  vinkelVedS2,
+  type Eksempel,
+  type EksempelInput,
+} from '../engine/kraftensvej';
 import { tal } from '../engine/format';
 import { Fmt } from './Fmt';
+import { ikkeNoedvendigTekst } from './kontrolpunkter';
+import { Notice } from './Notice';
+import { SettingField } from './SettingField';
 import { TabelRamme } from './TabelRamme';
 
 /** Symbol i kursiv matematikskrift, med sænket skrift skrevet som `F_{op,d}`. */
@@ -27,8 +41,9 @@ const ALFA = <V t="α" />;
 const THETA = <V t="θ" />;
 const S2 = <V t="S₂" />;
 
-const kNm = (x: number) => `${tal(x)} kN/m`;
+const kNm = (x: number | null | undefined) => (x == null ? '–' : `${tal(x)} kN/m`);
 const vinkel = (x: number) => `${tal(x, 1)}°`;
+const heltEllerDecimaler = (x: number) => tal(x, Number.isInteger(x) ? 0 : 2);
 
 function Formel({ children }: { children: ReactNode }) {
   return <div className="kv-formel">{children}</div>;
@@ -66,76 +81,179 @@ const kendteVinkler = [
   { alfa: 60, tekst: '60° · grænsen for faktor 2' },
 ];
 
-function Ligevaegt() {
-  const [alfa, setAlfa] = useState(30);
-  const a = aflaesning(alfa);
+/** Boksen ved figur 2, hvor eksemplet kan ændres. Værdierne gemmes ikke og påvirker ikke beregningen
+ * på siden Opdriftssikring (beslutning 4. november 2026). */
+function EksempelBoks({
+  input,
+  e,
+  saet,
+  refresh,
+  nulstil,
+}: {
+  input: EksempelInput;
+  e: Eksempel;
+  saet: (input: EksempelInput) => void;
+  refresh: number;
+  nulstil: () => void;
+}) {
+  const b = e.tilstand === 'beregnet' ? e : null;
+  const felt = (
+    key: keyof EksempelInput,
+    label: string,
+    help: string,
+    min: number,
+    step: number,
+  ) => (
+    <SettingField
+      live
+      refresh={refresh}
+      field={{ key: `eksempel-${key}`, label, kind: 'number', help, min, step }}
+      value={input[key]}
+      change={(v) => saet({ ...input, [key]: Number(v) })}
+    />
+  );
   return (
-    <figure className="kv-figur">
-      <Tegning svg={figurLigevaegt(alfa)} />
-      <div className="kv-styring">
-        <div className="kv-styring-etiket" id="kv-alfa">
-          Vinklen {ALFA}, hvor nettet slipper røret <span className="kv-alfa">{alfa}°</span>
-        </div>
-        <Slider
-          min={0}
-          max={70}
-          step={1}
-          value={[alfa]}
-          onValueChange={([ny]) => setAlfa(ny)}
-          thumbProps={{ 'aria-labelledby': 'kv-alfa', 'aria-valuetext': `${alfa} grader` }}
-        />
-        <div className="kv-knapper" role="group" aria-label="Kendte vinkler">
-          {kendteVinkler.map(({ alfa: kendt, tekst }) => (
-            <Button
-              key={kendt}
-              type="button"
-              size="sm"
-              variant={alfa === kendt ? 'default' : 'outline'}
-              aria-pressed={alfa === kendt}
-              onClick={() => setAlfa(kendt)}
-            >
-              {tekst}
-            </Button>
-          ))}
-        </div>
+    <div className="kv-eksempel" role="group" aria-labelledby="kv-eksempel-titel">
+      <h5 id="kv-eksempel-titel">Eksempel</h5>
+      <div className="kv-eksempel-felter">
+        {felt('d', 'Rørdiameter d (m)', 'Udvendig diameter.', 0.01, 0.01)}
+        {felt(
+          'h1',
+          'Jorddækning h₁ (m)',
+          'Fra terræn til rørets top. Midten ligger i T₃ = h₁ + d/2.',
+          0,
+          0.01,
+        )}
+        {felt(
+          'roervaegt',
+          'Rørets egenvægt E_{k} (kg/m)',
+          'Karakteristisk egenvægt pr. meter. Den regnes til gunst med faktoren 0,9. Med 0 kg/m ses der bort fra rørets egenvægt, hvilket er på den sikre side.',
+          0,
+          1,
+        )}
       </div>
-      <dl className="kv-aflaesning">
-        <dt>Træk pr. side</dt>
-        <dd>
-          {T} = {tal(a.andel)} · {F}
-        </dd>
-        <dt>I forhold til {ALFA} = 0</dt>
-        <dd>× {tal(a.forhold)}</dd>
-        <dt>Eksempel: træk pr. side</dt>
-        <dd>{kNm(a.T)}</dd>
+      <p className="kv-note">GVS i terræn</p>
+      <dl className="kv-eksempel-resultat">
         <dt>
-          Eksempel: lodret del {T} · cos {ALFA}
+          <V t="S₁" />
         </dt>
-        <dd>{kNm(a.lodret)}</dd>
+        <dd>{tal(e.tilstand === 'ugyldig' ? null : e.S1)}</dd>
+        <dt>{F}</dt>
+        <dd>{kNm(b?.F)}</dd>
+        <dt>Geonet</dt>
+        <dd>{b ? (b.net?.navn ?? 'Kontakt leverandør') : '–'}</dd>
         <dt>
-          Eksempel: vandret del {T} · sin {ALFA}
+          <V t="P_{d}" />
         </dt>
-        <dd>{kNm(a.vandret)}</dd>
+        <dd>{kNm(b?.net?.Pd)}</dd>
         <dt>
-          Trækkets udnyttelse af geonettets trækstyrke → {eksempel.netNavn} med <V t="P_{d}" /> ={' '}
-          {kNm(eksempel.Pd)} ({tal(a.T)} / {tal(eksempel.Pd)})
+          {S2} · {F}/2
         </dt>
-        <dd>
-          <Udnyttelse forhold={a.netUdnyttelse} ok="Holder" ikkeOk="Holder ikke" />
-        </dd>
-        <dt>
-          Trækket i forhold til forankringen, dimensioneret for {S2} · {F}/2 ={' '}
-          {kNm(eksempel.forankring)} ({tal(a.T)} / {tal(eksempel.forankring)})
-        </dt>
-        <dd>
-          <Udnyttelse forhold={a.forankringUdnyttelse} ok="Dækket" ikkeOk="Ikke dækket" />
-        </dd>
+        <dd>{kNm(b?.forankring)}</dd>
       </dl>
+      <Button type="button" variant="outline" size="sm" onClick={nulstil}>
+        Nulstil
+      </Button>
+    </div>
+  );
+}
+
+function Ligevaegt({ e, d, boks }: { e: Eksempel; d: number; boks: ReactNode }) {
+  const [alfa, setAlfa] = useState(30);
+  const b = e.tilstand === 'beregnet' ? e : null;
+  const a = b && aflaesning(alfa, b);
+  const andel = traekPrSide(1, alfa);
+  return (
+    <figure className="kv-figur kv-figur-bred">
+      {boks}
+      <div className="kv-figur-indhold">
+        <Tegning
+          svg={figurLigevaegt(
+            alfa,
+            d,
+            b && a && { F: b.F, T: a.T, lodret: a.lodret, vandret: a.vandret },
+          )}
+        />
+        <div className="kv-styring">
+          <div className="kv-styring-etiket" id="kv-alfa">
+            Vinklen {ALFA}, hvor nettet slipper røret <span className="kv-alfa">{alfa}°</span>
+          </div>
+          <Slider
+            min={0}
+            max={70}
+            step={1}
+            value={[alfa]}
+            onValueChange={([ny]) => setAlfa(ny)}
+            thumbProps={{ 'aria-labelledby': 'kv-alfa', 'aria-valuetext': `${alfa} grader` }}
+          />
+          <div className="kv-knapper" role="group" aria-label="Kendte vinkler">
+            {kendteVinkler.map(({ alfa: kendt, tekst }) => (
+              <Button
+                key={kendt}
+                type="button"
+                size="sm"
+                variant={alfa === kendt ? 'default' : 'outline'}
+                aria-pressed={alfa === kendt}
+                onClick={() => setAlfa(kendt)}
+              >
+                {tekst}
+              </Button>
+            ))}
+          </div>
+        </div>
+        {e.tilstand === 'ikkeNoedvendig' && <Notice>{ikkeNoedvendigTekst}</Notice>}
+        {b && !b.net && (
+          <Notice>Der produceres ikke geonet med den nødvendige styrke. Kontakt leverandør.</Notice>
+        )}
+        <dl className="kv-aflaesning">
+          <dt>Træk pr. side</dt>
+          <dd>
+            {T} = {tal(andel)} · {F}
+          </dd>
+          <dt>I forhold til {ALFA} = 0</dt>
+          <dd>× {tal(2 * andel)}</dd>
+          <dt>Eksempel: træk pr. side</dt>
+          <dd>{kNm(a?.T)}</dd>
+          <dt>
+            Trækkets udnyttelse af geonettets trækstyrke
+            {a && b?.net && (
+              <>
+                {' '}
+                → {b.net.navn} med <V t="P_{d}" /> = {kNm(b.net.Pd)} ({tal(a.T)} / {tal(b.net.Pd)})
+              </>
+            )}
+          </dt>
+          <dd>
+            {a?.netUdnyttelse == null ? (
+              '–'
+            ) : (
+              <Udnyttelse forhold={a.netUdnyttelse} ok="Holder" ikkeOk="Holder ikke" />
+            )}
+          </dd>
+          <dt>
+            Trækket i forhold til forankringen
+            {a && b && (
+              <>
+                , dimensioneret for {S2} · {F}/2 = {kNm(b.forankring)} ({tal(a.T)} /{' '}
+                {tal(b.forankring)})
+              </>
+            )}
+          </dt>
+          <dd>
+            {a ? (
+              <Udnyttelse forhold={a.forankringUdnyttelse} ok="Dækket" ikkeOk="Ikke dækket" />
+            ) : (
+              '–'
+            )}
+          </dd>
+        </dl>
+      </div>
       <figcaption>
         <strong>Figur 2.</strong> Rørets ligevægt. Pilene er tegnet i samme målestok: de stiplede
-        lodrette dele er tilsammen lige så lange som {F}. Eksemplet er regnet i appen for Ø2500 med
-        1,5 m jorddække og GVS i terræn. Procenterne viser trækket pr. side i forhold til den værdi,
-        der er regnet med. Over 100&nbsp;% er trækket større end værdien.
+        lodrette dele er tilsammen lige så lange som {F}. Røret har samme størrelse i figuren uanset
+        diameteren. Tallene er regnet i appen ud fra felterne i eksemplet, med GVS i terræn.
+        Procenterne viser trækket pr. side i forhold til den værdi, der er regnet med. Over
+        100&nbsp;% er trækket større end værdien.
       </figcaption>
     </figure>
   );
@@ -185,6 +303,10 @@ function EnkelTabel({
 /** Kapitlet »Kraftens vej i geonettet« på hjælpesiden. Teksten er neutral og selvstændig
  * (beslutning 4. november 2026); eksemplets tal kommer fra beregningen. */
 export function KraftensVej() {
+  const [input, setInput] = useState(standardEksempel);
+  const [refresh, setRefresh] = useState(0);
+  const e = useMemo(() => beregnEksempel(input), [input]);
+  const b = e.tilstand === 'beregnet' ? e : null;
   return (
     <div className="kraftens-vej">
       <div className="kv-indledning">
@@ -291,7 +413,22 @@ export function KraftensVej() {
           samme lodrette kraft. Den lodrette del er altid {F}/2 pr. side. Kun den vandrette del
           vokser med vinklen.
         </p>
-        <Ligevaegt />
+        <Ligevaegt
+          e={e}
+          d={input.d}
+          boks={
+            <EksempelBoks
+              input={input}
+              e={e}
+              saet={setInput}
+              refresh={refresh}
+              nulstil={() => {
+                setInput(standardEksempel);
+                setRefresh((r) => r + 1);
+              }}
+            />
+          }
+        />
       </section>
 
       <section>
@@ -469,8 +606,8 @@ export function KraftensVej() {
                 0,71 · <V t="F" />, i knækket
               </>,
             ],
-            ['Eksempel, træk pr. side', kNm(eksempel.T45), kNm(eksempel.T)],
-            ['Eksempel, jordreaktion pr. side', kNm(eksempel.R45), kNm(eksempel.R)],
+            ['Eksempel, træk pr. side', kNm(b?.T45), kNm(b?.T)],
+            ['Eksempel, jordreaktion pr. side', kNm(b?.R45), kNm(b?.R)],
           ]}
         />
         <p>
@@ -489,7 +626,13 @@ export function KraftensVej() {
                 Nettet vælges efter hele {F} (krav <V t="P_{d}" />/{F} &gt; 1,01), selv om det kun
                 bærer {T} = {F}/2. Det er faktor 2 på styrken. Trækket når {F}, når cos {ALFA} =
                 0,5, altså ved {ALFA} = 60°. Skrå netføring op til 60° er derfor inden for nettets
-                styrke. I eksemplet rækker {eksempel.netNavn} op til {vinkel(eksempel.alfaNet)}.
+                styrke.
+                {b?.net && (
+                  <>
+                    {' '}
+                    I eksemplet rækker {b.net.navn} op til {vinkel(b.net.alfa)}.
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -509,9 +652,9 @@ export function KraftensVej() {
               </Formel>
               <p>
                 {S2} = {tal(s2Interval.min)} svarer til et skråt træk op til {ALFA} ={' '}
-                {vinkel(eksempel.alfaS2Min)} (cos {ALFA} = 1/{tal(s2Interval.min)}), og {S2} ={' '}
-                {tal(s2Interval.max)} til {ALFA} = {vinkel(eksempel.alfaS2Max)}. Forankringen regnes
-                altså ud fra trissevirkningen.
+                {vinkel(vinkelVedS2(s2Interval.min))} (cos {ALFA} = 1/{tal(s2Interval.min)}), og{' '}
+                {S2} = {tal(s2Interval.max)} til {ALFA} = {vinkel(vinkelVedS2(s2Interval.max))}.
+                Forankringen regnes altså ud fra trissevirkningen.
               </p>
             </div>
           </div>
@@ -537,52 +680,57 @@ export function KraftensVej() {
             </div>
           </div>
         </div>
-        <EnkelTabel
-          label="Eksempel"
-          hoved={['Eksempel', 'Formel', 'Værdi']}
-          talKolonner={[2]}
-          raekker={[
-            [
-              'Restopdrift',
-              <>
-                {F} = <V t="O_{d}" /> − <V t="B_{d}" />
-              </>,
-              kNm(eksempel.F),
-            ],
-            [
-              'Træk pr. side',
-              <>
-                {T} = {F}/2
-              </>,
-              kNm(eksempel.T),
-            ],
-            [
-              'Forankringen pr. side',
-              <>
-                {S2} · {T} = {tal(eksempel.S2)} · {tal(eksempel.T)}
-              </>,
-              kNm(eksempel.forankring),
-            ],
-            [
-              'Jordreaktion i knækket',
-              <>
-                {R} = {T} · √2
-              </>,
-              kNm(eksempel.R),
-            ],
-            ['Træk ved skrå netføring', <>{F}/(2 · cos 45°)</>, kNm(eksempel.T45)],
-            [
-              `Nettets styrke, ${eksempel.netNavn}`,
-              <>
-                <V t="P_{d}" /> &gt; 1,01 · {F}
-              </>,
-              kNm(eksempel.Pd),
-            ],
-          ]}
-        />
+        {e.tilstand === 'ikkeNoedvendig' && <Notice>{ikkeNoedvendigTekst}</Notice>}
+        {b && (
+          <EnkelTabel
+            label="Eksempel"
+            hoved={['Eksempel', 'Formel', 'Værdi']}
+            talKolonner={[2]}
+            raekker={[
+              [
+                'Restopdrift',
+                <>
+                  {F} = <V t="O_{d}" /> − <V t="B_{d}" />
+                </>,
+                kNm(b.F),
+              ],
+              [
+                'Træk pr. side',
+                <>
+                  {T} = {F}/2
+                </>,
+                kNm(b.T),
+              ],
+              [
+                'Forankringen pr. side',
+                <>
+                  {S2} · {T} = {tal(b.S2)} · {tal(b.T)}
+                </>,
+                kNm(b.forankring),
+              ],
+              [
+                'Jordreaktion i knækket',
+                <>
+                  {R} = {T} · √2
+                </>,
+                kNm(b.R),
+              ],
+              ['Træk ved skrå netføring', <>{F}/(2 · cos 45°)</>, kNm(b.T45)],
+              [
+                b.net ? `Nettets styrke, ${b.net.navn}` : 'Nettets styrke',
+                <>
+                  <V t="P_{d}" /> &gt; 1,01 · {F}
+                </>,
+                kNm(b.net?.Pd),
+              ],
+            ]}
+          />
+        )}
         <p className="kv-note">
-          Eksemplet er regnet med udvendig diameter 2,50 m, jorddække 1,50 m, GVS i terræn, rørets
-          egenvægt 340 kg/m, <V t="γ" /> = 17 kN/m³, <V t="φ" /> = 35° og konsekvensklasse CC2.
+          Eksemplet er regnet med udvendig diameter {tal(input.d)} m, jorddække {tal(input.h1)} m,
+          GVS i terræn, rørets egenvægt {heltEllerDecimaler(input.roervaegt)} kg/m, <V t="γ" /> ={' '}
+          {fasteVaerdier.gamma} kN/m³, <V t="φ" /> = {fasteVaerdier.phi}°, konsekvensklasse{' '}
+          {fasteVaerdier.konsekvensklasse} og {S2} = {tal(eksempelS2)}.
         </p>
         <p className="kv-note">Grundlag for den skrå netføring: DANVA's figur 2.15.</p>
       </section>

@@ -61,7 +61,7 @@ Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
 - teksterne til kontrolpunkterne og forudsætningerne;
 - talformatet;
 - lagringen i browseren;
-- sammenhængene og eksemplets tal i kapitlet om kraftens vej.
+- sammenhængene og eksemplets tal i kapitlet om kraftens vej, også ved et andet rør, når sikring ikke er nødvendig, og når intet geonet er stærkt nok.
 
 Browsertestene dækker:
 - standardresultatet for case 1 med de nye navne, noterne på løsningskortene, tillægget i netlængden og kontrolpunktet K-08, og mellemregningerne i kort 5–7 som tabeller med forklaring, formel og resultat;
@@ -80,6 +80,7 @@ Browsertestene dækker:
 - kort 8 med dybere forankring: kun i avanceret beregning, fliser, advarsler, advarslen om rørbunden lige over mellemregningerne, figur, mellemregninger, at K-25 ikke står under »Kontrolpunkter«, beskeden ved tilstrækkelig længde, feltfejlen og lagringen;
 - navigationen;
 - kapitlet om kraftens vej på hjælpesiden: vinklen styrer figuren og aflæsningen, og teksten har ingen henvisninger til regneark, fund eller interne dokumenter;
+- eksemplet ved figur 2: tallene slår igennem, mens der skrives, de særlige tilfælde, nulstilling, og at beregningen på siden Opdriftssikring ikke ændres;
 - tilgængelighed med axe ved 1440 og 390 px, også med avanceret beregning og kort 8 med dybere forankring.
 
 Input og forventninger må ikke ændres for at få en ændring til at bestå. En bevidst afvigelse fra arket kræver en beslutning i [BESLUTNINGER.md](BESLUTNINGER.md).

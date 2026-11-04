@@ -844,3 +844,23 @@ Brugerens ønske: »'Eksempel: trækket i forhold til nettets styrke Pd, X-GRID 
 
 Valgt af Claude og kan ændres:
 - »→« i stedet for »->«, og mellemrum før % i begge rækker.
+
+## 4. november 2026 — eget eksempel ved figur 2
+
+Brugerens ønske: »Jeg vil gerne at man kan indtaste sit eget eksempel. Dvs. rørdiameter, jorddækning og GVS. GVS skal her altid regnes i terræn, som standard beregningen. [...] Jeg ville ideelt set gerne indføre en lille input boks lige ved siden af figur 2, hvor man indtaster sine tal og kan se de beregnede resultater med det samme, som så gengives i figur 2 og ellers resten af hjælp siden hvor relevant.« og »man skal ikke indtaste gvs, da det altid regnes fra terræn i eksemplet«.
+
+Svar på forslaget: »1: lav et felt mere, men udfyld det som standard til 340. 2: med det samme. 3: det er fint. 4: det er fint. I øvrigt: behold også de tre øverste linjer under skyderen.«
+
+Omfang:
+- Boksen »Eksempel« står ved figur 2 med rørdiameter, jorddækning og rørets egenvægt (standard 340 kg/m) samt teksten »GVS i terræn«. Den viser S₁, F_op,d, geonet, P_d og S₂ · F_op,d/2.
+- Tallene skifter, mens der skrives. Boksen starter altid på Ø2500 med 1,5 m, har en knap »Nulstil«, gemmer ikke og ændrer ikke beregningen på siden Opdriftssikring.
+- Kortet med figur 2 er bredere end tekstspalten på store skærme, med boksen til højre. På mindre skærme står boksen over figuren.
+- Figur 2 viser Ø og kræfterne i kN/m. Røret har samme størrelse i figuren uanset diameteren.
+- Eksemplet følger også aflæsningen, »To måder at føre nettet på«, »Nettets styrke«, eksempeltabellen og noten nederst.
+- Beregningen er uændret. Eksemplet bruger den samme motor med γ = 17 kN/m³, φ = 35°, CC2 og S₂ = 1,05.
+
+Valgt af Claude og kan ændres:
+- Rækkerne »Eksempel: lodret del« og »Eksempel: vandret del« er fjernet fra aflæsningen, da værdierne står på figuren. Brugeren bad om at beholde de tre øverste linjer.
+- Når opdriftssikring ikke er nødvendig, skjules kræfterne og eksempeltabellen, og noten fra siden Opdriftssikring vises.
+- Når intet geonet er stærkt nok, vises trækket og forankringen, netrækken viser »–«, og beskeden fra siden Opdriftssikring vises med »Kontakt leverandør«.
+- Et ugyldigt tal, fx d = 0, afvises ved feltet, og sidste gyldige regning bliver stående.

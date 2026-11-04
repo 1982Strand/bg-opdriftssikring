@@ -53,7 +53,8 @@
 /* Kapitlet »Kraftens vej i geonettet«: én læsespalte med figurerne i fuld spaltebredde. */
 .kraftens-vej {
   --kv-matematik: 'Cambria Math', Cambria, 'Times New Roman', serif;
-  max-width: 780px;
+  container-type: inline-size;
+  max-width: 1040px;
   display: grid;
   gap: 36px;
   font-size: var(--fs-body);
@@ -68,6 +69,9 @@
 .kraftens-vej section > *,
 .kv-figur > * {
   min-width: 0;
+}
+.kraftens-vej section > * {
+  max-width: 780px;
 }
 .kraftens-vej h4 {
   font-size: var(--fs-section);
@@ -174,6 +178,74 @@ ul.kv-trin {
   padding: 14px;
   display: grid;
   gap: 12px;
+}
+/* Figur 2 med eksemplet: boksen står over figuren og til højre for den, når der er plads. */
+.kraftens-vej section > .kv-figur-bred {
+  max-width: none;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'boks' 'indhold' 'tekst';
+}
+.kv-figur-bred > .kv-eksempel {
+  grid-area: boks;
+}
+.kv-figur-bred > .kv-figur-indhold {
+  grid-area: indhold;
+}
+.kv-figur-bred > figcaption {
+  grid-area: tekst;
+}
+@container (min-width: 820px) {
+  .kraftens-vej section > .kv-figur-bred {
+    grid-template-columns: minmax(0, 1fr) 240px;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 'indhold boks' 'tekst boks';
+  }
+  .kv-figur-bred > .kv-eksempel {
+    align-self: start;
+  }
+}
+.kv-figur-indhold {
+  display: grid;
+  gap: 12px;
+}
+.kv-figur-indhold > * {
+  min-width: 0;
+}
+.kv-eksempel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+}
+.kv-eksempel-felter {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.kv-eksempel-resultat {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-small);
+}
+.kv-eksempel-resultat dt,
+.kv-eksempel-resultat dd {
+  margin: 0;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+}
+.kv-eksempel-resultat dt {
+  color: var(--muted-foreground);
+  padding-right: 8px;
+}
+.kv-eksempel-resultat dd {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 .kv-svg svg {
   width: 100%;
