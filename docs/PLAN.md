@@ -137,7 +137,7 @@ Rapporten skal oplyse, om der er regnet med standardberegningen eller den avance
 
 - Repoet `bg-opdriftssikring` oprettes offentligt på samme GitHub-konto som MSL, når bygningen starter. Git initialiseres i `C:\Opdriftssikring`.
 - Følgende kommer ikke i Git: `Data og dokumentation/`, `.local/` og `reference-private/`. Mappen med data rummer ophavsretsbeskyttede DS/EN-standarder, e-mails med personoplysninger og en kundesag. Dokumenterne henviser til mappen uden at citere den.
-- Første version bruges kun lokalt via startfilen. Den delte udgave (`VITE_UDGAVE=delt`) bygges med, så hosting kan slås til senere uden ændringer i appen. Cloudflare sættes først op efter særskilt godkendelse.
+- Appen bruges lokalt via startfilen og ligger åbent uden login i Cloudflare, jf. [Cloudflare](CLOUDFLARE.md). Hostingen bygger den delte udgave (`VITE_UDGAVE=delt`), der i dag er magen til den lokale; forskellen kommer med firmaprofilen i fase 4.
 - Arbejdsgangen følger MSL: kortlivede grene, Codex som hjælper i egne worktrees, og Claude gennemgår, committer og merger. Beslutninger skrives i `docs/BESLUTNINGER.md`.
 
 ## 9. Faser
@@ -150,7 +150,7 @@ Rapporten skal oplyse, om der er regnet med standardberegningen eller den avance
 | 3 | Siden Opdriftssikring med figurer og kontrolpunkter (afsluttet) | Delvist |
 | 4 | Rapport, firmaprofil og kartotek | Delvist |
 | 5 | Opslag og hjælp | Tekst og tabeller |
-| 6 | Hosting, efter godkendelse | – |
+| 6 | Hosting i Cloudflare, godkendt 4. november 2026 | – |
 | 7 | Ændringer fra fundlisten og mængdeberegning, efter beslutning | – |
 
 ## 10. Senere udvidelser

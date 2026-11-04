@@ -748,3 +748,18 @@ Valgt af Claude og kan ændres:
 Brugerens ønske: »Du må gerne skifte App ikonet i overskriften til 'waves-arrow-up' fra lucid.«
 
 - Ikonet i topbjælken er nu `WavesArrowUp` fra lucide. Størrelse og stregtykkelse er uændrede.
+
+## 4. november 2026 — hosting i Cloudflare
+
+Brugerens ønske: »jeg vil gerne have opdriftssikringsappen op på cloudflare (åben, uden login), ligesom min MSL-dimensioneringsapp (som ligger i c:\MSL-dimensionering) - kan du hjælpe med det?« og senere: »kan du ikke selv gøre det med claude for chrome? og så lige fortælle mig hvad du gjorde, hvad du trykkede på osv?«
+
+- Appen leveres åbent uden login som statiske filer fra Cloudflare, på samme måde som MSL Dimensionering. Opsætningen står i `docs/CLOUDFLARE.md`.
+- Hver ændring på `main`, der består appkontrollen, udrulles automatisk.
+
+Valgt af Claude og kan ændres:
+- Worker-navnet `opdriftssikring`, som giver adressen https://opdriftssikring.byggros.workers.dev.
+- En særskilt API-nøgle med færre rettigheder end skabelonen »Edit Cloudflare Workers«. Nøglen er begrænset til det, en udrulning af statiske filer bruger.
+- Ingen særskilte hostingtests, da konfigurationen er lille og en fejl viser sig ved udrulningen. Filgrænsen på 25 MiB tages op, hvis fase 4 tilføjer PDF-motoren.
+
+Ikke afgjort:
+- Om den åbne udgave skal vise kort 8 med dybere forankring. Kortet vises indtil videre som i den lokale app, i avanceret beregning og med advarslen.
