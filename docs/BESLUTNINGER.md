@@ -763,3 +763,9 @@ Valgt af Claude og kan ændres:
 
 Ikke afgjort:
 - Om den åbne udgave skal vise kort 8 med dybere forankring. Kortet vises indtil videre som i den lokale app, i avanceret beregning og med advarslen.
+
+## 4. november 2026 — tomme sider i den åbne udgave
+
+Spørgsmål: Skal de fire tomme sider skjules i den åbne udgave? Brugerens svar: »Nej, lad dem stå«.
+
+- »Rapport«, »Geonet og faste værdier«, »Hjælp og dokumentation« og »Indstillinger« står fortsat i menuen med deres pladsholdertekst, også på den åbne adresse.
