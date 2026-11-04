@@ -19,7 +19,7 @@ Brugerens svar: »1,2 og 3: I første omgang skal appen regne præcist som excel
 7. **Rør og tanke.** Der vælges mellem rør og liggende tank. Formlerne er de samme, og teksterne tilpasses. Mængdeberegning samt stående tanke og brønde er senere udvidelser. Ændret 28. oktober 2026: kun rør, se nedenfor.
 
 Følgende er valgt af Claude og kan ændres:
-- Ikonet i topbjælken er `Waves`.
+- Ikonet i topbjælken er `Waves`. Ændret 4. november 2026: `WavesArrowUp`, se nedenfor.
 - Produkt og antal lag kan overstyres manuelt, sådan som case 2 er regnet i arket. Ændret samme dag: altid 2 lag, se nedenfor.
 - Under Kontrolpunkter vises en oplysning, når fund K-02, K-03, K-05, K-12 eller K-13 er aktivt. Beregningen påvirkes ikke, og oplysningen kommer ikke med i rapporten.
 - Rapporten viser γ_f som den anvendte værdi i stedet for arkets tekst 1,05 (K-01).
@@ -742,3 +742,9 @@ Brugerens ønske: »du må gerne gøre sådan, at advarslen først kommer frem h
 
 Valgt af Claude og kan ændres:
 - Advarslen står under afkrydsningen og feltet i stedet for over, så afkrydsningen ikke flytter sig, når advarslen kommer frem.
+
+## 4. november 2026 — nyt ikon i topbjælken
+
+Brugerens ønske: »Du må gerne skifte App ikonet i overskriften til 'waves-arrow-up' fra lucid.«
+
+- Ikonet i topbjælken er nu `WavesArrowUp` fra lucide. Størrelse og stregtykkelse er uændrede.

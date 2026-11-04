@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { PanelLeft, Waves } from 'lucide-react';
+import { PanelLeft, WavesArrowUp } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import {
   Sidebar,
@@ -148,7 +148,7 @@ export function App() {
         <header className="topbar">
           <MenuButton returnFocus />
           <div className="brand">
-            <Waves size={24} strokeWidth={1.6} aria-hidden="true" />
+            <WavesArrowUp size={24} strokeWidth={1.6} aria-hidden="true" />
             <strong>OPDRIFT</strong>
             <span>Sikring med geonet</span>
           </div>

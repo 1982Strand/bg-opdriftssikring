@@ -30,7 +30,7 @@ Delene kopieres frem for at lave en fælles pakke. To små apps med hver sin udg
 
 ## 3. Skal og navigation
 
-Topbjælken er den samme mørkegrønne bjælke som i MSL, med ikonet `Waves` + **OPDRIFT** | Sikring med geonet.
+Topbjælken er den samme mørkegrønne bjælke som i MSL, med ikonet `WavesArrowUp` + **OPDRIFT** | Sikring med geonet.
 
 | Gruppe | Side | Indhold |
 |---|---|---|
