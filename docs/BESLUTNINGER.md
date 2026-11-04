@@ -881,3 +881,25 @@ Brugerens ønske: »referencen til DANVA skal i øvrigt lige opdateres.« med fo
 
 Valgt af Claude og kan ændres:
 - Den fulde reference står ét sted, og de øvrige steder bruger den korte form. Knappen i figur 2 er uændret, »45° · DANVA fig. 2.15«, da der er begrænset plads.
+
+## 4. november 2026 — rapportens layout, indhold, firmaprofil og kartotek
+
+Layoutet blev aftalt i et sideforslag med syntetiske data. Brugerens svar: »Godt. så tror jeg vi er der. Så skal vi videre« og på de åbne valg: »1a. 2: Også en afslutning som i MSL med by, dato, telefon og mail. Den skal bare stå nederst på siden. 3a. 4a. 5b. 6a. 7b«.
+
+- Rapporten læner sig op ad regnearkets rapport: forside med projektoplysninger og indholdsfortegnelse, nummererede afsnit, formler med tal og resultat til højre, indrammede inddata og tabeller med net. Logo, slogan, sidefod, sidetal og margener er som i MSL.
+- Forsiden har Projektnavn, Udføres for, Dato, Udført af, Kontrolleret af, Beregning og Projektbeskrivelse. Rørdiameter, jorddækning og GVS indsættes automatisk, og der kan tilføjes fri tekst (1a).
+- Rapporten afsluttes som i MSL med by, dato, navn, telefon og mail, nederst på siden (2).
+- Løsningerne vælges på rapportsiden med alle fire valgt fra start; afsnit og indholdsfortegnelse følger valget (3a).
+- Dybere forankring medtages som afsnit 8, når beregningen er valgt, med den faste advarsel (4a).
+- Intet kolonnehoved med projektnavn og dato (5b). Rapporten bruger MSL's skrift (6a).
+- Firmaprofil og kartotek kan redigeres som i MSL (7b). Svaret blev givet med oplysningen om, at navne i et indbygget kartotek kan læses af alle med adressen.
+- Fra kommentarerne i forslaget: figur 7.1 og 7.2 viser kun symboler, UTS står for 1 eller 2 lag, P_d står i overskriften, og formler har appens forklarende tekster.
+
+Valgt af Claude og kan ændres:
+- Afslutningen står nederst på sidste side.
+- Udgaverne følger MSL: lokal med firmaprofil og eget kartotek, intern med indbygget kartotek og offentlig uden rapport. Se »Ikke afgjort«.
+- Alle formler har forklaringen fra mellemregningerne. Rækkerne ligger i `src/ui/mellemregninger.ts` og bruges af både skærm og rapport.
+- Kontrolpunkter indgår ikke, som der allerede står i appen. Er sikring ikke nødvendig, slutter rapporten efter afsnit 5.
+
+Ikke afgjort: hvilke udgaver der skal ligge på hvilke adresser i Cloudflare. Rapporten er ikke lagt på `main`, før brugeren har set PDF'en og svaret.
+

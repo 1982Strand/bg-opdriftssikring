@@ -1,14 +1,33 @@
-/** Den delte udgave bruger standardfirmaprofilen; lokalt kan profilen redigeres.
+/** Hvad hver udgave må, som i MSL Dimensionering. Uden VITE_UDGAVE bygges den lokale udgave.
  * Dette er en visningsindstilling, ikke en sikkerhedsgrænse eller en hostingafhængighed. */
 
+export type Udgave = 'lokal' | 'intern' | 'offentlig';
+
 export interface Access {
-  shared: boolean;
+  udgave: Udgave;
+  /** Rapportsiden. */
+  rapport: boolean;
+  /** Firmaprofilen kan ses og redigeres. */
+  firmaprofil: boolean;
+  /** Medarbejderkartoteket: eget i browseren, den indbyggede liste eller intet. */
+  kartotek: 'eget' | 'indbygget' | 'intet';
 }
 
-const access: Access = { shared: import.meta.env.VITE_UDGAVE === 'delt' };
+export const ACCESS: Record<Udgave, Access> = {
+  lokal: { udgave: 'lokal', rapport: true, firmaprofil: true, kartotek: 'eget' },
+  intern: { udgave: 'intern', rapport: true, firmaprofil: false, kartotek: 'indbygget' },
+  offentlig: { udgave: 'offentlig', rapport: false, firmaprofil: false, kartotek: 'intet' },
+};
+
+export function udgaveFraMiljoe(value: string | undefined): Udgave {
+  if (value === 'intern') return 'intern';
+  return value === 'offentlig' || value === 'delt' ? 'offentlig' : 'lokal';
+}
+
+const access = ACCESS[udgaveFraMiljoe(import.meta.env?.VITE_UDGAVE)];
 
 export function useAccess(): Access {
   return access;
 }
 
-export const canEditProfile = (access: Access) => !access.shared;
+export const canEditProfile = (a: Access) => a.firmaprofil;

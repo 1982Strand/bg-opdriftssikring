@@ -237,7 +237,15 @@ export function tvaersnitSvg(r: OpdriftResultat, i: OpdriftInput, navn = 'rør')
 }
 
 /** Løsningerne fra regnearkets afsnit 9–12 (image2, image5, image7 og image8). */
-export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning): string {
+export function losningSvg(
+  r: OpdriftResultat,
+  i: OpdriftInput,
+  losning: Losning,
+  /** »symboler« viser kun symbolerne med større tekst, når værdierne står i en tabel. */
+  visning: 'maal' | 'symboler' = 'maal',
+): string {
+  const kunSymboler = visning === 'symboler';
+  const maal = (navn: string, x: number) => (kunSymboler ? navn : `${navn} = ${m(x)}`);
   const { d } = i;
   const T3 = r.T3;
   const to = losning === 'B' || losning === 'D';
@@ -291,18 +299,18 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
   );
 
   // L_a over terræn.
-  t.dele.push(vandretMaal(t.X(-ydre), t.X(ydre), t.Y(0) - 22, `L_{a} = ${m(valgt.La)}`));
+  t.dele.push(vandretMaal(t.X(-ydre), t.X(ydre), t.Y(0) - 22, maal('L_{a}', valgt.La)));
   // Forankringslængder under graven, med hjælpelinjer fra nettet.
   const yl = t.Y(t.bund) + 22;
   const stykker: [number, number, string][] = to
     ? [
-        [-ydre, centre[0] - d / 2, `L_{geonet} = ${m(L)}`],
-        [centre[0] + d / 2, centre[1] - d / 2, `L_{mellem} = ${m(mellem)}`],
-        [centre[1] + d / 2, ydre, `L_{geonet} = ${m(L)}`],
+        [-ydre, centre[0] - d / 2, maal('L_{geonet}', L)],
+        [centre[0] + d / 2, centre[1] - d / 2, maal('L_{mellem}', mellem)],
+        [centre[1] + d / 2, ydre, maal('L_{geonet}', L)],
       ]
     : [
-        [-ydre, -d / 2, `L_{geonet} = ${m(L)}`],
-        [d / 2, ydre, `L_{geonet} = ${m(L)}`],
+        [-ydre, -d / 2, maal('L_{geonet}', L)],
+        [d / 2, ydre, maal('L_{geonet}', L)],
       ];
   // Overlapper en tekst den forrige, flyttes den en linje ned.
   let forrigeHoejre = -Infinity;
@@ -313,7 +321,7 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
     t.dele.push(
       linje(t.X(x1), t.Y(T3), t.X(x1), yl, farve.muted, 1, ' stroke-dasharray="2 3"'),
       linje(t.X(x2), t.Y(T3), t.X(x2), yl, farve.muted, 1, ' stroke-dasharray="2 3"'),
-      vandretMaal(t.X(x1), t.X(x2), yl, navn, true, nede ? 15 : 0),
+      vandretMaal(t.X(x1), t.X(x2), yl, navn, true, (nede ? 15 : 0) + (kunSymboler ? 7 : 0)),
     );
     forrigeHoejre = midt + bredde(navn) / 2;
     forrigeNede = nede;
@@ -326,10 +334,10 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
     t.dele.push(
       lodretMaal(xh, t.Y(0), yTop, ''),
       lodretMaal(xh + 14, t.Y(0), t.Y(r.hBund), ''),
-      tekst(xh + 24, midt - 5, `h_{top} = ${m(r.hTop)}`, 'start'),
-      tekst(xh + 24, midt + 11, `h_{bund} = ${m(r.hBund)}`, 'start'),
+      tekst(xh + 24, midt - (kunSymboler ? 14 : 5), maal('h_{top}', r.hTop), 'start'),
+      tekst(xh + 24, midt + (kunSymboler ? 16 : 11), maal('h_{bund}', r.hBund), 'start'),
     );
-  } else t.dele.push(lodretMaal(xh, t.Y(0), t.Y(r.hBund), `h_{bund} = ${m(r.hBund)}`));
+  } else t.dele.push(lodretMaal(xh, t.Y(0), t.Y(r.hBund), maal('h_{bund}', r.hBund)));
   // Signatur for geonettet.
   const ys = t.hoejde - 10;
   t.dele.push(
@@ -350,7 +358,12 @@ export function losningSvg(r: OpdriftResultat, i: OpdriftInput, losning: Losning
     C: 'Opdriftssikring med omslag',
     D: 'Opdriftssikring med omslag ved to ledninger',
   }[losning];
-  return svg(t, titel);
+  const figur = svg(t, titel);
+  return kunSymboler
+    ? figur
+        .replace('font-size="12"', 'font-size="20"')
+        .replaceAll('font-size="9"', 'font-size="15"')
+    : figur;
 }
 
 /** Rørets tværsnit delt af GVS med koterne T₂ og T₃ og A_tør, A_våd, a, θ og r (avanceret

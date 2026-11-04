@@ -28,14 +28,15 @@ import {
 } from './navigation';
 import { RestartApp } from './RestartApp';
 import { Opdriftssikring } from './Opdriftssikring';
+import { Rapport } from './Rapport';
+import { ACCESS, udgaveFraMiljoe } from './access';
 import { SessionProvider } from './SessionContext';
 
-const pages: Record<Exclude<PageKey, 'hjaelp'>, { intro: string; notice: string }> = {
+const pages: Record<Exclude<PageKey, 'hjaelp' | 'rapport'>, { intro: string; notice: string }> = {
   opdriftssikring: {
     intro: 'Beregning af opdrift, ballast, geonet og forankring.',
     notice: 'Beregningen af opdrift, ballast, geonet og forankring bygges i fase 3.',
   },
-  rapport: { intro: 'PDF-rapport for beregningen.', notice: 'PDF-rapporten bygges i fase 4.' },
   geonet: {
     intro: 'Opslag over geonet og faste værdier.',
     notice: 'Opslag over geonet og faste værdier bygges i fase 5.',
@@ -47,9 +48,12 @@ const pages: Record<Exclude<PageKey, 'hjaelp'>, { intro: string; notice: string 
   },
 };
 
+// Rapportsiden findes ikke i alle udgaver.
+const visRapport = ACCESS[udgaveFraMiljoe(import.meta.env.VITE_UDGAVE)].rapport;
+
 function currentPage(): PageKey {
   const hash = location.hash.slice(1);
-  return isPageKey(hash) ? hash : defaultPage;
+  return isPageKey(hash) && (hash !== 'rapport' || visRapport) ? hash : defaultPage;
 }
 
 function MenuButton({ returnFocus = false }: { returnFocus?: boolean }) {
@@ -93,6 +97,7 @@ function Navigation({ page }: { page: PageKey }) {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {items.map(({ key, name }) => {
+                    if (key === 'rapport' && !visRapport) return null;
                     const Icon = pageIcons[key];
                     return (
                       <SidebarMenuItem key={key}>
@@ -158,6 +163,8 @@ export function App() {
                 <Opdriftssikring />
               ) : page === 'hjaelp' ? (
                 <Hjaelp />
+              ) : page === 'rapport' ? (
+                <Rapport />
               ) : (
                 <>
                   <PageHeader page={page} title={pageName(page)} intro={pages[page].intro} />
