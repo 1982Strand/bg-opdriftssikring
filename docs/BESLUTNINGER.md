@@ -808,3 +808,39 @@ Omfang:
 - Kontrolpunktet ved GVS under rørtoppen er nu »GVS ligger under toppen af røret. Standardberegningen regner opdrift og ballast, som om røret står helt under vand.« Det kan ikke opstå på siden i dag.
 - »(fund K-11)« er fjernet fra noterne om kontrollen i løsningerne.
 - Beregningen er uændret. Kommentarer i koden og `docs/` nævner fortsat arket og fundene.
+
+## 4. november 2026 — DANVA i kapitlet om kraftens vej
+
+Brugerens ønske: »Der må gerne være en reference til DANVAs beregnings- og kontrol metode, da det er en god sammenligning at have med. Fx i figur 2 med 45° - den må gerne skrives som værende netop fra DANVA, som den var før. Også nede ved 'To måder at føre nettet på' må det gerne rettes tilbage, og ellers hvis DANVA referencer er ændret andre steder«.
+
+Beslutningen ændrer Claudes valg fra samme dag om at fjerne DANVA. Regnearket og fund-numrene forbliver ude af appens tekster.
+
+- Knappen i figur 2 hedder igen »45° · DANVA fig. 2.15«.
+- Figur 5 siger igen »Til venstre nettet som i DANVA's figur 2.15, der slipper røret med 45° og bøjer jævnt ud i vandret.«
+- Under »Knækket« står »Jordreaktionen T · √2 kontrolleres hverken i DANVA's metode eller i appen.«
+- Under »Løftet« står »Det beregnes hverken i DANVA's metode eller i appen.« Artefaktet havde »ingen af stederne«.
+- Nederst i kapitlet står »Grundlag for den skrå netføring: DANVA's figur 2.15.«
+
+Valgt af Claude og kan ændres:
+- »DANVA's metode« i stedet for artefaktets »i DANVA«.
+
+## 4. november 2026 — aflæsningen ved figur 2
+
+Brugerens ønske: »de to linjer med etiketten 'inden for'. Kan du ikke ændre det, så det bliver mere intuitivt. Altså hvad betyder 'inden for'? Det er ikke helt klart hvad de tal er, kommer de fra appen?«
+
+- Mærkerne »inden for« og »over« er fjernet. Det ændrer Claudes valg fra samme dag.
+- De to rækker hedder nu »Eksempel: trækket i forhold til nettets styrke P_d, X-GRID 80« og »Eksempel: trækket i forhold til det, forankringen er dimensioneret for, S₂ · F_op,d/2«.
+- Værdien viser begge tal og procenten, fx »15,91 / 37,98 = 42 %« og »15,91 / 14,47 = 110 %«.
+- Figurteksten siger nu, at eksemplet er regnet i appen for Ø2500 med 1,5 m jorddække og GVS i terræn, og at trækket over 100 % er større end værdien.
+
+Valgt af Claude og kan ændres: ordlyden af rækkerne og figurteksten og visningen i procent. Beregningen er uændret.
+
+## 4. november 2026 — rækkerne for nettet og forankringen ved figur 2
+
+Brugerens ønske: »'Eksempel: trækket i forhold til nettets styrke Pd, X-GRID 80' kan det ikke ændres til 'Trækkets udnyttelse af geonettets trækstyrke -> X-GRID 80 med Pd = 37,98 kN/m (13,78 / 37,98) (Holder/Holder ikke) 36 %'. og den anden må gerne ændres fra 'Eksempel: trækket i forhold til det, forankringen er dimensioneret for, S₂ · Fop,d/2' til 'Trækket i forhold til forankringen, dimensioneret for S2 · Fop,d/2 = 14,47 kN/m (13,78 / 14,47) (Dækket/Ikke dækket) 95%' - med farvede etiketter, ligesom den første artifact havde«.
+
+- Rækkerne har brugerens ordlyd. Tallene i parentesen følger vinklen.
+- Mærkerne »Holder«, »Holder ikke«, »Dækket« og »Ikke dækket« er grønne og røde med artefaktets farver. Det ændrer valget om neutrale mærker fra samme dag.
+
+Valgt af Claude og kan ændres:
+- »→« i stedet for »->«, og mellemrum før % i begge rækker.

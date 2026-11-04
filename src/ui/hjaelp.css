@@ -239,23 +239,24 @@ ul.kv-trin {
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+  white-space: nowrap;
 }
-/* Neutralt mærke: grønt, når trækket er inden for, ellers gråt. */
+/* Farvede mærker: grønt, når trækket er inden for værdien, ellers rødt. */
 .kv-maerke {
   display: inline-block;
   font-size: var(--fs-meta);
   font-weight: 600;
   border-radius: 999px;
   padding: 1px 9px;
-  margin-right: 8px;
-  color: var(--muted-foreground);
-  background: var(--background);
-  border: 1px solid var(--border);
+  margin-right: 4px;
 }
-.kv-maerke.is-inden {
-  color: var(--primary);
-  background: var(--accent);
-  border-color: var(--accent-border);
+.kv-maerke.is-ok {
+  color: #1e6a43;
+  background: #e4f1e8;
+}
+.kv-maerke.is-nej {
+  color: #b42318;
+  background: #fdecea;
 }
 .kv-regler {
   display: grid;
