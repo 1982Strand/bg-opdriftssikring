@@ -557,9 +557,9 @@ export function KraftensVej() {
           nr={5}
           tekst={
             <>
-              Til venstre nettet som i DANVA's figur 2.15, der slipper røret med 45° og bøjer jævnt
-              ud i vandret. Til højre trissevirkning med knæk ved rørmidten, som beregningen regner
-              med. <V t="F" /> står for {F}.
+              Til venstre nettet som i figur 2.15 i DANVA Vejledning nr. 54, der slipper røret med
+              45° og bøjer jævnt ud i vandret. Til højre trissevirkning med knæk ved rørmidten, som
+              beregningen regner med. <V t="F" /> står for {F}.
             </>
           }
         >
@@ -662,10 +662,10 @@ export function KraftensVej() {
             <h5>Knækket</h5>
             <div>
               <p>
-                Jordreaktionen {T} · √2 kontrolleres hverken i DANVA's metode eller i appen.
-                Antagelsen bygger på trissevirkningen, den semirigide opfattelse af ballastlaget,
-                trykspredningen fra ballasten og erfaring fra udførte projekter i Danmark siden
-                1996.
+                Jordreaktionen {T} · √2 kontrolleres hverken i DANVA Vejledning nr. 54 eller i
+                appen. Antagelsen bygger på trissevirkningen, den semirigide opfattelse af
+                ballastlaget, trykspredningen fra ballasten og erfaring fra udførte projekter i
+                Danmark siden 1996.
               </p>
             </div>
           </div>
@@ -674,8 +674,8 @@ export function KraftensVej() {
             <div>
               <p>
                 Nettet virker først, når det er strammet. Løftet afhænger af nettets tøjning, slæk
-                ved udlægningen og jordens sammentrykning i knækket. Det beregnes hverken i DANVA's
-                metode eller i appen.
+                ved udlægningen og jordens sammentrykning i knækket. Det beregnes hverken i DANVA
+                Vejledning nr. 54 eller i appen.
               </p>
             </div>
           </div>
@@ -732,7 +732,10 @@ export function KraftensVej() {
           {fasteVaerdier.gamma} kN/m³, <V t="φ" /> = {fasteVaerdier.phi}°, konsekvensklasse{' '}
           {fasteVaerdier.konsekvensklasse} og {S2} = {tal(eksempelS2)}.
         </p>
-        <p className="kv-note">Grundlag for den skrå netføring: DANVA's figur 2.15.</p>
+        <p className="kv-note">
+          Grundlag for den skrå netføring: DANVA Vejledning nr. 54, 2. udgave, juli 2006, figur
+          2.15.
+        </p>
       </section>
     </div>
   );

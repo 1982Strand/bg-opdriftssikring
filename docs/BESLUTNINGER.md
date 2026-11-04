@@ -871,3 +871,13 @@ Brugerens ønske: »Kan du ikke flytte input-boksen udenfor figur 2-boksen? Det 
 
 - Boksen »Eksempel« er nu sit eget kort ved siden af kortet med figur 2 og ikke inde i det. På mindre skærme står den stadig over figuren.
 - Figur 2 har samme bredde som de øvrige figurer, 780 px, når der er plads.
+
+## 4. november 2026 — fuld reference til DANVA
+
+Brugerens ønske: »referencen til DANVA skal i øvrigt lige opdateres.« med forsiden af kilden: »Vejledning nr. 54, 2. udgave, Juli 2006«.
+
+- Nederst i kapitlet om kraftens vej står nu »Grundlag for den skrå netføring: DANVA Vejledning nr. 54, 2. udgave, juli 2006, figur 2.15.«
+- Figur 5, »Knækket« og »Løftet« nævner »DANVA Vejledning nr. 54«.
+
+Valgt af Claude og kan ændres:
+- Den fulde reference står ét sted, og de øvrige steder bruger den korte form. Knappen i figur 2 er uændret, »45° · DANVA fig. 2.15«, da der er begrænset plads.
