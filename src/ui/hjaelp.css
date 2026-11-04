@@ -179,37 +179,23 @@ ul.kv-trin {
   display: grid;
   gap: 12px;
 }
-/* Figur 2 med eksemplet: boksen står over figuren og til højre for den, når der er plads. */
-.kraftens-vej section > .kv-figur-bred {
+/* Figur 2 med eksemplet som eget kort: over figuren og til højre for den, når der er plads. Figuren
+   har samme bredde som de øvrige figurer. */
+.kraftens-vej section > .kv-figur-raekke {
   max-width: none;
+  display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'boks' 'indhold' 'tekst';
-}
-.kv-figur-bred > .kv-eksempel {
-  grid-area: boks;
-}
-.kv-figur-bred > .kv-figur-indhold {
-  grid-area: indhold;
-}
-.kv-figur-bred > figcaption {
-  grid-area: tekst;
+  gap: 14px;
 }
 @container (min-width: 820px) {
-  .kraftens-vej section > .kv-figur-bred {
-    grid-template-columns: minmax(0, 1fr) 240px;
-    grid-template-rows: auto 1fr;
-    grid-template-areas: 'indhold boks' 'tekst boks';
+  .kraftens-vej section > .kv-figur-raekke {
+    grid-template-columns: minmax(0, 780px) 240px;
+    gap: 20px;
   }
-  .kv-figur-bred > .kv-eksempel {
+  .kv-figur-raekke > .kv-eksempel {
+    order: 1;
     align-self: start;
   }
-}
-.kv-figur-indhold {
-  display: grid;
-  gap: 12px;
-}
-.kv-figur-indhold > * {
-  min-width: 0;
 }
 .kv-eksempel {
   display: grid;
