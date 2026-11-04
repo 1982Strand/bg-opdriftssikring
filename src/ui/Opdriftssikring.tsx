@@ -20,7 +20,7 @@ import { PageFooter, PageHeader } from './page';
 import { SaveState } from './SaveState';
 import { useSession } from './SessionContext';
 import { SettingField } from './SettingField';
-import { kontrolpunktTekster } from './kontrolpunkter';
+import { ikkeNoedvendigTekst, kontrolpunktTekster } from './kontrolpunkter';
 import { betingelser, projekteringsansvar } from './forudsaetninger';
 import { Partialkoefficienter } from './Partialkoefficienter';
 import { Udfold } from './Udfold';
@@ -938,7 +938,7 @@ export function Opdriftssikring() {
   const ikkeNoedvendigNote =
     r?.S1 === null
       ? 'Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig.'
-      : `S₁ ≥ ${tal(standarder.krav.S1, 1)}: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.`;
+      : ikkeNoedvendigTekst;
   const pk = r?.partialkoefficienter;
   const avanceret = session.avanceret;
   const zone = r?.gvsZone ?? null;

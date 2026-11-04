@@ -92,8 +92,8 @@ const vaeg = (x: number, y: number, b: number, h: number) =>
   `<rect x="${x}" y="${y}" width="${b}" height="${h}" fill="${farve.jordDyb}" stroke="${farve.muted}" stroke-width="1.2"/>`;
 const nr = (x: number, y: number, n: number) =>
   `<g><circle cx="${x}" cy="${y}" r="11" fill="${farve.ink}"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-family="${SKRIFT_UI}" font-size="12" font-weight="600" fill="${farve.card}">${n}</text></g>`;
-const svg = (b: number, h: number, indhold: string, label: string, y0 = 0) =>
-  `<svg viewBox="0 ${y0} ${b} ${h}" role="img" aria-label="${esc(label)}">${indhold}</svg>`;
+const svg = (b: number, h: number, indhold: string, label: string, y0 = 0, x0 = 0) =>
+  `<svg viewBox="${x0} ${y0} ${b} ${h}" role="img" aria-label="${esc(label)}">${indhold}</svg>`;
 
 /** Figur 1: overblik over kraftens vej. */
 export function figurOverblik() {
@@ -128,8 +128,17 @@ export function figurOverblik() {
   );
 }
 
-/** Figur 2: rørets ligevægt med valgfri vinkel α i grader. */
-export function figurLigevaegt(a: number) {
+/** Tallene på figur 2, når opdriftssikring er nødvendig. */
+export interface LigevaegtTal {
+  F: number;
+  T: number;
+  lodret: number;
+  vandret: number;
+}
+
+/** Figur 2: rørets ligevægt med valgfri vinkel α i grader. Røret er tegnet i fast størrelse, og
+ * kraftpilene har samme målestok uanset eksemplets tal. Uden tal vises kun rør og net. */
+export function figurLigevaegt(a: number, d: number, krafter: LigevaegtTal | null) {
   const C = { x: 340, y: 165 };
   const r = 80;
   const k = 140;
@@ -152,39 +161,37 @@ export function figurLigevaegt(a: number) {
     const ch = Math.cos((a * Math.PI) / 360);
     g += txt(R.x + 52 * sh, R.y + 52 * ch + 6, 'α', 'lille', undefined, 'middle');
   }
+  g += txt(C.x, C.y + 5, `Ø${Math.round(d * 1000)}`, 'note', undefined, 'middle');
+  const label = `Rør med geonet, der slipper røret med vinklen ${a} grader fra lodret.`;
+  // Bredere end tegningen, så tallene ved kraftpilene også er der ved store vinkler.
+  const ramme = (indhold: string, tekst: string) => svg(760, 360, indhold, tekst, 50, -40);
+  if (!krafter) return ramme(g, label);
   // Trækket i højre side med lodret og vandret del.
   const Lt = k / (2 * c);
   const S = { x: R.x + 14 * c, y: R.y - 14 * s };
   const E = { x: S.x + Lt * s, y: S.y + Lt * c };
-  if (E.x - S.x > 6) {
-    g += pil(S.x, S.y, E.x, S.y, 'k', true);
-    if (E.x - S.x > 25) g += txt((S.x + E.x) / 2, S.y - 9, 'T · sin α', 'lille', 't', 'middle');
-  }
+  if (E.x - S.x > 6) g += pil(S.x, S.y, E.x, S.y, 'k', true);
+  if (a > 0) g += txt(S.x, S.y - 9, `T · sin α = ${tal(krafter.vandret)}`, 'lille', 't');
   g += pil(E.x, S.y, E.x, E.y, 'k', true);
-  g += txt(E.x + 10, (S.y + E.y) / 2 + 6, 'T · cos α', 'lille', 't');
+  g += txt(E.x + 10, (S.y + E.y) / 2 + 6, `T · cos α = ${tal(krafter.lodret)}`, 'lille', 't');
   g += pil(S.x, S.y, E.x, E.y, 't');
+  const trekTekst = `T = ${tal(krafter.T)} kN/m`;
   g +=
     a < 10
-      ? txt(E.x, E.y + 22, 'T', 'lbl', 't', 'middle')
-      : txt(E.x + 16 * s - 2, E.y + 16 * c + 8, 'T', 'lbl', 't');
+      ? txt(E.x + 6, E.y + 22, trekTekst, 'lbl', 't')
+      : txt(E.x + 16 * s - 2, E.y + 16 * c + 8, trekTekst, 'lbl', 't');
   // Trækket i venstre side.
   const S2 = { x: Lp.x - 14 * c, y: Lp.y - 14 * s };
   const E2 = { x: S2.x - Lt * s, y: S2.y + Lt * c };
   g += pil(S2.x, S2.y, E2.x, E2.y, 't');
   g +=
     a < 10
-      ? txt(E2.x, E2.y + 22, 'T', 'lbl', 't', 'middle')
+      ? txt(E2.x - 6, E2.y + 22, 'T', 'lbl', 't', 'end')
       : txt(E2.x - 16 * s + 2, E2.y + 16 * c + 8, 'T', 'lbl', 't', 'end');
   // Opdriften i samme målestok.
   g += pil(C.x, C.y + r + 143, C.x, C.y + r + 3, 'f');
-  g += txt(C.x + 12, C.y + r + 80, 'F_{op,d}', 'lbl', 'f');
-  return svg(
-    680,
-    360,
-    g,
-    `Rør med geonet, der slipper røret med vinklen ${a} grader fra lodret. Trækket i nettet er ${tal(1 / (2 * c))} gange opdriften.`,
-    50,
-  );
+  g += txt(C.x + 12, C.y + r + 80, `F_{op,d} = ${tal(krafter.F)} kN/m`, 'lbl', 'f');
+  return ramme(g, `${label} Trækket i nettet er ${tal(1 / (2 * c))} gange opdriften.`);
 }
 
 /** Figur 3: knækket og kræfterne sat i forlængelse af hinanden. */

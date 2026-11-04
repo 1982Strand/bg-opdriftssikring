@@ -1,7 +1,11 @@
 /** Tekster til de kontrolpunkter, motoren melder (docs/FUND.md). Sænket skrift skrives som
  * `F_{top}`. Kontrolpunkterne ændrer ikke beregningen og indgår ikke i rapporten. */
 import type { Kontrolpunkt, OpdriftResultat } from '../engine/opdrift.ts';
+import standarder from '../engine/defaults.json' with { type: 'json' };
 import { tal, talKort } from '../engine/format.ts';
+
+/** Noten, når ballasten er tilstrækkelig (beslutning 31. oktober 2026). */
+export const ikkeNoedvendigTekst = `S₁ ≥ ${tal(standarder.krav.S1, 1)}: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.`;
 
 export function kontrolpunktTekst(k: Kontrolpunkt, r: OpdriftResultat): string {
   switch (k) {
