@@ -8,6 +8,8 @@ Adressen er `<Worker-navn>.<kontoens underdomæne>.workers.dev`. Ændres Worker-
 
 `.github/workflows/cloudflare.yml` bygger appen med `VITE_UDGAVE=delt` og udruller med fast wrangler-version. Appkontrollen kalder den kun fra main efter beståede tests, så hver ændring på main, der består kontrollen, går online. Uden API-nøgle springes hosting over. Forhåndsvisningsadresser er slået fra.
 
+Den første udrulning af Workeren fejlede 4. november 2026 med kode 10007 (»This Worker does not exist on your account«), selv om filerne var lagt op. En ny kørsel af det fejlede job gik igennem uden ændringer.
+
 GitHub Secrets indeholder `CLOUDFLARE_API_TOKEN` og `CLOUDFLARE_ACCOUNT_ID`. Nøglen hedder »Opdriftssikring GitHub-udrulning« i Cloudflare, er begrænset til kontoen og har rettighederne Workers Scripts: Edit, Account Settings: Read, User Details: Read og Memberships: Read. Den er uafhængig af nøglen til MSL Dimensionering og må aldrig gemmes i kode, logs eller den byggede app.
 
 Alle med adressen kan bruge appen. `noindex` er en anmodning til søgemaskiner, ikke adgangskontrol. HTTP-overskrifter ligger i `public/_headers`.
