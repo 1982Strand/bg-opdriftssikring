@@ -20,7 +20,7 @@ test('K-08 forklarer, at kontrollen ved omslag viser en større margin end dimen
     {
       kode: 'K-08',
       tekst:
-        'Kontrollen ved omslag regner det øverste lag med fuld F_{top} over hele L_{geonet}, mens længden dimensioneres med F_{top}/2 og uden 0,2 m pr. side. Kontrollen viser derfor en større margin end dimensioneringen (fund K-08).',
+        'Kontrollen ved omslag regner det øverste lag med fuld F_{top} over hele L_{geonet}, mens længden dimensioneres med F_{top}/2 og uden 0,2 m pr. side. Kontrollen viser derfor en større margin end dimensioneringen.',
     },
   ]);
 });
@@ -36,7 +36,7 @@ test('K-12 viser S₁ og den negative F_opdrift', () => {
   const k12 = tekster('GVS i 1,5 m').find((k) => k.kode === 'K-12')!;
   assert.equal(
     k12.tekst,
-    'S₁ = 1,12 ≥ 1,0, så opdriftssikring er ikke nødvendig. Regnearket regner alligevel videre med F_{op,d} = −6,60 kN/m (fund K-12).',
+    'S₁ = 1,12 ≥ 1,0, så opdriftssikring er ikke nødvendig. Tallene for geonet og forankring er regnet videre med F_{op,d} = −6,60 kN/m og er kun til orientering.',
   );
 });
 

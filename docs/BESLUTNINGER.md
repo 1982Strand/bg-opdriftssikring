@@ -794,3 +794,17 @@ Valgt af Claude og kan ændres:
 
 Ikke afgjort:
 - Brugerens visuelle kontrol af kapitlet.
+
+## 4. november 2026 — regneark og fund i appens øvrige tekster
+
+Brugerens ønske: »Do this task here: Fjern regneark og fund-numre fra appens øvrige tekster«, som følger af beslutningen om kraftens vej: »der skal ikke stå noget med 'regneark', da ingen ved hvad det drejer sig om. appen er 100% selvstændig«.
+
+Spørgsmål: Hvad skal der ske med afsnittet »Kontrolpunkter« i den offentlige app? Brugerens svar: »Behold, omformuleret«. Spørgsmål: Skal »bygges i fase 4« og »bygges i fase 5« på de tomme sider ændres? Brugerens svar: »Lad teksten stå«.
+
+Omfang:
+- Indledningen til »Kontrolpunkter« er nu »Forhold, der påvirker denne beregning. Kontrolpunkterne indgår ikke i rapporten.« Afsnittet vises både lokalt og online.
+- Kontrolpunktet ved omslag slutter nu med »... en større margin end dimensioneringen.«
+- Kontrolpunktet ved S₁ ≥ 1,0 er nu »S₁ = … ≥ 1,0, så opdriftssikring er ikke nødvendig. Tallene for geonet og forankring er regnet videre med F_op,d = … kN/m og er kun til orientering.«
+- Kontrolpunktet ved GVS under rørtoppen er nu »GVS ligger under toppen af røret. Standardberegningen regner opdrift og ballast, som om røret står helt under vand.« Det kan ikke opstå på siden i dag.
+- »(fund K-11)« er fjernet fra noterne om kontrollen i løsningerne.
+- Beregningen er uændret. Kommentarer i koden og `docs/` nævner fortsat arket og fundene.

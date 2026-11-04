@@ -229,9 +229,9 @@ const tovkraftNote = {
 
 const kontrolNote = {
   udenOmslag:
-    'Kontrollen er eftervisningen for løftning: O_{d} ≤ B_{d} + F_{bund} · 2 · L_{geonet}. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_{op,d} · S₂, og viser tillægget fra S₂ (fund K-11).',
+    'Kontrollen er eftervisningen for løftning: O_{d} ≤ B_{d} + F_{bund} · 2 · L_{geonet}. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_{op,d} · S₂, og viser tillægget fra S₂.',
   medOmslag:
-    'Kontrollen er eftervisningen for løftning med begge netlag. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_{op,d} · S₂ (fund K-11).',
+    'Kontrollen er eftervisningen for løftning med begge netlag. Den er altid opfyldt, når forankringslængden er dimensioneret efter K = F_{op,d} · S₂.',
 };
 
 /** Ekstra lodrette stykker i netlængden, når netlagene ligger mere end 0,2 m fra hinanden (K-26). */
@@ -1635,8 +1635,7 @@ export function Opdriftssikring() {
             >
               <h2 id="kontrolpunkter">Kontrolpunkter</h2>
               <p className="calc-note">
-                Fund fra regnearket, der påvirker denne beregning. Tallene er regnet som i
-                regnearket. Kontrolpunkterne indgår ikke i rapporten.
+                Forhold, der påvirker denne beregning. Kontrolpunkterne indgår ikke i rapporten.
               </p>
               {punkter.map(({ kode, tekst }) => (
                 <Notice kind="warning" key={kode}>
