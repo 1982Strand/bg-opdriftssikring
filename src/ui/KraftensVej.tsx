@@ -164,9 +164,9 @@ function Ligevaegt({ e, d, boks }: { e: Eksempel; d: number; boks: ReactNode }) 
   const a = b && aflaesning(alfa, b);
   const andel = traekPrSide(1, alfa);
   return (
-    <figure className="kv-figur kv-figur-bred">
+    <div className="kv-figur-raekke">
       {boks}
-      <div className="kv-figur-indhold">
+      <figure className="kv-figur">
         <Tegning
           svg={figurLigevaegt(
             alfa,
@@ -247,15 +247,15 @@ function Ligevaegt({ e, d, boks }: { e: Eksempel; d: number; boks: ReactNode }) 
             )}
           </dd>
         </dl>
-      </div>
-      <figcaption>
-        <strong>Figur 2.</strong> Rørets ligevægt. Pilene er tegnet i samme målestok: de stiplede
-        lodrette dele er tilsammen lige så lange som {F}. Røret har samme størrelse i figuren uanset
-        diameteren. Tallene er regnet i appen ud fra felterne i eksemplet, med GVS i terræn.
-        Procenterne viser trækket pr. side i forhold til den værdi, der er regnet med. Over
-        100&nbsp;% er trækket større end værdien.
-      </figcaption>
-    </figure>
+        <figcaption>
+          <strong>Figur 2.</strong> Rørets ligevægt. Pilene er tegnet i samme målestok: de stiplede
+          lodrette dele er tilsammen lige så lange som {F}. Røret har samme størrelse i figuren
+          uanset diameteren. Tallene er regnet i appen ud fra felterne i eksemplet, med GVS i
+          terræn. Procenterne viser trækket pr. side i forhold til den værdi, der er regnet med.
+          Over 100&nbsp;% er trækket større end værdien.
+        </figcaption>
+      </figure>
+    </div>
   );
 }
 

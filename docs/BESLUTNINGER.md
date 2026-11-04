@@ -864,3 +864,10 @@ Valgt af Claude og kan ændres:
 - Når opdriftssikring ikke er nødvendig, skjules kræfterne og eksempeltabellen, og noten fra siden Opdriftssikring vises.
 - Når intet geonet er stærkt nok, vises trækket og forankringen, netrækken viser »–«, og beskeden fra siden Opdriftssikring vises med »Kontakt leverandør«.
 - Et ugyldigt tal, fx d = 0, afvises ved feltet, og sidste gyldige regning bliver stående.
+
+## 4. november 2026 — eksempelboksen uden for figur 2
+
+Brugerens ønske: »Kan du ikke flytte input-boksen udenfor figur 2-boksen? Det ville være pænere synes jeg«.
+
+- Boksen »Eksempel« er nu sit eget kort ved siden af kortet med figur 2 og ikke inde i det. På mindre skærme står den stadig over figuren.
+- Figur 2 har samme bredde som de øvrige figurer, 780 px, når der er plads.
