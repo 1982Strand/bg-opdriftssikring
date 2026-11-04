@@ -36,7 +36,12 @@ test('kraftens vej: vinklen styrer figuren og aflæsningen, og teksten står for
   await expect(raekke(3)).toHaveText('Holder ikke 106 %');
 
   // DANVA er sammenligningsgrundlaget; ingen henvisninger til regneark, fund eller interne dokumenter.
-  await expect(kapitel.getByText(/nettet som i DANVA's figur 2.15/)).toBeVisible();
+  await expect(
+    kapitel.getByText(/nettet som i figur 2.15 i DANVA Vejledning nr. 54/),
+  ).toBeVisible();
+  await expect(
+    kapitel.getByText('DANVA Vejledning nr. 54, 2. udgave, juli 2006, figur 2.15'),
+  ).toBeVisible();
   expect(await kapitel.innerHTML()).not.toMatch(
     /[Rr]egneark|\b[Aa]rket|K-\d\d|Case \d|docs\/|[Ss]tatiker/,
   );
