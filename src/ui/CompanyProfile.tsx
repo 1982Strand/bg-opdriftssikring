@@ -738,8 +738,8 @@ function Employees({
   return (
     <>
       <p className="report-caption">
-        Personerne kan vælges som udført af og kvalitetssikring under Projektoplysninger. Oplysninger
-        gemmes i denne browser.
+        Personerne kan vælges som udført af og kvalitetssikring under Projektoplysninger.
+        Oplysninger gemmes i denne browser.
       </p>
       <div className="profile-actions">
         <Popover open={adding} onOpenChange={setAdding}>
