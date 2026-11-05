@@ -232,6 +232,17 @@
     }
   }
 
+  // Afslutningen står nederst på forsiden.
+  if data.afslutning != none {
+    v(1fr)
+    block(breakable: false, {
+      strong(data.afslutning.by_og_dato)
+      v(3mm)
+      grid(columns: (1fr, 1fr), column-gutter: 8mm,
+        ..data.afslutning.personer.map(p => stack(dir: ttb, spacing: 0.6mm, ..p.map(l => [#l]))))
+    })
+  }
+
   // Afsnittene.
   for a in data.afsnit {
     if a.nySide { pagebreak(weak: true) } else if a.niveau == 1 { v(8mm, weak: true) } else { v(6mm, weak: true) }
@@ -244,16 +255,5 @@
       heading(level: a.niveau, outlined: true, bookmarked: true, tekst(a.titel))
       for b in a.blokke { blok(b) }
     }
-  }
-
-  // Afslutningen står nederst på sidste side.
-  if data.afslutning != none {
-    v(1fr)
-    block(breakable: false, {
-      strong(data.afslutning.by_og_dato)
-      v(3mm)
-      grid(columns: (1fr, 1fr), column-gutter: 8mm,
-        ..data.afslutning.personer.map(p => stack(dir: ttb, spacing: 0.6mm, ..p.map(l => [#l]))))
-    })
   }
 }

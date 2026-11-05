@@ -74,6 +74,10 @@ test('teksterne og afsnit 8 følger beregningsmetoden', () => {
   assert.ok(tekst.includes('Dybere forankring er ikke en dokumenteret metode'));
   assert.ok(tekst.includes('fra afsnit 7'));
   assert.ok(!tekst.includes('fra kort 7'));
+  // Den indtastede forankringslængde står øverst i beregningsdetaljerne.
+  const otte = model.afsnit.find((a) => a.titel[0].t.startsWith('8.'))!;
+  const start = otte.blokke.findIndex((b) => b.type === 'h3');
+  assert.ok(samlet(otte.blokke[start + 1]).includes('Mulig forankringslængde pr. side'));
 });
 
 test('ultimal styrke følger antallet af lag', () => {

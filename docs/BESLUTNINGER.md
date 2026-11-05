@@ -888,7 +888,7 @@ Layoutet blev aftalt i et sideforslag med syntetiske data. Brugerens svar: »God
 
 - Rapporten læner sig op ad regnearkets rapport: forside med projektoplysninger og indholdsfortegnelse, nummererede afsnit, formler med tal og resultat til højre, indrammede inddata og tabeller med net. Logo, slogan, sidefod, sidetal og margener er som i MSL.
 - Forsiden har Projektnavn, Udføres for, Dato, Udført af, Kontrolleret af, Beregning og Projektbeskrivelse. Rørdiameter, jorddækning og GVS indsættes automatisk, og der kan tilføjes fri tekst (1a).
-- Rapporten afsluttes som i MSL med by, dato, navn, telefon og mail, nederst på siden (2).
+- By, dato, navn, telefon og mail står som i MSL, nederst på forsiden (2, præciseret 5. november 2026).
 - Løsningerne vælges på rapportsiden med alle fire valgt fra start; afsnit og indholdsfortegnelse følger valget (3a).
 - Dybere forankring medtages som afsnit 8, når beregningen er valgt, med den faste advarsel (4a).
 - Intet kolonnehoved med projektnavn og dato (5b). Rapporten bruger MSL's skrift (6a).
@@ -896,7 +896,6 @@ Layoutet blev aftalt i et sideforslag med syntetiske data. Brugerens svar: »God
 - Fra kommentarerne i forslaget: figur 7.1 og 7.2 viser kun symboler, UTS står for 1 eller 2 lag, P_d står i overskriften, og formler har appens forklarende tekster.
 
 Valgt af Claude og kan ændres:
-- Afslutningen står nederst på sidste side.
 - Udgaverne følger MSL: lokal med firmaprofil og eget kartotek, intern med indbygget kartotek og offentlig uden rapport. Se »Ikke afgjort«.
 - Alle formler har forklaringen fra mellemregningerne. Rækkerne ligger i `src/ui/mellemregninger.ts` og bruges af både skærm og rapport.
 - Kontrolpunkter indgår ikke, som der allerede står i appen. Er sikring ikke nødvendig, slutter rapporten efter afsnit 5.
@@ -911,3 +910,10 @@ Brugeren fik valget mellem to muligheder: en åben adresse uden rapport og en in
 
 Valgt af Claude og kan ændres:
 - Navnet `opdriftssikring-intern`, som følger MSL's `msl-intern`.
+
+## 5. november 2026 — rettelser efter første PDF
+
+Brugerens svar på PDF'erne: »dette skal stå på første side nederst. Altså på siden med indholdsfortegnelsen. Og så lige til sektion 8, når den er med. Det er væsentligt, at man i appen har indtastet en ænsket forankringslængde, Lgeonet, Den synes jeg skal stå som øverste linje i beregningsdetlajerne.«
+
+- By, dato, navne, telefon og mail står nederst på forsiden.
+- Den indtastede forankringslængde L_geonet er øverste linje i beregningsdetaljerne for dybere forankring. Skærmen og rapporten bruger samme rækker, så rækkefølgen er også ændret i mellemregningerne i kort 8.

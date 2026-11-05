@@ -598,15 +598,15 @@ export function dybGrupper(
       titel: 'Nødvendig kraftoverførsel',
       raekker: [
         {
+          forklaring: 'Mulig forankringslængde pr. side',
+          formel: 'L_{geonet}, angivet',
+          resultat: meter(dyb.L),
+        },
+        {
           forklaring: 'Kraft forankringen skal dimensioneres for',
           detalje: 'fra kort 7',
           formel: `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(r.S2)}`,
           resultat: kNm(r.K),
-        },
-        {
-          forklaring: 'Mulig forankringslængde pr. side',
-          formel: 'L_{geonet}, angivet',
-          resultat: meter(dyb.L),
         },
         {
           forklaring: 'Nødvendig kraftoverførsel',
