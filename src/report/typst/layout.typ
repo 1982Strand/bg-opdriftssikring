@@ -88,8 +88,12 @@
   }
   let dobbeltstreg = stack(dir: ttb, spacing: 0.45mm,
     line(length: 100%, stroke: 0.25mm), line(length: 100%, stroke: 0.25mm))
-  let inddata(vaerdi, bredde: auto) = box(width: bredde, stroke: 0.25mm, inset: (x: 1.6mm, y: 0.5mm),
-    align(right, text(fill: farve, weight: "bold", vaerdi)))
+  // Inputværdier er grønne. I løbende tekst står de på samme grundlinje som teksten og i tabeller
+  // på linje med de beregnede værdier.
+  let inddata(vaerdi, bredde: auto) = {
+    let v = text(fill: farve, weight: "bold", vaerdi)
+    if bredde == auto { v } else { box(width: bredde, inset: (x: 1.6mm), align(right, v)) }
+  }
   let statusfarve(s) = if s == "OK" { farve } else { rgb("#b42318") }
 
   // Formlen med forklaring, symboler og tal til venstre og resultatet til højre.

@@ -990,3 +990,12 @@ Regnearkets OBS under figurerne i afsnittet om kraftoverførsel skal med i rappo
 - Skærmen er uændret, fordi kort 7 og kortet for omslag allerede nævner afstanden.
 
 Valgt af Claude og kan ændres: almindelig sort tekst uden »OBS:«.
+
+## 5. november 2026 — grønne inputværdier uden kasse i rapporten
+
+Brugerens ønske: »jeg vil gerne fjerne den sorte boks omkring de grønne værdier i rapporten generelt. Det er fint værdierne er grønne, man kunne evt. lave en lille indledende note der nævner, at de grønne værdier/tekster er inputværdier fra dimensioneringen«
+
+- Inputværdierne i rapporten står i grøn, fed tekst uden kasse.
+- Afsnit 1 indledes med noten: »Grønne værdier og tekster er inputværdier fra dimensioneringen.«
+
+Valgt af Claude og kan ændres: noten står øverst i afsnit 1 med lille skrift. Statusteksten OK er fortsat grøn.
