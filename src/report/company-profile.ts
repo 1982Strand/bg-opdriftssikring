@@ -325,6 +325,15 @@ export function exportCompanyProfile(state: ProfileState, standardLogo?: Profile
     2,
   );
 }
+/** En profil eksporteret fra MSL Dimensionering har felter, som denne rapport ikke bruger. Dens
+ * rapporttitel er MSL's egen, så den bevares ikke. */
+function udenMslFelter(profile: unknown): unknown {
+  if (!object(profile) || !Object.hasOwn(profile, 'afsluttende_afsnit')) return profile;
+  const rest: Record<string, unknown> = { ...profile, titel: DEFAULT_COMPANY_PROFILE.titel };
+  delete rest.sv;
+  delete rest.afsluttende_afsnit;
+  return rest;
+}
 export function importCompanyProfile(json: string, standardLogo?: ProfileLogo): ProfileState {
   let parsed: unknown;
   try {
@@ -336,7 +345,7 @@ export function importCompanyProfile(json: string, standardLogo?: ProfileLogo): 
   keys(parsed, ['version', 'profile', 'logo', 'standardLogo'], true);
   if (parsed.version !== 1 || typeof parsed.standardLogo !== 'boolean')
     fail('Filens profilversion eller logooplysning er ugyldig.');
-  const profile = mergeCompanyProfile(parsed.profile, true);
+  const profile = mergeCompanyProfile(udenMslFelter(parsed.profile), true);
   const logo = parseLogoDataUrl(parsed.logo);
   if (
     parsed.standardLogo &&

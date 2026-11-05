@@ -1,7 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { employeesForRoster } from '../src/report/company-profile.ts';
+import {
+  defaultProfileState,
+  employeesForRoster,
+  exportCompanyProfile,
+  importCompanyProfile,
+} from '../src/report/company-profile.ts';
 import { ACCESS, udgaveFraMiljoe } from '../src/ui/udgaver.ts';
 import { buildEdition, readEmployeeList } from '../tools/build-udgave.ts';
 
@@ -48,4 +53,22 @@ test('hemmeligheden med kartoteket bruges kun, når den interne udgave bygges', 
   assert.match(trin, /secrets\.MEDARBEJDERE_JSON/);
   assert.match(read('vite.config.ts'), /VITE_UDGAVE === 'intern'/);
   assert.match(read('hosting/cloudflare/wrangler-offentlig.jsonc'), /dist-offentlig/);
+});
+
+test('en profil eksporteret fra MSL kan indlæses og beholder kartoteket, men ikke rapporttitlen', () => {
+  const logo = {
+    mime: 'image/jpeg' as const,
+    bytes: new Uint8Array(
+      readFileSync(new URL('../public/report/logo/byggros_logo.jpeg', import.meta.url)),
+    ),
+  };
+  const fil = JSON.parse(exportCompanyProfile(defaultProfileState(), logo));
+  fil.profile.medarbejdere = [person];
+  fil.profile.titel = 'NOTAT – MSL opbygning veje/pladser';
+  fil.profile.sv = { titel: 'x' };
+  fil.profile.afsluttende_afsnit = [];
+  const { profile } = importCompanyProfile(JSON.stringify(fil), logo);
+  assert.deepEqual(profile.medarbejdere, [person]);
+  assert.equal(profile.titel, 'Opdriftssikring');
+  assert.ok(!('sv' in profile));
 });
