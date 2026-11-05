@@ -529,6 +529,14 @@ export function rapportDokument(
           ],
         },
         { type: 'tofigur', figurer: symbolfigurer },
+        // Figur 7.2 og noten følger hinanden; afstanden er den, der er regnet med i kort 7.
+        ...(C
+          ? [
+              tekst(
+                `Ved indbygning af geonet til opdriftssikring kan geonettet slås tilbage (omslag). Slås geonettet tilbage, som vist på figur 7.2, skal der være ${talKort(r.omslagAfstand)} m mellem det nederste og det øverste geonet.`,
+              ),
+            ]
+          : []),
         kraftTabel,
         lille(kraftNote(avanceret)),
         h3('Nødvendig kraftoptagelse'),

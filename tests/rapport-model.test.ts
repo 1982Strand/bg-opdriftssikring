@@ -93,6 +93,27 @@ test('teksterne og afsnit 8 følger beregningsmetoden', () => {
   assert.ok(resultater[1].includes('Nødvendig dybde til nederste netlag'));
 });
 
+test('noten om at slå geonettet tilbage følger afstanden i kort 7 og kræver omslag', () => {
+  const note = (s: string) => /skal der være ([\d,]+) m mellem det nederste/.exec(s)?.[1];
+  assert.equal(note(dokument().tekst), '0,2');
+  const afstand = (a: number) =>
+    note(
+      dokument((s) => {
+        s.inddata.omslagAfstand = a;
+      }).tekst,
+    );
+  assert.equal(afstand(0.25), '0,25');
+  assert.equal(afstand(0.4), '0,4');
+  // Omslag er ikke muligt, når det øverste lag ville ligge i eller over terræn.
+  const uden = dokument((s) => {
+    s.inddata.d = 0.7;
+    s.inddata.h1 = 0;
+    s.inddata.omslagAfstand = 0.4;
+  });
+  assert.ok(titler(uden.model).includes('7. Forankring'));
+  assert.equal(note(uden.tekst), undefined);
+});
+
 test('ultimal styrke følger antallet af lag', () => {
   const et = dokument().model.afsnit.find((a) => a.titel[0].t.startsWith('6.'))!;
   assert.ok(samlet(et.blokke[3]).includes('1 lag X-GRID 80'));
