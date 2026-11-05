@@ -657,7 +657,7 @@ export function rapportDokument(
         ],
         hoejre: [
           { navn: 'Udført af', vaerdi: o.sagsbehandler.navn },
-          { navn: 'Kontrolleret af', vaerdi: o.kontrollant.navn },
+          { navn: 'Kvalitetssikring', vaerdi: o.kontrollant.navn },
           {
             navn: 'Beregning',
             vaerdi: `${avanceret ? 'Avanceret beregning' : 'Standardberegning'}, ${klasse}`,
