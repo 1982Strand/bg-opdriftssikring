@@ -965,3 +965,17 @@ Claude oplyste, at eksporterede filer ikke var beskyttet, hvis de blev gemt i pr
 Brugerens ønske: »i opdriftssikring, ved rapporten. Hvis man vælger at lave beregningen, skal der dukke en mulighed op her, om man vil medtage den, den skal ikke med automatisk.«
 
 - Når dybere forankring er beregnet, vises valget »Medtag dybere forankring ved begrænset plads som afsnit 8« under Indhold på rapportsiden. Det er ikke valgt fra start. Dette erstatter, at afsnittet kom med automatisk (valg 4a af 4. november 2026). Den faste advarsel følger stadig med i afsnittet.
+
+## 5. november 2026 — større figurer ved to ledninger
+
+Brugerens ønske: »i afsnit 7.3 når rapporten dannes. De to figurer der viser de to ledninger med hhv uden og med omslag, de må gerne gøres større, evt flyttes lidt hvis det bedre kan passe. De skal dog stadig kunne være på 1 side, så afsnit 7.3 kun fylder 1 A4 side,«
+
+- I afsnittene med to ledninger står L_a og L_geonet,tot nu på én linje over figuren, som bliver bredere.
+- Figurernes bredde beregnes ud fra den plads, teksten levner, så begge afsnit kan være på én side. De to figurer er lige brede og højst lige så brede som teksten.
+
+Valgt af Claude og kan ændres:
+- Afsnittene med to ledninger starter altid på en ny side.
+- Signaturen »Geonet« står til højre på linje med målene under figuren, og den tomme plads over og under figuren er fjernet. Det gælder alle løsningsfigurer og figuren for dybere forankring, både på skærmen og i rapporten, så de samme figurer vises begge steder.
+- Ved dybt liggende rør er det sidens højde, der sætter grænsen, så figurerne kan blive smallere end de hidtidige 114 mm for at holde begge afsnit på én side.
+
+Kontrol med omslag for én ledning viser også taludtrykket på skærmen og i rapporten. Brugerens svar: »ret lige afsnit 7.2 til, så taludtrykket også vises der. Læg det så online«.
