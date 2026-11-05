@@ -6,6 +6,7 @@ import { Notice } from './Notice';
 import { TabelRamme } from './TabelRamme';
 import { SettingField } from './SettingField';
 import { Udfold } from './Udfold';
+import { useAccess } from './access';
 import { useSession } from './SessionContext';
 import { tilMotorInput } from './state';
 
@@ -22,6 +23,7 @@ const navn = {
  * fra tabel A.4-1 NA og en sammenligning af CC2 og CC3 for den aktuelle beregning. */
 export function Partialkoefficienter() {
   const { session, update } = useSession();
+  const { avanceretBeregning } = useAccess();
   const valgt = session.konsekvensklasse;
   // Hver klasse regnes med sine egne regler, så CC3 altid regnes med GVS i terræn.
   const beregn = (klasse: Konsekvensklasse) => {
@@ -66,23 +68,29 @@ export function Partialkoefficienter() {
         løftning (UPL) med trækelementer.
       </p>
       <div className="klasse-valg">
-        <SettingField
-          field={{
-            key: 'konsekvensklasse',
-            label: 'Konsekvensklasse',
-            kind: 'radio',
-            segmented: true,
-            help: 'CC3 kan kun vælges i avanceret beregning.',
-            // CC3 kun i avanceret beregning (beslutning 30. oktober 2026).
-            options: klasser.map((k) => ({
-              value: k,
-              label: k,
-              disabled: k === 'CC3' && !session.avanceret,
-            })),
-          }}
-          value={valgt}
-          change={(v) => update({ ...session, konsekvensklasse: v as Konsekvensklasse })}
-        />
+        {avanceretBeregning ? (
+          <SettingField
+            field={{
+              key: 'konsekvensklasse',
+              label: 'Konsekvensklasse',
+              kind: 'radio',
+              segmented: true,
+              help: 'CC3 kan kun vælges i avanceret beregning.',
+              // CC3 kun i avanceret beregning (beslutning 30. oktober 2026).
+              options: klasser.map((k) => ({
+                value: k,
+                label: k,
+                disabled: k === 'CC3' && !session.avanceret,
+              })),
+            }}
+            value={valgt}
+            change={(v) => update({ ...session, konsekvensklasse: v as Konsekvensklasse })}
+          />
+        ) : (
+          <span className="klasse-kfi">
+            <span>Konsekvensklasse {valgt}</span>
+          </span>
+        )}
         {/* Ekstra span, så mellemrummene i teksten ikke forsvinder i flex-boksen. */}
         <span className="klasse-kfi">
           <span>
@@ -132,40 +140,42 @@ export function Partialkoefficienter() {
           </tbody>
         </table>
       </TabelRamme>
-      <Udfold titel="Konsekvens for den aktuelle beregning">
-        {resultater.every((r) => r !== null) ? (
-          <TabelRamme label="Konsekvens for den aktuelle beregning">
-            <table className="data-table class-compare">
-              <thead>
-                <tr>
-                  <th scope="col">Størrelse</th>
-                  {klasser.map((k) => (
-                    <th scope="col" className="num" key={k}>
-                      {k}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {raekker.map(([navnet, vis]) => (
-                  <tr key={navnet}>
-                    <th scope="row">
-                      <Fmt text={navnet} />
-                    </th>
-                    {resultater.map((r, i) => (
-                      <td className="num" key={klasser[i]}>
-                        {vis(r!)}
-                      </td>
+      {avanceretBeregning && (
+        <Udfold titel="Konsekvens for den aktuelle beregning">
+          {resultater.every((r) => r !== null) ? (
+            <TabelRamme label="Konsekvens for den aktuelle beregning">
+              <table className="data-table class-compare">
+                <thead>
+                  <tr>
+                    <th scope="col">Størrelse</th>
+                    {klasser.map((k) => (
+                      <th scope="col" className="num" key={k}>
+                        {k}
+                      </th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </TabelRamme>
-        ) : (
-          <Notice kind="warning">Konsekvensen vises, når inddata er rettet.</Notice>
-        )}
-      </Udfold>
+                </thead>
+                <tbody>
+                  {raekker.map(([navnet, vis]) => (
+                    <tr key={navnet}>
+                      <th scope="row">
+                        <Fmt text={navnet} />
+                      </th>
+                      {resultater.map((r, i) => (
+                        <td className="num" key={klasser[i]}>
+                          {vis(r!)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TabelRamme>
+          ) : (
+            <Notice kind="warning">Konsekvensen vises, når inddata er rettet.</Notice>
+          )}
+        </Udfold>
+      )}
     </>
   );
 }

@@ -62,7 +62,7 @@ Den avancerede beregning (`tests/avanceret.test.ts`) kontrolleres ved, at:
 - talformatet;
 - lagringen i browseren;
 - rapportens indhold: case 1-tal, fravalgte løsninger, afsnit 8, 1 og 2 lag, forside og afslutning (`tests/rapport-model.test.ts`);
-- udgaverne og at kartoteket holdes ude af den offentlige udgave (`tests/udgaver.test.ts`);
+- udgaverne, at kartoteket holdes ude af den offentlige udgave, og at den kun regner standardberegningen (`tests/udgaver.test.ts`);
 - sammenhængene og eksemplets tal i kapitlet om kraftens vej, også ved et andet rør, når sikring ikke er nødvendig, og når intet geonet er stærkt nok.
 
 Browsertestene dækker:

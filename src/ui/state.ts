@@ -188,6 +188,15 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
     };
   }
 }
+/** En beregning i en udgave uden avanceret beregning. Felterne for GVS og det manuelle geonet
+ * bruges ikke i standardberegningen. Den tørre rumvægt vises i tabellen, men kan ikke ændres der. */
+export const udenAvanceret = (s: Session): Session => ({
+  ...s,
+  avanceret: false,
+  konsekvensklasse: 'CC2',
+  inddata: { ...s.inddata, gammaTor: standardSession().inddata.gammaTor },
+});
+
 export function loadSession(storage: Pick<Storage, 'getItem'>): {
   session: Session;
   error: boolean;

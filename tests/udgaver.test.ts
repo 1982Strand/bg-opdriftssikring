@@ -9,6 +9,7 @@ import {
   keepEmployees,
   parseEmployeeFile,
 } from '../src/report/company-profile.ts';
+import { standardSession, tilMotorInput, udenAvanceret } from '../src/ui/state.ts';
 import { ACCESS, udgaveFraMiljoe } from '../src/ui/udgaver.ts';
 import { buildEdition, readEmployeeList } from '../tools/build-udgave.ts';
 
@@ -26,6 +27,20 @@ test('kun lokal og intern udgave har rapport, og kun den interne har indbygget k
   assert.deepEqual(employeesForRoster('intet', liste), []);
   assert.deepEqual(employeesForRoster('indbygget', liste), [person]);
   assert.deepEqual(employeesForRoster('indbygget', '{ugyldig'), []);
+});
+
+test('den offentlige udgave har kun standardberegningen, også for en gemt avanceret beregning', () => {
+  assert.equal(ACCESS.lokal.avanceretBeregning, true);
+  assert.equal(ACCESS.intern.avanceretBeregning, true);
+  assert.equal(ACCESS.offentlig.avanceretBeregning, false);
+  const gemt = standardSession();
+  gemt.avanceret = true;
+  gemt.konsekvensklasse = 'CC3';
+  gemt.inddata.gvsITerraen = false;
+  gemt.inddata.gvs = 2;
+  gemt.inddata.overstyringAktiv = true;
+  gemt.inddata.gammaTor = 18;
+  assert.deepEqual(tilMotorInput(udenAvanceret(gemt)), tilMotorInput(standardSession()));
 });
 
 test('den offentlige udgave kan ikke bygges med et kartotek', async () => {

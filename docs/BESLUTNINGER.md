@@ -999,3 +999,17 @@ Brugerens ønske: »jeg vil gerne fjerne den sorte boks omkring de grønne værd
 - Afsnit 1 indledes med noten: »Grønne værdier og tekster er inputværdier fra dimensioneringen.«
 
 Valgt af Claude og kan ændres: noten står øverst i afsnit 1 med lille skrift. Statusteksten OK er fortsat grøn.
+
+## 5. november 2026 — ingen avanceret beregning i den offentlige udgave
+
+Brugerens ønske: »I den offentlige udgave, skal det ikke være muligt at lave en avanceret beregning. Man skal heller ikke kunne se valgmulighederne for de avancerede beregninger, altså fx at man kan sætte GVS under terræn, eller at det er muligt at vælge CC3 i kort 2.«
+
+- Den offentlige udgave viser ikke feltet »Avanceret beregning«, valget af konsekvensklasse, felterne for GVS, feltet for tør rumvægt, det manuelle valg af geonet eller kort 8.
+- En beregning, der er gemt med avanceret beregning i browseren, regnes som standardberegning med CC2 og GVS i terræn.
+- Den lokale og den interne udgave er uændrede.
+
+Valgt af Claude og kan ændres:
+- Kort 2 viser »Konsekvensklasse CC2« som fast tekst, og sammenligningen »Konsekvens for den aktuelle beregning« er skjult, fordi den viser CC3.
+- Teksterne er neutrale i den offentlige udgave: »Der regnes altid med GVS i terræn.« og »Geonettet vælges automatisk.« Siden Indstillinger nævner ikke valget af konsekvensklasse.
+- S₂ og afstanden mellem netlagene kan stadig ændres, fordi de hører til standardberegningen.
+- Tabellen i kort 4 og mellemregningerne viser fortsat γ_tør med standardværdien, fordi de følger standardberegningens opbygning. Bidraget er 0, når GVS ligger i terræn.
