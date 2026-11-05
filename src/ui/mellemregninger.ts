@@ -656,7 +656,7 @@ export function dybGrupper(
         },
         {
           forklaring: 'Ballast og forankring i forhold til opdriften',
-          formel: 'Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d} (krav > 1,0)',
+          formel: `Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d} = (${tal(r.B)} + (${tal(dyb.Fbund)} + ${tal(dyb.Ftop)})/2 · 4 · ${tal(dyb.L)})/${tal(r.O)} (krav > 1,0)`,
           resultat: tal(dyb.kontrol),
           status: dyb.status,
           hoved: true,
