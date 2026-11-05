@@ -938,3 +938,9 @@ Claude foreslog en særskilt kartoteksfil med egne knapper og én kommando. Brug
 
 Valgt af Claude og kan ændres:
 - Rapporttitlen »Opdriftssikring« bevares ved indlæsning af en profil fra MSL.
+
+## 5. november 2026 — Kvalitetssikring
+
+Brugerens ønske: »'Kontrolleret af' i opdriftssikring skal ændres til 'Kvalitetssikring'.«
+
+- Forsiden, rapportsiden og teksten ved kartoteket hedder nu »Kvalitetssikring«, som i MSL.

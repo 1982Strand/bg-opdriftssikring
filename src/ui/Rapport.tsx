@@ -380,7 +380,7 @@ export function Rapport() {
         </div>
         <div className="report-project-columns">
           {person('sagsbehandler', 'Udført af')}
-          {person('kontrollant', 'Kontrolleret af')}
+          {person('kontrollant', 'Kvalitetssikring')}
         </div>
         <Button
           type="button"
