@@ -223,7 +223,10 @@ export function losningIndhold(
               C.Ltot,
               'inkl. omslag og overlæg',
             ),
-            kontrol('Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d}', C),
+            kontrol(
+              `Kontrol = (B_{d} + (F_{bund} + F_{top})/2 · 4 · L_{geonet})/O_{d} = (${tal(r.B)} + (${tal(r.Fbund)} + ${tal(r.Ftop)})/2 · 4 · ${tal(C.L)})/${tal(r.O)}`,
+              C,
+            ),
           ],
         }
       );
