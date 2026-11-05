@@ -928,3 +928,13 @@ Brugerens svar: »ja, kopier listen og lav det som MSL med en github hemmelighed
 
 - Medarbejderlisten er kopieret fra den interne MSL-adresse til hemmeligheden `MEDARBEJDERE_JSON` i dette repo, da GitHub ikke kan vise værdien af en hemmelighed. Listen er ikke skrevet til disk og ligger ikke i Git.
 - Listerne i de to repoer er uafhængige. En ændring i MSL skal også lægges ind her.
+
+## 5. november 2026 — kartoteket virker som i MSL
+
+Claude foreslog en særskilt kartoteksfil med egne knapper og én kommando. Brugerens svar: »hmmm. Nej, okay. Det skal være ligesom det virker på MSL-appen. Altså, på min lokale version af appen, har jeg fuld administrativ adgang og kan tilgå 'firmaprofil' hvor rapportopsætningen kan redigeres. og jeg lan redigere, gemme og indlæse et medarbejderkartotek. Dvs. på den interne, vil det indlæste kartotek fra min lokale udgave altid vær tilgængeligt, men man kan ikke redigere i kartoteket, da man ikke har adgang til firmaprofilen. På den offentlige, kan man slet ikke tilgå rapport-delen, så der er dette slet ikke relevant.«
+
+- Forslaget er ikke indført. Lokal, intern og offentlig udgave virker som i MSL.
+- En profil eksporteret fra MSL kan nu indlæses i den lokale udgave. Felter, som kun MSL bruger, og MSL's rapporttitel springes over.
+
+Valgt af Claude og kan ændres:
+- Rapporttitlen »Opdriftssikring« bevares ved indlæsning af en profil fra MSL.
