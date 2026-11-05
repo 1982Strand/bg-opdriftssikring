@@ -7,6 +7,8 @@ Cloudflare leverer to statiske udgaver uden serverkode og uden login, som i MSL 
 
 Adressen er `<Worker-navn>.<kontoens underdomæne>.workers.dev`. Ændres et Worker-navn eller kontoens underdomæne i Cloudflare, skal navnene i de to wrangler-filer ændres tilsvarende. Ellers opretter udrulningen en ny Worker.
 
+Den offentlige udgave har kun standardberegningen og viser ingen valgmuligheder for avanceret beregning, heller ikke GVS under terræn eller CC3. Det er en visningsindstilling, ikke en sikkerhedsgrænse.
+
 Opsætningen ligger i `hosting/cloudflare/wrangler.jsonc` og `wrangler-offentlig.jsonc`. `.github/workflows/cloudflare.yml` bygger begge udgaver, kontrollerer hostingens filgrænse og udruller med fast wrangler-version. Appkontrollen kalder den kun fra main efter beståede tests, så hver ændring på main, der består kontrollen, går online. Uden API-nøgle springes hosting over. Forhåndsvisningsadresser er slået fra.
 
 Den første udrulning af en ny Worker kan fejle med kode 10007 (»This Worker does not exist on your account«), selv om filerne er lagt op. Det skete 4. november 2026, og en ny kørsel af det fejlede job gik igennem uden ændringer.

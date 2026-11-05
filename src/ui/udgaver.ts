@@ -11,12 +11,32 @@ export interface Access {
   firmaprofil: boolean;
   /** Medarbejderkartoteket: eget i browseren, den indbyggede liste eller intet. */
   kartotek: 'eget' | 'indbygget' | 'intet';
+  /** Avanceret beregning og dens valgmuligheder, herunder GVS under terræn og CC3. */
+  avanceretBeregning: boolean;
 }
 
 export const ACCESS: Record<Udgave, Access> = {
-  lokal: { udgave: 'lokal', rapport: true, firmaprofil: true, kartotek: 'eget' },
-  intern: { udgave: 'intern', rapport: true, firmaprofil: false, kartotek: 'indbygget' },
-  offentlig: { udgave: 'offentlig', rapport: false, firmaprofil: false, kartotek: 'intet' },
+  lokal: {
+    udgave: 'lokal',
+    rapport: true,
+    firmaprofil: true,
+    kartotek: 'eget',
+    avanceretBeregning: true,
+  },
+  intern: {
+    udgave: 'intern',
+    rapport: true,
+    firmaprofil: false,
+    kartotek: 'indbygget',
+    avanceretBeregning: true,
+  },
+  offentlig: {
+    udgave: 'offentlig',
+    rapport: false,
+    firmaprofil: false,
+    kartotek: 'intet',
+    avanceretBeregning: false,
+  },
 };
 
 export function udgaveFraMiljoe(value: string | undefined): Udgave {

@@ -45,6 +45,7 @@ import { Notice } from './Notice';
 import { TabelRamme } from './TabelRamme';
 import { PageFooter, PageHeader } from './page';
 import { SaveState } from './SaveState';
+import { useAccess } from './access';
 import { useSession } from './SessionContext';
 import { SettingField } from './SettingField';
 import { ikkeNoedvendigTekst, kontrolpunktTekster } from './kontrolpunkter';
@@ -399,6 +400,7 @@ function DybResultat({
 
 export function Opdriftssikring() {
   const { session, update, externalChange, loadMessage, reload } = useSession();
+  const { avanceretBeregning } = useAccess();
   const input = tilMotorInput(session);
   const beregning = beregnOpdrift(input);
   const r = beregning.ok ? beregning.resultat : null;
@@ -480,23 +482,25 @@ export function Opdriftssikring() {
         )}
       </div>
       <div className="calc-mode">
-        <SettingField
-          field={{
-            key: 'avanceret',
-            label: 'Avanceret beregning',
-            kind: 'checkbox',
-            help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag og dybere forankring ved begrænset plads.',
-          }}
-          value={session.avanceret}
-          // CC3 kan kun vælges i avanceret beregning, så standardberegningen går tilbage til CC2.
-          change={(v) =>
-            update({
-              ...session,
-              avanceret: Boolean(v),
-              konsekvensklasse: v ? session.konsekvensklasse : 'CC2',
-            })
-          }
-        />
+        {avanceretBeregning && (
+          <SettingField
+            field={{
+              key: 'avanceret',
+              label: 'Avanceret beregning',
+              kind: 'checkbox',
+              help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag og dybere forankring ved begrænset plads.',
+            }}
+            value={session.avanceret}
+            // CC3 kan kun vælges i avanceret beregning, så standardberegningen går tilbage til CC2.
+            change={(v) =>
+              update({
+                ...session,
+                avanceret: Boolean(v),
+                konsekvensklasse: v ? session.konsekvensklasse : 'CC2',
+              })
+            }
+          />
+        )}
         <Button
           variant="outline"
           onClick={() => update({ ...standardSession(), rapport: session.rapport })}
@@ -546,24 +550,28 @@ export function Opdriftssikring() {
               'Jorddækning h₁ (m)',
               'Fra terræn til rørets top. Midten ligger i T₃ = h₁ + d/2.',
             )}
-            <SettingField
-              field={{
-                key: 'input-gvs-terraen',
-                label: 'GVS i terræn',
-                kind: 'checkbox',
-                help: 'Grundvandsspejlet ligger i terræn. Det er normalt den ugunstigste realistiske vandstand.',
-              }}
-              value={i.gvsITerraen || gvsLaast}
-              disabled={gvsLaast}
-              change={(v) => saet({ gvsITerraen: Boolean(v) })}
-            />
-            {talfelt(
-              'gvs',
-              'GVS under terræn (m)',
-              avanceret
-                ? 'Dybden fra terræn til grundvandsspejlet. Ligger GVS under rørtoppen, giver kun den del af røret, der står under vand, opdrift.'
-                : 'Dybden fra terræn til grundvandsspejlet. Bruges kun i den avancerede beregning.',
-              { disabled: i.gvsITerraen || gvsLaast },
+            {avanceretBeregning && (
+              <>
+                <SettingField
+                  field={{
+                    key: 'input-gvs-terraen',
+                    label: 'GVS i terræn',
+                    kind: 'checkbox',
+                    help: 'Grundvandsspejlet ligger i terræn. Det er normalt den ugunstigste realistiske vandstand.',
+                  }}
+                  value={i.gvsITerraen || gvsLaast}
+                  disabled={gvsLaast}
+                  change={(v) => saet({ gvsITerraen: Boolean(v) })}
+                />
+                {talfelt(
+                  'gvs',
+                  'GVS under terræn (m)',
+                  avanceret
+                    ? 'Dybden fra terræn til grundvandsspejlet. Ligger GVS under rørtoppen, giver kun den del af røret, der står under vand, opdrift.'
+                    : 'Dybden fra terræn til grundvandsspejlet. Bruges kun i den avancerede beregning.',
+                  { disabled: i.gvsITerraen || gvsLaast },
+                )}
+              </>
             )}
           </div>
           {r && (
@@ -580,7 +588,13 @@ export function Opdriftssikring() {
             og grundvandsspejl og risiko for svigt af drænsystemer.
           </Notice>
         )}
-        {!avanceret && !cc3 && <Notice>Standardberegningen regner altid med GVS i terræn.</Notice>}
+        {!avanceret && !cc3 && (
+          <Notice>
+            {avanceretBeregning
+              ? 'Standardberegningen regner altid med GVS i terræn.'
+              : 'Der regnes altid med GVS i terræn.'}
+          </Notice>
+        )}
         {avanceret && input.gvs > 0 && (
           <Notice kind="warning">
             GVS skal være den højeste vandstand i ledningens levetid, også under anlæg og ved
@@ -608,11 +622,12 @@ export function Opdriftssikring() {
             'Rumvægt, våd γ_{våd} (kN/m³)',
             'Karakteristisk rumvægt af fyldet under GVS.',
           )}
-          {talfelt(
-            'gammaTor',
-            'Rumvægt, tør γ_{tør} (kN/m³)',
-            'Karakteristisk rumvægt af fyldet over GVS. Bruges kun i den avancerede beregning ved GVS under terræn.',
-          )}
+          {avanceretBeregning &&
+            talfelt(
+              'gammaTor',
+              'Rumvægt, tør γ_{tør} (kN/m³)',
+              'Karakteristisk rumvægt af fyldet over GVS. Bruges kun i den avancerede beregning ved GVS under terræn.',
+            )}
           {talfelt(
             'phi',
             'Friktionsvinkel φ_{k} (°)',
@@ -827,38 +842,41 @@ export function Opdriftssikring() {
               udnyttes.
             </p>
             <Notice>{tovkraftNote.styrke}</Notice>
-            <div className="calc-override">
-              <SettingField
-                field={{
-                  key: 'input-overstyring',
-                  label: `Vælg geonet manuelt i ${standarder.geonet.lagVedManueltValg} lag`,
-                  kind: 'checkbox',
-                  help: 'Hvis den krævede trækstyrke ikke er tilstrækkelig med 1 net kan der lægges et ekstra net af samme type ovenpå, for derved at fordoble den regningsmæssige trækstyrke. Påvirker kun kraftoverførslen, ikke forankringslængden.',
-                }}
-                disabled={ikkeNoedvendig || !avanceret}
-                value={i.overstyringAktiv && !ikkeNoedvendig && avanceret}
-                change={(v) => saet({ overstyringAktiv: Boolean(v) })}
-              />
-              <SettingField
-                field={{
-                  key: 'input-produkt',
-                  label: `Produkt i ${standarder.geonet.lagVedManueltValg} lag`,
-                  kind: 'select',
-                  options: geonetProdukter.map((p) => ({
-                    value: p.uts,
-                    label: `X-GRID ${p.uts} · UTS ${p.uts * standarder.geonet.lagVedManueltValg} kN/m`,
-                  })),
-                }}
-                disabled={!i.overstyringAktiv || ikkeNoedvendig || !avanceret}
-                value={i.produkt}
-                error={fejl('overstyring')}
-                change={(v) => saet({ produkt: Number(v) })}
-              />
-            </div>
+            {avanceretBeregning && (
+              <div className="calc-override">
+                <SettingField
+                  field={{
+                    key: 'input-overstyring',
+                    label: `Vælg geonet manuelt i ${standarder.geonet.lagVedManueltValg} lag`,
+                    kind: 'checkbox',
+                    help: 'Hvis den krævede trækstyrke ikke er tilstrækkelig med 1 net kan der lægges et ekstra net af samme type ovenpå, for derved at fordoble den regningsmæssige trækstyrke. Påvirker kun kraftoverførslen, ikke forankringslængden.',
+                  }}
+                  disabled={ikkeNoedvendig || !avanceret}
+                  value={i.overstyringAktiv && !ikkeNoedvendig && avanceret}
+                  change={(v) => saet({ overstyringAktiv: Boolean(v) })}
+                />
+                <SettingField
+                  field={{
+                    key: 'input-produkt',
+                    label: `Produkt i ${standarder.geonet.lagVedManueltValg} lag`,
+                    kind: 'select',
+                    options: geonetProdukter.map((p) => ({
+                      value: p.uts,
+                      label: `X-GRID ${p.uts} · UTS ${p.uts * standarder.geonet.lagVedManueltValg} kN/m`,
+                    })),
+                  }}
+                  disabled={!i.overstyringAktiv || ikkeNoedvendig || !avanceret}
+                  value={i.produkt}
+                  error={fejl('overstyring')}
+                  change={(v) => saet({ produkt: Number(v) })}
+                />
+              </div>
+            )}
             {!avanceret && (
               <p className="calc-note">
-                Standardberegningen vælger altid geonettet automatisk. Geonettet kan vælges manuelt
-                med avanceret beregning.
+                {avanceretBeregning
+                  ? 'Standardberegningen vælger altid geonettet automatisk. Geonettet kan vælges manuelt med avanceret beregning.'
+                  : 'Geonettet vælges automatisk.'}
               </p>
             )}
             <Udfold titel="Mellemregninger" laast={ikkeNoedvendig}>

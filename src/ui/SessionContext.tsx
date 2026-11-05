@@ -1,6 +1,14 @@
 /** Den aktuelle beregning, delt mellem siderne og gemt i browseren. */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { loadSession, saveSession, standardSession, STORAGE_KEY, type Session } from './state';
+import {
+  loadSession,
+  saveSession,
+  standardSession,
+  STORAGE_KEY,
+  udenAvanceret,
+  type Session,
+} from './state';
+import { ACCESS, udgaveFraMiljoe } from './udgaver';
 
 type Ctx = {
   session: Session;
@@ -16,6 +24,7 @@ type Ctx = {
 const SessionCtx = createContext<Ctx | null>(null);
 
 const UTILGAENGELIGT = 'Browserens lager er ikke tilgængeligt. Ændringer gemmes ikke.';
+const avanceretTilladt = ACCESS[udgaveFraMiljoe(import.meta.env.VITE_UDGAVE)].avanceretBeregning;
 
 function indlaes() {
   let lager: Storage | null = null;
@@ -32,7 +41,9 @@ function indlaes() {
   } catch {
     // Behandles som ikke gemt.
   }
-  return { session: r.session, saved: fundet && !r.error, message: r.message ?? null };
+  // En beregning gemt med avanceret beregning må ikke regnes sådan i en udgave uden den.
+  const session = avanceretTilladt ? r.session : udenAvanceret(r.session);
+  return { session, saved: fundet && !r.error, message: r.message ?? null };
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {

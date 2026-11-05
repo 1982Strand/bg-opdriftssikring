@@ -32,6 +32,8 @@ import { Rapport } from './Rapport';
 import { ACCESS, udgaveFraMiljoe } from './udgaver';
 import { SessionProvider } from './SessionContext';
 
+const adgang = ACCESS[udgaveFraMiljoe(import.meta.env.VITE_UDGAVE)];
+
 const pages: Record<Exclude<PageKey, 'hjaelp' | 'rapport'>, { intro: string; notice: string }> = {
   opdriftssikring: {
     intro: 'Beregning af opdrift, ballast, geonet og forankring.',
@@ -43,13 +45,14 @@ const pages: Record<Exclude<PageKey, 'hjaelp' | 'rapport'>, { intro: string; not
   },
   indstillinger: {
     intro: 'Indstillinger for beregningen.',
-    notice:
-      'Der er endnu ingen indstillinger. Konsekvensklassen vælges i afsnit 2 Partialkoefficienter på siden Opdriftssikring.',
+    notice: adgang.avanceretBeregning
+      ? 'Der er endnu ingen indstillinger. Konsekvensklassen vælges i afsnit 2 Partialkoefficienter på siden Opdriftssikring.'
+      : 'Der er endnu ingen indstillinger.',
   },
 };
 
 // Rapportsiden findes ikke i alle udgaver.
-const visRapport = ACCESS[udgaveFraMiljoe(import.meta.env.VITE_UDGAVE)].rapport;
+const visRapport = adgang.rapport;
 
 function currentPage(): PageKey {
   const hash = location.hash.slice(1);
