@@ -227,6 +227,7 @@ export function rapportDokument(
   nyt(
     '1. Generelle beregningsforudsætninger',
     [
+      lille('Grønne værdier og tekster er inputværdier fra dimensioneringen.'),
       h3('Betingelser'),
       { type: 'punkter', punkter: betingelser(klasse).map(dele) },
       h3('Projekteringsansvar'),
