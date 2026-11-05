@@ -901,5 +901,13 @@ Valgt af Claude og kan ændres:
 - Alle formler har forklaringen fra mellemregningerne. Rækkerne ligger i `src/ui/mellemregninger.ts` og bruges af både skærm og rapport.
 - Kontrolpunkter indgår ikke, som der allerede står i appen. Er sikring ikke nødvendig, slutter rapporten efter afsnit 5.
 
-Ikke afgjort: hvilke udgaver der skal ligge på hvilke adresser i Cloudflare. Rapporten er ikke lagt på `main`, før brugeren har set PDF'en og svaret.
+## 5. november 2026 — udgaver og adresser som i MSL
 
+Brugeren fik valget mellem to muligheder: en åben adresse uden rapport og en intern adresse med rapport og indbygget kartotek, som i MSL, eller rapporten på den åbne adresse uden kartotek. Claude oplyste, at den interne adresse heller ikke har login, så alle med adressen kan læse navne, mails og telefonnumre, og at en åben rapport ville lade alle lave en PDF med firmaets logo og sidefod. Brugerens svar: »Ja, som i MSL«.
+
+- Lokal udgave: rapport, redigerbar firmaprofil og eget kartotek i browseren.
+- Intern udgave på https://opdriftssikring-intern.byggros.workers.dev: rapport, standardprofil og indbygget kartotek fra hemmeligheden `MEDARBEJDERE_JSON`.
+- Offentlig udgave på https://opdriftssikring.byggros.workers.dev: ingen rapport, ingen firmaprofil og intet kartotek. »Rapport« står ikke i menuen.
+
+Valgt af Claude og kan ændres:
+- Navnet `opdriftssikring-intern`, som følger MSL's `msl-intern`.

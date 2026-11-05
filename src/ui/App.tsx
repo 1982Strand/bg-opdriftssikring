@@ -29,7 +29,7 @@ import {
 import { RestartApp } from './RestartApp';
 import { Opdriftssikring } from './Opdriftssikring';
 import { Rapport } from './Rapport';
-import { ACCESS, udgaveFraMiljoe } from './access';
+import { ACCESS, udgaveFraMiljoe } from './udgaver';
 import { SessionProvider } from './SessionContext';
 
 const pages: Record<Exclude<PageKey, 'hjaelp' | 'rapport'>, { intro: string; notice: string }> = {

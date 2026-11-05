@@ -24,7 +24,7 @@ Følgende kopieres fra MSL og tilpasses:
 | PDF-motor | `src/report/compiler.ts`, `compile-queue.ts`, `pdf-motor.ts`, `tools/pak-pdf-motor.ts` |
 | Rapportramme | `typst/layout.typ` (logo, slogan, grøn sidefod, Carlito, sidetal), `public/report/fonts`, `public/report/logo` |
 | Firmaprofil og kartotek | `company-profile.ts`, `profile-storage.ts`, `profile-defaults.ts`, `CompanyProfile.tsx`, `text-format.ts`, `phone-format.ts` |
-| Drift | `Start ….cmd`, `VITE_UDGAVE=delt`, GitHub-workflow til kontrol, `AGENTS.md`, `docs/BESLUTNINGER.md` |
+| Drift | `Start ….cmd`, `VITE_UDGAVE`, GitHub-workflow til kontrol, `AGENTS.md`, `docs/BESLUTNINGER.md` |
 
 Delene kopieres frem for at lave en fælles pakke. To små apps med hver sin udgivelse er nemmest at holde adskilt. En fælles pakke kan oprettes senere, hvis de to apps begynder at glide fra hinanden. I `AGENTS.md` skrives, at designændringer i den ene app skal overvejes i den anden.
 
@@ -137,7 +137,7 @@ Rapporten skal oplyse, om der er regnet med standardberegningen eller den avance
 
 - Repoet `bg-opdriftssikring` oprettes offentligt på samme GitHub-konto som MSL, når bygningen starter. Git initialiseres i `C:\Opdriftssikring`.
 - Følgende kommer ikke i Git: `Data og dokumentation/`, `.local/` og `reference-private/`. Mappen med data rummer ophavsretsbeskyttede DS/EN-standarder, e-mails med personoplysninger og en kundesag. Dokumenterne henviser til mappen uden at citere den.
-- Appen bruges lokalt via startfilen og ligger åbent uden login i Cloudflare, jf. [Cloudflare](CLOUDFLARE.md). Hostingen bygger den delte udgave (`VITE_UDGAVE=delt`), der i dag er magen til den lokale; forskellen kommer med firmaprofilen i fase 4.
+- Appen bruges lokalt via startfilen og ligger uden login i en offentlig og en intern udgave i Cloudflare, jf. [Cloudflare](CLOUDFLARE.md). Udgaverne står i `src/ui/udgaver.ts`.
 - Arbejdsgangen følger MSL: kortlivede grene, Codex som hjælper i egne worktrees, og Claude gennemgår, committer og merger. Beslutninger skrives i `docs/BESLUTNINGER.md`.
 
 ## 9. Faser
@@ -148,7 +148,7 @@ Rapporten skal oplyse, om der er regnet med standardberegningen eller den avance
 | 1 | Repo, projektskelet, tema og skal fra MSL, startfil og kontrol i GitHub (afsluttet) | Kopiering og tilpasning |
 | 2 | Kontrolcases fra Excel (køres lokalt af Claude) og beregningsmotor med tests (afsluttet) | Motor og tests |
 | 3 | Siden Opdriftssikring med figurer og kontrolpunkter (afsluttet) | Delvist |
-| 4 | Rapport, firmaprofil og kartotek | Delvist |
+| 4 | Rapport, firmaprofil og kartotek (afsluttet) | – |
 | 5 | Opslag og hjælp | Tekst og tabeller |
 | 6 | Hosting i Cloudflare, godkendt 4. november 2026 | – |
 | 7 | Ændringer fra fundlisten og mængdeberegning, efter beslutning | – |
