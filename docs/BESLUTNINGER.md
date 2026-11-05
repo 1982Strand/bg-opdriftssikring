@@ -934,13 +934,22 @@ Brugerens svar: »ja, kopier listen og lav det som MSL med en github hemmelighed
 Claude foreslog en særskilt kartoteksfil med egne knapper og én kommando. Brugerens svar: »hmmm. Nej, okay. Det skal være ligesom det virker på MSL-appen. Altså, på min lokale version af appen, har jeg fuld administrativ adgang og kan tilgå 'firmaprofil' hvor rapportopsætningen kan redigeres. og jeg lan redigere, gemme og indlæse et medarbejderkartotek. Dvs. på den interne, vil det indlæste kartotek fra min lokale udgave altid vær tilgængeligt, men man kan ikke redigere i kartoteket, da man ikke har adgang til firmaprofilen. På den offentlige, kan man slet ikke tilgå rapport-delen, så der er dette slet ikke relevant.«
 
 - Forslaget er ikke indført. Lokal, intern og offentlig udgave virker som i MSL.
-- En profil eksporteret fra MSL kan nu indlæses i den lokale udgave. Felter, som kun MSL bruger, og MSL's rapporttitel springes over.
-
-Valgt af Claude og kan ændres:
-- Rapporttitlen »Opdriftssikring« bevares ved indlæsning af en profil fra MSL.
+- En profil eksporteret fra MSL kunne en kort overgang indlæses i den lokale udgave. Det er fjernet igen, se »kartotek og firmaprofil adskilt« nedenfor.
 
 ## 5. november 2026 — Kvalitetssikring
 
 Brugerens ønske: »'Kontrolleret af' i opdriftssikring skal ændres til 'Kvalitetssikring'.«
 
 - Forsiden, rapportsiden og teksten ved kartoteket hedder nu »Kvalitetssikring«, som i MSL.
+
+## 5. november 2026 — kartotek og firmaprofil adskilt
+
+Brugerens ønske: »det er ligemeget med firmaprofilen imellem de to. Det er jo ligemeget. det var medarbejder kartoteket jeg mente der skulle kunne importeres imellem de to apps« og »der skal man have mulighed for at gemme og indlæse kartoteket alene, og selve firmaprofilen alene. kartoteket skal kunne importeres frit imellem de to apps. firmaprofilen er jo så alt hvad der har med rapportopsætningen at gøre og er individuel pr. app. Dvs. der skal tilføjes to knapper i MSL-appen med 'importer' og 'eksporter' kartotek også. Det skal også være sådan i opdrift-appen.«
+
+- Under Medarbejdere er der nu »Eksportér kartotek« og »Importér kartotek« i begge apps, og filen kan flyttes frit mellem dem.
+- Firmaprofilen er særskilt for hver app. »Eksportér profil« tager ikke kartoteket med, og »Importér profil« og »Nulstil firmaprofil« bevarer kartoteket. Indlæsningen af en profil fra MSL er fjernet igen.
+
+Valgt af Claude og kan ændres:
+- Filen hedder `medarbejderkartotek.json` og er en ren liste, som også kan sendes til GitHub med `npm run kartotek -- <fil>`.
+- Importen erstatter det nuværende kartotek og spørger først, hvis der allerede er personer i det.
+- Importen tager også medarbejderne fra en ældre firmaprofil, der har dem med.

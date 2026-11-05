@@ -48,3 +48,40 @@ test('firmaprofilen vises på en fane, og medarbejdere kan vælges', async ({ pa
   await expect(page.locator('#sagsbehandler-navn')).toHaveValue('Navn Navnesen');
   await expect(page.locator('#sagsbehandler-telefon')).toHaveValue('12 34 56 78');
 });
+
+test('kartoteket kan eksporteres og importeres for sig', async ({ page }) => {
+  await page.goto('/#rapport');
+  await page.getByRole('tab', { name: 'Firmaprofil', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Eksportér kartotek' })).toBeDisabled();
+  const fil = page.getByLabel('Kartoteksfil');
+  await fil.setInputFiles({
+    name: 'liste.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(
+      JSON.stringify([{ navn: 'Ada Eksempel', initialer: 'AE', mail: '', telefon: '' }]),
+    ),
+  });
+  await expect(page.getByRole('button', { name: 'Åbn kartotek (1)' })).toBeVisible();
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Eksportér kartotek' }).click();
+  expect((await download).suggestedFilename()).toBe('medarbejderkartotek.json');
+  // Firmaprofilen og kartoteket er adskilt: nulstilling af profilen bevarer kartoteket.
+  page.once('dialog', (d) => void d.accept());
+  await page.getByRole('button', { name: 'Nulstil firmaprofil til standard' }).click();
+  await expect(page.getByRole('button', { name: 'Åbn kartotek (1)' })).toBeVisible();
+  const profil = page.waitForEvent('download', {
+    predicate: (d) => d.suggestedFilename() === 'firmaprofil.json',
+  });
+  await page.getByRole('button', { name: 'Eksportér profil' }).click();
+  const profilfil = await profil;
+  const dele: Buffer[] = [];
+  for await (const del of await profilfil.createReadStream()) dele.push(del as Buffer);
+  expect(JSON.parse(Buffer.concat(dele).toString()).profile).not.toHaveProperty('medarbejdere');
+  await fil.setInputFiles({
+    name: 'x.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from('{'),
+  });
+  await expect(page.getByText('Filen kunne ikke læses som JSON.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Åbn kartotek (1)' })).toBeVisible();
+});
