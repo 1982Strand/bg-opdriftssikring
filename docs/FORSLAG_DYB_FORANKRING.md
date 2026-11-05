@@ -76,7 +76,7 @@ Fliseoverskrifterne skrives med store bogstaver, så symbolerne står i noten i 
 - »Opdriftskontrol« med OK/EJ OK og noten »Krav > 1,0«.
 
 **Mellemregninger** i samme tabelform som kort 5–7:
-- Gruppen »Nødvendig kraftoverførsel«: K fra kort 7, den angivne længde og F_bund + F_top/2 = K/(2 · L_geonet − 2 · 0,2).
+- Gruppen »Nødvendig kraftoverførsel«: den angivne længde, K fra kort 7 og F_bund + F_top/2 = K/(2 · L_geonet − 2 · 0,2). Den angivne længde står øverst efter brugerens ønske 5. november 2026.
 - Gruppen »Nødvendig dybde«: σ′_v og F i begge netlag ved den fundne dybde, h_bund med F_bund + F_top/2 indsat og løsning C's formel med dybden indsat igen, der giver den angivne længde.
 - Gruppen »Netlængde og kontrol«: Δh, L_geonet,tot og kontrollen.
 

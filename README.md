@@ -17,7 +17,7 @@ npm run preview
 
 ## Online
 
-Cloudflare leverer appen uden login på https://opdriftssikring.byggros.workers.dev. Hver ændring på `main`, der består kontrollen, går online. Se [Cloudflare](docs/CLOUDFLARE.md).
+Cloudflare leverer to udgaver uden login: den offentlige på https://opdriftssikring.byggros.workers.dev og den interne med rapport og kartotek på https://opdriftssikring-intern.byggros.workers.dev. Hver ændring på `main`, der består kontrollen, går online. Se [Cloudflare](docs/CLOUDFLARE.md).
 
 ## Kontrol
 
@@ -26,6 +26,7 @@ npm run typecheck
 npm run format:check
 npm test
 npm run build
+npm run build:udgaver
 npm run test:browser
 ```
 

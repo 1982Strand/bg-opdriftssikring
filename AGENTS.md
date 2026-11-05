@@ -15,7 +15,7 @@
 
 - Udvikling sker på kortlivede `codex/`-grene. Ændringer samles på `main` efter kodegennemgang og relevante automatiske kontroller. Afsluttede hjælpegrene og worktrees ryddes op.
 - Kør typekontrol, formatkontrol, enhedstests, bygning og relevante browserkontroller. GitHub-kvoter må ikke erstatte lokal kvalitetssikring.
-- Appen bruges lokalt og ligger åbent uden login i Cloudflare, jf. `docs/CLOUDFLARE.md`. Hostingen ligger under `hosting/cloudflare/` og `.github/workflows/cloudflare.yml`. Beregninger, lokal brug og normale tests må ikke kræve hostingnøgler, loginendepunkter eller udbyderspecifik serverkode.
+- Appen bruges lokalt og ligger uden login i en offentlig og en intern udgave i Cloudflare, jf. `docs/CLOUDFLARE.md`. Hostingen ligger under `hosting/cloudflare/` og `.github/workflows/cloudflare.yml`. Beregninger, lokal brug og normale tests må ikke kræve hostingnøgler, loginendepunkter eller udbyderspecifik serverkode.
 - Stil spørgsmål ved valg, der påvirker faglighed, funktionalitet, arbejdsgang eller visning. Fortsæt uafhængigt arbejde imens.
 
 ## Kodesøgning

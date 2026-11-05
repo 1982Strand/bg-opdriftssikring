@@ -1,6 +1,23 @@
 import type { Konsekvensklasse, OpdriftInput } from '../engine/opdrift.ts';
 import standarder from '../engine/defaults.json' with { type: 'json' };
 
+export interface RapportPerson {
+  navn: string;
+  telefon: string;
+  mail: string;
+}
+/** Oplysningerne på rapportsiden; de gemmes sammen med beregningen. */
+export interface RapportOplysninger {
+  projekt: string;
+  udfoeresFor: string;
+  /** ISO-dato; tom betyder dagens dato. */
+  dato: string;
+  /** Fri tekst, der tilføjes til projektbeskrivelsen. */
+  beskrivelse: string;
+  sagsbehandler: RapportPerson;
+  kontrollant: RapportPerson;
+  losninger: Record<'A' | 'B' | 'C' | 'D', boolean>;
+}
 export interface Session {
   inddata: {
     d: number;
@@ -26,8 +43,19 @@ export interface Session {
   konsekvensklasse: Konsekvensklasse;
   /** Avanceret beregning (docs/FORSLAG_K-05.md); ellers regnes som regnearket. */
   avanceret: boolean;
+  rapport: RapportOplysninger;
 }
 export const STORAGE_KEY = 'opdrift.session';
+const tomPerson = (): RapportPerson => ({ navn: '', telefon: '', mail: '' });
+export const standardRapport = (): RapportOplysninger => ({
+  projekt: '',
+  udfoeresFor: '',
+  dato: '',
+  beskrivelse: '',
+  sagsbehandler: tomPerson(),
+  kontrollant: tomPerson(),
+  losninger: { A: true, B: true, C: true, D: true },
+});
 export const standardSession = (): Session => ({
   inddata: {
     d: 2.5,
@@ -47,6 +75,7 @@ export const standardSession = (): Session => ({
   },
   konsekvensklasse: 'CC2',
   avanceret: false,
+  rapport: standardRapport(),
 });
 export function tilMotorInput(s: Session): OpdriftInput {
   const i = s.inddata;
@@ -74,6 +103,28 @@ export function tilMotorInput(s: Session): OpdriftInput {
 }
 const num = (v: unknown, d: number, min = -Infinity, max = Infinity) =>
   typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max ? v : d;
+const tekst = (v: unknown) => (typeof v === 'string' ? v : '');
+const person = (v: unknown): RapportPerson => {
+  const p = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>;
+  return { navn: tekst(p.navn), telefon: tekst(p.telefon), mail: tekst(p.mail) };
+};
+/** Beregninger gemt før rapportsiden indlæses med tomme oplysninger og alle løsninger valgt. */
+function parseRapport(v: unknown): RapportOplysninger {
+  const r = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>;
+  const l = (r.losninger && typeof r.losninger === 'object' ? r.losninger : {}) as Record<
+    string,
+    unknown
+  >;
+  return {
+    projekt: tekst(r.projekt),
+    udfoeresFor: tekst(r.udfoeresFor),
+    dato: tekst(r.dato),
+    beskrivelse: tekst(r.beskrivelse),
+    sagsbehandler: person(r.sagsbehandler),
+    kontrollant: person(r.kontrollant),
+    losninger: { A: l.A !== false, B: l.B !== false, C: l.C !== false, D: l.D !== false },
+  };
+}
 export function parseSession(raw: string): { session: Session; error: boolean; message?: string } {
   const standard = standardSession();
   try {
@@ -121,6 +172,7 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
         // CC3 kan kun vælges i avanceret beregning; ellers indlæses CC2.
         konsekvensklasse: x.konsekvensklasse === 'CC3' && x.avanceret === true ? 'CC3' : 'CC2',
         avanceret: x.avanceret === true,
+        rapport: parseRapport(x.rapport),
       },
       error: false,
     };

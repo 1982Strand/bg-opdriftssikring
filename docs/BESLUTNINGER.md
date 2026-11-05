@@ -881,3 +881,43 @@ Brugerens ønske: »referencen til DANVA skal i øvrigt lige opdateres.« med fo
 
 Valgt af Claude og kan ændres:
 - Den fulde reference står ét sted, og de øvrige steder bruger den korte form. Knappen i figur 2 er uændret, »45° · DANVA fig. 2.15«, da der er begrænset plads.
+
+## 4. november 2026 — rapportens layout, indhold, firmaprofil og kartotek
+
+Layoutet blev aftalt i et sideforslag med syntetiske data. Brugerens svar: »Godt. så tror jeg vi er der. Så skal vi videre« og på de åbne valg: »1a. 2: Også en afslutning som i MSL med by, dato, telefon og mail. Den skal bare stå nederst på siden. 3a. 4a. 5b. 6a. 7b«.
+
+- Rapporten læner sig op ad regnearkets rapport: forside med projektoplysninger og indholdsfortegnelse, nummererede afsnit, formler med tal og resultat til højre, indrammede inddata og tabeller med net. Logo, slogan, sidefod, sidetal og margener er som i MSL.
+- Forsiden har Projektnavn, Udføres for, Dato, Udført af, Kontrolleret af, Beregning og Projektbeskrivelse. Rørdiameter, jorddækning og GVS indsættes automatisk, og der kan tilføjes fri tekst (1a).
+- By, dato, navn, telefon og mail står som i MSL, nederst på forsiden (2, præciseret 5. november 2026).
+- Løsningerne vælges på rapportsiden med alle fire valgt fra start; afsnit og indholdsfortegnelse følger valget (3a).
+- Dybere forankring medtages som afsnit 8, når beregningen er valgt, med den faste advarsel (4a).
+- Intet kolonnehoved med projektnavn og dato (5b). Rapporten bruger MSL's skrift (6a).
+- Firmaprofil og kartotek kan redigeres som i MSL (7b). Svaret blev givet med oplysningen om, at navne i et indbygget kartotek kan læses af alle med adressen.
+- Fra kommentarerne i forslaget: figur 7.1 og 7.2 viser kun symboler, UTS står for 1 eller 2 lag, P_d står i overskriften, og formler har appens forklarende tekster.
+
+Valgt af Claude og kan ændres:
+- Udgaverne følger MSL: lokal med firmaprofil og eget kartotek, intern med indbygget kartotek og offentlig uden rapport. Se »Ikke afgjort«.
+- Alle formler har forklaringen fra mellemregningerne. Rækkerne ligger i `src/ui/mellemregninger.ts` og bruges af både skærm og rapport.
+- Kontrolpunkter indgår ikke, som der allerede står i appen. Er sikring ikke nødvendig, slutter rapporten efter afsnit 5.
+
+## 5. november 2026 — udgaver og adresser som i MSL
+
+Brugeren fik valget mellem to muligheder: en åben adresse uden rapport og en intern adresse med rapport og indbygget kartotek, som i MSL, eller rapporten på den åbne adresse uden kartotek. Claude oplyste, at den interne adresse heller ikke har login, så alle med adressen kan læse navne, mails og telefonnumre, og at en åben rapport ville lade alle lave en PDF med firmaets logo og sidefod. Brugerens svar: »Ja, som i MSL«.
+
+- Lokal udgave: rapport, redigerbar firmaprofil og eget kartotek i browseren.
+- Intern udgave på https://opdriftssikring-intern.byggros.workers.dev: rapport, standardprofil og indbygget kartotek fra hemmeligheden `MEDARBEJDERE_JSON`.
+- Offentlig udgave på https://opdriftssikring.byggros.workers.dev: ingen rapport, ingen firmaprofil og intet kartotek. »Rapport« står ikke i menuen.
+
+Valgt af Claude og kan ændres:
+- Navnet `opdriftssikring-intern`, som følger MSL's `msl-intern`.
+
+## 5. november 2026 — rettelser efter første PDF
+
+Brugerens svar på PDF'erne: »dette skal stå på første side nederst. Altså på siden med indholdsfortegnelsen. Og så lige til sektion 8, når den er med. Det er væsentligt, at man i appen har indtastet en ænsket forankringslængde, Lgeonet, Den synes jeg skal stå som øverste linje i beregningsdetlajerne.«
+
+- By, dato, navne, telefon og mail står nederst på forsiden.
+- Den indtastede forankringslængde L_geonet er øverste linje i beregningsdetaljerne for dybere forankring. Skærmen og rapporten bruger samme rækker, så rækkefølgen er også ændret i mellemregningerne i kort 8.
+
+Brugerens rettelse: »nej, i afsnit 8, står 'nødvendig dybde til nederste netlag først. Der skal først stå 'Lgeonet: der armeres med ønsket længde x,xx m på hver side (med omslag)' så det ligner de andre. Derefter kan linjen med 'nødvendig dybde til nederste netlag hbund' komme som den er.«
+
+- Afsnit 8 viser først »L_geonet: der armeres med ønsket længde x,xx m på hver side (med omslag)« og derefter den nødvendige dybde.

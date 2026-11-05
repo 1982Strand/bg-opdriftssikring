@@ -7,6 +7,9 @@ import { appGenstart } from './tools/app-genstart.ts';
 export default defineConfig({
   plugins: [react(), tailwindcss(), appGenstart()],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+  // Kartoteket bygges kun ind i den interne udgave.
+  envPrefix:
+    process.env.VITE_UDGAVE === 'intern' ? ['VITE_UDGAVE', 'VITE_MEDARBEJDERE'] : ['VITE_UDGAVE'],
   server: { host: '127.0.0.1', port: 5175, strictPort: true },
   preview: { host: '127.0.0.1', port: 5176, strictPort: true },
 });

@@ -1,14 +1,11 @@
-/** Den delte udgave bruger standardfirmaprofilen; lokalt kan profilen redigeres.
- * Dette er en visningsindstilling, ikke en sikkerhedsgrænse eller en hostingafhængighed. */
+import { ACCESS, udgaveFraMiljoe, type Access } from './udgaver';
 
-export interface Access {
-  shared: boolean;
-}
+export type { Access } from './udgaver';
 
-const access: Access = { shared: import.meta.env.VITE_UDGAVE === 'delt' };
+const access = ACCESS[udgaveFraMiljoe(import.meta.env.VITE_UDGAVE)];
 
 export function useAccess(): Access {
   return access;
 }
 
-export const canEditProfile = (access: Access) => !access.shared;
+export const canEditProfile = (a: Access) => a.firmaprofil;
