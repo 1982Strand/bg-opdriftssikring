@@ -979,3 +979,14 @@ Valgt af Claude og kan ændres:
 - Ved dybt liggende rør er det sidens højde, der sætter grænsen, så figurerne kan blive smallere end de hidtidige 114 mm for at holde begge afsnit på én side.
 
 Kontrol med omslag for én ledning viser også taludtrykket på skærmen og i rapporten. Brugerens svar: »ret lige afsnit 7.2 til, så taludtrykket også vises der. Læg det så online«. Kontrol i afsnit 8 viser også taludtrykket. Brugerens svar: »Ja, ret afsnit 8«.
+
+## 5. november 2026 — note om at slå geonettet tilbage
+
+Regnearkets OBS under figurerne i afsnittet om kraftoverførsel skal med i rapporten. Brugerens svar: »ja, indfør noten. Husk at afstanden 0,2 skal følge, hvad man har indtastet i dimensioneringen i kort 7.«
+
+- Rapportens afsnit 7 har under figur 7.1 og 7.2 teksten: »Ved indbygning af geonet til opdriftssikring kan geonettet slås tilbage (omslag). Slås geonettet tilbage, som vist på figur 7.2, skal der være 0,2 m mellem det nederste og det øverste geonet.«
+- Afstanden følger værdien i kort 7. Teksten vises kun, når figur 7.2 er med, altså når omslag er muligt.
+- Arkets sidste linje om at udfylde felterne for h_top og L_geonet = 0 er udeladt, fordi appen regner løsningerne med og uden omslag hver for sig.
+- Skærmen er uændret, fordi kort 7 og kortet for omslag allerede nævner afstanden.
+
+Valgt af Claude og kan ændres: almindelig sort tekst uden »OBS:«.
