@@ -104,6 +104,8 @@ export interface Afsnit {
   nySide: boolean;
   /** Afsnittet holdes samlet på én side. */
   samlet: boolean;
+  /** Løsning med to ledninger: stilles op sammen med den anden, så begge er på én side. */
+  toLedninger: boolean;
   blokke: Blok[];
 }
 
@@ -211,13 +213,14 @@ export function rapportDokument(
   const nyt = (
     titel: string,
     blokke: Blok[],
-    valg: { niveau?: 1 | 2; nySide?: boolean; samlet?: boolean } = {},
+    valg: { niveau?: 1 | 2; nySide?: boolean; samlet?: boolean; toLedninger?: boolean } = {},
   ) =>
     afsnit.push({
       titel: dele(titel),
       niveau: valg.niveau ?? 1,
       nySide: valg.nySide ?? false,
       samlet: valg.samlet ?? false,
+      toLedninger: valg.toLedninger ?? false,
       blokke,
     });
 
@@ -595,7 +598,12 @@ export function rapportDokument(
       const kontrolRaekke = indhold.beregning.find((m) => m.rolle === 'kontrol');
       if (kontrolRaekke) blokke.push(regning(kontrolRaekke));
       if (l === sidsteToLedninger) blokke.push(lille(toLedningerNote));
-      nyt(`7.${nr + 1} ${losningTitel[l]}`, blokke, { niveau: 2, nySide: nr === 0, samlet: true });
+      nyt(`7.${nr + 1} ${losningTitel[l]}`, blokke, {
+        niveau: 2,
+        nySide: nr === 0,
+        samlet: true,
+        toLedninger: to,
+      });
     });
 
     // Afsnit 8 medtages kun, når det er valgt på rapportsiden (beslutning 5. november 2026).

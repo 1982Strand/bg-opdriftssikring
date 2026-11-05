@@ -165,18 +165,19 @@
       text(size: 9pt, fill: graa, f.tekst)
     }),
   ))
+  let maalfelt(x) = {
+    text(size: 9pt, fill: graa, x.tekst)
+    v(0.4mm)
+    grid(columns: (17mm, 1fr), column-gutter: 1.6mm, align: (left + bottom, right + bottom),
+      tekst(x.symbol), x.vaerdi)
+    v(0.3mm)
+    line(length: 100%, stroke: 0.25mm)
+    if x.note != none { v(0.5mm); text(size: 8.5pt, fill: graa, x.note) }
+  }
   // Samlet bredde og netlængde til venstre og løsningens figur til højre.
   let maalfigur(b) = block(breakable: false, below: 2.6mm, grid(
     columns: (52mm, 1fr), column-gutter: 4mm, align: left + horizon,
-    stack(dir: ttb, spacing: 2.6mm, ..b.maal.map(x => {
-      text(size: 9pt, fill: graa, x.tekst)
-      v(0.4mm)
-      grid(columns: (17mm, 1fr), column-gutter: 1.6mm, align: (left + bottom, right + bottom),
-        tekst(x.symbol), x.vaerdi)
-      v(0.3mm)
-      line(length: 100%, stroke: 0.25mm)
-      if x.note != none { v(0.5mm); text(size: 8.5pt, fill: graa, x.note) }
-    })),
+    stack(dir: ttb, spacing: 2.6mm, ..b.maal.map(maalfelt)),
     align(center, image(b.fil, width: 100%)),
   ))
   let advarsel(b) = block(breakable: false, above: 1mm, below: 3mm, width: 100%, inset: 2.4mm,
@@ -243,8 +244,63 @@
     })
   }
 
+  // Samme mål som i maalfelt, men på én linje, så de fylder mindre i højden.
+  let maallinje(x) = {
+    block(width: 100%, spacing: 0pt, {
+      text(size: 9pt, fill: graa, x.tekst)
+      h(2mm)
+      tekst(x.symbol)
+      h(1fr)
+      x.vaerdi
+    })
+    v(0.8mm)
+    line(length: 100%, stroke: 0.25mm)
+    if x.note != none { v(0.5mm); text(size: 8.5pt, fill: graa, x.note) }
+  }
+  // To ledninger: målene står over figuren, og figurerne fylder den plads, teksten levner, så
+  // begge afsnit kan være på én side. Figurerne er lige brede og højst lige så brede som teksten.
+  let bredt-afsnit(a, bredde) = {
+    heading(level: a.niveau, outlined: true, bookmarked: true, tekst(a.titel))
+    for b in a.blokke {
+      if b.type == "maalfigur" {
+        block(breakable: false, below: 2.6mm, {
+          grid(columns: (1fr, 1fr), column-gutter: 8mm, ..b.maal.map(maallinje))
+          if bredde != none {
+            v(2mm)
+            align(center, image(b.fil, width: bredde))
+          }
+        })
+      } else { blok(b) }
+    }
+  }
+  let to-ledninger(liste) = context {
+    let afstand = 6mm
+    let forloeb(bredde) = {
+      for (i, a) in liste.enumerate() {
+        if i > 0 { v(afstand) }
+        bredt-afsnit(a, bredde)
+      }
+    }
+    let fast = measure(width: geometri.body_width, forloeb(none)).height
+    let figurer = liste.map(a => a.blokke.filter(b => b.type == "maalfigur")).flatten()
+    let forhold = figurer.map(b => measure(image(b.fil, width: 100mm)).height / 100mm).sum()
+    // Luften over hver figur og lidt margen, så en afrunding ikke sender et afsnit videre.
+    let plads = 297mm - geometri.top - geometri.bottom - fast - figurer.len() * 2mm - 2mm
+    let bredde = calc.max(60mm, calc.min(geometri.body_width, plads / forhold))
+    forloeb(bredde)
+  }
+
   // Afsnittene.
+  let to-ledninger-vist = false
   for a in data.afsnit {
+    if a.toLedninger {
+      if not to-ledninger-vist {
+        to-ledninger-vist = true
+        pagebreak(weak: true)
+        to-ledninger(data.afsnit.filter(x => x.toLedninger))
+      }
+      continue
+    }
     if a.nySide { pagebreak(weak: true) } else if a.niveau == 1 { v(8mm, weak: true) } else { v(6mm, weak: true) }
     if a.samlet {
       block(breakable: false, {

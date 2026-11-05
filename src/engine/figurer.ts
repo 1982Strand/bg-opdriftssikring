@@ -51,9 +51,11 @@ interface Opsaetning {
   d: number;
   /** Dybden til det nederste netlag, når det ligger under rørmidten (fund K-25). */
   netDybde?: number;
+  /** Plads over terræn; mindre, når kun L_a står der med almindelig tekst. */
+  top?: number;
 }
 
-function tegning({ indreHalv, bundHalv, T3, d, netDybde = T3 }: Opsaetning) {
+function tegning({ indreHalv, bundHalv, T3, d, netDybde = T3, top = MARGEN.top }: Opsaetning) {
   const bund = Math.max(T3 + d / 2, netDybde) + BUNDLAG;
   const hwBund = Math.max(bundHalv + 0.3, indreHalv + 0.2 - (bund - netDybde) * HAELDNING);
   const hw = (y: number) => hwBund + (bund - y) * HAELDNING;
@@ -61,9 +63,9 @@ function tegning({ indreHalv, bundHalv, T3, d, netDybde = T3 }: Opsaetning) {
   const dybde = bund + 0.3;
   const s = Math.min((BREDDE - MARGEN.venstre - MARGEN.hoejre) / (2 * xHalv), MAX_HOEJDE / dybde);
   const X = (x: number) => px(MARGEN.venstre + (x + xHalv) * s);
-  const Y = (y: number) => px(MARGEN.top + y * s);
+  const Y = (y: number) => px(top + y * s);
   const dele: string[] = [];
-  const hoejde = px(MARGEN.top + dybde * s + MARGEN.bund);
+  const hoejde = px(top + dybde * s + MARGEN.bund);
 
   const polygon = (punkter: [number, number][], fyld: string, ekstra = '') =>
     dele.push(
@@ -190,6 +192,13 @@ function gvs(t: Tegning, dybde: number) {
     tekst(x - 9, y - 4, 'GVS', 'end', farve.vand),
   ].join('');
 }
+/** Signatur for geonettet. */
+function signatur(x: number, y: number) {
+  return (
+    linje(x, y - 4, x + 28, y - 4, farve.net, 2.5, ' stroke-dasharray="6 4"') +
+    tekst(x + 34, y, 'Geonet', 'start')
+  );
+}
 function svg(t: Tegning, label: string) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BREDDE} ${t.hoejde}" width="${BREDDE}" height="${t.hoejde}" aria-hidden="true" font-family="'Segoe UI', system-ui, sans-serif" font-size="12"><title>${esc(label)}</title>${t.dele.join('')}</svg>`;
 }
@@ -257,7 +266,13 @@ export function losningSvg(
   const mellem = 'toLMellem' in valgt ? valgt.toLMellem : 0;
   const centre = to ? [-(mellem / 2 + d / 2), mellem / 2 + d / 2] : [0];
   const ydre = (to ? mellem / 2 + d : d / 2) + L;
-  const t = tegning({ indreHalv: ydre, bundHalv: to ? mellem / 2 + d : d / 2, T3, d });
+  const t = tegning({
+    indreHalv: ydre,
+    bundHalv: to ? mellem / 2 + d : d / 2,
+    T3,
+    d,
+    top: kunSymboler ? MARGEN.top : 40,
+  });
   t.dele.push(gvs(t, i.gvs));
   for (const cx of centre) t.dele.push(roer(t, cx, T3, d));
 
@@ -315,6 +330,7 @@ export function losningSvg(
   // Overlapper en tekst den forrige, flyttes den en linje ned.
   let forrigeHoejre = -Infinity;
   let forrigeNede = false;
+  let nogenNede = false;
   for (const [x1, x2, navn] of stykker) {
     const midt = (t.X(x1) + t.X(x2)) / 2;
     const nede: boolean = !forrigeNede && midt - bredde(navn) / 2 < forrigeHoejre + 6;
@@ -325,6 +341,7 @@ export function losningSvg(
     );
     forrigeHoejre = midt + bredde(navn) / 2;
     forrigeNede = nede;
+    nogenNede ||= nede;
   }
   // Højder til højre for graven.
   const xh = BREDDE - MARGEN.hoejre + 12;
@@ -338,20 +355,11 @@ export function losningSvg(
       tekst(xh + 24, midt + (kunSymboler ? 16 : 11), maal('h_{bund}', r.hBund), 'start'),
     );
   } else t.dele.push(lodretMaal(xh, t.Y(0), t.Y(r.hBund), maal('h_{bund}', r.hBund)));
-  // Signatur for geonettet.
-  const ys = t.hoejde - 10;
-  t.dele.push(
-    linje(
-      MARGEN.venstre,
-      ys - 4,
-      MARGEN.venstre + 28,
-      ys - 4,
-      farve.net,
-      2.5,
-      ' stroke-dasharray="6 4"',
-    ),
-    tekst(MARGEN.venstre + 34, ys, 'Geonet', 'start'),
-  );
+  // Signaturen står til højre på linje med målene, og figuren slutter under dem.
+  const ekstra = kunSymboler ? 7 : 0;
+  const ys = yl + 16 + ekstra + (forrigeHoejre + 8 > xh ? 15 : 0);
+  t.dele.push(signatur(xh, ys));
+  t.hoejde = px(Math.max(t.Y(t.dybde), Math.max(ys, yl + 16 + ekstra + (nogenNede ? 15 : 0)) + 7));
   const titel = {
     A: 'Opdriftssikring uden omslag',
     B: 'Opdriftssikring uden omslag ved to ledninger',
@@ -489,18 +497,8 @@ export function dybForankringSvg(
     tekst(xh + 24, midt - 5, `h_{top} = ${m(hTop)}`, 'start'),
     tekst(xh + 24, midt + 11, `h_{bund} = ${m(hBund)}`, 'start'),
   );
-  const ys = t.hoejde - 10;
-  t.dele.push(
-    linje(
-      MARGEN.venstre,
-      ys - 4,
-      MARGEN.venstre + 28,
-      ys - 4,
-      farve.net,
-      2.5,
-      ' stroke-dasharray="6 4"',
-    ),
-    tekst(MARGEN.venstre + 34, ys, 'Geonet', 'start'),
-  );
+  const ys = yl + 16;
+  t.dele.push(signatur(xh, ys));
+  t.hoejde = px(Math.max(t.Y(t.dybde), ys + 7));
   return svg(t, 'Dybere forankring med omslag');
 }
