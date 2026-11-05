@@ -6,6 +6,8 @@ import {
   employeesForRoster,
   exportCompanyProfile,
   importCompanyProfile,
+  keepEmployees,
+  parseEmployeeFile,
 } from '../src/report/company-profile.ts';
 import { ACCESS, udgaveFraMiljoe } from '../src/ui/udgaver.ts';
 import { buildEdition, readEmployeeList } from '../tools/build-udgave.ts';
@@ -55,20 +57,28 @@ test('hemmeligheden med kartoteket bruges kun, når den interne udgave bygges', 
   assert.match(read('hosting/cloudflare/wrangler-offentlig.jsonc'), /dist-offentlig/);
 });
 
-test('en profil eksporteret fra MSL kan indlæses og beholder kartoteket, men ikke rapporttitlen', () => {
+test('kartoteket indlæses fra en ren liste eller en profil fra en af de to apps', () => {
+  const ada = { navn: 'Ada Eksempel', initialer: 'AE', mail: '', telefon: '' };
+  assert.deepEqual(parseEmployeeFile(JSON.stringify([ada])), [ada]);
+  // En profil fra den anden app har andre felter; kun medarbejderne bruges.
+  const profil = { version: 1, profile: { sv: {}, afsluttende_afsnit: [], medarbejdere: [ada] } };
+  assert.deepEqual(parseEmployeeFile(JSON.stringify(profil)), [ada]);
+  assert.throws(() => parseEmployeeFile('{'), /JSON/);
+  assert.throws(() => parseEmployeeFile('[{"navn":""}]'), /ugyldigt/);
+});
+
+test('firmaprofilen eksporteres uden kartotek, og import og nulstilling bevarer kartoteket', () => {
   const logo = {
     mime: 'image/jpeg' as const,
     bytes: new Uint8Array(
       readFileSync(new URL('../public/report/logo/byggros_logo.jpeg', import.meta.url)),
     ),
   };
-  const fil = JSON.parse(exportCompanyProfile(defaultProfileState(), logo));
-  fil.profile.medarbejdere = [person];
-  fil.profile.titel = 'NOTAT – MSL opbygning veje/pladser';
-  fil.profile.sv = { titel: 'x' };
-  fil.profile.afsluttende_afsnit = [];
-  const { profile } = importCompanyProfile(JSON.stringify(fil), logo);
-  assert.deepEqual(profile.medarbejdere, [person]);
-  assert.equal(profile.titel, 'Opdriftssikring');
-  assert.ok(!('sv' in profile));
+  const standard = defaultProfileState();
+  const med = { ...standard, profile: { ...standard.profile, medarbejdere: [person] } };
+  const json = exportCompanyProfile(med, logo);
+  assert.ok(!('medarbejdere' in JSON.parse(json).profile));
+  const importeret = importCompanyProfile(json, logo);
+  assert.deepEqual(importeret.profile.medarbejdere, []);
+  assert.deepEqual(keepEmployees(importeret, med).profile.medarbejdere, [person]);
 });

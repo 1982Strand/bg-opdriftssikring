@@ -27,6 +27,24 @@ export function validateEmployees(value: unknown): string | null {
   return null;
 }
 
+/** Medarbejderlisten fra en ren liste eller en eksporteret firmaprofil fra en af de to apps. */
+export function parseEmployeeList(value: unknown): Employee[] {
+  const source = object(value) && object(value.profile) ? value.profile : value;
+  const employees = object(source) ? source.medarbejdere : source;
+  const error = validateEmployees(employees);
+  if (error) throw new Error(`Kartoteket er ugyldigt: ${error}`);
+  return employees as Employee[];
+}
+export function parseEmployeeFile(json: string): Employee[] {
+  let value: unknown;
+  try {
+    value = JSON.parse(json);
+  } catch {
+    throw new Error('Filen kunne ikke læses som JSON.');
+  }
+  return parseEmployeeList(value);
+}
+
 /** Kontrollerer medarbejderlisten fra bygningen uden at afsløre ugyldige data. */
 export function readEmbeddedEmployees(value: string | undefined): Employee[] {
   if (value === undefined) return [];
@@ -314,10 +332,13 @@ export function exportCompanyProfile(state: ProfileState, standardLogo?: Profile
   const logo = state.logo ?? standardLogo;
   if (!logo) fail('Standardlogoet er endnu ikke indlæst.');
   validateLogo(logo);
+  // Kartoteket har sin egen fil og følger ikke med firmaprofilen.
+  const profile: Partial<CompanyProfile> = mergeCompanyProfile(state.profile, true);
+  delete profile.medarbejdere;
   return JSON.stringify(
     {
       version: 1,
-      profile: mergeCompanyProfile(state.profile, true),
+      profile,
       logo: logoDataUrl(logo),
       standardLogo: state.logo === null,
     },
@@ -325,14 +346,9 @@ export function exportCompanyProfile(state: ProfileState, standardLogo?: Profile
     2,
   );
 }
-/** En profil eksporteret fra MSL Dimensionering har felter, som denne rapport ikke bruger. Dens
- * rapporttitel er MSL's egen, så den bevares ikke. */
-function udenMslFelter(profile: unknown): unknown {
-  if (!object(profile) || !Object.hasOwn(profile, 'afsluttende_afsnit')) return profile;
-  const rest: Record<string, unknown> = { ...profile, titel: DEFAULT_COMPANY_PROFILE.titel };
-  delete rest.sv;
-  delete rest.afsluttende_afsnit;
-  return rest;
+/** Firmaprofilen og kartoteket er adskilt: profilen skiftes, og kartoteket består. */
+export function keepEmployees(next: ProfileState, current: ProfileState): ProfileState {
+  return { ...next, profile: { ...next.profile, medarbejdere: current.profile.medarbejdere } };
 }
 export function importCompanyProfile(json: string, standardLogo?: ProfileLogo): ProfileState {
   let parsed: unknown;
@@ -345,7 +361,7 @@ export function importCompanyProfile(json: string, standardLogo?: ProfileLogo): 
   keys(parsed, ['version', 'profile', 'logo', 'standardLogo'], true);
   if (parsed.version !== 1 || typeof parsed.standardLogo !== 'boolean')
     fail('Filens profilversion eller logooplysning er ugyldig.');
-  const profile = mergeCompanyProfile(udenMslFelter(parsed.profile), true);
+  const profile = mergeCompanyProfile(parsed.profile, true);
   const logo = parseLogoDataUrl(parsed.logo);
   if (
     parsed.standardLogo &&
