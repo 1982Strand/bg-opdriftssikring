@@ -13,7 +13,10 @@ test('rapporten dannes som PDF med projektoplysningerne', async ({ page }) => {
   await expect(page.getByTestId('compile-state')).toHaveAttribute('data-state', 'ready', {
     timeout: 60_000,
   });
-  const download = page.waitForEvent('download');
+  // Headless Chromium kan hente PDF-forhåndsvisningen som download; vent på rapportfilen.
+  const download = page.waitForEvent('download', {
+    predicate: (d) => d.suggestedFilename().startsWith('Opdriftssikring'),
+  });
   await page.getByRole('link', { name: 'Hent PDF' }).click();
   const fil = await download;
   expect(fil.suggestedFilename()).toMatch(/^Opdriftssikring - Eksempelprojekt - .*\.pdf$/);
