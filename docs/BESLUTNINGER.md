@@ -1013,3 +1013,12 @@ Valgt af Claude og kan ændres:
 - Teksterne er neutrale i den offentlige udgave: »Der regnes altid med GVS i terræn.« og »Geonettet vælges automatisk.« Siden Indstillinger nævner ikke valget af konsekvensklasse.
 - S₂ og afstanden mellem netlagene kan stadig ændres, fordi de hører til standardberegningen.
 - Tabellen i kort 4 og mellemregningerne viser fortsat γ_tør med standardværdien, fordi de følger standardberegningens opbygning. Bidraget er 0, når GVS ligger i terræn.
+
+## 5. november 2026 — rapportens titel
+
+Brugerens ønske: »selve titlen i rapporten 'Opdriftssikring' må gerne ændres til 'NOTAT - Opdriftssikring' så det minder om MSL rapporten«
+
+- Standardtitlen i firmaprofilen er ændret til »NOTAT – Opdriftssikring«.
+- Filnavnet på rapporten er uændret og begynder fortsat med »Opdriftssikring«.
+
+Valgt af Claude og kan ændres: tankestreg (–) som i MSL's titel i stedet for bindestreg.
