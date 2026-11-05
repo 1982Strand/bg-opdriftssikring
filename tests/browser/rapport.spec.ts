@@ -85,3 +85,21 @@ test('kartoteket kan eksporteres og importeres for sig', async ({ page }) => {
   await expect(page.getByText('Filen kunne ikke læses som JSON.')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Åbn kartotek (1)' })).toBeVisible();
 });
+
+test('dybere forankring kan vælges til rapporten, når beregningen er valgt', async ({ page }) => {
+  await page.goto('/#rapport');
+  const valg = page.getByRole('checkbox', { name: /som afsnit 8/ });
+  await expect(valg).toHaveCount(0);
+  await page.goto('/#opdriftssikring');
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await page.getByRole('checkbox', { name: 'Beregn nødvendig forankringsdybde' }).click();
+  await page.locator('a[href="#rapport"]').first().click();
+  await expect(valg).toBeVisible();
+  await expect(valg).not.toBeChecked();
+  await valg.click();
+  await expect(valg).toBeChecked();
+  await page.getByRole('button', { name: 'Generér rapport' }).click();
+  await expect(page.getByTestId('compile-state')).toHaveAttribute('data-state', 'ready', {
+    timeout: 60_000,
+  });
+});

@@ -13,6 +13,7 @@ import {
 } from '../components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
+import { beregnDybForankring } from '../engine/dybforankring';
 import { beregnOpdrift } from '../engine/opdrift';
 import type { Losning } from '../engine/figurer';
 import {
@@ -29,7 +30,6 @@ import layoutSource from '../report/typst/layout.typ?raw';
 import reportSource from '../report/typst/rapport.typ?raw';
 import { canEditProfile, useAccess } from './access';
 import { CompanyProfile, useCompanyProfile } from './CompanyProfile';
-import { Fmt } from './Fmt';
 import { losningTitel } from './mellemregninger';
 import { Notice } from './Notice';
 import { PageFooter, PageHeader } from './page';
@@ -337,6 +337,14 @@ export function Rapport() {
   const ikkeNoedvendig = r?.S1Status === 'OK';
   const viste: Losning[] = ['A', 'C', 'B', 'D'];
   const antalValgte = viste.filter((l) => o.losninger[l] && r?.losninger[l]).length;
+  // Valget af afsnit 8 vises kun, når beregningen er valgt og kan regnes.
+  const dybMulig =
+    !!r &&
+    !ikkeNoedvendig &&
+    !!r.losninger.C &&
+    session.avanceret &&
+    session.inddata.dybForankringAktiv &&
+    beregnDybForankring(r, input, session.inddata.dybForankringL).ok;
   const harFaner = access.firmaprofil || access.kartotek === 'eget';
   const rapportIndhold = (
     <fieldset className="report-form">
@@ -395,7 +403,11 @@ export function Rapport() {
       <Kort
         nr={2}
         titel="Indhold"
-        opsummering={ikkeNoedvendig ? 'Afsnit 1–5' : `${antalValgte} løsninger`}
+        opsummering={
+          ikkeNoedvendig
+            ? 'Afsnit 1–5'
+            : `${antalValgte} løsninger${dybMulig && o.dybForankring ? ' og afsnit 8' : ''}`
+        }
       >
         {ikkeNoedvendig ? (
           <Notice>
@@ -423,10 +435,20 @@ export function Rapport() {
                 );
               })}
             </div>
-            {session.avanceret && session.inddata.dybForankringAktiv && (
-              <p className="calc-note">
-                <Fmt text="Dybere forankring ved begrænset plads medtages som afsnit 8 med den faste advarsel, fordi beregningen er valgt." />
-              </p>
+            {dybMulig && (
+              <>
+                <p className="calc-note report-dyb-valg">Dybere forankring:</p>
+                <div className="setting-checkbox">
+                  <Checkbox
+                    id="rapport-dyb"
+                    checked={o.dybForankring}
+                    onCheckedChange={(checked) => saet({ dybForankring: checked === true })}
+                  />
+                  <Label htmlFor="rapport-dyb">
+                    Medtag dybere forankring ved begrænset plads som afsnit 8
+                  </Label>
+                </div>
+              </>
             )}
           </>
         )}

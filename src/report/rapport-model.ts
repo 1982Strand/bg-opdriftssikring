@@ -598,9 +598,9 @@ export function rapportDokument(
       nyt(`7.${nr + 1} ${losningTitel[l]}`, blokke, { niveau: 2, nySide: nr === 0, samlet: true });
     });
 
-    // Afsnit 8 medtages, når beregningen er valgt (beslutning 4. november 2026).
+    // Afsnit 8 medtages kun, når det er valgt på rapportsiden (beslutning 5. november 2026).
     const dyb =
-      avanceret && i.dybForankringAktiv && C
+      avanceret && i.dybForankringAktiv && o.dybForankring && C
         ? beregnDybForankring(r, input, i.dybForankringL)
         : null;
     if (dyb?.ok) {

@@ -959,3 +959,9 @@ Valgt af Claude og kan ændres:
 Claude oplyste, at eksporterede filer ikke var beskyttet, hvis de blev gemt i projektmappen, og foreslog at ignorere filnavnene. Brugerens svar: »Ja, tilføj reglerne«.
 
 - `.gitignore` udelader `firmaprofil*.json` og `medarbejderkartotek*.json` overalt i repoet. Reglerne gælder kun filer med de navne og beskytter ikke en fil, der er omdøbt.
+
+## 5. november 2026 — afsnit 8 vælges på rapportsiden
+
+Brugerens ønske: »i opdriftssikring, ved rapporten. Hvis man vælger at lave beregningen, skal der dukke en mulighed op her, om man vil medtage den, den skal ikke med automatisk.«
+
+- Når dybere forankring er beregnet, vises valget »Medtag dybere forankring ved begrænset plads som afsnit 8« under Indhold på rapportsiden. Det er ikke valgt fra start. Dette erstatter, at afsnittet kom med automatisk (valg 4a af 4. november 2026). Den faste advarsel følger stadig med i afsnittet.
