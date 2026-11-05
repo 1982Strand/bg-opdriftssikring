@@ -978,4 +978,4 @@ Valgt af Claude og kan ændres:
 - Signaturen »Geonet« står til højre på linje med målene under figuren, og den tomme plads over og under figuren er fjernet. Det gælder alle løsningsfigurer og figuren for dybere forankring, både på skærmen og i rapporten, så de samme figurer vises begge steder.
 - Ved dybt liggende rør er det sidens højde, der sætter grænsen, så figurerne kan blive smallere end de hidtidige 114 mm for at holde begge afsnit på én side.
 
-Kontrol med omslag for én ledning viser også taludtrykket på skærmen og i rapporten. Brugerens svar: »ret lige afsnit 7.2 til, så taludtrykket også vises der. Læg det så online«.
+Kontrol med omslag for én ledning viser også taludtrykket på skærmen og i rapporten. Brugerens svar: »ret lige afsnit 7.2 til, så taludtrykket også vises der. Læg det så online«. Kontrol i afsnit 8 viser også taludtrykket. Brugerens svar: »Ja, ret afsnit 8«.
