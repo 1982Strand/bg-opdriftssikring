@@ -917,3 +917,7 @@ Brugerens svar på PDF'erne: »dette skal stå på første side nederst. Altså 
 
 - By, dato, navne, telefon og mail står nederst på forsiden.
 - Den indtastede forankringslængde L_geonet er øverste linje i beregningsdetaljerne for dybere forankring. Skærmen og rapporten bruger samme rækker, så rækkefølgen er også ændret i mellemregningerne i kort 8.
+
+Brugerens rettelse: »nej, i afsnit 8, står 'nødvendig dybde til nederste netlag først. Der skal først stå 'Lgeonet: der armeres med ønsket længde x,xx m på hver side (med omslag)' så det ligner de andre. Derefter kan linjen med 'nødvendig dybde til nederste netlag hbund' komme som den er.«
+
+- Afsnit 8 viser først »L_geonet: der armeres med ønsket længde x,xx m på hver side (med omslag)« og derefter den nødvendige dybde.

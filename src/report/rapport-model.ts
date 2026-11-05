@@ -621,6 +621,11 @@ export function rapportDokument(
           },
           {
             type: 'resultat',
+            tekst: dele('L_{geonet}: der armeres med ønsket længde'),
+            vaerdi: `${tal(res.L)} m på hver side (med omslag)`,
+          },
+          {
+            type: 'resultat',
             tekst: dele('Nødvendig dybde til nederste netlag h_{bund}'),
             vaerdi: `${tal(res.hBund)} m`,
           },

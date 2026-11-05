@@ -78,6 +78,11 @@ test('teksterne og afsnit 8 følger beregningsmetoden', () => {
   const otte = model.afsnit.find((a) => a.titel[0].t.startsWith('8.'))!;
   const start = otte.blokke.findIndex((b) => b.type === 'h3');
   assert.ok(samlet(otte.blokke[start + 1]).includes('Mulig forankringslængde pr. side'));
+  // Den ønskede længde står før den nødvendige dybde, som i løsningerne.
+  const resultater = otte.blokke.filter((b) => b.type === 'resultat').map(samlet);
+  assert.ok(resultater[0].includes('der armeres med ønsket længde'));
+  assert.ok(resultater[0].includes('1,00 m på hver side (med omslag)'));
+  assert.ok(resultater[1].includes('Nødvendig dybde til nederste netlag'));
 });
 
 test('ultimal styrke følger antallet af lag', () => {
