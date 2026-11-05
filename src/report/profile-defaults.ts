@@ -75,7 +75,7 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   },
   sidefod_hoejde_mm: (44 * 25.4) / 72,
   sidetal_fra_bund_mm: (64.36 * 25.4) / 72,
-  titel: 'Opdriftssikring',
+  titel: 'NOTAT – Opdriftssikring',
   by: 'Odense',
   sidetal: 'klammer',
 };
