@@ -921,3 +921,10 @@ Brugerens svar på PDF'erne: »dette skal stå på første side nederst. Altså 
 Brugerens rettelse: »nej, i afsnit 8, står 'nødvendig dybde til nederste netlag først. Der skal først stå 'Lgeonet: der armeres med ønsket længde x,xx m på hver side (med omslag)' så det ligner de andre. Derefter kan linjen med 'nødvendig dybde til nederste netlag hbund' komme som den er.«
 
 - Afsnit 8 viser først »L_geonet: der armeres med ønsket længde x,xx m på hver side (med omslag)« og derefter den nødvendige dybde.
+
+## 5. november 2026 — kartoteket kopieret fra MSL
+
+Brugerens svar: »ja, kopier listen og lav det som MSL med en github hemmelighed.«
+
+- Medarbejderlisten er kopieret fra den interne MSL-adresse til hemmeligheden `MEDARBEJDERE_JSON` i dette repo, da GitHub ikke kan vise værdien af en hemmelighed. Listen er ikke skrevet til disk og ligger ikke i Git.
+- Listerne i de to repoer er uafhængige. En ændring i MSL skal også lægges ind her.
