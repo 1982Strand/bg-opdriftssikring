@@ -17,6 +17,8 @@ export interface RapportOplysninger {
   sagsbehandler: RapportPerson;
   kontrollant: RapportPerson;
   losninger: Record<'A' | 'B' | 'C' | 'D', boolean>;
+  /** Dybere forankring medtages som afsnit 8; vælges på rapportsiden. */
+  dybForankring: boolean;
 }
 export interface Session {
   inddata: {
@@ -55,6 +57,7 @@ export const standardRapport = (): RapportOplysninger => ({
   sagsbehandler: tomPerson(),
   kontrollant: tomPerson(),
   losninger: { A: true, B: true, C: true, D: true },
+  dybForankring: false,
 });
 export const standardSession = (): Session => ({
   inddata: {
@@ -123,6 +126,7 @@ function parseRapport(v: unknown): RapportOplysninger {
     sagsbehandler: person(r.sagsbehandler),
     kontrollant: person(r.kontrollant),
     losninger: { A: l.A !== false, B: l.B !== false, C: l.C !== false, D: l.D !== false },
+    dybForankring: r.dybForankring === true,
   };
 }
 export function parseSession(raw: string): { session: Session; error: boolean; message?: string } {

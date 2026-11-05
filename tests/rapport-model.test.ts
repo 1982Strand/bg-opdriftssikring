@@ -68,7 +68,15 @@ test('teksterne og afsnit 8 følger beregningsmetoden', () => {
     s.avanceret = true;
     s.inddata.dybForankringAktiv = true;
     s.inddata.dybForankringL = 1;
+    s.rapport.dybForankring = true;
   });
+  // Beregningen alene tager ikke afsnit 8 med; det vælges på rapportsiden.
+  const ikkeValgt = dokument((s) => {
+    s.avanceret = true;
+    s.inddata.dybForankringAktiv = true;
+    s.inddata.dybForankringL = 1;
+  }).tekst;
+  assert.ok(!ikkeValgt.includes('8. Dybere forankring'));
   assert.ok(tekst.includes('den del af rørets udvendige tværsnit'));
   assert.ok(titler(model).includes('8. Dybere forankring ved begrænset plads'));
   assert.ok(tekst.includes('Dybere forankring er ikke en dokumenteret metode'));
