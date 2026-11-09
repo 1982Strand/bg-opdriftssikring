@@ -1128,7 +1128,7 @@ Brugerens ønske: »Der skal tilføjes et afsnit til sidst: 'Udførsel' Der skal
   - Fyldmaterialet til ballast skal mindst have den rumvægt, der er regnet med: γ_våd = 17,00 kN/m³ (og γ_tør over GVS, når GVS ligger under terræn i avanceret beregning). Det er vigtigt, at kravet overholdes, da sikkerheden mod opdrift ellers er mindre end beregnet.
   - Entreprenøren bør fotodokumentere det udførte arbejde, før geonettet dækkes til.
 
-Valgt af Claude og afventer brugerens godkendelse:
+Valgt af Claude og godkendt af brugeren samme dag (»Godkendt, push«):
 - De tre første punkter om rækkefølgen, forankringen og omslaget er skrevet ud fra beregningens model. Begrundelsen for rumvægten og »før geonettet dækkes til« er tilføjet.
 - Kortet vises altid og nedtones med noten, når opdriftssikring ikke er nødvendig. Rapporten medtager afsnittet kun, når opdriftssikring er nødvendig.
 - Kortet er nummereret efter det sidste kort på siden, og afsnittet efter det sidste afsnit i rapporten. Vælges dybere forankring ikke til rapporten, har afsnittet derfor et lavere nummer i rapporten end kortet i avanceret beregning.
