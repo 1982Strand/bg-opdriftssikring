@@ -1,4 +1,5 @@
 import type { Konsekvensklasse, OpdriftInput } from '../engine/opdrift.ts';
+import type { ReduktionInput } from '../engine/reduktion.ts';
 import standarder from '../engine/defaults.json' with { type: 'json' };
 
 export interface RapportPerson {
@@ -17,7 +18,9 @@ export interface RapportOplysninger {
   sagsbehandler: RapportPerson;
   kontrollant: RapportPerson;
   losninger: Record<'A' | 'B' | 'C' | 'D', boolean>;
-  /** Dybere forankring medtages som afsnit 8; vælges på rapportsiden. */
+  /** Beregningen med reduktion for gennemføringer medtages som afsnit 8; vælges på rapportsiden. */
+  reduktion: boolean;
+  /** Dybere forankring medtages som afsnit 9; vælges på rapportsiden. */
   dybForankring: boolean;
 }
 export interface Session {
@@ -41,6 +44,18 @@ export interface Session {
     dybForankringAktiv: boolean;
     /** Forankringslængden pr. side, der er plads til, m. */
     dybForankringL: number;
+    /** Beregning med reduktion for gennemføringer (fund K-29); kun i avanceret beregning. */
+    reduktionAktiv: boolean;
+    /** Rørets samlede længde L_rør, m. */
+    reduktionLroer: number;
+    /** Antal afrundede ender, 0–2. Værdierne for ubrugte ender gemmes. */
+    antalEnder: number;
+    /** Hver afrundet endes vandrette udstrækning, m. */
+    ender: [number, number];
+    /** Antal gennemføringer, 0–2. Værdierne for ubrugte gennemføringer gemmes. */
+    antalGennemfoeringer: number;
+    /** Hver gennemførings bredde langs røret, m. */
+    gennemfoeringer: [number, number];
   };
   konsekvensklasse: Konsekvensklasse;
   /** Avanceret beregning (docs/FORSLAG_K-05.md); ellers regnes som regnearket. */
@@ -57,6 +72,7 @@ export const standardRapport = (): RapportOplysninger => ({
   sagsbehandler: tomPerson(),
   kontrollant: tomPerson(),
   losninger: { A: true, B: true, C: true, D: true },
+  reduktion: false,
   dybForankring: false,
 });
 export const standardSession = (): Session => ({
@@ -75,6 +91,12 @@ export const standardSession = (): Session => ({
     omslagAfstand: standarder.omslagAfstand,
     dybForankringAktiv: false,
     dybForankringL: 2,
+    reduktionAktiv: false,
+    reduktionLroer: 10,
+    antalEnder: 2,
+    ender: [0.6, 0.6],
+    antalGennemfoeringer: 1,
+    gennemfoeringer: [0.8, 0.8],
   },
   konsekvensklasse: 'CC2',
   avanceret: false,
@@ -104,9 +126,21 @@ export function tilMotorInput(s: Session): OpdriftInput {
     omslagAfstand: i.omslagAfstand,
   };
 }
+/** Rørets længde, ender og gennemføringer til beregningen med reduktion (kort 8). */
+export function tilReduktionInput(s: Session): ReduktionInput {
+  const i = s.inddata;
+  return {
+    Lroer: i.reduktionLroer,
+    ender: i.ender.slice(0, i.antalEnder),
+    gennemfoeringer: i.gennemfoeringer.slice(0, i.antalGennemfoeringer),
+  };
+}
 const num = (v: unknown, d: number, min = -Infinity, max = Infinity) =>
   typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max ? v : d;
 const tekst = (v: unknown) => (typeof v === 'string' ? v : '');
+const antal = (v: unknown, d: number) => (v === 0 || v === 1 || v === 2 ? v : d);
+const par = (v: unknown, d: [number, number]): [number, number] =>
+  Array.isArray(v) ? [num(v[0], d[0], 0), num(v[1], d[1], 0)] : d;
 const person = (v: unknown): RapportPerson => {
   const p = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>;
   return { navn: tekst(p.navn), telefon: tekst(p.telefon), mail: tekst(p.mail) };
@@ -126,6 +160,7 @@ function parseRapport(v: unknown): RapportOplysninger {
     sagsbehandler: person(r.sagsbehandler),
     kontrollant: person(r.kontrollant),
     losninger: { A: l.A !== false, B: l.B !== false, C: l.C !== false, D: l.D !== false },
+    reduktion: r.reduktion === true,
     dybForankring: r.dybForankring === true,
   };
 }
@@ -172,6 +207,16 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
           dybForankringAktiv:
             typeof i.dybForankringAktiv === 'boolean' ? i.dybForankringAktiv : false,
           dybForankringL: num(i.dybForankringL, 2, 0),
+          // Beregninger gemt før kort 8 indlæses med reduktionen slået fra og standardværdierne.
+          reduktionAktiv: i.reduktionAktiv === true,
+          reduktionLroer: num(i.reduktionLroer, standard.inddata.reduktionLroer, 0),
+          antalEnder: antal(i.antalEnder, standard.inddata.antalEnder),
+          ender: par(i.ender, standard.inddata.ender),
+          antalGennemfoeringer: antal(
+            i.antalGennemfoeringer,
+            standard.inddata.antalGennemfoeringer,
+          ),
+          gennemfoeringer: par(i.gennemfoeringer, standard.inddata.gennemfoeringer),
         },
         // CC3 kan kun vælges i avanceret beregning; ellers indlæses CC2.
         konsekvensklasse: x.konsekvensklasse === 'CC3' && x.avanceret === true ? 'CC3' : 'CC2',

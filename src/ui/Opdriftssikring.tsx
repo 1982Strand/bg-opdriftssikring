@@ -3,10 +3,18 @@ import { RotateCcw } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { beregnOpdrift, type GvsZone, type OpdriftResultat, type Status } from '../engine/opdrift';
 import { beregnDybForankring, type DybForankring } from '../engine/dybforankring';
+import {
+  beregnReduktion,
+  MAKS_ENDER,
+  MAKS_GENNEMFOERINGER,
+  type ReduktionFejl,
+  type ReduktionResultat,
+} from '../engine/reduktion';
 import { geonetProdukter } from '../engine/geonet';
 import standarder from '../engine/defaults.json' with { type: 'json' };
 import {
   dybForankringSvg,
+  laengdesnitSvg,
   losningSvg,
   opdriftsarealSvg,
   tvaersnitSvg,
@@ -16,7 +24,7 @@ import { tal, talKort } from '../engine/format';
 import {
   ballastNote,
   ballastRaekker,
-  kontrolNote,
+  kontrolNoter,
   designRaekke,
   dybAdvarsel,
   dybGrupper,
@@ -34,11 +42,19 @@ import {
   losningTitel,
   opdriftGrundlag,
   opdriftNote,
+  reduktionForudsaetninger,
+  reduktionGrupper,
+  reduktionIndledning,
+  reduktionKantNote,
+  reduktionKraftNote,
   restopdriftRaekke,
   rfRaekker,
+  symbolerPrMeter,
+  symbolerSikret,
   toLedningerNote,
   tovkraftNote,
   type Mellemregning,
+  type Symboler,
 } from './mellemregninger';
 import { Fmt } from './Fmt';
 import { Notice } from './Notice';
@@ -52,7 +68,7 @@ import { ikkeNoedvendigTekst, kontrolpunktTekster } from './kontrolpunkter';
 import { betingelser, projekteringsansvar } from './forudsaetninger';
 import { Partialkoefficienter } from './Partialkoefficienter';
 import { Udfold } from './Udfold';
-import { standardSession, tilMotorInput, type Session } from './state';
+import { standardSession, tilMotorInput, tilReduktionInput, type Session } from './state';
 import './sider.css';
 
 const { gammaW } = standarder;
@@ -210,18 +226,27 @@ function LosningKort({
   input,
   losning,
   ikkeRelevant,
+  idPrefix = '',
+  symboler,
+  Lsikret,
 }: {
   r: OpdriftResultat;
   input: ReturnType<typeof tilMotorInput>;
   losning: Losning;
   ikkeRelevant: boolean;
+  /** Skelner overskrifterne i kort 7 og kort 8. */
+  idPrefix?: string;
+  symboler?: Symboler;
+  /** Kort 8: den sikrede længde, som netarealet regnes for. */
+  Lsikret?: number;
 }) {
   const titel = losningTitel[losning];
-  const indhold = losningIndhold(r, input, losning);
+  const indhold = losningIndhold(r, input, losning, { symboler, Lsikret });
+  const id = `losning-${idPrefix}${losning}`;
   // Er sikring ikke nødvendig, udelades den målsatte figur, og rækkerne viser »Ikke relevant«.
   return (
-    <article className="solution-card" aria-labelledby={`losning-${losning}`}>
-      <h3 id={`losning-${losning}`}>{titel}</h3>
+    <article className="solution-card" aria-labelledby={id}>
+      <h3 id={id}>{titel}</h3>
       {indhold ? (
         <>
           {!ikkeRelevant && (
@@ -262,8 +287,9 @@ function LosningKort({
   );
 }
 
-/** Kort 8: dybere forankring ved begrænset plads for én ledning med omslag (fund K-25,
- * docs/FORSLAG_DYB_FORANKRING.md). Teksterne er godkendt 31. oktober 2026. */
+/** Kort 9: dybere forankring ved begrænset plads for én ledning med omslag (fund K-25,
+ * docs/FORSLAG_DYB_FORANKRING.md). Teksterne er godkendt 31. oktober 2026. Når kort 8 er slået til,
+ * regnes videre med K_s pr. meter sikret længde (beslutning 9. november 2026). */
 function DybForankringKort({
   r,
   input,
@@ -272,6 +298,8 @@ function DybForankringKort({
   ikkeNoedvendigNote,
   omslagIkkeMuligt,
   dyb,
+  kort,
+  grundlagMangler,
 }: {
   r: OpdriftResultat;
   input: ReturnType<typeof tilMotorInput>;
@@ -280,14 +308,24 @@ function DybForankringKort({
   ikkeNoedvendigNote: string | null;
   omslagIkkeMuligt: boolean;
   dyb: { ok: true; resultat: DybForankring } | { ok: false; fejl: string } | null;
+  /** Kortet, K kommer fra. */
+  kort: 7 | 8;
+  /** Kort 8 er slået til, men har fejl i inddata. */
+  grundlagMangler: boolean;
 }) {
   const i = session.inddata;
-  const laast = ikkeNoedvendigNote !== null || omslagIkkeMuligt;
+  const laast = ikkeNoedvendigNote !== null || omslagIkkeMuligt || grundlagMangler;
   const res = dyb?.ok ? dyb.resultat : null;
   const C = r.losninger.C;
   return (
     <>
       <p className="calc-note">{dybIndledning}</p>
+      {kort === 8 && (
+        <p className="calc-note">
+          <Fmt text="Kort 8 er slået til, så der regnes med K_{s} pr. meter sikret længde fra kort 8." />
+        </p>
+      )}
+      {grundlagMangler && <Notice>Ret inddata i kort 8, så kort 9 kan regnes.</Notice>}
       {ikkeNoedvendigNote && <Notice>{ikkeNoedvendigNote}</Notice>}
       {omslagIkkeMuligt && (
         <Notice>
@@ -326,11 +364,11 @@ function DybForankringKort({
       {res?.tilstand === 'tilstraekkelig' && C && (
         <Notice>
           <Fmt
-            text={`Løsningen »Med omslag, én ledning« i kort 7 giver L_{geonet} = ${tal(C.L)} m pr. side med forankring ved rørmidten. Den angivne længde på ${tal(res.L)} m er tilstrækkelig, så dybere forankring er ikke nødvendig.`}
+            text={`Løsningen »Med omslag, én ledning« i kort ${kort} giver L_{geonet} = ${tal(C.L)} m pr. side med forankring ved rørmidten. Den angivne længde på ${tal(res.L)} m er tilstrækkelig, så dybere forankring er ikke nødvendig.`}
           />
         </Notice>
       )}
-      {res?.tilstand === 'dybere' && <DybResultat r={r} input={input} dyb={res} />}
+      {res?.tilstand === 'dybere' && <DybResultat r={r} input={input} dyb={res} kort={kort} />}
     </>
   );
 }
@@ -339,10 +377,12 @@ function DybResultat({
   r,
   input,
   dyb,
+  kort,
 }: {
   r: OpdriftResultat;
   input: ReturnType<typeof tilMotorInput>;
   dyb: Extract<DybForankring, { tilstand: 'dybere' }>;
+  kort: 7 | 8;
 }) {
   const roerbund =
     Math.abs(dyb.underRoerbund) < 0.005
@@ -387,13 +427,237 @@ function DybResultat({
         <Notice kind="warning">{dybUnderRoerbund(dyb.underRoerbund)}</Notice>
       )}
       <Udfold titel="Mellemregninger">
-        {dybGrupper(r, input, dyb).map(({ titel, raekker }) => (
+        {dybGrupper(r, input, dyb, kort).map(({ titel, raekker }) => (
           <Beregning key={titel} titel={titel} raekker={raekker} />
         ))}
         <p className="calc-note">
-          <Fmt text={kontrolNote.medOmslag} />
+          <Fmt text={kontrolNoter(kort === 8 ? symbolerSikret : symbolerPrMeter).medOmslag} />
         </p>
       </Udfold>
+    </>
+  );
+}
+
+type ReduktionBeregning =
+  { ok: true; resultat: ReduktionResultat } | { ok: false; fejl: ReduktionFejl[] } | null;
+
+/** Kort 8: beregning med reduktion for afrundede ender og gennemføringer (fund K-29,
+ * docs/FORSLAG_SIKRET_LAENGDE.md, beslutning 9. november 2026). */
+function ReduktionKort({
+  r,
+  input,
+  session,
+  saet,
+  red,
+  ikkeNoedvendigNote,
+}: {
+  r: OpdriftResultat;
+  input: ReturnType<typeof tilMotorInput>;
+  session: Session;
+  saet: (aendring: Partial<Session['inddata']>) => void;
+  red: ReduktionBeregning;
+  ikkeNoedvendigNote: string;
+}) {
+  const i = session.inddata;
+  const aktiv = i.reduktionAktiv;
+  const res = red?.ok ? red.resultat : null;
+  const fejl = (felt: string) =>
+    red && !red.ok ? red.fejl.find((f) => f.felt === felt)?.tekst : undefined;
+  const ikkeRelevant = res !== null && res.S1Status === 'OK';
+  const rs = res?.r ?? null;
+  const antalValg = (maks: number) =>
+    Array.from({ length: maks + 1 }, (_, n) => ({ value: n, label: String(n) }));
+  const ende = (n: number) => (
+    <SettingField
+      key={`ende-${n}`}
+      field={{
+        key: `input-ende-${n}`,
+        label: `Ende ${n + 1}, vandret udstrækning L_{ende,${n + 1}} (m)`,
+        kind: 'number',
+        min: 0,
+        step: 0.01,
+      }}
+      disabled={!aktiv}
+      value={i.ender[n]}
+      error={fejl(`ende-${n}`)}
+      change={(v) => {
+        const ender: [number, number] = [...i.ender];
+        ender[n] = Number(v);
+        saet({ ender });
+      }}
+    />
+  );
+  const gennemfoering = (n: number) => (
+    <SettingField
+      key={`gennemfoering-${n}`}
+      field={{
+        key: `input-gennemfoering-${n}`,
+        label: `Gennemføring ${n + 1}, bredde d_{g,${n + 1}} (m)`,
+        kind: 'number',
+        min: 0,
+        step: 0.01,
+      }}
+      disabled={!aktiv}
+      value={i.gennemfoeringer[n]}
+      error={fejl(`gennemfoering-${n}`)}
+      change={(v) => {
+        const gennemfoeringer: [number, number] = [...i.gennemfoeringer];
+        gennemfoeringer[n] = Number(v);
+        saet({ gennemfoeringer });
+      }}
+    />
+  );
+  return (
+    <>
+      <p className="calc-note">{reduktionIndledning}</p>
+      <div className="calc-override">
+        <SettingField
+          field={{
+            key: 'input-reduktion-aktiv',
+            label: 'Beregn med reduktion for ender og gennemføringer',
+            kind: 'checkbox',
+            help: 'Angiv rørets samlede længde og de afrundede ender og gennemføringer, hvor geonettet ikke kan lægges.',
+          }}
+          value={aktiv}
+          change={(v) => saet({ reduktionAktiv: Boolean(v) })}
+        />
+      </div>
+      <div className="calc-grid">
+        <div className="calc-fields">
+          <div className="is-fuld">
+            <SettingField
+              field={{
+                key: 'input-reduktion-Lroer',
+                label: 'Rørets samlede længde L_{rør} (m)',
+                kind: 'number',
+                min: 0,
+                step: 0.01,
+                help: 'Fra ende til ende, inkl. de afrundede ender.',
+              }}
+              disabled={!aktiv}
+              value={i.reduktionLroer}
+              error={fejl('Lroer')}
+              change={(v) => saet({ reduktionLroer: Number(v) })}
+            />
+          </div>
+          <div className="calc-stak">
+            <SettingField
+              field={{
+                key: 'input-antal-ender',
+                label: 'Antal afrundede ender',
+                kind: 'radio',
+                segmented: true,
+                options: antalValg(MAKS_ENDER),
+              }}
+              disabled={!aktiv}
+              value={i.antalEnder}
+              change={(v) => saet({ antalEnder: Number(v) })}
+            />
+            {Array.from({ length: i.antalEnder }, (_, n) => ende(n))}
+          </div>
+          <div className="calc-stak">
+            <SettingField
+              field={{
+                key: 'input-antal-gennemfoeringer',
+                label: 'Antal gennemføringer',
+                kind: 'radio',
+                segmented: true,
+                options: antalValg(MAKS_GENNEMFOERINGER),
+              }}
+              disabled={!aktiv}
+              value={i.antalGennemfoeringer}
+              change={(v) => saet({ antalGennemfoeringer: Number(v) })}
+            />
+            {Array.from({ length: i.antalGennemfoeringer }, (_, n) => gennemfoering(n))}
+          </div>
+        </div>
+        {aktiv && res && (
+          <Figur
+            svg={laengdesnitSvg(input, res)}
+            label={`Længdesnit: rør på ${tal(res.Lroer)} m med ${res.ender.length} afrundede ender og ${res.gennemfoeringer.length} gennemføringer. Den sikrede længde er ${tal(res.Lsikret)} m.`}
+          />
+        )}
+      </div>
+      {aktiv && res && rs && (
+        <>
+          {ikkeRelevant && <Notice>{ikkeNoedvendigNote}</Notice>}
+          {!ikkeRelevant && r.S1Status === 'OK' && r.S1 !== null && res.S1 !== null && (
+            <Notice>{reduktionKantNote(r.S1, res.S1)}</Notice>
+          )}
+          <div className="dim-results m9-result-cards">
+            <Flise
+              label="Sikret længde L_{sikret}"
+              vaerdi={tal(res.Lsikret)}
+              enhed="m"
+              note={`L_{rør} = ${tal(res.Lroer)} m`}
+            />
+            <Flise
+              label="Kontrol uden geonet S₁"
+              vaerdi={tal(res.S1)}
+              status={res.S1Status}
+              note={
+                res.S1 === null
+                  ? 'Ingen opdrift'
+                  : `S₁ = B_{d,tot}/O_{d,tot}, krav ≥ ${tal(standarder.krav.S1, 1)}`
+              }
+            />
+            <Flise
+              label="Restopdrift F_{op,d,s}"
+              vaerdi={ikkeRelevant ? 'Ikke relevant' : tal(rs.Fopdrift)}
+              enhed={ikkeRelevant ? undefined : 'kN/m'}
+              note="Pr. meter sikret længde"
+            />
+            <Flise
+              label="Valgt geonet"
+              vaerdi={
+                ikkeRelevant
+                  ? 'Ikke relevant'
+                  : rs.geonet.uts === null
+                    ? 'Kontakt leverandør'
+                    : `X-GRID ${rs.geonet.navn}`
+              }
+              status={ikkeRelevant ? null : rs.geonet.status}
+              note={
+                ikkeRelevant
+                  ? undefined
+                  : rs.geonet.uts === null
+                    ? 'Der produceres ikke geonet med den nødvendige styrke.'
+                    : `P_{d}/F_{op,d,s} = ${tal(rs.geonet.sikkerhed)}, krav > ${tal(standarder.krav.geonet)}`
+              }
+            />
+          </div>
+          <h3 className="beregning-titel">Forudsætninger</h3>
+          <ul className="settings-prose forudsaetninger">
+            {reduktionForudsaetninger.map((t) => (
+              <li key={t}>
+                <Fmt text={t} />
+              </li>
+            ))}
+          </ul>
+          <Udfold titel="Mellemregninger" laast={ikkeRelevant}>
+            {reduktionGrupper(r, input, res).map(({ titel, raekker }) => (
+              <Beregning key={titel} titel={titel} raekker={raekker} />
+            ))}
+            <p className="calc-note">
+              <Fmt text={reduktionKraftNote(r)} />
+            </p>
+          </Udfold>
+          <div className="solutions">
+            {(['A', 'C', 'B', 'D'] as Losning[]).map((l) => (
+              <LosningKort
+                key={l}
+                r={rs}
+                input={input}
+                losning={l}
+                ikkeRelevant={ikkeRelevant}
+                idPrefix="reduktion-"
+                symboler={symbolerSikret}
+                Lsikret={res.Lsikret}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 }
@@ -444,17 +708,29 @@ export function Opdriftssikring() {
   const gvsLaast = cc3 || !avanceret;
   // Kun i avanceret beregning med GVS mellem rørtop og rørbund.
   const arealfigur = r ? opdriftsarealSvg(r, input) : null;
+  // Beregning med reduktion for ender og gennemføringer (fund K-29): kun i avanceret beregning.
+  const redAktiv = r !== null && avanceret && i.reduktionAktiv;
+  const red = r && redAktiv ? beregnReduktion(r, input, tilReduktionInput(session)) : null;
+  const redRes = red?.ok ? red.resultat : null;
+  const redIkkeNoedvendig = redRes !== null && redRes.S1Status === 'OK';
+  const redNote = (S1: number | null) =>
+    S1 === null
+      ? 'Røret påvirkes ikke af opdrift, så opdriftssikring er ikke nødvendig.'
+      : ikkeNoedvendigTekst;
   // Dybere forankring ved begrænset plads (fund K-25, docs/FORSLAG_DYB_FORANKRING.md): kun i avanceret
-  // beregning og kun for én ledning med omslag.
+  // beregning og kun for én ledning med omslag. Når kort 8 er slået til, regnes videre fra kort 8.
+  const dybKort: 7 | 8 = redAktiv ? 8 : 7;
+  const dybGrundlag = redAktiv ? (redRes?.r ?? null) : r;
+  const dybIkkeNoedvendig = dybGrundlag !== null && dybGrundlag.S1Status === 'OK';
   const omslagIkkeMuligt = r !== null && r.losninger.C === null;
-  const dybLaast = ikkeNoedvendig || omslagIkkeMuligt;
+  const dybLaast = dybGrundlag === null || dybIkkeNoedvendig || omslagIkkeMuligt;
   const dyb =
-    r && avanceret && i.dybForankringAktiv && !dybLaast
-      ? beregnDybForankring(r, input, i.dybForankringL)
+    dybGrundlag && avanceret && i.dybForankringAktiv && !dybLaast
+      ? beregnDybForankring(dybGrundlag, input, i.dybForankringL)
       : null;
   const dybRes = dyb?.ok ? dyb.resultat : null;
   const dybere = dybRes?.tilstand === 'dybere' ? dybRes : null;
-  // Den dybere forankring har sine advarsler i kort 8 og ikke under »Kontrolpunkter«
+  // Den dybere forankring har sine advarsler i kort 9 og ikke under »Kontrolpunkter«
   // (beslutning 1. november 2026).
   const punkter = r ? kontrolpunktTekster(r) : [];
 
@@ -488,7 +764,7 @@ export function Opdriftssikring() {
               key: 'avanceret',
               label: 'Avanceret beregning',
               kind: 'checkbox',
-              help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag og dybere forankring ved begrænset plads.',
+              help: 'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag, reduktion for ender og gennemføringer og dybere forankring ved begrænset plads.',
             }}
             value={session.avanceret}
             // CC3 kan kun vælges i avanceret beregning, så standardberegningen går tilbage til CC2.
@@ -1006,9 +1282,33 @@ export function Opdriftssikring() {
           {avanceret && (
             <Trin
               nr={8}
+              titel="Beregning med reduktion for gennemføringer"
+              opsummering={
+                !redRes
+                  ? undefined
+                  : redIkkeNoedvendig
+                    ? 'Ikke relevant'
+                    : `L_{sikret} = ${tal(redRes.Lsikret)} m · ${redRes.r.geonet.uts === null ? 'Kontakt leverandør' : `X-GRID ${redRes.r.geonet.navn}`} · K_{s} = ${tal(redRes.r.K)} kN/m`
+              }
+              dimmed={redIkkeNoedvendig}
+            >
+              <ReduktionKort
+                r={r}
+                input={input}
+                session={session}
+                saet={saet}
+                red={red}
+                ikkeNoedvendigNote={redNote(redRes?.S1 ?? null)}
+              />
+            </Trin>
+          )}
+
+          {avanceret && (
+            <Trin
+              nr={9}
               titel="Dybere forankring ved begrænset plads"
               opsummering={
-                ikkeNoedvendig
+                dybIkkeNoedvendig
                   ? 'Ikke relevant'
                   : omslagIkkeMuligt
                     ? 'Omslag ikke muligt'
@@ -1018,16 +1318,18 @@ export function Opdriftssikring() {
                         ? `h_{bund} = ${tal(dybere.hBund)} m · L_{geonet} = ${tal(dybere.L)} m`
                         : undefined
               }
-              dimmed={ikkeNoedvendig}
+              dimmed={dybIkkeNoedvendig}
             >
               <DybForankringKort
-                r={r}
+                r={dybGrundlag ?? r}
                 input={input}
                 session={session}
                 saet={saet}
-                ikkeNoedvendigNote={ikkeNoedvendig ? ikkeNoedvendigNote : null}
+                ikkeNoedvendigNote={dybIkkeNoedvendig ? redNote(dybGrundlag.S1) : null}
                 omslagIkkeMuligt={omslagIkkeMuligt}
                 dyb={dyb}
+                kort={dybKort}
+                grundlagMangler={dybGrundlag === null}
               />
             </Trin>
           )}

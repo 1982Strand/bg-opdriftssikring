@@ -502,3 +502,115 @@ export function dybForankringSvg(
   t.hoejde = px(Math.max(t.Y(t.dybde), ys + 7));
   return svg(t, 'Dybere forankring med omslag');
 }
+
+/** Længdesnit af røret med afrundede ender og gennemføringer og målkæden for den sikrede længde
+ * (fund K-29). Gennemføringerne tegnes med lige store sikrede stykker imellem; placeringen er kun
+ * illustration og indgår ikke i beregningen. */
+export function laengdesnitSvg(
+  i: Pick<OpdriftInput, 'd' | 'h1'>,
+  red: { Lroer: number; ender: number[]; gennemfoeringer: { d: number }[]; Lsikret: number },
+): string {
+  const { d, h1 } = i;
+  const L = red.Lroer;
+  const venstre = red.ender[0] ?? 0;
+  const hoejre = red.ender[1] ?? 0;
+  const gf = red.gennemfoeringer.map((g) => g.d);
+  const stykke = red.Lsikret / (gf.length + 1);
+  const margen = 30;
+  const top = 40;
+  const s = Math.min((BREDDE - 2 * margen) / L, 200 / (h1 + d));
+  const x0 = margen + (BREDDE - 2 * margen - L * s) / 2;
+  const X = (x: number) => px(x0 + x * s);
+  const yT = top;
+  const yTop = px(top + h1 * s);
+  const yBund = px(yTop + d * s);
+  const dele: string[] = [];
+
+  // Fyld fra terræn til under røret og terrænlinjen.
+  dele.push(
+    `<rect x="${margen - 10}" y="${yT}" width="${BREDDE - 2 * margen + 20}" height="${px(yBund - yT + 10)}" fill="${farve.fyld}"/>`,
+    linje(margen - 10, yT, BREDDE - margen + 10, yT, farve.ink, 1.5),
+  );
+
+  // Røret med afrundede ender som halve ellipser.
+  const ry = px((d / 2) * s);
+  const xV = X(venstre);
+  const xH = X(L - hoejre);
+  const sti =
+    `M ${xV} ${yTop} H ${xH}` +
+    (hoejre > 0 ? ` A ${px(hoejre * s)} ${ry} 0 0 1 ${xH} ${yBund}` : ` V ${yBund}`) +
+    ` H ${xV}` +
+    (venstre > 0 ? ` A ${px(venstre * s)} ${ry} 0 0 1 ${xV} ${yTop}` : ` V ${yTop}`) +
+    ' Z';
+  dele.push(`<path d="${sti}" fill="#ffffff" stroke="${farve.ink}" stroke-width="2"/>`);
+
+  // Stykkerne langs røret fra venstre mod højre.
+  type Stykke = { fra: number; til: number; art: 'ende' | 'sikret' | 'gennemfoering'; nr: number };
+  const stykker: Stykke[] = [];
+  let x = 0;
+  const tilfoej = (laengde: number, art: Stykke['art'], nr: number) => {
+    stykker.push({ fra: x, til: x + laengde, art, nr });
+    x += laengde;
+  };
+  if (venstre > 0) tilfoej(venstre, 'ende', 1);
+  tilfoej(stykke, 'sikret', 1);
+  gf.forEach((dg, n) => {
+    tilfoej(dg, 'gennemfoering', n + 1);
+    tilfoej(stykke, 'sikret', n + 2);
+  });
+  if (hoejre > 0) tilfoej(hoejre, 'ende', venstre > 0 ? 2 : 1);
+
+  // Gennemføringerne fra rørtoppen til terræn og geonettet over de sikrede stykker.
+  for (const st of stykker) {
+    if (st.art === 'gennemfoering' && yTop - yT > 1)
+      dele.push(
+        `<rect x="${X(st.fra)}" y="${yT}" width="${px((st.til - st.fra) * s)}" height="${px(yTop - yT + 1)}" fill="#ffffff" stroke="${farve.ink}" stroke-width="1.5"/>`,
+      );
+    if (st.art === 'sikret')
+      dele.push(
+        linje(
+          X(st.fra) + 2,
+          yTop - 5,
+          X(st.til) - 2,
+          yTop - 5,
+          farve.net,
+          2.5,
+          ' stroke-dasharray="6 4"',
+        ),
+      );
+  }
+  const foerste = stykker.find((st) => st.art === 'gennemfoering');
+  if (foerste) dele.push(tekst((X(foerste.fra) + X(foerste.til)) / 2, yT - 8, 'Gennemføring'));
+
+  // Målkæden under røret og rørets samlede længde nederst.
+  const yKaede = yBund + 30;
+  let ekstraRaekke = false;
+  for (const st of stykker) {
+    const x1 = X(st.fra);
+    const x2 = X(st.til);
+    const vaerdi = tal(st.til - st.fra);
+    const symbol =
+      st.art === 'ende'
+        ? `L_{ende,${st.nr}}`
+        : st.art === 'gennemfoering'
+          ? `d_{g,${st.nr}}`
+          : 'sikret';
+    const lang = `${symbol} = ${vaerdi}`;
+    const plads = x2 - x1 - 6;
+    const t = plads >= bredde(lang) ? lang : plads >= bredde(vaerdi) ? vaerdi : null;
+    dele.push(
+      linje(x1, yBund + 4, x1, yKaede + 5, farve.muted, 1, ' stroke-dasharray="2 3"'),
+      linje(x2, yBund + 4, x2, yKaede + 5, farve.muted, 1, ' stroke-dasharray="2 3"'),
+      vandretMaal(x1, x2, yKaede, t ?? ''),
+    );
+    if (!t) {
+      ekstraRaekke = true;
+      dele.push(tekst((x1 + x2) / 2, yKaede + 16, vaerdi));
+    }
+  }
+  const ySamlet = yKaede + (ekstraRaekke ? 44 : 32);
+  dele.push(vandretMaal(X(0), X(L), ySamlet, `L_{rør} = ${m(L)}`));
+  dele.push(signatur(BREDDE - margen - 70, 18));
+  const hoejde = px(ySamlet + 14);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BREDDE} ${hoejde}" width="${BREDDE}" height="${hoejde}" aria-hidden="true" font-family="'Segoe UI', system-ui, sans-serif" font-size="12"><title>${esc('Længdesnit af røret med sikret længde')}</title>${dele.join('')}</svg>`;
+}

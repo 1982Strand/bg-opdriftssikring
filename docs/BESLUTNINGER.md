@@ -1022,3 +1022,35 @@ Brugerens ønske: »selve titlen i rapporten 'Opdriftssikring' må gerne ændres
 - Filnavnet på rapporten er uændret og begynder fortsat med »Opdriftssikring«.
 
 Valgt af Claude og kan ændres: tankestreg (–) som i MSL's titel i stedet for bindestreg.
+
+## 9. november 2026 — beregning med reduktion for gennemføringer (K-29)
+
+Brugeren ønskede en udvidet beregning for et rør eller en liggende tank med afrundede ender og gennemføringer i toppen, hvor geonettet ikke kan lægges. Beregningen skal give »den faktiske opdrift og ballast, samt krav til geonettet der skal bruges«, være kort 8, og den dybere forankring skal flyttes til kort 9. Claude beskrev modellen og stillede ni spørgsmål i [FORSLAG_SIKRET_LAENGDE.md](FORSLAG_SIKRET_LAENGDE.md).
+
+Brugerens svar: »Der hvor der er gennemføring, vil der ikke skulle regnes noget ballast, da man tænker jorden er gravet væk og der ingen jorddække er. Det skal være muligt at kunne vælge om der er 0, 1 eller 2 afrundede ender og 0, 1 eller 2 gennemføringer. Og hvor bredde de hver især er. Til dine spørgsmål: 1: Beregning med reduktion for gennemføringer 2: avanceret beregning. 3. a, og det skal deklareres som på den sikre side. 4: b. Altså ja, der skal ikke regnes med ballast her. 5: hver del for sig, som nævnt. 6: b. 7: a. 8: a. 9: a.«
+
+- Kort 8 hedder »Beregning med reduktion for gennemføringer« og findes kun i avanceret beregning. Den dybere forankring er kort 9 og rapportens afsnit 9.
+- Der vælges 0, 1 eller 2 afrundede ender og 0, 1 eller 2 gennemføringer, og hver ende og gennemføring har sin egen længde eller bredde.
+- L_sikret = L_rør − ΣL_ende − Σd_g. Opdriften regnes i hele L_rør plus opdriften af gennemføringernes hulrum under GVS. Ballasten regnes kun uden for gennemføringerne: B_d,tot = B_d · (L_rør − Σd_g).
+- Enderne regnes med fuldt tværsnit, og kortet og rapporten oplyser, at det er på den sikre side.
+- Geonet og alle fire løsninger med figurer regnes pr. meter sikret længde med O_d,s = O_d,tot/L_sikret og B_d,s = B_d,tot/L_sikret. Netarealet L_geonet,tot · L_sikret vises for hver løsning.
+- Kort 9 regner videre med K_s fra kort 8, når kort 8 er slået til.
+- Afsnit 8 i rapporten vælges på rapportsiden.
+
+Valgt af Claude og kan ændres:
+- Kortets afkrydsning hedder »Beregn med reduktion for ender og gennemføringer«, og hjælpeteksten ved »Avanceret beregning« nævner »reduktion for ender og gennemføringer«.
+- »Ingen ballast« omfatter hele B_d, også rørets egenvægt i gennemføringernes bredde. Det er på den sikre side.
+- Gennemføringens hulrum regnes med opdrift fra rørtoppen til GVS, h_g = max(0; h₁ − T₂), og gennemføringens egenvægt medregnes ikke.
+- Felter vises kun for de valgte ender og gennemføringer; værdierne for fravalgte gemmes. Standardværdierne er L_rør = 10,00 m, to ender på 0,60 m og én gennemføring på 0,80 m.
+- Længdesnittet tegner gennemføringerne med lige store sikrede stykker imellem. Med én ende er det venstre ende, der er afrundet.
+- Fliserne er »Sikret længde«, »Kontrol uden geonet S₁«, »Restopdrift F_op,d,s« og »Valgt geonet«. Kort 8 regner, selv om kort 6–7 viser »Ikke relevant«, når S₁ kun er under 1 for hele røret. Rapporten udelader da afsnit 6 og 7.
+- Ved manuelt valg i 2 lag står netarealet pr. lag.
+
+Kontroltallene i FORSLAG_SIKRET_LAENGDE.md, afsnit 3, og `tests/cases/reduktion.json` afventer brugerens godkendelse.
+
+## 9. november 2026 — kontroltal og ballast ved gennemføringer godkendt (K-29)
+
+Claude spurgte, om kontroltallene og tolkningen af »ingen ballast« kunne godkendes. Tolkningen er, at hele B_d udelades i gennemføringernes bredde, også rørets egenvægt. Brugerens svar: »Godkendt«.
+
+- Kontroltallene i `tests/cases/reduktion.json` er godkendt og er nu appens kontrolgrundlag for kort 8.
+- Der regnes ingen ballast, heller ikke rørets egenvægt, i gennemføringernes bredde.

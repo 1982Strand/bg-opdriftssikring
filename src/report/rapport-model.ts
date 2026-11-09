@@ -1,9 +1,11 @@
 /** Rapportens indhold som JSON til skabelonen. Tal, formler og noter kommer fra samme kilder som
  * skærmen (src/ui/mellemregninger.ts), så skærm og rapport har samme opbygning. Modulet bruger ikke
  * React og kan afprøves med node --test. */
-import { beregnDybForankring } from '../engine/dybforankring.ts';
+import { beregnDybForankring, type DybForankring } from '../engine/dybforankring.ts';
+import { beregnReduktion, type ReduktionResultat } from '../engine/reduktion.ts';
 import {
   dybForankringSvg,
+  laengdesnitSvg,
   losningSvg,
   opdriftsarealSvg,
   tvaersnitSvg,
@@ -34,13 +36,20 @@ import {
   losningTitel,
   opdriftGrundlag,
   opdriftNote,
+  reduktionForudsaetninger,
+  reduktionGrupper,
+  reduktionIndledning,
+  reduktionKantNote,
+  reduktionKraftNote,
   restopdriftRaekke,
   rfFaktorer,
+  symbolerSikret,
   toLedningerNote,
   tovkraftNote,
   type Mellemregning,
+  type Symboler,
 } from '../ui/mellemregninger.ts';
-import type { RapportOplysninger, Session } from '../ui/state.ts';
+import { tilReduktionInput, type RapportOplysninger, type Session } from '../ui/state.ts';
 
 /** Tekst med sænket skrift som stykker, så intet tolkes som Typst-opmærkning. */
 export type Tekst = { t: string; sub: boolean }[];
@@ -188,6 +197,39 @@ function personLinjer(p: RapportOplysninger['sagsbehandler']): string[] {
   return [p.navn, p.telefon ? formatPhone(p.telefon) : '', p.mail].filter(Boolean);
 }
 
+/** Afsnit 8 og 9 kan medtages, når kortene er slået til, kan regnes og opdriftssikring er nødvendig.
+ * Kort 9 regner videre fra kort 8, når kort 8 er slået til (beslutning 9. november 2026). */
+export function rapportTilvalg(
+  session: Session,
+  input: OpdriftInput,
+  r: OpdriftResultat,
+): {
+  reduktion: ReduktionResultat | null;
+  dyb: {
+    grundlag: OpdriftResultat;
+    kort: 7 | 8;
+    resultat: Exclude<DybForankring, { tilstand: 'ikke relevant' | 'omslag ikke muligt' }>;
+  } | null;
+} {
+  const i = session.inddata;
+  const redAktiv = session.avanceret && i.reduktionAktiv;
+  const red = redAktiv ? beregnReduktion(r, input, tilReduktionInput(session)) : null;
+  const redRes = red?.ok ? red.resultat : null;
+  const grundlag = redAktiv ? (redRes?.r ?? null) : r;
+  const dyb =
+    session.avanceret && i.dybForankringAktiv && grundlag && grundlag.S1Status !== 'OK'
+      ? beregnDybForankring(grundlag, input, i.dybForankringL)
+      : null;
+  const dybRes = dyb?.ok ? dyb.resultat : null;
+  return {
+    reduktion: redRes && redRes.S1Status !== 'OK' ? redRes : null,
+    dyb:
+      grundlag && dybRes && (dybRes.tilstand === 'tilstraekkelig' || dybRes.tilstand === 'dybere')
+        ? { grundlag, kort: redAktiv ? 8 : 7, resultat: dybRes }
+        : null,
+  };
+}
+
 export function rapportDokument(
   session: Session,
   input: OpdriftInput,
@@ -223,6 +265,79 @@ export function rapportDokument(
       toLedninger: valg.toLedninger ?? false,
       blokke,
     });
+
+  /** Løsningerne i samme rækkefølge som på skærmen; kun de valgte og mulige medtages. Afsnit 8 regner
+   * pr. meter sikret længde og viser også netarealet. */
+  const losningAfsnit = (
+    rr: OpdriftResultat,
+    nr: 7 | 8,
+    ekstra: { symboler?: Symboler; Lsikret?: number } = {},
+  ) => {
+    const raekkefoelge: Losning[] = ['A', 'C', 'B', 'D'];
+    const valgte = raekkefoelge.filter((l) => o.losninger[l] && rr.losninger[l]);
+    const sidsteToLedninger = [...valgte].reverse().find((l) => l === 'B' || l === 'D');
+    valgte.forEach((l, n) => {
+      const indhold = losningIndhold(rr, input, l, ekstra)!;
+      const v = rr.losninger[l]!;
+      const to = l === 'B' || l === 'D';
+      const omslag = l === 'C' || l === 'D';
+      const blokke: Blok[] = [lille(losningNote(rr.omslagAfstand)[l])];
+      blokke.push(...indhold.beregning.filter((m) => !m.rolle).map((m) => regning(m)));
+      if ('toLMellem' in v)
+        blokke.push({
+          type: 'resultat',
+          tekst: dele('L_{mellem}: der armeres med mindst'),
+          vaerdi: `${tal(v.toLMellem)} m mellem ledningerne`,
+        });
+      blokke.push({
+        type: 'resultat',
+        tekst: dele('L_{geonet}: der armeres med mindst'),
+        vaerdi: `${tal(v.L)} m ${to ? 'yderst på hver side' : omslag ? 'på hver side (med omslag)' : 'på hver side'}`,
+      });
+      const mindst = indhold.beregning.find((m) => m.rolle === 'forankring')?.detalje;
+      if (mindst?.startsWith('mindstelængden')) blokke.push(lille(`L_{geonet}: ${mindst}.`));
+      const areal = indhold.beregning.find((m) => m.rolle === 'netareal');
+      blokke.push({
+        type: 'maalfigur',
+        fil: fil(nr === 7 ? `losning-${l}` : `reduktion-losning-${l}`, losningSvg(rr, input, l)),
+        maal: [
+          {
+            tekst: 'Vandret bredde fra ende til ende',
+            symbol: dele('L_{a}'),
+            vaerdi: `${tal(v.La)} m`,
+            note: null,
+          },
+          {
+            tekst: 'Samlet længde geonet på tværs',
+            symbol: dele('L_{geonet,tot}'),
+            vaerdi: `${tal(v.Ltot)} m`,
+            note: omslag
+              ? `inkl. ${tal(l === 'C' ? standarder.netTillaegOmslag * 4 - standarder.omslagAfstand * 2 : standarder.netTillaegOmslag * 4 - standarder.omslagAfstand * 4, 1)} m tillæg til omslag og overlæg`
+              : null,
+          },
+          ...(areal?.resultat
+            ? [
+                {
+                  tekst: areal.forklaring,
+                  symbol: dele('A_{geonet}'),
+                  vaerdi: areal.resultat,
+                  note: null,
+                },
+              ]
+            : []),
+        ],
+      });
+      const kontrolRaekke = indhold.beregning.find((m) => m.rolle === 'kontrol');
+      if (kontrolRaekke) blokke.push(regning(kontrolRaekke));
+      if (l === sidsteToLedninger) blokke.push(lille(toLedningerNote));
+      nyt(`${nr}.${n + 1} ${losningTitel[l]}`, blokke, {
+        niveau: 2,
+        nySide: n === 0,
+        samlet: true,
+        toLedninger: to,
+      });
+    });
+  };
 
   nyt(
     '1. Generelle beregningsforudsætninger',
@@ -560,105 +675,89 @@ export function rapportDokument(
       { nySide: true },
     );
 
-    // Løsningerne i samme rækkefølge som på skærmen; kun de valgte og mulige medtages.
-    const raekkefoelge: Losning[] = ['A', 'C', 'B', 'D'];
-    const valgte = raekkefoelge.filter((l) => o.losninger[l] && r.losninger[l]);
-    const sidsteToLedninger = [...valgte].reverse().find((l) => l === 'B' || l === 'D');
-    valgte.forEach((l, nr) => {
-      const indhold = losningIndhold(r, input, l)!;
-      const v = r.losninger[l]!;
-      const to = l === 'B' || l === 'D';
-      const omslag = l === 'C' || l === 'D';
-      const blokke: Blok[] = [lille(losningNote(r.omslagAfstand)[l])];
-      blokke.push(...indhold.beregning.filter((m) => !m.rolle).map((m) => regning(m)));
-      if ('toLMellem' in v)
-        blokke.push({
-          type: 'resultat',
-          tekst: dele('L_{mellem}: der armeres med mindst'),
-          vaerdi: `${tal(v.toLMellem)} m mellem ledningerne`,
-        });
-      blokke.push({
-        type: 'resultat',
-        tekst: dele('L_{geonet}: der armeres med mindst'),
-        vaerdi: `${tal(v.L)} m ${to ? 'yderst på hver side' : omslag ? 'på hver side (med omslag)' : 'på hver side'}`,
-      });
-      const mindst = indhold.beregning.find((m) => m.rolle === 'forankring')?.detalje;
-      if (mindst?.startsWith('mindstelængden')) blokke.push(lille(`L_{geonet}: ${mindst}.`));
-      blokke.push({
-        type: 'maalfigur',
-        fil: fil(`losning-${l}`, losningSvg(r, input, l)),
-        maal: [
-          {
-            tekst: 'Vandret bredde fra ende til ende',
-            symbol: dele('L_{a}'),
-            vaerdi: `${tal(v.La)} m`,
-            note: null,
-          },
-          {
-            tekst: 'Samlet længde geonet på tværs',
-            symbol: dele('L_{geonet,tot}'),
-            vaerdi: `${tal(v.Ltot)} m`,
-            note: omslag
-              ? `inkl. ${tal(l === 'C' ? standarder.netTillaegOmslag * 4 - standarder.omslagAfstand * 2 : standarder.netTillaegOmslag * 4 - standarder.omslagAfstand * 4, 1)} m tillæg til omslag og overlæg`
-              : null,
-          },
-        ],
-      });
-      const kontrolRaekke = indhold.beregning.find((m) => m.rolle === 'kontrol');
-      if (kontrolRaekke) blokke.push(regning(kontrolRaekke));
-      if (l === sidsteToLedninger) blokke.push(lille(toLedningerNote));
-      nyt(`7.${nr + 1} ${losningTitel[l]}`, blokke, {
-        niveau: 2,
-        nySide: nr === 0,
-        samlet: true,
-        toLedninger: to,
-      });
-    });
+    losningAfsnit(r, 7);
+  }
 
-    // Afsnit 8 medtages kun, når det er valgt på rapportsiden (beslutning 5. november 2026).
-    const dyb =
-      avanceret && i.dybForankringAktiv && o.dybForankring && C
-        ? beregnDybForankring(r, input, i.dybForankringL)
-        : null;
-    if (dyb?.ok) {
-      const res = dyb.resultat;
-      const blokke: Blok[] = [tekst(dybIndledning), { type: 'advarsel', tekst: dele(dybAdvarsel) }];
-      if (res.tilstand === 'tilstraekkelig' && C)
+  // Afsnit 8 og 9 medtages kun, når de er valgt på rapportsiden (beslutning 5. og 9. november 2026).
+  const tilvalg = rapportTilvalg(session, input, r);
+  const red = o.reduktion ? tilvalg.reduktion : null;
+  if (red) {
+    const blokke: Blok[] = [
+      tekst(reduktionIndledning),
+      {
+        type: 'inddata',
+        felter: [
+          {
+            tekst: dele('Rørets samlede længde L_{rør} ='),
+            vaerdi: tal(red.Lroer),
+            enhed: dele('m'),
+          },
+          ...red.ender.map((e, n) => ({
+            tekst: dele(`Afrundet ende ${n + 1}, L_{ende,${n + 1}} =`),
+            vaerdi: tal(e),
+            enhed: dele('m'),
+          })),
+          ...red.gennemfoeringer.map((g, n) => ({
+            tekst: dele(`Gennemføring ${n + 1}, d_{g,${n + 1}} =`),
+            vaerdi: tal(g.d),
+            enhed: dele('m'),
+          })),
+        ],
+      },
+      { type: 'figur', fil: fil('laengdesnit', laengdesnitSvg(input, red)), bredde_mm: 150 },
+      { type: 'punkter', punkter: reduktionForudsaetninger.map(dele) },
+    ];
+    if (r.S1Status === 'OK' && r.S1 !== null && red.S1 !== null)
+      blokke.push(tekst(reduktionKantNote(r.S1, red.S1, true)));
+    for (const { titel, raekker } of reduktionGrupper(r, input, red))
+      blokke.push(h3(titel), ...raekker.map((m) => regning(m)));
+    blokke.push(lille(reduktionKraftNote(r)));
+    nyt('8. Beregning med reduktion for gennemføringer', blokke, { nySide: true });
+    losningAfsnit(red.r, 8, { symboler: symbolerSikret, Lsikret: red.Lsikret });
+  }
+
+  const dyb = o.dybForankring ? tilvalg.dyb : null;
+  if (dyb) {
+    const { grundlag: rg, kort, resultat: res } = dyb;
+    const C = rg.losninger.C;
+    const blokke: Blok[] = [tekst(dybIndledning), { type: 'advarsel', tekst: dele(dybAdvarsel) }];
+    if (kort === 8)
+      blokke.push(tekst('Der regnes med K_{s} pr. meter sikret længde fra afsnit 8.'));
+    if (res.tilstand === 'tilstraekkelig' && C)
+      blokke.push(
+        tekst(
+          `Løsningen »Med omslag, én ledning« giver L_{geonet} = ${tal(C.L)} m pr. side med forankring ved rørmidten. Den angivne længde på ${tal(res.L)} m er tilstrækkelig, så dybere forankring er ikke nødvendig.`,
+        ),
+      );
+    if (res.tilstand === 'dybere') {
+      blokke.push(
+        {
+          type: 'figur',
+          fil: fil('dybere-forankring', dybForankringSvg(rg, input, res)),
+          bredde_mm: 118,
+        },
+        {
+          type: 'resultat',
+          tekst: dele('L_{geonet}: der armeres med ønsket længde'),
+          vaerdi: `${tal(res.L)} m på hver side (med omslag)`,
+        },
+        {
+          type: 'resultat',
+          tekst: dele('Nødvendig dybde til nederste netlag h_{bund}'),
+          vaerdi: `${tal(res.hBund)} m`,
+        },
+      );
+      if (res.underRoerbund > 0)
+        blokke.push({ type: 'advarsel', tekst: dele(dybUnderRoerbund(res.underRoerbund)) });
+      for (const { titel, raekker } of dybGrupper(rg, input, res, kort))
         blokke.push(
-          tekst(
-            `Løsningen »Med omslag, én ledning« giver L_{geonet} = ${tal(C.L)} m pr. side med forankring ved rørmidten. Den angivne længde på ${tal(res.L)} m er tilstrækkelig, så dybere forankring er ikke nødvendig.`,
+          h3(titel),
+          ...raekker.map((m) =>
+            regning({ ...m, detalje: m.detalje?.replace(/^fra kort (\d)$/, 'fra afsnit $1') }),
           ),
         );
-      if (res.tilstand === 'dybere') {
-        blokke.push(
-          {
-            type: 'figur',
-            fil: fil('dybere-forankring', dybForankringSvg(r, input, res)),
-            bredde_mm: 118,
-          },
-          {
-            type: 'resultat',
-            tekst: dele('L_{geonet}: der armeres med ønsket længde'),
-            vaerdi: `${tal(res.L)} m på hver side (med omslag)`,
-          },
-          {
-            type: 'resultat',
-            tekst: dele('Nødvendig dybde til nederste netlag h_{bund}'),
-            vaerdi: `${tal(res.hBund)} m`,
-          },
-        );
-        if (res.underRoerbund > 0)
-          blokke.push({ type: 'advarsel', tekst: dele(dybUnderRoerbund(res.underRoerbund)) });
-        for (const { titel, raekker } of dybGrupper(r, input, res))
-          blokke.push(
-            h3(titel),
-            ...raekker.map((m) =>
-              regning({ ...m, detalje: m.detalje === 'fra kort 7' ? 'fra afsnit 7' : m.detalje }),
-            ),
-          );
-      }
-      nyt('8. Dybere forankring ved begrænset plads', blokke, { nySide: true });
     }
+    nyt('9. Dybere forankring ved begrænset plads', blokke, { nySide: true });
   }
 
   const personer = [o.sagsbehandler, o.kontrollant].map(personLinjer).filter((p) => p.length > 0);
