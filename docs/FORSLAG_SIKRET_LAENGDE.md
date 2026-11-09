@@ -18,9 +18,10 @@ Beregningen er ikke i regnearket. Den er kort 8, og den dybere forankring er fly
 |---|---|
 | L_rør | Rørets samlede længde fra ende til ende, inkl. de afrundede ender, m |
 | L_ende,1, L_ende,2 | Vandret udstrækning af hver afrundet ende, m. 0, 1 eller 2 ender. |
-| d_g,1, d_g,2 | Bredde langs røret af hver gennemføring, regnet som diameter, m. 0, 1 eller 2 gennemføringer. |
+| d_g,1, d_g,2 | Bredde langs røret af hver gennemføring, m. For en cirkulær gennemføring er det diameteren. 0, 1 eller 2 gennemføringer. |
+| b_g,1, b_g,2 | Bredde på tværs af røret af hver rektangulær gennemføring, m. |
 
-Hver ende og hver gennemføring angives for sig (beslutning 5b). Symbolet a er ikke brugt, fordi den avancerede beregning bruger a = T₃ − T₂.
+Hver ende og hver gennemføring angives for sig (beslutning 5b). Hver gennemføring er cirkulær eller rektangulær (brugerens ønske 9. november 2026). Symbolet a er ikke brugt, fordi den avancerede beregning bruger a = T₃ − T₂.
 
 ### 2.2 Sikret længde
 
@@ -34,13 +35,14 @@ O_d og B_d er værdierne pr. meter fra kort 5. Ved gennemføringerne er jorden g
 
     L_ballast = L_rør − Σd_g
     h_g      = max(0; h₁ − T₂)                       gennemføringens hulrum under GVS
-    ΔO_g,i   = π/4 · d_g,i² · h_g · γ_w · γ_f         opdrift af hulrummet
+    A_g,i    = π/4 · d_g,i²  (cirkulær)  eller  d_g,i · b_g,i  (rektangulær)
+    ΔO_g,i   = A_g,i · h_g · γ_w · γ_f                opdrift af hulrummet
     O_d,tot  = O_d · L_rør + ΣΔO_g,i
     B_d,tot  = B_d · L_ballast
     S₁       = B_d,tot/O_d,tot
 
 - Enderne regnes med fuldt tværsnit i hele længden. En afrundet ende fortrænger mindre vand og har mere fyld over sig end en cylinder med samme længde, så antagelsen er på den sikre side (beslutning 3a). Det står i kortet og i rapporten.
-- Gennemføringens hulrum giver opdrift fra rørtoppen op til GVS (beslutning 4b). Standardberegningen regner med GVS i terræn, så h_g = h₁.
+- Gennemføringen regnes tom og tæt, og hulrummet giver opdrift fra rørtoppen op til GVS med sit cirkulære eller rektangulære tværsnit (beslutning 4b). Ballasten fjernes i rørets fulde bredde over d_g uanset formen. Standardberegningen regner med GVS i terræn, så h_g = h₁.
 - Ingen ballast i gennemføringernes bredde. B_d indeholder rørets egenvægt, så egenvægten i gennemføringernes bredde regnes heller ikke med. Det er på den sikre side.
 - Gennemføringens egenvægt medregnes ikke.
 - Rørets egenvægt i kort 4 er i kg/m. Ved en tank er det den samlede vægt divideret med L_rør.
@@ -99,7 +101,7 @@ Til sammenligning gav forslaget, hvor gennemføringen kun fortrængte en cylinde
 Kortet hedder »Beregning med reduktion for gennemføringer« (beslutning 1) og findes kun i avanceret beregning (beslutning 2a). Opbygningen følger kort 7 og 9:
 
 - Indledning og afkrydsningen »Beregn med reduktion for ender og gennemføringer«. Felterne er låst, indtil der er sat kryds.
-- Felterne L_rør, »Antal afrundede ender« 0–2 og »Antal gennemføringer« 0–2 som knaprækker og et felt for hver valgt ende og gennemføring. Værdier for fravalgte ender og gennemføringer gemmes.
+- Felterne L_rør, »Antal afrundede ender« 0–2 og »Antal gennemføringer« 0–2 som knaprækker og et felt for hver valgt ende. Hver gennemføring har knaprækken »Cirkulær | Rektangulær« og feltet for diameteren d_g eller, for en rektangulær, felterne for bredden langs røret d_g og på tværs b_g. Værdier for fravalgte ender og gennemføringer gemmes, og ældre gemte beregninger har cirkulære gennemføringer.
 - Et målsat længdesnit: terræn, røret med afrundede ender som halve ellipser, gennemføringerne fra rørtop til terræn og geonettet over de sikrede stykker. Målkæden viser hver ende, hver gennemføring og de sikrede stykker; L_rør står nederst. Gennemføringerne tegnes med lige store sikrede stykker imellem.
 - Fliserne »Sikret længde L_sikret«, »Kontrol uden geonet S₁«, »Restopdrift F_op,d,s« og »Valgt geonet« med P_d/F_op,d,s.
 - Forudsætningerne som punktliste, herunder at enderne er regnet på den sikre side.

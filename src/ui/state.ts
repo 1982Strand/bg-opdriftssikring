@@ -23,6 +23,7 @@ export interface RapportOplysninger {
   /** Dybere forankring medtages som afsnit 9; vælges på rapportsiden. */
   dybForankring: boolean;
 }
+export type GennemfoeringForm = 'cirkulaer' | 'rektangulaer';
 export interface Session {
   inddata: {
     d: number;
@@ -54,8 +55,12 @@ export interface Session {
     ender: [number, number];
     /** Antal gennemføringer, 0–2. Værdierne for ubrugte gennemføringer gemmes. */
     antalGennemfoeringer: number;
-    /** Hver gennemførings bredde langs røret, m. */
+    /** Hver gennemførings bredde langs røret, m. For en cirkulær gennemføring er det diameteren. */
     gennemfoeringer: [number, number];
+    /** Hver gennemførings form. */
+    gennemfoeringForm: [GennemfoeringForm, GennemfoeringForm];
+    /** Hver rektangulær gennemførings bredde på tværs af røret, m. */
+    gennemfoeringTvaers: [number, number];
   };
   konsekvensklasse: Konsekvensklasse;
   /** Avanceret beregning (docs/FORSLAG_K-05.md); ellers regnes som regnearket. */
@@ -97,6 +102,8 @@ export const standardSession = (): Session => ({
     ender: [0.6, 0.6],
     antalGennemfoeringer: 1,
     gennemfoeringer: [0.8, 0.8],
+    gennemfoeringForm: ['cirkulaer', 'cirkulaer'],
+    gennemfoeringTvaers: [0.8, 0.8],
   },
   konsekvensklasse: 'CC2',
   avanceret: false,
@@ -133,11 +140,15 @@ export function tilReduktionInput(s: Session): ReduktionInput {
     Lroer: i.reduktionLroer,
     ender: i.ender.slice(0, i.antalEnder),
     gennemfoeringer: i.gennemfoeringer.slice(0, i.antalGennemfoeringer),
+    gennemfoeringTvaers: i.gennemfoeringForm
+      .slice(0, i.antalGennemfoeringer)
+      .map((f, n) => (f === 'rektangulaer' ? i.gennemfoeringTvaers[n] : null)),
   };
 }
 const num = (v: unknown, d: number, min = -Infinity, max = Infinity) =>
   typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max ? v : d;
 const tekst = (v: unknown) => (typeof v === 'string' ? v : '');
+const form = (v: unknown): GennemfoeringForm => (v === 'rektangulaer' ? v : 'cirkulaer');
 const antal = (v: unknown, d: number) => (v === 0 || v === 1 || v === 2 ? v : d);
 const par = (v: unknown, d: [number, number]): [number, number] =>
   Array.isArray(v) ? [num(v[0], d[0], 0), num(v[1], d[1], 0)] : d;
@@ -217,6 +228,9 @@ export function parseSession(raw: string): { session: Session; error: boolean; m
             standard.inddata.antalGennemfoeringer,
           ),
           gennemfoeringer: par(i.gennemfoeringer, standard.inddata.gennemfoeringer),
+          // Beregninger gemt før formvalget indlæses med cirkulære gennemføringer.
+          gennemfoeringForm: [form(i.gennemfoeringForm?.[0]), form(i.gennemfoeringForm?.[1])],
+          gennemfoeringTvaers: par(i.gennemfoeringTvaers, standard.inddata.gennemfoeringTvaers),
         },
         // CC3 kan kun vælges i avanceret beregning; ellers indlæses CC2.
         konsekvensklasse: x.konsekvensklasse === 'CC3' && x.avanceret === true ? 'CC3' : 'CC2',

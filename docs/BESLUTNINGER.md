@@ -1054,3 +1054,17 @@ Claude spurgte, om kontroltallene og tolkningen af »ingen ballast« kunne godke
 
 - Kontroltallene i `tests/cases/reduktion.json` er godkendt og er nu appens kontrolgrundlag for kort 8.
 - Der regnes ingen ballast, heller ikke rørets egenvægt, i gennemføringernes bredde.
+
+## 9. november 2026 — rektangulære gennemføringer (K-29)
+
+Brugeren spurgte, om opdriften af gennemføringen kun regnes som et cirkulært rør op til terræn. Claude bekræftede det og forklarede, at et cirkulært areal giver for lille opdrift ved en firkantet brønd, fordi arealet er 27 % mindre. Claude spurgte: »Skal gennemføringerne også kunne angives som rektangulære?« Brugerens svar: »Ja, tilføj form«.
+
+- Hver gennemføring er cirkulær eller rektangulær.
+- En cirkulær har diameteren d_g; en rektangulær har bredden d_g langs røret og b_g på tværs. Opdriften af hulrummet regnes med π/4 · d_g² eller d_g · b_g.
+- Den sikrede længde og ballasten bruger fortsat d_g langs røret.
+
+Valgt af Claude og kan ændres:
+- Formen vælges med knaprækken »Cirkulær | Rektangulær« for hver gennemføring. Feltet hedder »diameter d_g« for en cirkulær og »bredde langs røret d_g« for en rektangulær; feltet »bredde på tværs b_g« vises kun for en rektangulær.
+- Standarden og ældre gemte beregninger er cirkulære. Bredden på tværs har standardværdien 0,80 m.
+- Længdesnittet er uændret, fordi formen ikke ses fra siden.
+- Den rektangulære gennemføring er kontrolleret med et facit i `tests/reduktion.test.ts` og ikke med en ny kontrolcase i `tests/cases/reduktion.json`.

@@ -97,6 +97,33 @@ test('den sikrede længde skal være større end 0 m, og hver ende og gennemfør
   );
 });
 
+test('en rektangulær gennemføring giver opdrift af d_g · b_g og fjerner ballast i bredden d_g', () => {
+  // Kontrolcasen for tanken på 10 m med en rektangulær gennemføring på 0,80 m langs og 1,00 m på
+  // tværs af røret: ΔO_g = 0,80 · 1,00 · 1,50 · 10 · 1,10 = 13,20 kN. Regnet uden motoren.
+  const input = motorInput(2.5, 1.5, 0);
+  const red = { Lroer: 10, ender: [0.6, 0.6], gennemfoeringer: [0.8] };
+  const res = reduktion(input, { ...red, gennemfoeringTvaers: [1] });
+  assert.ok(res.ok);
+  const x = res.resultat;
+  assert.equal(x.gennemfoeringer[0].form, 'rektangulaer');
+  naer(x.gennemfoeringer[0].O, 13.2, 'ΔO_g');
+  naer(x.Otot, 553.1612373357458, 'Otot');
+  naer(x.Btot, 243.19521885231381, 'Btot');
+  naer(x.r.Fopdrift, 38.745752310429, 'Fs');
+  naer(x.r.K, 40.683039925950446, 'K');
+  // null betyder cirkulær som uden formvalg.
+  const cirkulaer = reduktion(input, { ...red, gennemfoeringTvaers: [null] });
+  assert.ok(cirkulaer.ok);
+  assert.equal(cirkulaer.resultat.gennemfoeringer[0].form, 'cirkulaer');
+  naer(cirkulaer.resultat.Otot, 548.2550419412228, 'Otot cirkulær');
+  const fejl = reduktion(input, { ...red, gennemfoeringTvaers: [0] });
+  assert.ok(!fejl.ok);
+  assert.deepEqual(
+    fejl.fejl.map((f) => f.felt),
+    ['gennemfoering-tvaers-0'],
+  );
+});
+
 test('S₁ ≥ 1 pr. meter, men under 1 for hele røret, når gennemføringen fjerner ballast', () => {
   const input = motorInput(1, 1.5, 0);
   const b = beregnOpdrift(input);

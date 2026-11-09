@@ -88,7 +88,10 @@ test('reduktionen indlæses slået fra i ældre beregninger, og kun de valgte en
     Lroer: 10,
     ender: [0.6, 0.6],
     gennemfoeringer: [0.8],
+    gennemfoeringTvaers: [null],
   });
+  // Beregninger gemt før formvalget har cirkulære gennemføringer.
+  assert.deepEqual(gammel.inddata.gennemfoeringForm, ['cirkulaer', 'cirkulaer']);
   const ny = parseSession(
     JSON.stringify({
       inddata: {
@@ -98,11 +101,19 @@ test('reduktionen indlæses slået fra i ældre beregninger, og kun de valgte en
         ender: [0.9, 0.7],
         antalGennemfoeringer: 3,
         gennemfoeringer: [0.6, -1],
+        gennemfoeringForm: ['rektangulaer', 'trekant'],
+        gennemfoeringTvaers: [1.2, 0.5],
       },
     }),
   ).session;
   // Et ugyldigt antal giver standardværdien; værdierne for ubrugte ender gemmes.
-  assert.deepEqual(tilReduktionInput(ny), { Lroer: 12, ender: [0.9], gennemfoeringer: [0.6] });
+  assert.deepEqual(tilReduktionInput(ny), {
+    Lroer: 12,
+    ender: [0.9],
+    gennemfoeringer: [0.6],
+    gennemfoeringTvaers: [1.2],
+  });
+  assert.deepEqual(ny.inddata.gennemfoeringForm, ['rektangulaer', 'cirkulaer']);
   assert.deepEqual(ny.inddata.ender, [0.9, 0.7]);
   assert.deepEqual(ny.inddata.gennemfoeringer, [0.6, 0.8]);
 });

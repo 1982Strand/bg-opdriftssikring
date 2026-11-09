@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { beregnOpdrift, type GvsZone, type OpdriftResultat, type Status } from '../engine/opdrift';
@@ -487,26 +487,74 @@ function ReduktionKort({
       }}
     />
   );
-  const gennemfoering = (n: number) => (
-    <SettingField
-      key={`gennemfoering-${n}`}
-      field={{
-        key: `input-gennemfoering-${n}`,
-        label: `Gennemføring ${n + 1}, bredde d_{g,${n + 1}} (m)`,
-        kind: 'number',
-        min: 0,
-        step: 0.01,
-      }}
-      disabled={!aktiv}
-      value={i.gennemfoeringer[n]}
-      error={fejl(`gennemfoering-${n}`)}
-      change={(v) => {
-        const gennemfoeringer: [number, number] = [...i.gennemfoeringer];
-        gennemfoeringer[n] = Number(v);
-        saet({ gennemfoeringer });
-      }}
-    />
-  );
+  // Hver gennemføring er cirkulær med diameteren d_g eller rektangulær med bredden d_g langs røret og
+  // b_g på tværs (beslutning 9. november 2026).
+  const gennemfoering = (n: number) => {
+    const rektangulaer = i.gennemfoeringForm[n] === 'rektangulaer';
+    return (
+      <Fragment key={`gennemfoering-${n}`}>
+        <SettingField
+          field={{
+            key: `input-gennemfoering-form-${n}`,
+            label: `Gennemføring ${n + 1}, form`,
+            kind: 'radio',
+            segmented: true,
+            options: [
+              { value: 'cirkulaer', label: 'Cirkulær' },
+              { value: 'rektangulaer', label: 'Rektangulær' },
+            ],
+          }}
+          disabled={!aktiv}
+          value={i.gennemfoeringForm[n]}
+          change={(v) => {
+            const gennemfoeringForm: Session['inddata']['gennemfoeringForm'] = [
+              ...i.gennemfoeringForm,
+            ];
+            gennemfoeringForm[n] = v === 'rektangulaer' ? 'rektangulaer' : 'cirkulaer';
+            saet({ gennemfoeringForm });
+          }}
+        />
+        <SettingField
+          field={{
+            key: `input-gennemfoering-${n}`,
+            label: rektangulaer
+              ? `Gennemføring ${n + 1}, bredde langs røret d_{g,${n + 1}} (m)`
+              : `Gennemføring ${n + 1}, diameter d_{g,${n + 1}} (m)`,
+            kind: 'number',
+            min: 0,
+            step: 0.01,
+          }}
+          disabled={!aktiv}
+          value={i.gennemfoeringer[n]}
+          error={fejl(`gennemfoering-${n}`)}
+          change={(v) => {
+            const gennemfoeringer: [number, number] = [...i.gennemfoeringer];
+            gennemfoeringer[n] = Number(v);
+            saet({ gennemfoeringer });
+          }}
+        />
+        {rektangulaer && (
+          <SettingField
+            field={{
+              key: `input-gennemfoering-tvaers-${n}`,
+              label: `Gennemføring ${n + 1}, bredde på tværs b_{g,${n + 1}} (m)`,
+              kind: 'number',
+              min: 0,
+              step: 0.01,
+            }}
+            disabled={!aktiv}
+            value={i.gennemfoeringTvaers[n]}
+            error={fejl(`gennemfoering-tvaers-${n}`)}
+            change={(v) => {
+              const gennemfoeringTvaers: [number, number] = [...i.gennemfoeringTvaers];
+              gennemfoeringTvaers[n] = Number(v);
+              saet({ gennemfoeringTvaers });
+            }}
+          />
+        )}
+      </Fragment>
+    );
+  };
   return (
     <>
       <p className="calc-note">{reduktionIndledning}</p>

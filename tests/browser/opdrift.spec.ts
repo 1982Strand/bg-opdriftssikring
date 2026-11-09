@@ -580,12 +580,24 @@ test('beregning med reduktion for gennemføringer findes kun i avanceret beregni
   // To gennemføringer og én ende; for lang reduktion giver en feltfejl.
   await kort.getByRole('radio', { name: '1' }).first().click();
   await kort.getByRole('radio', { name: '2' }).nth(1).click();
-  await saet(page, 'Gennemføring 2, bredde dg,2 (m)', '1');
+  await saet(page, 'Gennemføring 2, diameter dg,2 (m)', '1');
   await saet(page, 'Ende 1, vandret udstrækning Lende,1 (m)', '0.9');
   await saet(page, laengde, '12');
-  await saet(page, 'Gennemføring 1, bredde dg,1 (m)', '0.6');
+  await saet(page, 'Gennemføring 1, diameter dg,1 (m)', '0.6');
   await expect(fliseI('Sikret længde').locator('strong')).toHaveText('9,50');
   await expect(fliseI('Restopdrift').locator('strong')).toHaveText('41,12');
+
+  // En rektangulær gennemføring har en bredde på tværs og regnes med d_g · b_g.
+  await kort.getByRole('radio', { name: 'Rektangulær' }).first().click();
+  await expect(
+    kort.getByRole('spinbutton', { name: 'Gennemføring 1, bredde langs røret dg,1 (m)' }),
+  ).toHaveValue('0.6');
+  await saet(page, 'Gennemføring 1, bredde på tværs bg,1 (m)', '1.2');
+  await mellemregning(kort, 'Opdrift af gennemføringens hulrum gennemføring 1, rektangulær', [
+    'ΔOg,1 = dg,1 · bg,1 · hg · γw · γf = 0,60 · 1,20 · 1,50 · 10 · 1,10',
+    '11,88 kN',
+  ]);
+  await expect(fliseI('Sikret længde').locator('strong')).toHaveText('9,50');
   await saet(page, laengde, '2');
   await expect(kort.getByText(/Den sikrede længde Lsikret = Lrør − ΣLende − Σdg/)).toBeVisible();
   await expect(fliseI('Sikret længde')).toHaveCount(0);

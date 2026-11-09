@@ -697,11 +697,26 @@ export function rapportDokument(
             vaerdi: tal(e),
             enhed: dele('m'),
           })),
-          ...red.gennemfoeringer.map((g, n) => ({
-            tekst: dele(`Gennemføring ${n + 1}, d_{g,${n + 1}} =`),
-            vaerdi: tal(g.d),
-            enhed: dele('m'),
-          })),
+          ...red.gennemfoeringer.flatMap((g, n) => [
+            {
+              tekst: dele(
+                g.b === null
+                  ? `Gennemføring ${n + 1}, cirkulær, diameter d_{g,${n + 1}} =`
+                  : `Gennemføring ${n + 1}, rektangulær, langs røret d_{g,${n + 1}} =`,
+              ),
+              vaerdi: tal(g.d),
+              enhed: dele('m'),
+            },
+            ...(g.b === null
+              ? []
+              : [
+                  {
+                    tekst: dele(`Gennemføring ${n + 1}, på tværs af røret b_{g,${n + 1}} =`),
+                    vaerdi: tal(g.b),
+                    enhed: dele('m'),
+                  },
+                ]),
+          ]),
         ],
       },
       { type: 'figur', fil: fil('laengdesnit', laengdesnitSvg(input, red)), bredde_mm: 150 },
