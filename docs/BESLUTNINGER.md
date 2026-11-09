@@ -1113,3 +1113,22 @@ Brugerens ønske: »Er det muligt, at gøre figuren i afsnit 4 en smule mindre i
 Valgt af Claude og kan ændres:
 - Inddata står på én linje for længde og ender og én linje pr. gennemføring, så felterne ikke bliver trange. Enderne hedder »Ende 1, L_ende,1« som på skærmen.
 - Afsnittet om egenvægt og fyldmateriale holdes samlet, så tabellen aldrig står adskilt fra overskriften. Er der ikke plads, flyttes hele afsnittet til næste side.
+
+## 10. november 2026 — afsnittet Udførsel
+
+Brugerens ønske: »Der skal tilføjes et afsnit til sidst: 'Udførsel' Der skal stå En kort beskrivelse af hvordan geonettet monteres og etableringen laves i det hele taget. Fx der ikke laves overlap på geonettene i opdriftssikring, samt at nettet standser ved rørenden. og at det er vigtigt at overholde minimumskravene til rumvægten på fyldmaterialer til ballast, og at entreprenøren bør lave fotodokumentation for udført arbejde. Og at der bare skæres ud i nettet til rørgennemføringer, så længe gennemføringen er under 40cm bred.«
+
+- Siden og rapporten har et sidste kort og afsnit »Udførsel« med punkterne:
+  - Røret lægges, og der fyldes op med fyldmateriale til rørmidten, hvor geonettet forankres.
+  - Geonettet rulles ud på tværs af ledningen, føres over røret og lægges ud til begge sider med den forankringslængde L_geonet, der er angivet for den valgte løsning.
+  - Ved omslag slås geonettet tilbage med 0,2 m fyld mellem det nederste og det øverste netlag (kun når omslag er muligt; afstanden følger beregningen).
+  - Der laves ikke overlap mellem geonettene.
+  - Geonettet stopper ved rørenden.
+  - Ved rørgennemføringer, der er under 0,40 m brede, skæres der hul i geonettet til gennemføringen.
+  - Fyldmaterialet til ballast skal mindst have den rumvægt, der er regnet med: γ_våd = 17,00 kN/m³ (og γ_tør over GVS, når GVS ligger under terræn i avanceret beregning). Det er vigtigt, at kravet overholdes, da sikkerheden mod opdrift ellers er mindre end beregnet.
+  - Entreprenøren bør fotodokumentere det udførte arbejde, før geonettet dækkes til.
+
+Valgt af Claude og afventer brugerens godkendelse:
+- De tre første punkter om rækkefølgen, forankringen og omslaget er skrevet ud fra beregningens model. Begrundelsen for rumvægten og »før geonettet dækkes til« er tilføjet.
+- Kortet vises altid og nedtones med noten, når opdriftssikring ikke er nødvendig. Rapporten medtager afsnittet kun, når opdriftssikring er nødvendig.
+- Kortet er nummereret efter det sidste kort på siden, og afsnittet efter det sidste afsnit i rapporten. Vælges dybere forankring ikke til rapporten, har afsnittet derfor et lavere nummer i rapporten end kortet i avanceret beregning.

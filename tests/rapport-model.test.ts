@@ -50,6 +50,7 @@ test('fravalgte løsninger udelades, og resten nummereres fortløbende', () => {
   assert.deepEqual(titler(model).slice(7), [
     '7.1 Med omslag, én ledning',
     '7.2 Uden omslag, to ledninger',
+    '8. Udførsel',
   ]);
 });
 
@@ -115,6 +116,7 @@ test('med reduktion er afsnit 4 længde, ender og gennemføringer, og de følgen
     '8.3 Uden omslag, to ledninger',
     '8.4 Med omslag, to ledninger',
     '9. Dybere forankring ved begrænset plads',
+    '10. Udførsel',
   ]);
   // Kontrolcase 1: O_d,s = 68,53, B_d,s = 30,40, F_op,d,s = 38,13 og K_s = 40,04 kN/m.
   for (const tal of ['548,26', '243,20', '68,53', '30,40', '38,13', '40,04', '69,08', 'X-GRID 110'])
@@ -124,6 +126,27 @@ test('med reduktion er afsnit 4 længde, ender og gennemføringer, og de følgen
   assert.ok(tekst.includes('regnet med reduktion for ender og gennemføringer'));
   // Uden reduktion er der intet afsnit om længde, ender og gennemføringer.
   assert.ok(!dokument().tekst.includes('Længde, ender og gennemføringer'));
+});
+
+test('udførelsen er sidste afsnit, når opdriftssikring er nødvendig', () => {
+  const { model, tekst } = dokument();
+  assert.equal(titler(model).at(-1), '8. Udførsel');
+  for (const del of [
+    'Der laves ikke overlap mellem geonettene.',
+    'Geonettet stopper ved rørenden.',
+    'under 0,40 m brede, skæres der hul i geonettet',
+    'fotodokumentere det udførte arbejde',
+  ])
+    assert.ok(tekst.includes(del), del);
+  // Rumvægten er den, der er regnet med; den tørre kun med GVS under terræn i avanceret beregning.
+  assert.ok(tekst.includes('17,00 kN/m³. Det er vigtigt'));
+  const avanceret = dokument((s) => {
+    s.avanceret = true;
+    s.inddata.gvsITerraen = false;
+    s.inddata.gvs = 0.5;
+    s.inddata.gamma = 18;
+  }).tekst;
+  assert.ok(avanceret.includes('18,00 kN/m³ under GVS og γ'));
 });
 
 test('noten om at slå geonettet tilbage følger afstanden i kort 7 og kræver omslag', () => {

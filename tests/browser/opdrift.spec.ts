@@ -238,12 +238,12 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
   await iTerraen.click();
   await expect(gvsFelt).toBeEnabled();
   await saet(page, 'GVS under terræn (m)', '2');
-  // Kort 6, 7 og 8 (avanceret beregning) har samme note, og kort 8 er låst.
+  // Kort 6, 7, 8 (avanceret beregning) og 9 Udførsel har samme note, og kort 8 er låst.
   await expect(
     page.getByText(
       'S₁ ≥ 1,0: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.',
     ),
-  ).toHaveCount(3);
+  ).toHaveCount(4);
   await expect(
     page.getByRole('checkbox', { name: 'Beregn nødvendig forankringsdybde' }),
   ).toBeDisabled();
@@ -404,6 +404,7 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
     '5 Opdrift og stabiliserende ballast',
     '6 Geonet',
     '7 Forankring',
+    '8 Udførsel',
   ]);
   await expect(page.getByRole('heading', { name: 'Projekteringsansvar' })).toBeVisible();
   await expect(page.getByText(/Opdriften regnes med/)).toHaveCount(0);

@@ -893,3 +893,23 @@ export function kontrolUdenGeonetHeleRoeret(red: ReduktionResultat): Mellemregni
         hoved: true,
       };
 }
+
+/** Det sidste afsnit om udførelsen (beslutning 10. november 2026). Rumvægtene og afstanden mellem
+ * netlagene følger beregningen. */
+export function udfoerselPunkter(input: OpdriftInput, r: OpdriftResultat): string[] {
+  const torOverGvs = r.gvsZone !== null && input.gvs > 0;
+  return [
+    'Røret lægges, og der fyldes op med fyldmateriale til rørmidten, hvor geonettet forankres.',
+    'Geonettet rulles ud på tværs af ledningen, føres over røret og lægges ud til begge sider med den forankringslængde L_{geonet}, der er angivet for den valgte løsning.',
+    ...(r.losninger.C
+      ? [
+          `Ved omslag slås geonettet tilbage med ${talKort(r.omslagAfstand)} m fyld mellem det nederste og det øverste netlag.`,
+        ]
+      : []),
+    'Der laves ikke overlap mellem geonettene.',
+    'Geonettet stopper ved rørenden.',
+    'Ved rørgennemføringer, der er under 0,40 m brede, skæres der hul i geonettet til gennemføringen.',
+    `Fyldmaterialet til ballast skal mindst have den rumvægt, der er regnet med: γ_{våd} = ${tal(input.gamma)} kN/m³${torOverGvs ? ` under GVS og γ_{tør} = ${tal(input.gammaTor)} kN/m³ over GVS` : ''}. Det er vigtigt, at kravet overholdes, da sikkerheden mod opdrift ellers er mindre end beregnet.`,
+    'Entreprenøren bør fotodokumentere det udførte arbejde, før geonettet dækkes til.',
+  ];
+}
