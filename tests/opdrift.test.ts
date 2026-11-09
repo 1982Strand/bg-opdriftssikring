@@ -119,14 +119,15 @@ test('det automatiske valg opfylder altid kravet 1,01', () => {
 
 test('kontrolpunkter følger udvalgte Excel-cases', () => {
   const forventninger: [string, string[]][] = [
-    ['Case 1:', ['K-08']],
-    ['Case 2: Ø4000', ['K-08']],
-    ['K-02: grænsen 78,9', ['K-08']],
-    ['K-03: bånd for X-GRID 35', ['K-08']],
-    ['K-03: bånd for X-GRID 80', ['K-08']],
-    ['K-03: bånd for X-GRID 150', ['K-08']],
-    ['Over grænsen: kontakt leverandør', ['K-08']],
-    ['GVS i 1,0 m', ['K-08']],
+    // K-08 vises ikke som kontrolpunkt (beslutning 9. november 2026).
+    ['Case 1:', []],
+    ['Case 2: Ø4000', []],
+    ['K-02: grænsen 78,9', []],
+    ['K-03: bånd for X-GRID 35', []],
+    ['K-03: bånd for X-GRID 80', []],
+    ['K-03: bånd for X-GRID 150', []],
+    ['Over grænsen: kontakt leverandør', []],
+    ['GVS i 1,0 m', []],
     ['GVS i 1,5 m', ['K-12']],
     ['GVS i 2,0 m', ['K-05', 'K-12']],
     ['GVS i 4,5 m', ['K-05', 'K-12']],
@@ -157,7 +158,6 @@ test('omslag er ikke muligt, når det øverste lag ville ligge over terræn', ()
   assert.equal(lav.resultat.losninger.C, null);
   assert.equal(lav.resultat.losninger.D, null);
   assert.ok(lav.resultat.losninger.A.L > 0 && lav.resultat.losninger.B.L > 0);
-  assert.equal(lav.resultat.kontrolpunkter.includes('K-08'), false);
   // h_top = 0 er heller ikke muligt; lige under er det muligt.
   const graense = beregnOpdrift({ ...basis, d: 0.4, h1: 0 });
   assert.ok(graense.ok);

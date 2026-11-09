@@ -18,7 +18,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-05 | GVS under rørtoppen | Opdrift og ballast | Afgjort: c) som avanceret beregning; standarden låst til GVS i terræn |
 | K-06 | π = 3,14 | Alle tal (0,05 %) | Afgjort: π |
 | K-07 | g = 9,82 for rørvægt | Ballast (lille) | Afgjort: som arket |
-| K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Afgjort: som arket med kontrolpunkt |
+| K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Afgjort: som arket med note i mellemregningerne |
 | K-09 | Omslag: tillæg på 1,2 m i netlængden | Netlængde | Afgjort: som arket, tillægget nævnes |
 | K-10 | To rør: ingen kontrol, forskellig mellemlængde | Længder, kontrol | Som arket, ingen afklaring nu |
 | K-11 | Kontrollen uden omslag kan ikke give EJ OK | Kontrol | Afgjort: som arket med note |
@@ -208,6 +208,8 @@ Regnes dimensioneringen omvendt med fuld F_top, falder L i case 1 fra 1,36 m til
 **Første version.** Som arket.
 
 **Afgjort 30. oktober 2026.** Kontrollen regnes som arket. Når sikring er nødvendig, viser kontrolpunktet K-08, at kontrollen bruger et større topbidrag end dimensioneringen. Længderne påvirkes ikke, og kontrollen kan ikke give EJ OK (som K-11).
+
+**9. november 2026.** Kontrolpunktet K-08 er fjernet. Mellemregningerne for løsningerne med omslag og for dybere forankring forklarer i stedet, at det er bevidst valgt, at kontrollen medregner det fulde bidrag fra det øverste netlag. Beregningen er uændret.
 
 ## K-09 Omslag: tillæg på 1,2 m i netlængden
 

@@ -436,7 +436,7 @@ function DybResultat({
           <Beregning key={titel} titel={titel} raekker={raekker} />
         ))}
         <p className="calc-note">
-          <Fmt text={kontrolNoter(symboler).medOmslag} />
+          <Fmt text={kontrolNoter(symboler, r.omslagAfstand).medOmslag} />
         </p>
       </Udfold>
     </>
@@ -1288,7 +1288,7 @@ export function Opdriftssikring() {
                 ]}
               />
               <p className="calc-note">
-                <Fmt text={kraftNote(avanceret, sym)} />
+                <Fmt text={kraftNote(avanceret && input.gvs > 0, sym)} />
               </p>
             </Udfold>
             <div className="solutions">

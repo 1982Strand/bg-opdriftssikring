@@ -15,14 +15,8 @@ const tekster = (delnavn: string) => {
   return kontrolpunktTekster(r.resultat);
 };
 
-test('K-08 forklarer, at kontrollen ved omslag viser en større margin end dimensioneringen', () => {
-  assert.deepEqual(tekster('Case 1:'), [
-    {
-      kode: 'K-08',
-      tekst:
-        'Kontrollen ved omslag regner det øverste lag med fuld F_{top} over hele L_{geonet}, mens længden dimensioneres med F_{top}/2 og uden 0,2 m pr. side. Kontrollen viser derfor en større margin end dimensioneringen.',
-    },
-  ]);
+test('kontrollen ved omslag giver intet kontrolpunkt; forklaringen står i mellemregningerne', () => {
+  assert.deepEqual(tekster('Case 1:'), []);
 });
 
 test('GVS under rørtoppen giver K-05 og K-12 i den rækkefølge', () => {
@@ -40,7 +34,7 @@ test('K-12 viser S₁ og den negative F_opdrift', () => {
   );
 });
 
-test('K-08 vises ikke, når sikring ikke er nødvendig', () => {
+test('når sikring ikke er nødvendig, vises kun K-12', () => {
   assert.deepEqual(
     tekster('GVS i 1,5 m').map((k) => k.kode),
     ['K-12'],

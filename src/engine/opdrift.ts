@@ -39,7 +39,7 @@ export interface OpdriftInput {
   omslagAfstand?: number;
 }
 export type Status = 'OK' | 'EJ OK';
-export type Kontrolpunkt = 'K-05' | 'K-08' | 'K-12';
+export type Kontrolpunkt = 'K-05' | 'K-12';
 export interface Inputfejl {
   felt: keyof OpdriftInput;
   tekst: string;
@@ -371,7 +371,7 @@ function sikring(input: OpdriftInput, grundlag: Grundlag, O: number, B: number, 
           }
         : null,
     },
-    kontrolpunkter: kontrolpunkter(input, metode, S1, kontrolC),
+    kontrolpunkter: kontrolpunkter(input, metode, S1),
   } satisfies Partial<OpdriftResultat>;
 }
 
@@ -392,14 +392,13 @@ function kontrolpunkter(
   input: OpdriftInput,
   metode: Beregningsmetode,
   S1: number | null,
-  kontrolC: number | null,
 ): Kontrolpunkt[] {
   const k: Kontrolpunkt[] = [];
   // Den avancerede beregning regner GVS under rørtoppen korrekt, så K-05 gælder kun standarden.
   // Siden låser standardberegningen til GVS i terræn, så K-05 opstår kun ved direkte brug af motoren.
   if (metode === 'standard' && input.gvs > input.h1) k.push('K-05');
-  // Kun når sikring er nødvendig; ellers vises tallene til orientering, og K-12 gælder.
-  if (kontrolC !== null && S1 !== null && S1 < krav.S1) k.push('K-08');
+  // K-08 vises ikke som kontrolpunkt; forskellen er forklaret i mellemregningerne for løsningerne
+  // med omslag (beslutning 9. november 2026).
   if (S1 !== null && S1 >= krav.S1) k.push('K-12');
   return k;
 }
