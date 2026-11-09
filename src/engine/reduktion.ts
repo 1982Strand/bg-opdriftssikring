@@ -26,20 +26,26 @@ export interface ReduktionInput {
   Lroer: number;
   /** Vandret udstrækning af hver afrundet ende, m (0–2 stk.). */
   ender: number[];
-  /** Bredde langs røret af hver gennemføring, m (0–2 stk.). */
+  /** Bredde langs røret af hver gennemføring, m (0–2 stk.). For en cirkulær gennemføring er det
+   * diameteren. */
   gennemfoeringer: number[];
+  /** Bredde på tværs af røret for hver rektangulær gennemføring, m. null eller mangler: cirkulær. */
+  gennemfoeringTvaers?: (number | null)[];
 }
 
 export interface ReduktionFejl {
-  /** 'Lroer', 'ende-0', 'ende-1', 'gennemfoering-0' eller 'gennemfoering-1'. */
+  /** 'Lroer', 'ende-n', 'gennemfoering-n' eller 'gennemfoering-tvaers-n' (n = 0 eller 1). */
   felt: string;
   tekst: string;
 }
 
 export interface GennemfoeringResultat {
-  /** Bredde langs røret, regnet som diameter, m. */
+  form: 'cirkulaer' | 'rektangulaer';
+  /** Bredde langs røret, m. For en cirkulær gennemføring er det diameteren. */
   d: number;
-  /** Tværsnitsareal π/4 · d², m². */
+  /** Bredde på tværs af røret for en rektangulær gennemføring, m; ellers null. */
+  b: number | null;
+  /** Tværsnitsareal, π/4 · d² eller d · b, m². */
   A: number;
   /** Højden af gennemføringens hulrum under GVS, max(0; h₁ − T₂), m. */
   h: number;
@@ -102,6 +108,12 @@ export function beregnReduktion(
         felt: `gennemfoering-${n}`,
         tekst: `Gennemføringens bredde d_{g,${n + 1}} skal være større end 0 m.`,
       });
+    const b = red.gennemfoeringTvaers?.[n];
+    if (b !== undefined && b !== null && !positiv(b))
+      fejl.push({
+        felt: `gennemfoering-tvaers-${n}`,
+        tekst: `Gennemføringens bredde på tværs b_{g,${n + 1}} skal være større end 0 m.`,
+      });
   });
   if (fejl.length) return { ok: false, fejl };
 
@@ -120,15 +132,23 @@ export function beregnReduktion(
       ],
     };
 
-  // Gennemføringens hulrum fra rørtoppen til terræn giver opdrift under GVS. Standardberegningen
-  // regner med GVS i terræn.
+  // Gennemføringens hulrum fra rørtoppen til terræn giver opdrift under GVS med sit cirkulære eller
+  // rektangulære tværsnit. Standardberegningen regner med GVS i terræn.
   const T2 = r.gvsZone === null ? 0 : input.gvs;
   const h = Math.max(0, input.h1 - T2);
   const gammaF = r.partialkoefficienter.gammaF;
   const ingenOpdrift = r.S1 === null;
-  const gennemfoeringer = red.gennemfoeringer.map((d): GennemfoeringResultat => {
-    const A = (k.pi / 4) * d ** 2;
-    return { d, A, h, O: ingenOpdrift ? 0 : A * h * gammaW * gammaF };
+  const gennemfoeringer = red.gennemfoeringer.map((d, n): GennemfoeringResultat => {
+    const b = red.gennemfoeringTvaers?.[n] ?? null;
+    const A = b === null ? (k.pi / 4) * d ** 2 : d * b;
+    return {
+      form: b === null ? 'cirkulaer' : 'rektangulaer',
+      d,
+      b,
+      A,
+      h,
+      O: ingenOpdrift ? 0 : A * h * gammaW * gammaF,
+    };
   });
 
   // Enderne regnes med fuldt tværsnit, hvilket er på den sikre side. Ved gennemføringerne er

@@ -717,7 +717,7 @@ export const reduktionIndledning =
 
 export const reduktionForudsaetninger = [
   'De afrundede ender regnes med fuldt tværsnit. En afrundet ende fortrænger mindre vand og har mere fyld over sig, så antagelsen er på den sikre side.',
-  'Ved gennemføringerne er jorden gravet væk, så der regnes ingen ballast i deres bredde. Gennemføringens hulrum giver opdrift fra rørtoppen op til GVS. Gennemføringens egenvægt medregnes ikke.',
+  'Ved gennemføringerne er jorden gravet væk, så der regnes ingen ballast i deres bredde. Gennemføringen regnes tom og tæt og giver opdrift fra rørtoppen op til GVS med sit cirkulære eller rektangulære tværsnit. Gennemføringens egenvægt medregnes ikke.',
   'Røret forudsættes stift i længderetningen, så opdriften fra ender og gennemføringer føres til de sikrede stykker. Gennemføringernes placering har ingen betydning for beregningen.',
   'Rørets egenvægt i kort 4 er pr. meter. Ved en tank er det den samlede vægt divideret med L_{rør}.',
 ];
@@ -795,8 +795,11 @@ export function reduktionGrupper(
           },
           ...red.gennemfoeringer.map((g, n) => ({
             forklaring: 'Opdrift af gennemføringens hulrum',
-            detalje: `gennemføring ${n + 1}`,
-            formel: `ΔO_{g,${n + 1}} = π/4 · d_{g,${n + 1}}² · h_{g} · γ_{w} · γ_{f} = π/4 · ${tal(g.d)}² · ${tal(g.h)} · ${tal(standarder.gammaW, 0)} · ${tal(pk.gammaF)}`,
+            detalje: `gennemføring ${n + 1}, ${g.b === null ? 'cirkulær' : 'rektangulær'}`,
+            formel:
+              g.b === null
+                ? `ΔO_{g,${n + 1}} = π/4 · d_{g,${n + 1}}² · h_{g} · γ_{w} · γ_{f} = π/4 · ${tal(g.d)}² · ${tal(g.h)} · ${tal(standarder.gammaW, 0)} · ${tal(pk.gammaF)}`
+                : `ΔO_{g,${n + 1}} = d_{g,${n + 1}} · b_{g,${n + 1}} · h_{g} · γ_{w} · γ_{f} = ${tal(g.d)} · ${tal(g.b)} · ${tal(g.h)} · ${tal(standarder.gammaW, 0)} · ${tal(pk.gammaF)}`,
             resultat: kN(g.O),
           })),
         ]
