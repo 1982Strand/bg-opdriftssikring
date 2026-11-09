@@ -197,8 +197,11 @@
     else if b.type == "lille" { block(below: 2.4mm, text(size: 9pt, fill: graa, tekst(b.tekst))) }
     else if b.type == "h3" { block(sticky: true, above: 4.5mm, below: 1.5mm, text(weight: "bold", tekst(b.tekst))) }
     else if b.type == "punkter" {
-      block(below: 4mm, list(indent: 0mm, body-indent: 3mm, spacing: 1mm, tight: false,
-        ..b.punkter.map(p => list.item(tekst(p)))))
+      let liste = list(indent: 0mm, body-indent: 3mm, spacing: 1mm, tight: false,
+        ..b.punkter.map(p => list.item(tekst(p))))
+      // Små punkter står som note-tekst, fx forudsætningerne for længde, ender og gennemføringer.
+      if b.at("lille", default: false) { block(below: 3mm, text(size: 9pt, fill: graa, liste)) }
+      else { block(below: 4mm, liste) }
     }
     else if b.type == "inddata" {
       block(below: 3mm, grid(columns: (auto,) * b.felter.len(), column-gutter: 7mm, align: horizon,

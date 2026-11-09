@@ -1101,3 +1101,15 @@ Brugerens ønske: »i den avancerede beregning, må du gerne forsimple beregning
 - Tallene er uændrede, fordi den avancerede spændingsmodel giver σ′_v = h · γ′_d, når GVS ligger i terræn.
 
 Valgt af Claude og kan ændres: mellemregningerne for dybere forankring og for spændingen mellem to ledninger er uændrede.
+
+## 9. november 2026 — afsnit 4 og 5 på samme side i rapporten
+
+Brugerens ønske: »Er det muligt, at gøre figuren i afsnit 4 en smule mindre i rapporten, og så måske lave forudsætnigerne i punktform lidt mindre også (feks. den nedtonede grå type, som ses som note-tekst andre steder i rapporten) - for på den måde at afsnit 5 inklusive tabellen, kan være med på 1 side, sammen med afsnit 4?«
+
+- Længdesnittet i afsnit 4 er 110 mm bredt i stedet for 150 mm.
+- Forudsætningerne står som punkter med den lille, grå note-skrift.
+- Med standardværdierne og med to ender og to rektangulære gennemføringer står afsnit 4 og 5 med tabellen på samme side.
+
+Valgt af Claude og kan ændres:
+- Inddata står på én linje for længde og ender og én linje pr. gennemføring, så felterne ikke bliver trange. Enderne hedder »Ende 1, L_ende,1« som på skærmen.
+- Afsnittet om egenvægt og fyldmateriale holdes samlet, så tabellen aldrig står adskilt fra overskriften. Er der ikke plads, flyttes hele afsnittet til næste side.

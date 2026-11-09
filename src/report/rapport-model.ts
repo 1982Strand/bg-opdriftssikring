@@ -63,7 +63,7 @@ export const dele = (s: string): Tekst =>
 
 export type Blok =
   | { type: 'tekst' | 'lille' | 'h3' | 'advarsel'; tekst: Tekst }
-  | { type: 'punkter'; punkter: Tekst[] }
+  | { type: 'punkter'; punkter: Tekst[]; /** Med lille, grå skrift som noter. */ lille?: boolean }
   | { type: 'inddata'; felter: { tekst: Tekst; vaerdi: string; enhed: Tekst }[] }
   | {
       type: 'regning';
@@ -427,6 +427,7 @@ export function rapportDokument(
       '4. Længde, ender og gennemføringer',
       [
         tekst(reduktionIndledning),
+        // Længde og ender på én linje og hver gennemføring på sin egen, så felterne ikke bliver trange.
         {
           type: 'inddata',
           felter: [
@@ -436,93 +437,105 @@ export function rapportDokument(
               enhed: dele('m'),
             },
             ...red.ender.map((e, n) => ({
-              tekst: dele(`Afrundet ende ${n + 1}, L_{ende,${n + 1}} =`),
+              tekst: dele(`Ende ${n + 1}, L_{ende,${n + 1}} =`),
               vaerdi: tal(e),
               enhed: dele('m'),
             })),
-            ...red.gennemfoeringer.flatMap((g, n) => [
-              {
-                tekst: dele(
-                  g.b === null
-                    ? `Gennemføring ${n + 1}, cirkulær, diameter d_{g,${n + 1}} =`
-                    : `Gennemføring ${n + 1}, rektangulær, langs røret d_{g,${n + 1}} =`,
-                ),
-                vaerdi: tal(g.d),
-                enhed: dele('m'),
-              },
-              ...(g.b === null
-                ? []
-                : [
-                    {
-                      tekst: dele(`Gennemføring ${n + 1}, på tværs af røret b_{g,${n + 1}} =`),
-                      vaerdi: tal(g.b),
-                      enhed: dele('m'),
-                    },
-                  ]),
-            ]),
           ],
         },
-        { type: 'figur', fil: fil('laengdesnit', laengdesnitSvg(input, red)), bredde_mm: 150 },
-        { type: 'punkter', punkter: reduktionForudsaetninger.map(dele) },
+        ...red.gennemfoeringer.map((g, n): Blok => ({
+          type: 'inddata',
+          felter:
+            g.b === null
+              ? [
+                  {
+                    tekst: dele(`Gennemføring ${n + 1}, cirkulær, diameter d_{g,${n + 1}} =`),
+                    vaerdi: tal(g.d),
+                    enhed: dele('m'),
+                  },
+                ]
+              : [
+                  {
+                    tekst: dele(`Gennemføring ${n + 1}, rektangulær, langs røret d_{g,${n + 1}} =`),
+                    vaerdi: tal(g.d),
+                    enhed: dele('m'),
+                  },
+                  {
+                    tekst: dele(`på tværs af røret b_{g,${n + 1}} =`),
+                    vaerdi: tal(g.b),
+                    enhed: dele('m'),
+                  },
+                ],
+        })),
+        // Figuren og forudsætningerne er mindre, så afsnit 4 og 5 kan stå på samme side.
+        { type: 'figur', fil: fil('laengdesnit', laengdesnitSvg(input, red)), bredde_mm: 110 },
+        { type: 'punkter', punkter: reduktionForudsaetninger.map(dele), lille: true },
         h3('Sikret længde'),
         ...sikretLaengdeRaekker(red).map((m) => regning(m)),
       ],
       { nySide: true },
     );
 
-  nyt(`${nr(4)}. Egenvægt og fyldmateriale`, [
-    tekst('Parametre for fyldmaterialet i de armerede jordzoner. Fyldet skal være friktionsfyld.'),
-    {
-      type: 'vaerditabel',
-      raekker: [
-        {
-          navn: 'Rumvægt, våd',
-          symbolK: dele('γ_{våd}'),
-          vaerdiK: tal(i.gamma),
-          inddata: true,
-          symbolD: dele('γ_{våd,d}'),
-          vaerdiD: tal(r.gammaD),
-          enhed: 'kN/m³',
-        },
-        {
-          navn: 'Rumvægt, tør',
-          symbolK: dele('γ_{tør}'),
-          vaerdiK: tal(i.gammaTor),
-          inddata: true,
-          symbolD: dele('γ_{tør,d}'),
-          vaerdiD: tal(r.gammaTorD),
-          enhed: 'kN/m³',
-        },
-        {
-          navn: 'Effektiv rumvægt under vand',
-          symbolK: dele('γ′ = γ_{våd} − γ_{w}'),
-          vaerdiK: tal(i.gamma - standarder.gammaW),
-          inddata: false,
-          symbolD: dele('γ′_{d} = γ_{våd,d} − γ_{w}'),
-          vaerdiD: tal(r.gammaEffD),
-          enhed: 'kN/m³',
-        },
-        {
-          navn: 'Friktionsvinkel',
-          symbolK: dele('φ_{k}'),
-          vaerdiK: tal(i.phi),
-          inddata: true,
-          symbolD: dele('φ_{d}'),
-          vaerdiD: tal(r.phiD),
-          enhed: '°',
-        },
-        {
-          navn: 'Rørets egenvægt',
-          symbolK: dele('E_{k}'),
-          vaerdiK: tal(i.roervaegt),
-          inddata: true,
-          symbolD: dele('E_{d}'),
-          vaerdiD: tal(r.roervaegtD),
-          enhed: 'kg/m',
-        },
-      ],
-    },
-  ]);
+  // Afsnittet holdes samlet, så tabellen ikke deles fra overskriften.
+  nyt(
+    `${nr(4)}. Egenvægt og fyldmateriale`,
+    [
+      tekst(
+        'Parametre for fyldmaterialet i de armerede jordzoner. Fyldet skal være friktionsfyld.',
+      ),
+      {
+        type: 'vaerditabel',
+        raekker: [
+          {
+            navn: 'Rumvægt, våd',
+            symbolK: dele('γ_{våd}'),
+            vaerdiK: tal(i.gamma),
+            inddata: true,
+            symbolD: dele('γ_{våd,d}'),
+            vaerdiD: tal(r.gammaD),
+            enhed: 'kN/m³',
+          },
+          {
+            navn: 'Rumvægt, tør',
+            symbolK: dele('γ_{tør}'),
+            vaerdiK: tal(i.gammaTor),
+            inddata: true,
+            symbolD: dele('γ_{tør,d}'),
+            vaerdiD: tal(r.gammaTorD),
+            enhed: 'kN/m³',
+          },
+          {
+            navn: 'Effektiv rumvægt under vand',
+            symbolK: dele('γ′ = γ_{våd} − γ_{w}'),
+            vaerdiK: tal(i.gamma - standarder.gammaW),
+            inddata: false,
+            symbolD: dele('γ′_{d} = γ_{våd,d} − γ_{w}'),
+            vaerdiD: tal(r.gammaEffD),
+            enhed: 'kN/m³',
+          },
+          {
+            navn: 'Friktionsvinkel',
+            symbolK: dele('φ_{k}'),
+            vaerdiK: tal(i.phi),
+            inddata: true,
+            symbolD: dele('φ_{d}'),
+            vaerdiD: tal(r.phiD),
+            enhed: '°',
+          },
+          {
+            navn: 'Rørets egenvægt',
+            symbolK: dele('E_{k}'),
+            vaerdiK: tal(i.roervaegt),
+            inddata: true,
+            symbolD: dele('E_{d}'),
+            vaerdiD: tal(r.roervaegtD),
+            enhed: 'kg/m',
+          },
+        ],
+      },
+    ],
+    { samlet: true },
+  );
 
   const arealfigur = opdriftsarealSvg(r, input);
   nyt(
