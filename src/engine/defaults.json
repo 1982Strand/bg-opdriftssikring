@@ -11,7 +11,6 @@
   "faktorMellemRoer": 1.2,
   "omslagAfstand": 0.2,
   "omslagInterval": { "min": 0.2, "max": 0.4 },
-  "netTillaegOmslag": 0.4,
   "krav": { "S1": 1, "geonet": 1.01, "kontrol": 1 },
   "mindstelaengder": {
     "udenOmslag": { "iAlt": 1.0, "prSide": 1.0, "mellemRoer": 0.5 },

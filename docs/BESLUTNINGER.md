@@ -1132,3 +1132,16 @@ Valgt af Claude og godkendt af brugeren samme dag (»Godkendt, push«):
 - De tre første punkter om rækkefølgen, forankringen og omslaget er skrevet ud fra beregningens model. Begrundelsen for rumvægten og »før geonettet dækkes til« er tilføjet.
 - Kortet vises altid og nedtones med noten, når opdriftssikring ikke er nødvendig. Rapporten medtager afsnittet kun, når opdriftssikring er nødvendig.
 - Kortet er nummereret efter det sidste kort på siden, og afsnittet efter det sidste afsnit i rapporten. Vælges dybere forankring ikke til rapporten, har afsnittet derfor et lavere nummer i rapporten end kortet i avanceret beregning.
+
+## 10. november 2026 — geometrisk netlængde med omslag (K-09)
+
+Brugeren spurgte, hvor »tillæg til omslag og overlæg« kommer fra. Claude forklarede, at tillægget på 1,2 m (0,8 m for to ledninger) stammer fra arkets formel, og at »overlæg« var Claudes tolkning. Brugerens svar: »jeg vil gerne rette formlen i appen, så den bliver geometrisk korrekt, og tager højde for indstastningen af lodret afstand imellem nettene længere oppe i afsnit 7. Jeg har noteret problemet og får det afklaret hurtigst muligt internt. Dvs. fjern sætningen omkring 'inkl. 1,2 m tillæg til omslag og overlæg'« og »ja, gør sådan at jeg kan gå tilbage, hvis det viser sig jeg tager fejl her og tillægget skal med alligevel som det er.«
+
+- Løsning C: L_geonet,tot = 4 · L_geonet + 2 · a + π · d/2. Løsning D: 8 · L_geonet + 4 · a + π · d. Dybere forankring: 4 · L_geonet + 2 · a + π · d/2 + 2 · Δh. a er afstanden mellem netlagene fra kortet for forankring.
+- Teksten »inkl. 1,2 m tillæg til omslag og overlæg« og »inkl. 0,8 m tillæg …« udgår på skærm og i rapport.
+- Ændringen er foreløbig og ligger i ét commit, så den kan tilbageføres samlet, jf. fund K-09.
+
+Valgt af Claude og kan ændres:
+- Mellemregningen viser »inkl. 0,2 m lodret ved hvert omslag« under forklaringen, og rapporten viser det samme ved netlængden.
+- Dybere forankring følger samme geometri, da den havde samme tillæg.
+- De godkendte kontroltal for dybere forankring og reduktion er rettet med − 1,2 m i netlængden. Excel-facit er uændret, og afvigelsen står i `tests/cases/afvigelser.json`.

@@ -94,6 +94,8 @@ Godkendt af brugeren 9. november 2026. Regnet uden appens motor (Python) og lagt
 
 Case 5 uden ender og gennemføringer giver samme tal som pr. meter rør i kort 6 og 7.
 
+Fra 10. november 2026 er netlængden med omslag geometrisk uden arkets tillæg (fund K-09), så L_geonet,tot for løsning C i tabellen er 1,20 m mindre i appen og i `tests/cases/reduktion.json`.
+
 Til sammenligning gav forslaget, hvor gennemføringen kun fortrængte en cylinder af fyld, F_op,d,s = 35,99 kN/m for case 1. At der ingen ballast regnes i gennemføringens bredde, hæver restopdriften med yderligere 6 %, og nettet skifter fra X-GRID 80 til X-GRID 110.
 
 ## 4. Visning i appen (kort 8)

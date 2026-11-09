@@ -319,9 +319,7 @@ export function rapportDokument(
             tekst: 'Samlet længde geonet på tværs',
             symbol: dele('L_{geonet,tot}'),
             vaerdi: `${tal(v.Ltot)} m`,
-            note: omslag
-              ? `inkl. ${tal(l === 'C' ? standarder.netTillaegOmslag * 4 - standarder.omslagAfstand * 2 : standarder.netTillaegOmslag * 4 - standarder.omslagAfstand * 4, 1)} m tillæg til omslag og overlæg`
-              : null,
+            note: omslag ? `inkl. ${talKort(rr.omslagAfstand)} m lodret ved hvert omslag` : null,
           },
           ...(areal?.resultat
             ? [

@@ -19,7 +19,7 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-06 | π = 3,14 | Alle tal (0,05 %) | Afgjort: π |
 | K-07 | g = 9,82 for rørvægt | Ballast (lille) | Afgjort: som arket |
 | K-08 | Omslag: kontrol passer ikke til dimensionering | Kontrol | Afgjort: som arket med note i mellemregningerne |
-| K-09 | Omslag: tillæg på 1,2 m i netlængden | Netlængde | Afgjort: som arket, tillægget nævnes |
+| K-09 | Omslag: tillæg på 1,2 m i netlængden | Netlængde | Afgjort: geometrisk længde uden tillæg (foreløbig) |
 | K-10 | To rør: ingen kontrol, forskellig mellemlængde | Længder, kontrol | Som arket, ingen afklaring nu |
 | K-11 | Kontrollen uden omslag kan ikke give EJ OK | Kontrol | Afgjort: som arket med note |
 | K-12 | Arket regner videre, når sikring ikke er nødvendig | Rapport | Afgjort: S₁ ≥ 1 er OK, »Ikke relevant« |
@@ -234,6 +234,12 @@ Strimlerne til sprinklertanken i e-mailene (14,86 m og 18,99 m) følger arkets f
 **Første version.** Som arket.
 
 **Afgjort 30. oktober 2026.** Mulighed a: Tillægget bevares og nævnes ved netlængden: »inkl. 1,2 m tillæg til omslag og overlæg« for én ledning og »inkl. 0,8 m tillæg …« for to ledninger.
+
+**Ændret 10. november 2026 (mulighed b, foreløbig).** Netlængden med omslag er geometrisk og følger afstanden a mellem netlagene: løsning C L_geonet,tot = 4 · L_geonet + 2 · a + π · d/2, løsning D 8 · L_geonet + 4 · a + π · d og dybere forankring 4 · L_geonet + 2 · a + π · d/2 + 2 · Δh. Arkets tillæg på 1,2 m (C og dybere forankring) og 0,8 m (D) og teksten »tillæg til omslag og overlæg« udgår. Forankringslængderne, valget af geonet og kontrollerne er uændrede. Case 1 giver 9,78 m i stedet for 10,98 m for løsning C. Brugeren afklarer tillægget internt.
+
+Afvigelsen fra arket står i `tests/cases/afvigelser.json` (K-09: B412 − 1,2 og B470 − 0,8). Netlængderne i de godkendte kontroltal i `tests/cases/dyb-forankring.json` og `tests/cases/reduktion.json` er rettet med − 1,2 m.
+
+**Tilbageføring.** Hele ændringen ligger i ét commit, 1356c44 »Netlængde med omslag uden arkets tillæg (K-09)«. Skal tillægget med igen som før, tilbageføres det commit med `git revert`. Det gendanner formlerne, teksten ved netlængden, rapporten, testene og kontroltallene på én gang.
 
 ## K-10 To rør: ingen kontrol og forskellig mellemlængde
 
@@ -482,7 +488,7 @@ Afstanden indgår tre steder: det øverste lag kommer højere op, så F_top fald
 
 **Eksempel.** Løsning C med 0,4 m i stedet for 0,2 m: case 1 giver L_geonet = 1,59 m i stedet for 1,36 m (+17 %), og case 2 giver 5,60 m i stedet for 5,27 m (+6 %). Kun en lille del skyldes det lavere F_top; resten er tillægget for de lodrette stykker.
 
-**Afgjort 31. oktober 2026.** Brugerens svar: »Ja, gør den redigerbar«. Afstanden kan ændres i kort 7 mellem 0,2 og 0,4 m med standarden 0,2 m i begge beregningsmetoder. Den bruges i h_top, i formlen for løsning C, i L_mellem for løsning D, i grænsen for, hvornår omslag er muligt (K-23), og i kort 8. Netlængden for løsning C og D får de længere lodrette stykker med (2 · (afstand − 0,2) for C og 4 · (afstand − 0,2) for D), mens arkets tillæg på 1,2 m og 0,8 m til omslag og overlæg er uændret. Med 0,2 m regnes som arket.
+**Afgjort 31. oktober 2026.** Brugerens svar: »Ja, gør den redigerbar«. Afstanden kan ændres i kort 7 mellem 0,2 og 0,4 m med standarden 0,2 m i begge beregningsmetoder. Den bruges i h_top, i formlen for løsning C, i L_mellem for løsning D, i grænsen for, hvornår omslag er muligt (K-23), og i kort 8. Netlængden for løsning C og D får de længere lodrette stykker med (2 · (afstand − 0,2) for C og 4 · (afstand − 0,2) for D), mens arkets tillæg på 1,2 m og 0,8 m til omslag og overlæg er uændret. Fra 10. november 2026 er netlængden geometrisk med 2 · a og 4 · a og uden tillæg (K-09). Med 0,2 m regnes som arket.
 
 ## K-27 Kraftens vej: trækket i nettet, knækket og trissevirkningen
 

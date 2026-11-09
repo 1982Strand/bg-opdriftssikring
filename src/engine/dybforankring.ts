@@ -11,7 +11,7 @@ import {
   type Status,
 } from './opdrift.ts';
 
-const { mu, krav, netTillaegOmslag, mindstelaengder: min } = standarder;
+const { mu, krav, mindstelaengder: min } = standarder;
 
 export type DybForankring =
   | { tilstand: 'ikke relevant' }
@@ -108,11 +108,8 @@ export function beregnDybForankring(
       Fbund,
       Ftop,
       toL: r.K / (Fbund + Ftop / 2) + 2 * omslagAfstand,
-      Ltot:
-        4 * (L + netTillaegOmslag) +
-        2 * (omslagAfstand - standarder.omslagAfstand) +
-        (pi * input.d) / 2 +
-        2 * dh,
+      // Geometrisk som løsning C plus nettets sider ned langs røret (fund K-09).
+      Ltot: 4 * L + 2 * omslagAfstand + (pi * input.d) / 2 + 2 * dh,
       kontrol,
       status: kontrol > krav.kontrol ? 'OK' : 'EJ OK',
     },

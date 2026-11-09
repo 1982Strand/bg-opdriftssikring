@@ -115,12 +115,12 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   ]);
   const medOmslag = losning(page, 'Med omslag, én ledning');
   await expect(medOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText('1,36 m');
+  // Netlængden med omslag er geometrisk uden arkets tillæg (K-09).
+  await expect(medOmslag.getByRole('row', { name: /^Samlet netlængde/ })).toContainText('9,78 m');
   await expect(
-    medOmslag.getByRole('row', { name: /inkl. 1,2 m tillæg til omslag og overlæg/ }),
-  ).toContainText('10,98 m');
-  await expect(
-    losning(page, 'Med omslag, to ledninger').getByRole('row', { name: /inkl. 0,8 m tillæg/ }),
-  ).toContainText('20,35 m');
+    losning(page, 'Med omslag, to ledninger').getByRole('row', { name: /^Samlet netlængde/ }),
+  ).toContainText('19,55 m');
+  await expect(page.getByText(/tillæg til omslag/)).toHaveCount(0);
   // Kontrollen ved omslag medregner bevidst det fulde bidrag; det står i mellemregningerne og ikke
   // som kontrolpunkt (K-08).
   await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
@@ -665,7 +665,7 @@ test('dybere forankring ved begrænset plads findes kun i avanceret beregning (K
   await expect(flise(page, 'Sænkning under rørmidten').locator('p')).toHaveText(
     'Δh, 1,05 m under rørbunden',
   );
-  await expect(flise(page, 'Samlet netlængde Lgeonet,tot').locator('strong')).toHaveText('23,98');
+  await expect(flise(page, 'Samlet netlængde Lgeonet,tot').locator('strong')).toHaveText('22,78');
   await expect(flise(page, 'Opdriftskontrol').locator('.m9-badge')).toHaveText('OK');
   await expect(
     kort.getByText(
@@ -770,9 +770,7 @@ test('afstanden mellem netlagene ved omslag kan ændres i kort 7 (K-26)', async 
   await expect(medOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText('1,36 m');
   await saet(page, felt, '0.4');
   await expect(medOmslag.getByRole('row', { name: /Forankring pr. side/ })).toContainText('1,59 m');
-  await expect(
-    medOmslag.getByRole('row', { name: /inkl. 1,2 m tillæg til omslag og overlæg/ }),
-  ).toContainText('12,30 m');
+  await expect(medOmslag.getByRole('row', { name: /^Samlet netlængde/ })).toContainText('11,10 m');
   await expect(
     medOmslag.getByText('Der armeres lige meget i top og bund med 0,4 m mellem lagene.', {
       exact: false,
@@ -780,8 +778,8 @@ test('afstanden mellem netlagene ved omslag kan ændres i kort 7 (K-26)', async 
   ).toBeVisible();
   await medOmslag.getByRole('button', { name: 'Mellemregninger' }).click();
   await mellemregning(medOmslag, 'Samlet længde geonet på tværs af ledningen', [
-    'Lgeonet,tot = 4 · (Lgeonet + 0,4) + π · d/2 + 2 · (0,4 − 0,2)',
-    '12,30 m',
+    'Lgeonet,tot = 4 · Lgeonet + 2 · 0,4 + π · d/2',
+    '11,10 m',
   ]);
   await expect(flise(page, 'Kraftoverførsel Ftop').locator('p')).toHaveText('htop = 2,35 m');
   // Uden for intervallet afvises værdien i feltet.
