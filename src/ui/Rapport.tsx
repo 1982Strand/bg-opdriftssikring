@@ -40,6 +40,9 @@ import { PageFooter, PageHeader } from './page';
 import { SaveState } from './SaveState';
 import { useSession } from './SessionContext';
 import {
+  kortNr,
+  medReduktion,
+  reduktionValgt,
   standardRapport,
   tilMotorInput,
   type RapportOplysninger,
@@ -125,6 +128,11 @@ export function Rapport() {
   const input = tilMotorInput(session);
   const beregning = useMemo(() => beregnOpdrift(input), [JSON.stringify(input)]);
   const r = beregning.ok ? beregning.resultat : null;
+  // Med reduktion regner rapportens afsnit for geonet og forankring pr. meter sikret længde; fejl i
+  // længder, ender eller gennemføringer giver ingen rapport som andre fejl i inddata.
+  const reduktion = r ? medReduktion(session, input, r) : null;
+  const rv = reduktion?.rv ?? null;
+  const nr = (n: number) => kortNr(reduktionValgt(session), n);
   const o = session.rapport;
   const saet = (aendring: Partial<RapportOplysninger>) =>
     update({ ...session, rapport: { ...o, ...aendring } });
@@ -133,8 +141,8 @@ export function Rapport() {
 
   const dato = idag();
   const dokument = useMemo(
-    () => (r ? rapportDokument(session, input, r, company.state.profile.by, dato) : null),
-    [r, JSON.stringify(session), company.state.profile.by, dato],
+    () => (r && rv ? rapportDokument(session, input, r, company.state.profile.by, dato) : null),
+    [r, rv, JSON.stringify(session), company.state.profile.by, dato],
   );
   const filnavn = rapportFilnavn(o.projekt, datoTilVisning(o.dato || dato));
   const logoFingerprint = useMemo(
@@ -338,19 +346,11 @@ export function Rapport() {
     );
   };
 
-  const ikkeNoedvendig = r?.S1Status === 'OK';
+  const ikkeNoedvendig = rv?.S1Status === 'OK';
   const viste: Losning[] = ['A', 'C', 'B', 'D'];
-  const antalValgte = viste.filter((l) => o.losninger[l] && r?.losninger[l]).length;
-  // Valget af afsnit 8 og 9 vises kun, når beregningerne er slået til og kan regnes.
-  const tilvalg = r ? rapportTilvalg(session, input, r) : null;
-  const redMulig = Boolean(tilvalg?.reduktion);
-  const dybMulig = Boolean(tilvalg?.dyb);
-  // Løsningerne indgår i afsnit 7 og i afsnit 8, også når sikring kun er nødvendig for hele røret.
-  const sikring = !ikkeNoedvendig || redMulig;
-  const valgteTilvalg = [
-    redMulig && o.reduktion ? '8' : null,
-    dybMulig && o.dybForankring ? '9' : null,
-  ].filter(Boolean);
+  const antalValgte = viste.filter((l) => o.losninger[l] && rv?.losninger[l]).length;
+  // Valget af dybere forankring vises kun, når beregningen er slået til og kan regnes.
+  const dybMulig = Boolean(r && rapportTilvalg(session, input, r).dyb);
   const harFaner = access.firmaprofil || access.kartotek === 'eget';
   const rapportIndhold = (
     <fieldset className="report-form">
@@ -410,35 +410,22 @@ export function Rapport() {
         nr={2}
         titel="Indhold"
         opsummering={
-          !sikring
-            ? 'Afsnit 1–5'
-            : `${antalValgte} løsninger${valgteTilvalg.length ? ` og afsnit ${valgteTilvalg.join(' og ')}` : ''}`
+          ikkeNoedvendig
+            ? `Afsnit 1–${nr(5)}`
+            : `${antalValgte} løsninger${dybMulig && o.dybForankring ? ` og afsnit ${nr(8)}` : ''}`
         }
       >
-        {!sikring ? (
+        {ikkeNoedvendig ? (
           <Notice>
-            Opdriftssikring er ikke nødvendig, så rapporten slutter efter afsnit 5 uden geonet og
-            forankring.
+            Opdriftssikring er ikke nødvendig, så rapporten slutter efter afsnit {nr(5)} uden geonet
+            og forankring.
           </Notice>
         ) : (
           <>
-            {ikkeNoedvendig && (
-              <Notice>
-                Opdriftssikring er ikke nødvendig pr. meter rør, så afsnit 6 og 7 udelades.
-                Beregningen med reduktion for gennemføringer kræver geonet og kan medtages som
-                afsnit 8.
-              </Notice>
-            )}
-            <p className="calc-note">
-              {ikkeNoedvendig
-                ? 'Løsninger i afsnit 8:'
-                : redMulig
-                  ? 'Løsninger i afsnit 7 og 8:'
-                  : 'Løsninger i afsnit 7:'}
-            </p>
+            <p className="calc-note">Løsninger i afsnit {nr(7)}:</p>
             <div className="report-cut-choices">
               {viste.map((l) => {
-                const mulig = Boolean(r?.losninger[l]);
+                const mulig = Boolean(rv?.losninger[l]);
                 return (
                   <div className="setting-checkbox" key={l}>
                     <Checkbox
@@ -454,21 +441,6 @@ export function Rapport() {
                 );
               })}
             </div>
-            {redMulig && (
-              <>
-                <p className="calc-note report-dyb-valg">Reduktion for gennemføringer:</p>
-                <div className="setting-checkbox">
-                  <Checkbox
-                    id="rapport-reduktion"
-                    checked={o.reduktion}
-                    onCheckedChange={(checked) => saet({ reduktion: checked === true })}
-                  />
-                  <Label htmlFor="rapport-reduktion">
-                    Medtag beregning med reduktion for gennemføringer som afsnit 8
-                  </Label>
-                </div>
-              </>
-            )}
             {dybMulig && (
               <>
                 <p className="calc-note report-dyb-valg">Dybere forankring:</p>
@@ -479,7 +451,7 @@ export function Rapport() {
                     onCheckedChange={(checked) => saet({ dybForankring: checked === true })}
                   />
                   <Label htmlFor="rapport-dyb">
-                    Medtag dybere forankring ved begrænset plads som afsnit 9
+                    Medtag dybere forankring ved begrænset plads som afsnit {nr(8)}
                   </Label>
                 </div>
               </>
@@ -513,7 +485,7 @@ export function Rapport() {
         intro="Dokumentation af beregningen som PDF. Rapporten dannes i browseren, og oplysningerne gemmes sammen med beregningen."
         status={<SaveState />}
       />
-      {!r ? (
+      {!r || !rv ? (
         <section className="section-card settings-card" aria-label="Rapport">
           <Notice kind="warning">
             Rapporten kan dannes, når inddata på siden Opdriftssikring er rettet.

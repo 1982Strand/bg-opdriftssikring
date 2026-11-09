@@ -2,7 +2,6 @@
  * skærmen (src/ui/mellemregninger.ts), så skærm og rapport har samme opbygning. Modulet bruger ikke
  * React og kan afprøves med node --test. */
 import { beregnDybForankring, type DybForankring } from '../engine/dybforankring.ts';
-import { beregnReduktion, type ReduktionResultat } from '../engine/reduktion.ts';
 import {
   dybForankringSvg,
   laengdesnitSvg,
@@ -36,20 +35,22 @@ import {
   losningTitel,
   opdriftGrundlag,
   opdriftNote,
+  heleRoeretGrupper,
+  kontrolUdenGeonetHeleRoeret,
   reduktionForudsaetninger,
-  reduktionGrupper,
   reduktionIndledning,
-  reduktionKantNote,
-  reduktionKraftNote,
+  reduktionOpdriftNote,
   restopdriftRaekke,
   rfFaktorer,
+  sikretLaengdeRaekker,
+  symbolerPrMeter,
   symbolerSikret,
   toLedningerNote,
   tovkraftNote,
   type Mellemregning,
   type Symboler,
 } from '../ui/mellemregninger.ts';
-import { tilReduktionInput, type RapportOplysninger, type Session } from '../ui/state.ts';
+import { kortNr, medReduktion, type RapportOplysninger, type Session } from '../ui/state.ts';
 
 /** Tekst med sænket skrift som stykker, så intet tolkes som Typst-opmærkning. */
 export type Tekst = { t: string; sub: boolean }[];
@@ -197,35 +198,31 @@ function personLinjer(p: RapportOplysninger['sagsbehandler']): string[] {
   return [p.navn, p.telefon ? formatPhone(p.telefon) : '', p.mail].filter(Boolean);
 }
 
-/** Afsnit 8 og 9 kan medtages, når kortene er slået til, kan regnes og opdriftssikring er nødvendig.
- * Kort 9 regner videre fra kort 8, når kort 8 er slået til (beslutning 9. november 2026). */
+/** Dybere forankring kan medtages som sidste afsnit, når kortet er slået til, kan regnes og
+ * opdriftssikring er nødvendig. Med reduktion regnes med K_s (beslutning 9. november 2026). */
 export function rapportTilvalg(
   session: Session,
   input: OpdriftInput,
   r: OpdriftResultat,
 ): {
-  reduktion: ReduktionResultat | null;
   dyb: {
     grundlag: OpdriftResultat;
-    kort: 7 | 8;
+    /** Nummeret på afsnittet for forankring, som K kommer fra. */
+    kort: number;
     resultat: Exclude<DybForankring, { tilstand: 'ikke relevant' | 'omslag ikke muligt' }>;
   } | null;
 } {
   const i = session.inddata;
-  const redAktiv = session.avanceret && i.reduktionAktiv;
-  const red = redAktiv ? beregnReduktion(r, input, tilReduktionInput(session)) : null;
-  const redRes = red?.ok ? red.resultat : null;
-  const grundlag = redAktiv ? (redRes?.r ?? null) : r;
+  const { aktiv, rv } = medReduktion(session, input, r);
   const dyb =
-    session.avanceret && i.dybForankringAktiv && grundlag && grundlag.S1Status !== 'OK'
-      ? beregnDybForankring(grundlag, input, i.dybForankringL)
+    session.avanceret && i.dybForankringAktiv && rv && rv.S1Status !== 'OK'
+      ? beregnDybForankring(rv, input, i.dybForankringL)
       : null;
-  const dybRes = dyb?.ok ? dyb.resultat : null;
+  const res = dyb?.ok ? dyb.resultat : null;
   return {
-    reduktion: redRes && redRes.S1Status !== 'OK' ? redRes : null,
     dyb:
-      grundlag && dybRes && (dybRes.tilstand === 'tilstraekkelig' || dybRes.tilstand === 'dybere')
-        ? { grundlag, kort: redAktiv ? 8 : 7, resultat: dybRes }
+      rv && res && (res.tilstand === 'tilstraekkelig' || res.tilstand === 'dybere')
+        ? { grundlag: rv, kort: kortNr(aktiv, 7), resultat: res }
         : null,
   };
 }
@@ -244,6 +241,16 @@ export function rapportDokument(
   const klasse = session.konsekvensklasse;
   const pk = r.partialkoefficienter;
   const zone = r.gvsZone;
+  // Med reduktion (fund K-29) er afsnit 4 længde, ender og gennemføringer, de følgende afsnit rykker
+  // et nummer, og afsnittene for opdrift og ballast, geonet og forankring regner pr. meter sikret
+  // længde (beslutning 9. november 2026).
+  const reduktion = medReduktion(session, input, r);
+  if (!reduktion.rv)
+    throw new Error('Rapporten kræver gyldige værdier for længde, ender og gennemføringer.');
+  const rv = reduktion.rv;
+  const red = reduktion.res;
+  const nr = (n: number) => kortNr(reduktion.aktiv, n);
+  const sym = reduktion.aktiv ? symbolerSikret : symbolerPrMeter;
   const figurer: Record<string, string> = {};
   const fil = (navn: string, svg: string) => {
     const sti = `figures/${navn}.svg`;
@@ -266,11 +273,11 @@ export function rapportDokument(
       blokke,
     });
 
-  /** Løsningerne i samme rækkefølge som på skærmen; kun de valgte og mulige medtages. Afsnit 8 regner
-   * pr. meter sikret længde og viser også netarealet. */
+  /** Løsningerne i samme rækkefølge som på skærmen; kun de valgte og mulige medtages. Med reduktion
+   * regnes pr. meter sikret længde, og netarealet vises. */
   const losningAfsnit = (
     rr: OpdriftResultat,
-    nr: 7 | 8,
+    afsnitNr: number,
     ekstra: { symboler?: Symboler; Lsikret?: number } = {},
   ) => {
     const raekkefoelge: Losning[] = ['A', 'C', 'B', 'D'];
@@ -299,7 +306,7 @@ export function rapportDokument(
       const areal = indhold.beregning.find((m) => m.rolle === 'netareal');
       blokke.push({
         type: 'maalfigur',
-        fil: fil(nr === 7 ? `losning-${l}` : `reduktion-losning-${l}`, losningSvg(rr, input, l)),
+        fil: fil(`losning-${l}`, losningSvg(rr, input, l)),
         maal: [
           {
             tekst: 'Vandret bredde fra ende til ende',
@@ -330,7 +337,7 @@ export function rapportDokument(
       const kontrolRaekke = indhold.beregning.find((m) => m.rolle === 'kontrol');
       if (kontrolRaekke) blokke.push(regning(kontrolRaekke));
       if (l === sidsteToLedninger) blokke.push(lille(toLedningerNote));
-      nyt(`${nr}.${n + 1} ${losningTitel[l]}`, blokke, {
+      nyt(`${afsnitNr}.${n + 1} ${losningTitel[l]}`, blokke, {
         niveau: 2,
         nySide: n === 0,
         samlet: true,
@@ -415,7 +422,55 @@ export function rapportDokument(
     });
   nyt('3. Geometri og grundvand', geometri, { nySide: true });
 
-  nyt('4. Egenvægt og fyldmateriale', [
+  if (red)
+    nyt(
+      '4. Længde, ender og gennemføringer',
+      [
+        tekst(reduktionIndledning),
+        {
+          type: 'inddata',
+          felter: [
+            {
+              tekst: dele('Rørets samlede længde L_{rør} ='),
+              vaerdi: tal(red.Lroer),
+              enhed: dele('m'),
+            },
+            ...red.ender.map((e, n) => ({
+              tekst: dele(`Afrundet ende ${n + 1}, L_{ende,${n + 1}} =`),
+              vaerdi: tal(e),
+              enhed: dele('m'),
+            })),
+            ...red.gennemfoeringer.flatMap((g, n) => [
+              {
+                tekst: dele(
+                  g.b === null
+                    ? `Gennemføring ${n + 1}, cirkulær, diameter d_{g,${n + 1}} =`
+                    : `Gennemføring ${n + 1}, rektangulær, langs røret d_{g,${n + 1}} =`,
+                ),
+                vaerdi: tal(g.d),
+                enhed: dele('m'),
+              },
+              ...(g.b === null
+                ? []
+                : [
+                    {
+                      tekst: dele(`Gennemføring ${n + 1}, på tværs af røret b_{g,${n + 1}} =`),
+                      vaerdi: tal(g.b),
+                      enhed: dele('m'),
+                    },
+                  ]),
+            ]),
+          ],
+        },
+        { type: 'figur', fil: fil('laengdesnit', laengdesnitSvg(input, red)), bredde_mm: 150 },
+        { type: 'punkter', punkter: reduktionForudsaetninger.map(dele) },
+        h3('Sikret længde'),
+        ...sikretLaengdeRaekker(red).map((m) => regning(m)),
+      ],
+      { nySide: true },
+    );
+
+  nyt(`${nr(4)}. Egenvægt og fyldmateriale`, [
     tekst('Parametre for fyldmaterialet i de armerede jordzoner. Fyldet skal være friktionsfyld.'),
     {
       type: 'vaerditabel',
@@ -471,28 +526,37 @@ export function rapportDokument(
 
   const arealfigur = opdriftsarealSvg(r, input);
   nyt(
-    '5. Opdrift og stabiliserende ballast',
+    `${nr(5)}. Opdrift og stabiliserende ballast`,
     [
-      h3('Opdrift'),
+      h3(red ? 'Opdrift pr. meter rør' : 'Opdrift'),
       tekst(opdriftNote(avanceret)),
       ...(arealfigur
         ? [{ type: 'figur', fil: fil('areal', arealfigur), bredde_mm: 90 } as Blok]
         : []),
       ...opdriftGrundlag(r, input, zone).map((m) => regning(m)),
-      h3('Stabiliserende ballast'),
+      h3(red ? 'Stabiliserende ballast pr. meter rør' : 'Stabiliserende ballast'),
       tekst(ballastNote),
       ...ballastRaekker(r, input, zone).map((m) => regning(m)),
       lille(egenvaegtNote),
+      ...(red
+        ? [
+            ...heleRoeretGrupper(r, input, red).flatMap(({ titel, raekker }) => [
+              h3(titel),
+              ...raekker.map((m) => regning(m)),
+            ]),
+            lille(reduktionOpdriftNote),
+          ]
+        : []),
       h3('Sikkerhed mod opdrift uden geonet'),
-      regning(kontrolUdenGeonet(r)),
-      tekst(r.konklusion.join(' ')),
+      regning(red ? kontrolUdenGeonetHeleRoeret(red) : kontrolUdenGeonet(r)),
+      tekst(rv.konklusion.join(' ')),
     ],
     { nySide: true },
   );
 
-  const noedvendig = r.S1Status !== 'OK';
+  const noedvendig = rv.S1Status !== 'OK';
   if (noedvendig) {
-    const g = r.geonet;
+    const g = rv.geonet;
     const lagtManuelt = input.overstyring && input.overstyring.lag > 1 ? input.overstyring : null;
     const utsFormel = lagtManuelt
       ? `${lagtManuelt.lag} lag X-GRID ${lagtManuelt.uts} = ${lagtManuelt.lag} · ${lagtManuelt.uts}`
@@ -501,10 +565,10 @@ export function rapportDokument(
       tekst(
         'Da sikkerheden mod opdrift S₁ ikke opfylder kravet, skal ballastbidraget øges svarende til geonettets regningsmæssige trækstyrke.',
       ),
-      regning(restopdriftRaekke(r)),
+      regning(restopdriftRaekke(rv, sym)),
     ];
     if (g.uts === null) {
-      geonetBlokke.push(regning(designRaekke(r)), {
+      geonetBlokke.push(regning(designRaekke(rv, sym)), {
         type: 'resultat',
         tekst: dele('Der produceres ikke geonet med den nødvendige styrke.'),
         vaerdi: 'Kontakt leverandør',
@@ -544,11 +608,11 @@ export function rapportDokument(
           sum: 4,
         },
         lille(bbaNote),
-        regning(designRaekke(r)),
+        regning(designRaekke(rv, sym)),
         h3('Eftervisning af det valgte geonet'),
         regning({
           forklaring: 'Geonettets styrke i forhold til restopdriften',
-          formel: `P_{d}/F_{op,d} = ${tal(g.Ptill)}/${tal(r.Fopdrift)} (krav > ${tal(standarder.krav.geonet)})`,
+          formel: `P_{d}/${sym.F} = ${tal(g.Ptill)}/${tal(rv.Fopdrift)} (krav > ${tal(standarder.krav.geonet)})`,
           resultat: tal(g.sikkerhed),
           status: g.status,
           hoved: true,
@@ -562,42 +626,42 @@ export function rapportDokument(
       ),
       lille(tovkraftNote.styrke),
     );
-    nyt('6. Geonet', geonetBlokke, { nySide: true });
+    nyt(`${nr(6)}. Geonet`, geonetBlokke, { nySide: true });
 
-    const C = r.losninger.C;
+    const C = rv.losninger.C;
     const symbolfigurer = [
       {
-        fil: fil('symboler-uden-omslag', losningSvg(r, input, 'A', 'symboler')),
-        tekst: 'Figur 7.1 Uden omslag',
+        fil: fil('symboler-uden-omslag', losningSvg(rv, input, 'A', 'symboler')),
+        tekst: `Figur ${nr(7)}.1 Uden omslag`,
       },
       ...(C
         ? [
             {
-              fil: fil('symboler-med-omslag', losningSvg(r, input, 'C', 'symboler')),
-              tekst: 'Figur 7.2 Med omslag',
+              fil: fil('symboler-med-omslag', losningSvg(rv, input, 'C', 'symboler')),
+              tekst: `Figur ${nr(7)}.2 Med omslag`,
             },
           ]
         : []),
     ];
-    const fs = r.forankringsspaending;
+    const fs = rv.forankringsspaending;
     const kraftTabel: Blok = {
       type: 'tabel',
       kolonner: ['62', '30', '30'],
       tal: [1, 2],
       hoved: [[], dele('F_{bund}'), dele('F_{top}')],
       raekker: [
-        [dele('h (m)'), dele(tal(r.hBund)), dele(tal(r.hTop))],
+        [dele('h (m)'), dele(tal(rv.hBund)), dele(tal(rv.hTop))],
         avanceret
           ? [dele('σ′_{v} (kN/m²)'), dele(tal(fs.bund)), dele(tal(fs.top))]
-          : [dele('γ′_{d} (kN/m³)'), dele(tal(r.gammaEffD)), dele(tal(r.gammaEffD))],
+          : [dele('γ′_{d} (kN/m³)'), dele(tal(rv.gammaEffD)), dele(tal(rv.gammaEffD))],
         [dele('μ'), dele(tal(standarder.mu)), dele(tal(standarder.mu))],
-        [dele('φ_{d} (°)'), dele(tal(r.phiD)), dele(tal(r.phiD))],
-        [dele('F (kN/m pr. m net)'), dele(tal(r.Fbund)), dele(tal(r.Ftop))],
+        [dele('φ_{d} (°)'), dele(tal(rv.phiD)), dele(tal(rv.phiD))],
+        [dele('F (kN/m pr. m net)'), dele(tal(rv.Fbund)), dele(tal(rv.Ftop))],
       ],
       sum: 4,
     };
     nyt(
-      '7. Forankring',
+      `${nr(7)}. Forankring`,
       [
         h3('Kraftoverførsel'),
         tekst(
@@ -634,7 +698,7 @@ export function rapportDokument(
             {
               symbol: dele('φ_{d}'),
               tekst: dele(
-                `Regningsmæssig friktionsvinkel, φ_{d} = arctan(tan φ_{k}/γ_{φ}) = arctan(tan ${tal(i.phi)}°/${tal(pk.gammaPhi)}) = ${tal(r.phiD)}°`,
+                `Regningsmæssig friktionsvinkel, φ_{d} = arctan(tan φ_{k}/γ_{φ}) = arctan(tan ${tal(i.phi)}°/${tal(pk.gammaPhi)}) = ${tal(rv.phiD)}°`,
               ),
             },
             { symbol: dele('L_{geonet}'), tekst: dele('Forankringslængde pr. side') },
@@ -649,95 +713,42 @@ export function rapportDokument(
         ...(C
           ? [
               tekst(
-                `Ved indbygning af geonet til opdriftssikring kan geonettet slås tilbage (omslag). Slås geonettet tilbage, som vist på figur 7.2, skal der være ${talKort(r.omslagAfstand)} m mellem det nederste og det øverste geonet.`,
+                `Ved indbygning af geonet til opdriftssikring kan geonettet slås tilbage (omslag). Slås geonettet tilbage, som vist på figur ${nr(7)}.2, skal der være ${talKort(rv.omslagAfstand)} m mellem det nederste og det øverste geonet.`,
               ),
             ]
           : []),
         kraftTabel,
-        lille(kraftNote(avanceret)),
+        lille(kraftNote(avanceret, sym)),
         h3('Nødvendig kraftoptagelse'),
         {
           type: 'inddata',
           felter: [
             {
               tekst: dele('S₂ ='),
-              vaerdi: tal(r.S2),
+              vaerdi: tal(rv.S2),
               enhed: dele(
                 'Partialkoefficient for kraftoptagelse, fastlagt beregningsteknisk ved skøn (1,05–1,20).',
               ),
             },
           ],
         },
-        regning(kraftoptagelseRaekke(r)),
+        regning(kraftoptagelseRaekke(rv, sym)),
         lille(tovkraftNote.forankring),
-        ...(C ? [] : [lille(omslagIkkeMuligtTekst(r))]),
+        ...(C ? [] : [lille(omslagIkkeMuligtTekst(rv))]),
       ],
       { nySide: true },
     );
 
-    losningAfsnit(r, 7);
+    losningAfsnit(rv, nr(7), red ? { symboler: sym, Lsikret: red.Lsikret } : {});
   }
 
-  // Afsnit 8 og 9 medtages kun, når de er valgt på rapportsiden (beslutning 5. og 9. november 2026).
+  // Dybere forankring medtages kun, når den er valgt på rapportsiden (beslutning 5. november 2026).
   const tilvalg = rapportTilvalg(session, input, r);
-  const red = o.reduktion ? tilvalg.reduktion : null;
-  if (red) {
-    const blokke: Blok[] = [
-      tekst(reduktionIndledning),
-      {
-        type: 'inddata',
-        felter: [
-          {
-            tekst: dele('Rørets samlede længde L_{rør} ='),
-            vaerdi: tal(red.Lroer),
-            enhed: dele('m'),
-          },
-          ...red.ender.map((e, n) => ({
-            tekst: dele(`Afrundet ende ${n + 1}, L_{ende,${n + 1}} =`),
-            vaerdi: tal(e),
-            enhed: dele('m'),
-          })),
-          ...red.gennemfoeringer.flatMap((g, n) => [
-            {
-              tekst: dele(
-                g.b === null
-                  ? `Gennemføring ${n + 1}, cirkulær, diameter d_{g,${n + 1}} =`
-                  : `Gennemføring ${n + 1}, rektangulær, langs røret d_{g,${n + 1}} =`,
-              ),
-              vaerdi: tal(g.d),
-              enhed: dele('m'),
-            },
-            ...(g.b === null
-              ? []
-              : [
-                  {
-                    tekst: dele(`Gennemføring ${n + 1}, på tværs af røret b_{g,${n + 1}} =`),
-                    vaerdi: tal(g.b),
-                    enhed: dele('m'),
-                  },
-                ]),
-          ]),
-        ],
-      },
-      { type: 'figur', fil: fil('laengdesnit', laengdesnitSvg(input, red)), bredde_mm: 150 },
-      { type: 'punkter', punkter: reduktionForudsaetninger.map(dele) },
-    ];
-    if (r.S1Status === 'OK' && r.S1 !== null && red.S1 !== null)
-      blokke.push(tekst(reduktionKantNote(r.S1, red.S1, true)));
-    for (const { titel, raekker } of reduktionGrupper(r, input, red))
-      blokke.push(h3(titel), ...raekker.map((m) => regning(m)));
-    blokke.push(lille(reduktionKraftNote(r)));
-    nyt('8. Beregning med reduktion for gennemføringer', blokke, { nySide: true });
-    losningAfsnit(red.r, 8, { symboler: symbolerSikret, Lsikret: red.Lsikret });
-  }
-
   const dyb = o.dybForankring ? tilvalg.dyb : null;
   if (dyb) {
     const { grundlag: rg, kort, resultat: res } = dyb;
     const C = rg.losninger.C;
     const blokke: Blok[] = [tekst(dybIndledning), { type: 'advarsel', tekst: dele(dybAdvarsel) }];
-    if (kort === 8)
-      blokke.push(tekst('Der regnes med K_{s} pr. meter sikret længde fra afsnit 8.'));
     if (res.tilstand === 'tilstraekkelig' && C)
       blokke.push(
         tekst(
@@ -764,7 +775,7 @@ export function rapportDokument(
       );
       if (res.underRoerbund > 0)
         blokke.push({ type: 'advarsel', tekst: dele(dybUnderRoerbund(res.underRoerbund)) });
-      for (const { titel, raekker } of dybGrupper(rg, input, res, kort))
+      for (const { titel, raekker } of dybGrupper(rg, input, res, kort, sym))
         blokke.push(
           h3(titel),
           ...raekker.map((m) =>
@@ -772,7 +783,7 @@ export function rapportDokument(
           ),
         );
     }
-    nyt('9. Dybere forankring ved begrænset plads', blokke, { nySide: true });
+    nyt(`${nr(8)}. Dybere forankring ved begrænset plads`, blokke, { nySide: true });
   }
 
   const personer = [o.sagsbehandler, o.kontrollant].map(personLinjer).filter((p) => p.length > 0);
@@ -798,6 +809,9 @@ export function rapportDokument(
           `Ø${tal(input.d * 1000, 0).replace('.', '')} mm, regnet tom`,
           `Jorddækning ${tal(input.h1)} m`,
           gvsTekst,
+          ...(red
+            ? [`Længde ${tal(red.Lroer)} m, regnet med reduktion for ender og gennemføringer`]
+            : []),
           ...o.beskrivelse
             .split('\n')
             .map((l) => l.trim())

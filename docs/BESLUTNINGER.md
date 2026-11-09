@@ -1068,3 +1068,16 @@ Valgt af Claude og kan ændres:
 - Standarden og ældre gemte beregninger er cirkulære. Bredden på tværs har standardværdien 0,80 m.
 - Længdesnittet er uændret, fordi formen ikke ses fra siden.
 - Den rektangulære gennemføring er kontrolleret med et facit i `tests/reduktion.test.ts` og ikke med en ny kontrolcase i `tests/cases/reduktion.json`.
+
+## 9. november 2026 — reduktionen som del af beregningsgangen (K-29)
+
+Brugerens ønske: »Hvis vi siger, man i kort 3 har afkrydsningsboksen med 'Beregning med reduktion for ender og gennemføringer' og den krydses af. Så dukker et ekstra kort op, hvor der indtastes oplysninger som i kort 8. på den måde ser beregningsgangen ens ud med den tidligere beregning, hvor der bare lige ændres lidt i forhold til beregningerne nu laves. Så kommer der heller ikke et helt ekstra sæt tegninger til sidst.«
+
+Claude beskrev opbygningen og stillede fire spørgsmål i [FORSLAG_REDUKTION_I_BEREGNINGEN.md](FORSLAG_REDUKTION_I_BEREGNINGEN.md). Brugerens svar: »Følg anbefalingerne« (1a, 2a, 3a og 4a).
+
+- Kort 3 har afkrydsningen »Beregning med reduktion for ender og gennemføringer«, kun i avanceret beregning.
+- Når den er valgt, kommer kortet »Længde, ender og gennemføringer« som kort 4, og de følgende kort rykker et nummer. Uden reduktion er numrene som før, og dybere forankring er kort 8.
+- Kortene for opdrift og ballast, geonet og forankring regner med reduktionen. Fliserne for opdrift og ballast viser værdierne pr. meter sikret længde i kN/m med de samlede værdier i noten.
+- Løsningerne A–D står kun ét sted. Det tidligere kort 8 »Beregning med reduktion for gennemføringer« udgår.
+- Rapporten følger skærmen, og valget af afsnittet med reduktion på rapportsiden udgår.
+- Beregningen og de godkendte kontroltal er uændrede.

@@ -60,66 +60,70 @@ test('er sikring ikke nødvendig, slutter rapporten efter afsnit 5', () => {
   assert.equal(titler(model).at(-1), '5. Opdrift og stabiliserende ballast');
 });
 
-test('teksterne og afsnit 9 følger beregningsmetoden', () => {
+test('teksterne og afsnit 8 følger beregningsmetoden', () => {
   const standard = dokument().tekst;
   assert.ok(standard.includes('Røret regnes tomt og helt under vand'));
-  assert.ok(!standard.includes('9. Dybere forankring'));
+  assert.ok(!standard.includes('8. Dybere forankring'));
   const { model, tekst } = dokument((s) => {
     s.avanceret = true;
     s.inddata.dybForankringAktiv = true;
     s.inddata.dybForankringL = 1;
     s.rapport.dybForankring = true;
   });
-  // Beregningen alene tager ikke afsnit 9 med; det vælges på rapportsiden.
+  // Beregningen alene tager ikke afsnit 8 med; det vælges på rapportsiden.
   const ikkeValgt = dokument((s) => {
     s.avanceret = true;
     s.inddata.dybForankringAktiv = true;
     s.inddata.dybForankringL = 1;
   }).tekst;
-  assert.ok(!ikkeValgt.includes('9. Dybere forankring'));
+  assert.ok(!ikkeValgt.includes('8. Dybere forankring'));
   assert.ok(tekst.includes('den del af rørets udvendige tværsnit'));
-  assert.ok(titler(model).includes('9. Dybere forankring ved begrænset plads'));
+  assert.ok(titler(model).includes('8. Dybere forankring ved begrænset plads'));
   assert.ok(tekst.includes('Dybere forankring er ikke en dokumenteret metode'));
   assert.ok(tekst.includes('fra afsnit 7'));
   assert.ok(!tekst.includes('fra kort 7'));
   // Den indtastede forankringslængde står øverst i beregningsdetaljerne.
-  const ni = model.afsnit.find((a) => a.titel[0].t.startsWith('9.'))!;
-  const start = ni.blokke.findIndex((b) => b.type === 'h3');
-  assert.ok(samlet(ni.blokke[start + 1]).includes('Mulig forankringslængde pr. side'));
+  const otte = model.afsnit.find((a) => a.titel[0].t.startsWith('8.'))!;
+  const start = otte.blokke.findIndex((b) => b.type === 'h3');
+  assert.ok(samlet(otte.blokke[start + 1]).includes('Mulig forankringslængde pr. side'));
   // Den ønskede længde står før den nødvendige dybde, som i løsningerne.
-  const resultater = ni.blokke.filter((b) => b.type === 'resultat').map(samlet);
+  const resultater = otte.blokke.filter((b) => b.type === 'resultat').map(samlet);
   assert.ok(resultater[0].includes('der armeres med ønsket længde'));
   assert.ok(resultater[0].includes('1,00 m på hver side (med omslag)'));
   assert.ok(resultater[1].includes('Nødvendig dybde til nederste netlag'));
 });
 
-test('afsnit 8 med reduktion vælges på rapportsiden, og afsnit 9 regner videre med K_s', () => {
-  const reduktion = (s: Session) => {
+test('med reduktion er afsnit 4 længde, ender og gennemføringer, og de følgende afsnit regner med K_s', () => {
+  const { model, tekst } = dokument((s) => {
     s.avanceret = true;
     s.inddata.reduktionAktiv = true;
-  };
-  assert.ok(!dokument(reduktion).tekst.includes('8. Beregning med reduktion'));
-  const { model, tekst } = dokument((s) => {
-    reduktion(s);
-    s.rapport.reduktion = true;
     s.inddata.dybForankringAktiv = true;
     s.inddata.dybForankringL = 1;
     s.rapport.dybForankring = true;
   });
-  const t = titler(model);
-  const otte = t.indexOf('8. Beregning med reduktion for gennemføringer');
-  assert.ok(otte > t.indexOf('7. Forankring'));
-  assert.deepEqual(t.slice(otte + 1, otte + 5), [
+  assert.deepEqual(titler(model), [
+    '1. Generelle beregningsforudsætninger',
+    '2. Partialkoefficienter',
+    '3. Geometri og grundvand',
+    '4. Længde, ender og gennemføringer',
+    '5. Egenvægt og fyldmateriale',
+    '6. Opdrift og stabiliserende ballast',
+    '7. Geonet',
+    '8. Forankring',
     '8.1 Uden omslag, én ledning',
     '8.2 Med omslag, én ledning',
     '8.3 Uden omslag, to ledninger',
     '8.4 Med omslag, to ledninger',
+    '9. Dybere forankring ved begrænset plads',
   ]);
-  assert.equal(t.at(-1), '9. Dybere forankring ved begrænset plads');
-  // Standardværdierne: L_sikret = 8,00 m, F_op,d,s = 38,13 kN/m og K_s = 40,04 kN/m.
-  for (const tal of ['8,00', '38,13', '40,04', 'X-GRID 110']) assert.ok(tekst.includes(tal), tal);
+  // Kontrolcase 1: O_d,s = 68,53, B_d,s = 30,40, F_op,d,s = 38,13 og K_s = 40,04 kN/m.
+  for (const tal of ['548,26', '243,20', '68,53', '30,40', '38,13', '40,04', '69,08', 'X-GRID 110'])
+    assert.ok(tekst.includes(tal), tal);
+  assert.ok(tekst.includes('Figur 8.2 Med omslag'));
   assert.ok(tekst.includes('fra afsnit 8'));
-  assert.ok(tekst.includes('pr. meter sikret længde fra afsnit 8'));
+  assert.ok(tekst.includes('regnet med reduktion for ender og gennemføringer'));
+  // Uden reduktion er der intet afsnit om længde, ender og gennemføringer.
+  assert.ok(!dokument().tekst.includes('Længde, ender og gennemføringer'));
 });
 
 test('noten om at slå geonettet tilbage følger afstanden i kort 7 og kræver omslag', () => {

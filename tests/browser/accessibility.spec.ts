@@ -52,7 +52,7 @@ for (const width of [1440, 390]) {
     await expect(page.getByText(/Beregninger på eget ansvar/)).toBeVisible();
     await expect(page.getByText('Ikke relevant', { exact: true }).first()).toBeVisible();
     expect(await axe(page)).toEqual([]);
-    // Kort 8 med reduktion, figur og udfoldede mellemregninger (K-29), og kort 9 med dybere
+    // Kort 4 med reduktion, længdesnit og udfoldede mellemregninger (K-29), og kort 9 med dybere
     // forankring, advarsler, figur og udfoldede mellemregninger (K-25).
     for (const [navn, vaerdi] of [
       ['GVS under terræn (m)', '0.8'],
@@ -64,13 +64,13 @@ for (const width of [1440, 390]) {
       await felt.press('Enter');
     }
     await page
-      .getByRole('checkbox', { name: 'Beregn med reduktion for ender og gennemføringer' })
+      .getByRole('checkbox', { name: 'Beregning med reduktion for ender og gennemføringer' })
       .click();
-    const kort8 = page.locator('section.calc-card', {
-      has: page.getByRole('heading', { name: '8 Beregning med reduktion for gennemføringer' }),
+    const kort4 = page.locator('section.calc-card', {
+      has: page.getByRole('heading', { name: '4 Længde, ender og gennemføringer' }),
     });
-    await kort8.getByRole('button', { name: 'Mellemregninger' }).first().click();
-    await expect(kort8.getByRole('img', { name: /Længdesnit/ })).toBeVisible();
+    await kort4.getByRole('button', { name: 'Mellemregninger' }).click();
+    await expect(kort4.getByRole('img', { name: /Længdesnit/ })).toBeVisible();
     await page.getByRole('checkbox', { name: 'Beregn nødvendig forankringsdybde' }).click();
     const laengde = page.getByRole('spinbutton', {
       name: 'Mulig forankringslængde pr. side Lgeonet (m)',

@@ -533,9 +533,12 @@ export function kontrolUdenGeonet(r: OpdriftResultat): Mellemregning {
       };
 }
 
-export const restopdriftRaekke = (r: OpdriftResultat): Mellemregning => ({
+export const restopdriftRaekke = (
+  r: OpdriftResultat,
+  { O, B, F }: Symboler = symbolerPrMeter,
+): Mellemregning => ({
   forklaring: 'Resterende opdrift som skal optages af geonet',
-  formel: `F_{op,d} = O_{d} − B_{d} = ${tal(r.O)} − ${tal(r.B)}`,
+  formel: `${F} = ${O} − ${B} = ${tal(r.O)} − ${tal(r.B)}`,
   resultat: kNm(r.Fopdrift),
   hoved: true,
 });
@@ -567,11 +570,14 @@ export const rfRaekker = (r: OpdriftResultat): Mellemregning[] => [
 
 export const bbaNote = `Reduktionsfaktorer fremgår af “British Board of Agreement” (BBA) certifikat No. ${bba}, se www.byggros.com`;
 
-export const designRaekke = (r: OpdriftResultat): Mellemregning =>
+export const designRaekke = (
+  r: OpdriftResultat,
+  { F }: Symboler = symbolerPrMeter,
+): Mellemregning =>
   r.geonet.uts === null
     ? {
         forklaring: 'Regningsmæssig trækstyrke geonettet kan levere',
-        formel: `Intet produkt i ét lag opfylder P_{d}/F_{op,d} > ${tal(standarder.krav.geonet)} ved F_{op,d} = ${tal(r.Fopdrift)} kN/m.`,
+        formel: `Intet produkt i ét lag opfylder P_{d}/${F} > ${tal(standarder.krav.geonet)} ved ${F} = ${tal(r.Fopdrift)} kN/m.`,
         hoved: true,
       }
     : {
@@ -587,15 +593,18 @@ export const friktionsvinkelRaekke = (r: OpdriftResultat, input: OpdriftInput): 
   resultat: `${tal(r.phiD)}°`,
 });
 
-export const kraftoptagelseRaekke = (r: OpdriftResultat): Mellemregning => ({
+export const kraftoptagelseRaekke = (
+  r: OpdriftResultat,
+  { F, K }: Symboler = symbolerPrMeter,
+): Mellemregning => ({
   forklaring: 'Kraft forankringen skal dimensioneres for',
-  formel: `K = F_{op,d} · S₂ = ${tal(r.Fopdrift)} · ${tal(r.S2)}`,
+  formel: `${K} = ${F} · S₂ = ${tal(r.Fopdrift)} · ${tal(r.S2)}`,
   resultat: kNm(r.K),
   hoved: true,
 });
 
-export const kraftNote = (avanceret: boolean) =>
-  `${avanceret ? 'Kraftoverførslen regnes med den effektive lodrette spænding i nettets niveau: tør fyld over GVS og effektiv rumvægt under.' : 'Geonettet ligger under GVS, så kraftoverførslen regnes med γ′_{d}.'} Forankringen på begge sider skal tilsammen optage K = F_{op,d} · S₂.`;
+export const kraftNote = (avanceret: boolean, { F, K }: Symboler = symbolerPrMeter) =>
+  `${avanceret ? 'Kraftoverførslen regnes med den effektive lodrette spænding i nettets niveau: tør fyld over GVS og effektiv rumvægt under.' : 'Geonettet ligger under GVS, så kraftoverførslen regnes med γ′_{d}.'} Forankringen på begge sider skal tilsammen optage ${K} = ${F} · S₂.`;
 
 export const toLedningerNote =
   'Der er ingen opdriftskontrol for to ledninger. Ved to forskellige ledninger angives den største diameter og den mindste egenvægt.';
@@ -609,15 +618,15 @@ export const dybAdvarsel =
 export const dybUnderRoerbund = (underRoerbund: number) =>
   `Det nederste netlag ligger ${tal(underRoerbund)} m under rørbunden. Udgravning, indbygning og komprimering under røret skal vurderes særskilt.`;
 
-/** Mellemregningerne for dybere forankring i de tre grupper fra kort 9. `kort` er det kort, K kommer
- * fra: kort 7 pr. meter rør eller kort 8 pr. meter sikret længde. */
+/** Mellemregningerne for dybere forankring i tre grupper. `kort` er nummeret på kortet for
+ * forankring, som K kommer fra; med reduktion er det K_s pr. meter sikret længde. */
 export function dybGrupper(
   r: OpdriftResultat,
   input: OpdriftInput,
   dyb: Extract<DybForankring, { tilstand: 'dybere' }>,
-  kort: 7 | 8 = 7,
+  kort = 7,
+  sym: Symboler = symbolerPrMeter,
 ): { titel: string; raekker: Mellemregning[] }[] {
-  const sym = kort === 8 ? symbolerSikret : symbolerPrMeter;
   const { d, gvs } = input;
   const mu = tal(standarder.mu);
   const tanPhi = `tan ${tal(r.phiD)}°`;
@@ -711,31 +720,29 @@ export function dybGrupper(
   ];
 }
 
-/** Teksterne til beregningen med reduktion for gennemføringer i kort 8 (fund K-29). */
+/** Teksterne til beregningen med reduktion for ender og gennemføringer (fund K-29). Kortet
+ * »Længde, ender og gennemføringer« vises efter kort 3, når reduktionen er valgt. */
 export const reduktionIndledning =
-  'Ved et rør eller en tank med afrundede ender eller gennemføringer i toppen kan geonettet ikke lægges over enderne og ved gennemføringerne. Opdriften virker alligevel på hele røret. Beregningen regner opdrift og ballast for hele røret og fordeler restopdriften på den længde, hvor geonettet kan lægges. Geonet og forankring regnes derefter pr. meter sikret længde med de samme formler som i kort 6 og 7.';
+  'Geonettet kan ikke lægges over afrundede ender og ved gennemføringer i rørets top, men opdriften virker på hele røret. Opdrift og ballast regnes derfor for hele røret og fordeles på den længde, hvor geonettet kan lægges. Geonet og forankring regnes derefter pr. meter sikret længde.';
+
+export const reduktionHjaelp =
+  'Røret regnes med sin samlede længde, når geonettet ikke kan lægges over afrundede ender og ved gennemføringer. Længden, enderne og gennemføringerne angives i et ekstra kort.';
 
 export const reduktionForudsaetninger = [
   'De afrundede ender regnes med fuldt tværsnit. En afrundet ende fortrænger mindre vand og har mere fyld over sig, så antagelsen er på den sikre side.',
   'Ved gennemføringerne er jorden gravet væk, så der regnes ingen ballast i deres bredde. Gennemføringen regnes tom og tæt og giver opdrift fra rørtoppen op til GVS med sit cirkulære eller rektangulære tværsnit. Gennemføringens egenvægt medregnes ikke.',
   'Røret forudsættes stift i længderetningen, så opdriften fra ender og gennemføringer føres til de sikrede stykker. Gennemføringernes placering har ingen betydning for beregningen.',
-  'Rørets egenvægt i kort 4 er pr. meter. Ved en tank er det den samlede vægt divideret med L_{rør}.',
+  'Rørets egenvægt angives pr. meter. Ved en tank er det den samlede vægt divideret med L_{rør}.',
 ];
 
-/** Noten, når sikring ikke er nødvendig pr. meter rør, men er det for hele røret. */
-export const reduktionKantNote = (S1prMeter: number, S1tot: number, rapport = false) =>
-  `Pr. meter rør er S₁ = ${tal(S1prMeter)} ≥ ${tal(standarder.krav.S1, 1)}, så ${rapport ? 'afsnit 6 og 7 er udeladt' : 'kort 6 og 7 viser »Ikke relevant«'}. For hele røret er S₁ = ${tal(S1tot)}, fordi gennemføringerne fjerner ballast og giver opdrift. Geonet og forankring regnes derfor her.`;
+export const reduktionOpdriftNote =
+  'Opdrift og ballast pr. meter rør regnes for hele røret og fordeles på den sikrede længde L_{sikret}. Geonet og forankring regnes med O_{d,s} og B_{d,s} pr. meter sikret længde.';
 
 const kN = (x: number) => `${tal(x)} kN`;
+const plus = (xs: number[]) => xs.map((x) => tal(x)).join(' + ');
 
-/** Mellemregningerne for kort 8 i grupper. `r` er resultatet pr. meter rør fra kort 5–7. */
-export function reduktionGrupper(
-  r: OpdriftResultat,
-  input: OpdriftInput,
-  red: ReduktionResultat,
-): { titel: string; raekker: Mellemregning[] }[] {
-  const rs = red.r;
-  const s = symbolerSikret;
+/** Mellemregningen for den sikrede længde i kortet »Længde, ender og gennemføringer«. */
+export function sikretLaengdeRaekker(red: ReduktionResultat): Mellemregning[] {
   const harEnder = red.ender.length > 0;
   const harGf = red.gennemfoeringer.length > 0;
   const fra = ['L_{rør}', harEnder ? 'ΣL_{ende}' : '', harGf ? 'Σd_{g}' : '']
@@ -745,11 +752,7 @@ export function reduktionGrupper(
     .filter((x): x is number => x !== null)
     .map((x) => tal(x))
     .join(' − ');
-  const plus = (xs: number[]) => xs.map((x) => tal(x)).join(' + ');
-  const T2 = r.gvsZone === null ? 0 : input.gvs;
-  const pk = r.partialkoefficienter;
-
-  const laengde: Mellemregning[] = [
+  return [
     { forklaring: 'Rørets samlede længde', formel: 'L_{rør}, angivet', resultat: meter(red.Lroer) },
     ...(harEnder
       ? [
@@ -778,134 +781,88 @@ export function reduktionGrupper(
       hoved: true,
     },
   ];
+}
 
-  const opdrift: Mellemregning[] = [
-    {
-      forklaring: 'Rørets opdrift i hele længden',
-      detalje: 'fuldt tværsnit, også ved enderne',
-      formel: `O_{d} · L_{rør} = ${tal(r.O)} · ${tal(red.Lroer)}`,
-      resultat: kN(red.Oroer),
-    },
-    ...(harGf
-      ? [
-          {
-            forklaring: 'Højde af gennemføringens hulrum under GVS',
-            formel: `h_{g} = max(0; h₁ − T₂) = max(0; ${tal(input.h1)} − ${tal(T2)})`,
-            resultat: meter(red.gennemfoeringer[0].h),
-          },
-          ...red.gennemfoeringer.map((g, n) => ({
-            forklaring: 'Opdrift af gennemføringens hulrum',
-            detalje: `gennemføring ${n + 1}, ${g.b === null ? 'cirkulær' : 'rektangulær'}`,
-            formel:
-              g.b === null
-                ? `ΔO_{g,${n + 1}} = π/4 · d_{g,${n + 1}}² · h_{g} · γ_{w} · γ_{f} = π/4 · ${tal(g.d)}² · ${tal(g.h)} · ${tal(standarder.gammaW, 0)} · ${tal(pk.gammaF)}`
-                : `ΔO_{g,${n + 1}} = d_{g,${n + 1}} · b_{g,${n + 1}} · h_{g} · γ_{w} · γ_{f} = ${tal(g.d)} · ${tal(g.b)} · ${tal(g.h)} · ${tal(standarder.gammaW, 0)} · ${tal(pk.gammaF)}`,
-            resultat: kN(g.O),
-          })),
-        ]
-      : []),
-    {
-      forklaring: 'Samlet opdrift',
-      formel: harGf
-        ? `O_{d,tot} = O_{d} · L_{rør} + ΣΔO_{g} = ${plus([red.Oroer, ...red.gennemfoeringer.map((g) => g.O)])}`
-        : `O_{d,tot} = O_{d} · L_{rør} = ${tal(red.Oroer)}`,
-      resultat: kN(red.Otot),
-      hoved: true,
-    },
-  ];
-
-  const ballast: Mellemregning[] = [
-    ...(harGf
-      ? [
-          {
-            forklaring: 'Længde med jorddække',
-            detalje: 'ingen ballast ved gennemføringerne',
-            formel: `L_{ballast} = L_{rør} − Σd_{g} = ${tal(red.Lroer)} − ${tal(red.sumGennemfoeringer)}`,
-            resultat: meter(red.Lballast),
-          },
-        ]
-      : []),
-    {
-      forklaring: 'Samlet ballast',
-      formel: harGf
-        ? `B_{d,tot} = B_{d} · L_{ballast} = ${tal(r.B)} · ${tal(red.Lballast)}`
-        : `B_{d,tot} = B_{d} · L_{rør} = ${tal(r.B)} · ${tal(red.Lroer)}`,
-      resultat: kN(red.Btot),
-      hoved: true,
-    },
-    red.S1 === null
-      ? {
-          forklaring: 'Ballast i forhold til opdrift',
-          formel: 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.',
-          hoved: true,
-        }
-      : {
-          forklaring: 'Ballast i forhold til opdrift for hele røret',
-          formel: `S₁ = B_{d,tot}/O_{d,tot} = ${tal(red.Btot)}/${tal(red.Otot)} (krav ≥ ${tal(standarder.krav.S1, 1)})`,
-          resultat: tal(red.S1),
-          status: red.S1Status,
-          hoved: true,
-        },
-  ];
-
-  const prMeter: Mellemregning[] = [
-    {
-      forklaring: 'Opdrift pr. meter sikret længde',
-      formel: `${s.O} = O_{d,tot}/L_{sikret} = ${tal(red.Otot)}/${tal(red.Lsikret)}`,
-      resultat: kNm(red.Os),
-    },
-    {
-      forklaring: 'Ballast pr. meter sikret længde',
-      formel: `${s.B} = B_{d,tot}/L_{sikret} = ${tal(red.Btot)}/${tal(red.Lsikret)}`,
-      resultat: kNm(red.Bs),
-    },
-    {
-      forklaring: 'Resterende opdrift som skal optages af geonet',
-      formel: `${s.F} = ${s.O} − ${s.B} = ${tal(red.Os)} − ${tal(red.Bs)}`,
-      resultat: kNm(rs.Fopdrift),
-      hoved: true,
-    },
-  ];
-
-  const g = rs.geonet;
-  const geonet: Mellemregning[] =
-    g.uts === null
-      ? [
-          {
-            forklaring: 'Regningsmæssig trækstyrke geonettet kan levere',
-            formel: `Intet produkt i ét lag opfylder P_{d}/${s.F} > ${tal(standarder.krav.geonet)} ved ${s.F} = ${tal(rs.Fopdrift)} kN/m.`,
-            hoved: true,
-          },
-        ]
-      : [
-          {
-            forklaring: 'Regningsmæssig trækstyrke geonettet kan levere',
-            detalje: `X-GRID ${g.navn}`,
-            formel: `P_{d} = UTS/RF = ${tal(g.uts, 0)}/${tal(g.RF)}`,
-            resultat: kNm(g.Ptill),
-          },
-          {
-            forklaring: 'Geonettets styrke i forhold til restopdriften',
-            formel: `P_{d}/${s.F} = ${tal(g.Ptill)}/${tal(rs.Fopdrift)} (krav > ${tal(standarder.krav.geonet)})`,
-            resultat: tal(g.sikkerhed),
-            status: g.status,
-            hoved: true,
-          },
-        ];
-
+/** Opdrift og ballast for hele røret og pr. meter sikret længde i kortet for opdrift og ballast.
+ * `r` er resultatet pr. meter rør. */
+export function heleRoeretGrupper(
+  r: OpdriftResultat,
+  input: OpdriftInput,
+  red: ReduktionResultat,
+): { titel: string; raekker: Mellemregning[] }[] {
+  const s = symbolerSikret;
+  const harGf = red.gennemfoeringer.length > 0;
+  const T2 = r.gvsZone === null ? 0 : input.gvs;
+  const pk = r.partialkoefficienter;
   return [
-    { titel: 'Sikret længde', raekker: laengde },
-    { titel: 'Samlet opdrift', raekker: opdrift },
-    { titel: 'Samlet ballast', raekker: ballast },
-    { titel: 'Pr. meter sikret længde', raekker: prMeter },
-    { titel: 'Geonet', raekker: geonet },
     {
-      titel: 'Kraftoptagelse',
+      titel: 'Hele røret',
       raekker: [
         {
-          forklaring: 'Kraft forankringen skal dimensioneres for',
-          formel: `${s.K} = ${s.F} · S₂ = ${tal(rs.Fopdrift)} · ${tal(rs.S2)}`,
-          resultat: kNm(rs.K),
+          forklaring: 'Rørets opdrift i hele længden',
+          detalje: 'fuldt tværsnit, også ved enderne',
+          formel: `O_{d} · L_{rør} = ${tal(r.O)} · ${tal(red.Lroer)}`,
+          resultat: kN(red.Oroer),
+        },
+        ...(harGf
+          ? [
+              {
+                forklaring: 'Højde af gennemføringens hulrum under GVS',
+                formel: `h_{g} = max(0; h₁ − T₂) = max(0; ${tal(input.h1)} − ${tal(T2)})`,
+                resultat: meter(red.gennemfoeringer[0].h),
+              },
+              ...red.gennemfoeringer.map((g, n) => ({
+                forklaring: 'Opdrift af gennemføringens hulrum',
+                detalje: `gennemføring ${n + 1}, ${g.b === null ? 'cirkulær' : 'rektangulær'}`,
+                formel:
+                  g.b === null
+                    ? `ΔO_{g,${n + 1}} = π/4 · d_{g,${n + 1}}² · h_{g} · γ_{w} · γ_{f} = π/4 · ${tal(g.d)}² · ${tal(g.h)} · ${tal(standarder.gammaW, 0)} · ${tal(pk.gammaF)}`
+                    : `ΔO_{g,${n + 1}} = d_{g,${n + 1}} · b_{g,${n + 1}} · h_{g} · γ_{w} · γ_{f} = ${tal(g.d)} · ${tal(g.b)} · ${tal(g.h)} · ${tal(standarder.gammaW, 0)} · ${tal(pk.gammaF)}`,
+                resultat: kN(g.O),
+              })),
+            ]
+          : []),
+        {
+          forklaring: 'Samlet opdrift',
+          formel: harGf
+            ? `O_{d,tot} = O_{d} · L_{rør} + ΣΔO_{g} = ${plus([red.Oroer, ...red.gennemfoeringer.map((g) => g.O)])}`
+            : `O_{d,tot} = O_{d} · L_{rør} = ${tal(red.Oroer)}`,
+          resultat: kN(red.Otot),
+          hoved: true,
+        },
+        ...(harGf
+          ? [
+              {
+                forklaring: 'Længde med jorddække',
+                detalje: 'ingen ballast ved gennemføringerne',
+                formel: `L_{ballast} = L_{rør} − Σd_{g} = ${tal(red.Lroer)} − ${tal(red.sumGennemfoeringer)}`,
+                resultat: meter(red.Lballast),
+              },
+            ]
+          : []),
+        {
+          forklaring: 'Samlet ballast',
+          formel: harGf
+            ? `B_{d,tot} = B_{d} · L_{ballast} = ${tal(r.B)} · ${tal(red.Lballast)}`
+            : `B_{d,tot} = B_{d} · L_{rør} = ${tal(r.B)} · ${tal(red.Lroer)}`,
+          resultat: kN(red.Btot),
+          hoved: true,
+        },
+      ],
+    },
+    {
+      titel: 'Pr. meter sikret længde',
+      raekker: [
+        {
+          forklaring: 'Opdrift pr. meter sikret længde',
+          formel: `${s.O} = O_{d,tot}/L_{sikret} = ${tal(red.Otot)}/${tal(red.Lsikret)}`,
+          resultat: kNm(red.Os),
+          hoved: true,
+        },
+        {
+          forklaring: 'Ballast pr. meter sikret længde',
+          formel: `${s.B} = B_{d,tot}/L_{sikret} = ${tal(red.Btot)}/${tal(red.Lsikret)}`,
+          resultat: kNm(red.Bs),
           hoved: true,
         },
       ],
@@ -913,5 +870,19 @@ export function reduktionGrupper(
   ];
 }
 
-export const reduktionKraftNote = (r: OpdriftResultat) =>
-  `Kraftoverførslen pr. meter forankringslængde afhænger ikke af rørets længde og er den samme som pr. meter rør: F_{bund} = ${tal(r.Fbund)} kN/m og F_{top} = ${tal(r.Ftop)} kN/m.`;
+/** Kontrollen uden geonet for hele røret. */
+export function kontrolUdenGeonetHeleRoeret(red: ReduktionResultat): Mellemregning {
+  return red.S1 === null
+    ? {
+        forklaring: 'Ballast i forhold til opdrift',
+        formel: 'S₁ kan ikke regnes, da røret ikke påvirkes af opdrift.',
+        hoved: true,
+      }
+    : {
+        forklaring: 'Ballast i forhold til opdrift for hele røret',
+        formel: `S₁ = B_{d,tot}/O_{d,tot} = ${tal(red.Btot)}/${tal(red.Otot)} (krav ≥ ${tal(standarder.krav.S1, 1)})`,
+        resultat: tal(red.S1),
+        status: red.S1Status,
+        hoved: true,
+      };
+}
