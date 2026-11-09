@@ -54,6 +54,7 @@ import {
   symbolerSikret,
   toLedningerNote,
   tovkraftNote,
+  udfoerselPunkter,
   type Mellemregning,
   type Symboler,
 } from './mellemregninger';
@@ -1336,6 +1337,18 @@ export function Opdriftssikring() {
               />
             </Trin>
           )}
+
+          {/* Udførelsen er det sidste kort (beslutning 10. november 2026). */}
+          <Trin nr={avanceret ? nr(9) : nr(8)} titel="Udførsel" dimmed={ikkeNoedvendig}>
+            {ikkeNoedvendig && <Notice>{ikkeNoedvendigNote}</Notice>}
+            <ul className="settings-prose forudsaetninger">
+              {udfoerselPunkter(input, rv).map((t) => (
+                <li key={t}>
+                  <Fmt text={t} />
+                </li>
+              ))}
+            </ul>
+          </Trin>
 
           {punkter.length > 0 && (
             <section

@@ -47,6 +47,7 @@ import {
   symbolerSikret,
   toLedningerNote,
   tovkraftNote,
+  udfoerselPunkter,
   type Mellemregning,
   type Symboler,
 } from '../ui/mellemregninger.ts';
@@ -800,6 +801,14 @@ export function rapportDokument(
     }
     nyt(`${nr(8)}. Dybere forankring ved begrænset plads`, blokke, { nySide: true });
   }
+
+  // Udførelsen er det sidste afsnit, når opdriftssikring er nødvendig (beslutning 10. november 2026).
+  if (rv.S1Status !== 'OK')
+    nyt(
+      `${dyb ? nr(8) + 1 : nr(8)}. Udførsel`,
+      [{ type: 'punkter', punkter: udfoerselPunkter(input, rv).map(dele) }],
+      { samlet: true },
+    );
 
   const personer = [o.sagsbehandler, o.kontrollant].map(personLinjer).filter((p) => p.length > 0);
   return {
