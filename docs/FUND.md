@@ -35,11 +35,11 @@ Eksemplerne er regnet med arkets formler. Hvor andet ikke står, er fyldet γ = 
 | K-22 | Reduktionsfaktorerne pr. net bruges ikke | Data, P_till | Afgjort: ét fælles sæt |
 | K-23 | Omslag over terræn ved lav rørmidte | Løsning C og D | Afgjort: omslag ikke muligt |
 | K-24 | Betegnelsen »2xLgeonet« mellem rørene | Tekst, løsning B og D | Afgjort: L_mellem |
-| K-25 | Dybere forankring ved begrænset plads | Ny beregning, én ledning med omslag | Afgjort: kort 9 i avanceret beregning |
-| K-26 | Afstanden mellem netlagene ved omslag er fast 0,2 m | Løsning C og D, kort 9 | Afgjort: redigerbar 0,2–0,4 m, standard 0,2 m |
+| K-25 | Dybere forankring ved begrænset plads | Ny beregning, én ledning med omslag | Afgjort: kort 8 i avanceret beregning, kort 9 med reduktion |
+| K-26 | Afstanden mellem netlagene ved omslag er fast 0,2 m | Løsning C og D, dybere forankring | Afgjort: redigerbar 0,2–0,4 m, standard 0,2 m |
 | K-27 | Kraftens vej: trækket i nettet, knækket og trissevirkningen | Nettets styrke, forankring | Åben: som arket, arkets note vises |
 | K-28 | DANVA kræver forankring på 1,5 · F_opdrift pr. side | Forankring | Åben: som arket |
-| K-29 | Afrundede ender og gennemføringer kan ikke sikres | Ny beregning for hele røret | Afgjort: kort 8 i avanceret beregning |
+| K-29 | Afrundede ender og gennemføringer kan ikke sikres | Ny beregning for hele røret | Afgjort: valg i kort 3 og kort 4 i avanceret beregning |
 
 Når et fund er aktivt for den aktuelle beregning, vises en oplysning under Kontrolpunkter på beregningssiden. Det gælder K-05, K-08 og K-12. Den dybere forankring (K-25) har sine advarsler i kort 8. Beregningen påvirkes ikke, og kontrolpunkterne kommer ikke med i rapporten.
 
@@ -468,7 +468,7 @@ Faktorerne i H24:K27 bruges ingen steder. Da alle kolonner og kopien i Rapporten
 
 **Besluttet 31. oktober 2026.** Beregningen indføres i et eget kort, kun i avanceret beregning og kun for én ledning med omslag. Metoden er ikke dokumenteret; lokal jordreaktion, jordbrud, netkræfter og deformationer er ikke eftervist. Kortet har derfor en fast advarsel, og kontrolpunktet K-25 vises, når der regnes en dybere forankring. Indført samme dag som kort 8 efter brugerens godkendelse af tekster og kontroltal.
 
-**9. november 2026.** Kortet er flyttet til kort 9 og rapportens afsnit 9, fordi kort 8 er beregningen med reduktion for gennemføringer (K-29). Når kort 8 er slået til, regner kort 9 med K_s fra kort 8.
+**9. november 2026.** Kortet er flyttet til kort 9 og rapportens afsnit 9, fordi kort 8 er beregningen med reduktion for gennemføringer (K-29). Når kort 8 er slået til, regner kort 9 med K_s fra kort 8. Samme dag blev reduktionen lagt ind i beregningsgangen: dybere forankring er igen kort 8 og afsnit 8, og kort 9 og afsnit 9, når reduktionen er valgt, og regner da med K_s.
 
 **1. november 2026.** Kontrolpunktet K-25 er fjernet fra »Kontrolpunkter«. Kort 8 har fortsat den faste advarsel og advarslen, når nettet ligger under rørbunden; den står nu lige over mellemregningerne.
 
@@ -569,3 +569,5 @@ Ved Ø1000 er begge længder mindstelængden 1,00 m, og nettet er 3,6 og 4,6 m. 
 **Besluttet 9. november 2026.** Beregningen indføres som kort 8 »Beregning med reduktion for gennemføringer« i avanceret beregning, jf. [BESLUTNINGER.md](BESLUTNINGER.md) og [FORSLAG_SIKRET_LAENGDE.md](FORSLAG_SIKRET_LAENGDE.md). Opdriften regnes i hele røret med fuldt tværsnit ved enderne (på den sikre side) og opdriften af gennemføringernes hulrum. Der regnes ingen ballast i gennemføringernes bredde. Geonet og løsning A–D regnes pr. meter sikret længde. `beregnOpdrift` og kort 5–7 er uændrede. Kontroltallene er godkendt samme dag.
 
 **9. november 2026.** En gennemføring kan også være rektangulær med bredden d_g langs røret og b_g på tværs; opdriften af hulrummet regnes da med arealet d_g · b_g. Eksempel: tank 10 m med en gennemføring på 0,80 × 1,00 m giver ΔO_g = 13,20 kN mod 8,29 kN for en cirkulær med diameteren 0,80 m.
+
+**9. november 2026.** Reduktionen vælges i kort 3 og har kort 4 »Længde, ender og gennemføringer« til inddata. Kortene for opdrift og ballast, geonet og forankring regner med reduktionen, og det tidligere kort 8 udgår, jf. [FORSLAG_REDUKTION_I_BEREGNINGEN.md](FORSLAG_REDUKTION_I_BEREGNINGEN.md). Beregningen er uændret.

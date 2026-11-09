@@ -37,7 +37,8 @@
 .calc-fields-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
-/* Kort 8: et felt i hele bredden og to kolonner, der vokser med antallet af ender og gennemføringer. */
+/* Kortet for længde, ender og gennemføringer: et felt i hele bredden og to kolonner, der vokser med
+   antallet af ender og gennemføringer. */
 .calc-fields > .is-fuld {
   grid-column: 1 / -1;
 }
@@ -45,6 +46,9 @@
   display: grid;
   gap: 22px;
   align-content: start;
+}
+.laengde-felter {
+  margin-top: 16px;
 }
 .calc-figure {
   margin: 0;

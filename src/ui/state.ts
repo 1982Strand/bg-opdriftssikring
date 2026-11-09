@@ -1,5 +1,5 @@
-import type { Konsekvensklasse, OpdriftInput } from '../engine/opdrift.ts';
-import type { ReduktionInput } from '../engine/reduktion.ts';
+import type { Konsekvensklasse, OpdriftInput, OpdriftResultat } from '../engine/opdrift.ts';
+import { beregnReduktion, type ReduktionInput } from '../engine/reduktion.ts';
 import standarder from '../engine/defaults.json' with { type: 'json' };
 
 export interface RapportPerson {
@@ -18,9 +18,7 @@ export interface RapportOplysninger {
   sagsbehandler: RapportPerson;
   kontrollant: RapportPerson;
   losninger: Record<'A' | 'B' | 'C' | 'D', boolean>;
-  /** Beregningen med reduktion for gennemføringer medtages som afsnit 8; vælges på rapportsiden. */
-  reduktion: boolean;
-  /** Dybere forankring medtages som afsnit 9; vælges på rapportsiden. */
+  /** Dybere forankring medtages som sidste afsnit; vælges på rapportsiden. */
   dybForankring: boolean;
 }
 export type GennemfoeringForm = 'cirkulaer' | 'rektangulaer';
@@ -45,7 +43,8 @@ export interface Session {
     dybForankringAktiv: boolean;
     /** Forankringslængden pr. side, der er plads til, m. */
     dybForankringL: number;
-    /** Beregning med reduktion for gennemføringer (fund K-29); kun i avanceret beregning. */
+    /** Beregning med reduktion for ender og gennemføringer (fund K-29), valgt i kort 3; kun i
+     * avanceret beregning. */
     reduktionAktiv: boolean;
     /** Rørets samlede længde L_rør, m. */
     reduktionLroer: number;
@@ -77,7 +76,6 @@ export const standardRapport = (): RapportOplysninger => ({
   sagsbehandler: tomPerson(),
   kontrollant: tomPerson(),
   losninger: { A: true, B: true, C: true, D: true },
-  reduktion: false,
   dybForankring: false,
 });
 export const standardSession = (): Session => ({
@@ -145,6 +143,19 @@ export function tilReduktionInput(s: Session): ReduktionInput {
       .map((f, n) => (f === 'rektangulaer' ? i.gennemfoeringTvaers[n] : null)),
   };
 }
+/** Beregningen med reduktion, når den er valgt i kort 3 i avanceret beregning (fund K-29). `rv` er
+ * resultatet, som kortene for opdrift og ballast, geonet og forankring viser: pr. meter sikret længde
+ * med reduktion, ellers pr. meter rør. `rv` er null, når længder, ender eller gennemføringer har fejl. */
+export function medReduktion(s: Session, input: OpdriftInput, r: OpdriftResultat) {
+  const aktiv = s.avanceret && s.inddata.reduktionAktiv;
+  const red = aktiv ? beregnReduktion(r, input, tilReduktionInput(s)) : null;
+  const res = red?.ok ? red.resultat : null;
+  return { aktiv, red, res, rv: aktiv ? (res?.r ?? null) : r };
+}
+/** Kortenes og rapportens numre: kortet for længde, ender og gennemføringer er kort 4, når
+ * reduktionen er valgt, og de følgende kort rykker et nummer (beslutning 9. november 2026). */
+export const kortNr = (reduktion: boolean, nr: number) => (reduktion && nr >= 4 ? nr + 1 : nr);
+export const reduktionValgt = (s: Session) => s.avanceret && s.inddata.reduktionAktiv;
 const num = (v: unknown, d: number, min = -Infinity, max = Infinity) =>
   typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max ? v : d;
 const tekst = (v: unknown) => (typeof v === 'string' ? v : '');
@@ -171,7 +182,6 @@ function parseRapport(v: unknown): RapportOplysninger {
     sagsbehandler: person(r.sagsbehandler),
     kontrollant: person(r.kontrollant),
     losninger: { A: l.A !== false, B: l.B !== false, C: l.C !== false, D: l.D !== false },
-    reduktion: r.reduktion === true,
     dybForankring: r.dybForankring === true,
   };
 }

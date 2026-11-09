@@ -234,7 +234,7 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
   await iTerraen.click();
   await expect(gvsFelt).toBeEnabled();
   await saet(page, 'GVS under terræn (m)', '2');
-  // Kort 6, 7 og 9 (avanceret beregning) har samme note, og kort 9 er låst.
+  // Kort 6, 7 og 8 (avanceret beregning) har samme note, og kort 8 er låst.
   await expect(
     page.getByText(
       'S₁ ≥ 1,0: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.',
@@ -526,88 +526,107 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);
 });
 
-test('beregning med reduktion for gennemføringer findes kun i avanceret beregning (K-29)', async ({
+test('reduktion for ender og gennemføringer vælges i kort 3 og regnes i de følgende kort (K-29)', async ({
   page,
 }) => {
   await start(page);
-  const overskrift = page.getByRole('heading', {
-    name: '8 Beregning med reduktion for gennemføringer',
+  const valg = page.getByRole('checkbox', {
+    name: 'Beregning med reduktion for ender og gennemføringer',
   });
-  await expect(overskrift).toHaveCount(0);
+  await expect(valg).toBeDisabled();
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
-  const kort = page.locator('section.calc-card', { has: overskrift });
-  const fliseI = (label: string) =>
-    kort.locator('.m9-result-cards > div', { hasText: label }).first();
-  const laengde = 'Rørets samlede længde Lrør (m)';
-  await expect(kort.getByRole('spinbutton', { name: laengde })).toBeDisabled();
-  await expect(fliseI('Sikret længde')).toHaveCount(0);
-  await kort
-    .getByRole('checkbox', { name: 'Beregn med reduktion for ender og gennemføringer' })
-    .click();
-
-  // Kontroltal: tank 10 m med to ender på 0,60 m og én gennemføring på 0,80 m.
-  await expect(fliseI('Sikret længde').locator('strong')).toHaveText('8,00');
-  await expect(fliseI('Kontrol uden geonet').locator('strong')).toHaveText('0,44');
-  await expect(fliseI('Restopdrift').locator('strong')).toHaveText('38,13');
-  await expect(fliseI('Valgt geonet').locator('strong')).toHaveText('X-GRID 110');
-  await expect(fliseI('Valgt geonet').locator('p')).toHaveText('Pd/Fop,d,s = 1,37, krav > 1,01');
-  await expect(kort.getByRole('img', { name: /Længdesnit/ })).toBeVisible();
-  await expect(
-    kort.getByText(/De afrundede ender regnes med fuldt tværsnit.*på den sikre side/),
-  ).toBeVisible();
-  // Kort 7 er uændret pr. meter rør.
-  await expect(flise(page, 'Kraftoptagelse K').locator('strong')).toHaveText('28,94');
-
-  await kort.getByRole('button', { name: 'Mellemregninger' }).first().click();
-  await mellemregning(kort, 'Længde, hvor geonettet kan lægges', [
-    'Lsikret = Lrør − ΣLende − Σdg = 10,00 − 1,20 − 0,80',
-    '8,00 m',
-  ]);
-  await mellemregning(kort, 'Samlet ballast', [
-    'Bd,tot = Bd · Lballast = 26,43 · 9,20',
-    '243,20 kN',
-  ]);
-  await mellemregning(kort, 'Kraft forankringen skal dimensioneres for', [
-    'Ks = Fop,d,s · S₂ = 38,13 · 1,05',
-    '40,04 kN/m',
-  ]);
-  const a = kort.locator('.solution-card', {
-    has: page.getByRole('heading', { name: 'Uden omslag, én ledning', exact: true }),
+  const kort4 = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '4 Længde, ender og gennemføringer' }),
   });
+  await expect(kort4).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: '4 Egenvægt og fyldmateriale' })).toBeVisible();
+  await valg.click();
+
+  // Kort 4 med længdesnit og forudsætninger, og de følgende kort rykker et nummer.
+  await expect(kort4.getByRole('img', { name: /Længdesnit/ })).toBeVisible();
+  await expect(
+    kort4.getByText(/De afrundede ender regnes med fuldt tværsnit.*på den sikre side/),
+  ).toBeVisible();
+  for (const navn of [
+    '5 Egenvægt og fyldmateriale',
+    '6 Opdrift og stabiliserende ballast',
+    '7 Geonet',
+    '8 Forankring',
+    '9 Dybere forankring ved begrænset plads',
+  ])
+    await expect(page.getByRole('heading', { name: navn })).toBeVisible();
+
+  // Kontrolcase 1: tank 10 m med to ender på 0,60 m og én gennemføring på 0,80 m.
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('strong')).toHaveText('68,53');
+  await expect(flise(page, 'Regningsmæssig opdrift').locator('p')).toHaveText(
+    'Od,tot = 548,26 kN på Lsikret = 8,00 m',
+  );
+  await expect(flise(page, 'Stabiliserende ballast').locator('strong')).toHaveText('30,40');
+  await expect(flise(page, 'Kontrol uden geonet').locator('strong')).toHaveText('0,44');
+  await expect(flise(page, 'Restopdrift').locator('strong')).toHaveText('38,13');
+  await expect(flise(page, 'Valgt geonet').locator('strong')).toHaveText('X-GRID 110');
+  await expect(flise(page, 'Kraftoptagelse').locator('strong')).toHaveText('40,04');
+  // Løsningerne står kun ét sted og viser netarealet.
+  const a = losning(page, 'Uden omslag, én ledning');
+  await expect(a).toHaveCount(1);
   await expect(a.getByRole('row', { name: /^Forankring pr. side/ })).toContainText('2,35 m');
   await expect(a.getByRole('row', { name: /^Samlet netareal/ })).toContainText('69,08 m²');
 
-  // To gennemføringer og én ende; for lang reduktion giver en feltfejl.
-  await kort.getByRole('radio', { name: '1' }).first().click();
-  await kort.getByRole('radio', { name: '2' }).nth(1).click();
+  await kort4.getByRole('button', { name: 'Mellemregninger' }).click();
+  await mellemregning(kort4, 'Længde, hvor geonettet kan lægges', [
+    'Lsikret = Lrør − ΣLende − Σdg = 10,00 − 1,20 − 0,80',
+    '8,00 m',
+  ]);
+  const kort6 = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '6 Opdrift og stabiliserende ballast' }),
+  });
+  await kort6.getByRole('button', { name: 'Mellemregninger' }).click();
+  await mellemregning(kort6, 'Samlet ballast', [
+    'Bd,tot = Bd · Lballast = 26,43 · 9,20',
+    '243,20 kN',
+  ]);
+  await mellemregning(kort6, 'Opdrift pr. meter sikret længde', [
+    'Od,s = Od,tot/Lsikret = 548,26/8,00',
+    '68,53 kN/m',
+  ]);
+
+  // Én ende, to gennemføringer og en rektangulær gennemføring.
+  const laengde = 'Rørets samlede længde Lrør (m)';
+  await kort4.getByRole('radio', { name: '1' }).first().click();
+  await kort4.getByRole('radio', { name: '2' }).nth(1).click();
   await saet(page, 'Gennemføring 2, diameter dg,2 (m)', '1');
   await saet(page, 'Ende 1, vandret udstrækning Lende,1 (m)', '0.9');
   await saet(page, laengde, '12');
   await saet(page, 'Gennemføring 1, diameter dg,1 (m)', '0.6');
-  await expect(fliseI('Sikret længde').locator('strong')).toHaveText('9,50');
-  await expect(fliseI('Restopdrift').locator('strong')).toHaveText('41,12');
-
-  // En rektangulær gennemføring har en bredde på tværs og regnes med d_g · b_g.
-  await kort.getByRole('radio', { name: 'Rektangulær' }).first().click();
+  await expect(flise(page, 'Restopdrift').locator('strong')).toHaveText('41,12');
+  await kort4.getByRole('radio', { name: 'Rektangulær' }).first().click();
   await expect(
-    kort.getByRole('spinbutton', { name: 'Gennemføring 1, bredde langs røret dg,1 (m)' }),
+    kort4.getByRole('spinbutton', { name: 'Gennemføring 1, bredde langs røret dg,1 (m)' }),
   ).toHaveValue('0.6');
   await saet(page, 'Gennemføring 1, bredde på tværs bg,1 (m)', '1.2');
-  await mellemregning(kort, 'Opdrift af gennemføringens hulrum gennemføring 1, rektangulær', [
+  await mellemregning(kort6, 'Opdrift af gennemføringens hulrum gennemføring 1, rektangulær', [
     'ΔOg,1 = dg,1 · bg,1 · hg · γw · γf = 0,60 · 1,20 · 1,50 · 10 · 1,10',
     '11,88 kN',
   ]);
-  await expect(fliseI('Sikret længde').locator('strong')).toHaveText('9,50');
+
+  // Fejl i kort 4 skjuler resultaterne som andre fejl i inddata.
   await saet(page, laengde, '2');
-  await expect(kort.getByText(/Den sikrede længde Lsikret = Lrør − ΣLende − Σdg/)).toBeVisible();
-  await expect(fliseI('Sikret længde')).toHaveCount(0);
+  await expect(kort4.getByText(/Den sikrede længde Lsikret = Lrør − ΣLende − Σdg/)).toBeVisible();
+  await expect(page.getByText('Beregningen vises, når inddata er rettet.')).toBeVisible();
+  await expect(flise(page, 'Restopdrift')).toHaveCount(0);
+
+  // Uden reduktion er kortene og tallene som før.
+  await valg.click();
+  await expect(kort4).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: '4 Egenvægt og fyldmateriale' })).toBeVisible();
+  await expect(flise(page, 'Kraftoptagelse K').locator('strong')).toHaveText('28,94');
 });
 
 test('dybere forankring ved begrænset plads findes kun i avanceret beregning (K-25)', async ({
   page,
 }) => {
   await start(page);
-  const overskrift = page.getByRole('heading', { name: '9 Dybere forankring ved begrænset plads' });
+  const overskrift = page.getByRole('heading', { name: '8 Dybere forankring ved begrænset plads' });
   await expect(overskrift).toHaveCount(0);
   await saet(page, 'Rørdiameter d (m)', '4');
   await saet(page, 'Jorddækning h₁ (m)', '0.6');

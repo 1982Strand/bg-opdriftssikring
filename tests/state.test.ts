@@ -83,7 +83,6 @@ test('dybere forankring gemmes og indlæses slået fra i ældre beregninger', ()
 test('reduktionen indlæses slået fra i ældre beregninger, og kun de valgte ender og gennemføringer regnes med', () => {
   const gammel = parseSession(JSON.stringify({ inddata: { d: 3 }, rapport: {} })).session;
   assert.equal(gammel.inddata.reduktionAktiv, false);
-  assert.equal(gammel.rapport.reduktion, false);
   assert.deepEqual(tilReduktionInput(gammel), {
     Lroer: 10,
     ender: [0.6, 0.6],

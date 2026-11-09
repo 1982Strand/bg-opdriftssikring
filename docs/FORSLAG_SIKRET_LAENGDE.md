@@ -98,6 +98,8 @@ Til sammenligning gav forslaget, hvor gennemføringen kun fortrængte en cylinde
 
 ## 4. Visning i appen (kort 8)
 
+**Erstattet 9. november 2026.** Reduktionen vælges nu i kort 3 og har sit eget kort 4 til inddata, mens kortene for opdrift og ballast, geonet og forankring regner med reduktionen. Se [FORSLAG_REDUKTION_I_BEREGNINGEN.md](FORSLAG_REDUKTION_I_BEREGNINGEN.md). Afsnit 4 og 5 nedenfor beskriver den første udgave.
+
 Kortet hedder »Beregning med reduktion for gennemføringer« (beslutning 1) og findes kun i avanceret beregning (beslutning 2a). Opbygningen følger kort 7 og 9:
 
 - Indledning og afkrydsningen »Beregn med reduktion for ender og gennemføringer«. Felterne er låst, indtil der er sat kryds.
