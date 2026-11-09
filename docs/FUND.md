@@ -239,7 +239,7 @@ Strimlerne til sprinklertanken i e-mailene (14,86 m og 18,99 m) følger arkets f
 
 Afvigelsen fra arket står i `tests/cases/afvigelser.json` (K-09: B412 − 1,2 og B470 − 0,8). Netlængderne i de godkendte kontroltal i `tests/cases/dyb-forankring.json` og `tests/cases/reduktion.json` er rettet med − 1,2 m.
 
-**Tilbageføring.** Hele ændringen ligger i ét commit, »Netlængde med omslag uden arkets tillæg (K-09)«. Skal tillægget med igen som før, tilbageføres det commit med `git revert`. Det gendanner formlerne, teksten ved netlængden, rapporten, testene og kontroltallene på én gang.
+**Tilbageføring.** Hele ændringen ligger i ét commit, 1356c44 »Netlængde med omslag uden arkets tillæg (K-09)«. Skal tillægget med igen som før, tilbageføres det commit med `git revert`. Det gendanner formlerne, teksten ved netlængden, rapporten, testene og kontroltallene på én gang.
 
 ## K-10 To rør: ingen kontrol og forskellig mellemlængde
 
