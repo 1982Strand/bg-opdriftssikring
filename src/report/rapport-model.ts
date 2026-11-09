@@ -644,6 +644,8 @@ export function rapportDokument(
         : []),
     ];
     const fs = rv.forankringsspaending;
+    // Med GVS i terræn vises kraftoverførslen som i standardberegningen (beslutning 9. november 2026).
+    const torFyld = avanceret && input.gvs > 0;
     const kraftTabel: Blok = {
       type: 'tabel',
       kolonner: ['62', '30', '30'],
@@ -651,7 +653,7 @@ export function rapportDokument(
       hoved: [[], dele('F_{bund}'), dele('F_{top}')],
       raekker: [
         [dele('h (m)'), dele(tal(rv.hBund)), dele(tal(rv.hTop))],
-        avanceret
+        torFyld
           ? [dele('σ′_{v} (kN/m²)'), dele(tal(fs.bund)), dele(tal(fs.top))]
           : [dele('γ′_{d} (kN/m³)'), dele(tal(rv.gammaEffD)), dele(tal(rv.gammaEffD))],
         [dele('μ'), dele(tal(standarder.mu)), dele(tal(standarder.mu))],
@@ -665,7 +667,7 @@ export function rapportDokument(
       [
         h3('Kraftoverførsel'),
         tekst(
-          avanceret
+          torFyld
             ? 'F = σ′_{v} · μ · tan φ_{d} pr. meter forankringslængde.'
             : 'F = h · γ′_{d} · μ · tan φ_{d} pr. meter forankringslængde.',
         ),
@@ -678,7 +680,7 @@ export function rapportDokument(
                 'Afstand fra geonettet til terræn: h_{bund} til det nederste netlag og h_{top} til det øverste',
               ),
             },
-            avanceret
+            torFyld
               ? {
                   symbol: dele('σ′_{v}'),
                   tekst: dele(
@@ -718,7 +720,7 @@ export function rapportDokument(
             ]
           : []),
         kraftTabel,
-        lille(kraftNote(avanceret, sym)),
+        lille(kraftNote(torFyld, sym)),
         h3('Nødvendig kraftoptagelse'),
         {
           type: 'inddata',

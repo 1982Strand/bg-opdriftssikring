@@ -121,9 +121,13 @@ test('case 1 er standard og regnes med π (K-06)', async ({ page }) => {
   await expect(
     losning(page, 'Med omslag, to ledninger').getByRole('row', { name: /inkl. 0,8 m tillæg/ }),
   ).toContainText('20,35 m');
-  // Kontrollen ved omslag regnes som arket med en forklaring (K-08).
-  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toBeVisible();
-  await expect(page.getByText(/større margin end dimensioneringen\./)).toBeVisible();
+  // Kontrollen ved omslag medregner bevidst det fulde bidrag; det står i mellemregningerne og ikke
+  // som kontrolpunkt (K-08).
+  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
+  await medOmslag.getByRole('button', { name: 'Mellemregninger' }).click();
+  await expect(
+    medOmslag.getByText(/Det er bevidst valgt, at kontrollen medregner det fulde bidrag/),
+  ).toBeVisible();
   // Appen står alene: ingen henvisninger til regneark eller fund.
   await expect(page.locator('main')).not.toContainText(/[Rr]egneark|\bfund K-\d\d/);
   const forankring = page.locator('section.calc-card', {
@@ -400,7 +404,6 @@ test('forudsætninger og konsekvensklasse står først på beregningssiden', asy
     '5 Opdrift og stabiliserende ballast',
     '6 Geonet',
     '7 Forankring',
-    'Kontrolpunkter',
   ]);
   await expect(page.getByRole('heading', { name: 'Projekteringsansvar' })).toBeVisible();
   await expect(page.getByText(/Opdriften regnes med/)).toHaveCount(0);
@@ -535,6 +538,16 @@ test('reduktion for ender og gennemføringer vælges i kort 3 og regnes i de fø
   });
   await expect(valg).toBeDisabled();
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  // Med GVS i terræn vises kraftoverførslen i avanceret beregning som i standardberegningen.
+  const kort7 = page.locator('section.calc-card', {
+    has: page.getByRole('heading', { name: '7 Forankring' }),
+  });
+  await kort7.getByRole('button', { name: 'Mellemregninger for kraftoverførsel' }).click();
+  await mellemregning(kort7, 'Kraftoverførsel i nettets niveau ved rørmidten', [
+    'Fbund = hbund · γ′d · μ · tan φd = 2,75 · 5,30 · 1,00 · tan 30,26°',
+    '8,50 kN/m',
+  ]);
+  await expect(kort7.getByText(/Effektiv lodret spænding/)).toHaveCount(0);
   const kort4 = page.locator('section.calc-card', {
     has: page.getByRole('heading', { name: '4 Længde, ender og gennemføringer' }),
   });
@@ -675,7 +688,7 @@ test('dybere forankring ved begrænset plads findes kun i avanceret beregning (K
   // Den dybere forankring står ikke under »Kontrolpunkter«; advarslen om rørbunden står lige over
   // mellemregningerne.
   await expect(page.getByText(/fund K-25/)).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toHaveCount(0);
   const advarsel = kort.getByText(/^Det nederste netlag ligger 1,05 m under rørbunden/);
   const knap = kort.getByRole('button', { name: 'Mellemregninger' });
   const [ya, yk] = await Promise.all([advarsel.boundingBox(), knap.boundingBox()]);

@@ -77,9 +77,14 @@ export const tovkraftNote = {
     'Det antages at geoarmering i overgangen mellem lodret og vandret plan i den indbyggede tilstand tilegner afrundet form (trissevirkning), hvilket betyder at den lodrette kraft i geonet overføres uændret til det vandrette plan. Beregningsteknisk påføres kraften en sikkerhedsfaktor på min. 1,05 som betyder at den beregnede ”tovkraft” korrigeres før bestemmelse af den nødvendige forankringslængde. I tillæg hertil skal nævnes at trykspredning fra ballastlag afleverer en gunstig kraftkomposant, dels i forhold til overgangen, men også på den øvrige ballast, hvilket understøtter den semirigide opfattelse af ballastlaget. Baseret på vores erfaring vurderes det at ovennævnte antagelser er på den sikre side i praksis og understøttes af et stort antal udførte projekter i Danmark siden 1996.',
 };
 
-export const kontrolNoter = ({ O, B, F, K }: Symboler) => ({
+/** Med omslag medregner kontrollen bevidst det fulde bidrag fra det øverste netlag (fund K-08,
+ * beslutning 9. november 2026). */
+export const kontrolNoter = (
+  { O, B, F, K }: Symboler,
+  afstand: number = standarder.omslagAfstand,
+) => ({
   udenOmslag: `Kontrollen er eftervisningen for løftning: ${O} ≤ ${B} + F_{bund} · 2 · L_{geonet}. Den er altid opfyldt, når forankringslængden er dimensioneret efter ${K} = ${F} · S₂, og viser tillægget fra S₂.`,
-  medOmslag: `Kontrollen er eftervisningen for løftning med begge netlag. Den er altid opfyldt, når forankringslængden er dimensioneret efter ${K} = ${F} · S₂.`,
+  medOmslag: `Kontrollen er eftervisningen for løftning med begge netlag. Det er bevidst valgt, at kontrollen medregner det fulde bidrag fra det øverste netlag: F_{top} over hele L_{geonet}, også de ${talKort(afstand)} m pr. side, som dimensioneringen lægger til. Forankringslængden dimensioneres med F_{top}/2 og uden de ${talKort(afstand)} m. Kontrollen viser derfor en større margin end dimensioneringen og er altid opfyldt, når forankringslængden er dimensioneret efter ${K} = ${F} · S₂.`,
 });
 export const kontrolNote = kontrolNoter(symbolerPrMeter);
 
@@ -106,7 +111,7 @@ export function losningIndhold(
   const lodretTillaeg = (antal: number) => lodretTillaegTal(r, antal);
   const d = input.d;
   const T2 = input.gvs;
-  const noter = kontrolNoter(sym);
+  const noter = kontrolNoter(sym, r.omslagAfstand);
   // Ved manuelt valg i 2 lag gælder arealet pr. lag.
   const prLag = input.overstyring && input.overstyring.lag > 1 ? ' pr. lag' : '';
   const areal: [string, string][] = [];
@@ -446,7 +451,9 @@ export function forankringRaekker(r: OpdriftResultat, input: OpdriftInput): Mell
     formel,
     resultat: kNm(F),
   });
-  if (r.metode === 'standard')
+  // Med GVS i terræn giver den avancerede spændingsmodel σ′_v = h · γ′_d, så kraftoverførslen vises
+  // som i standardberegningen (beslutning 9. november 2026).
+  if (r.metode === 'standard' || input.gvs === 0)
     return [
       kraft(
         'bund',

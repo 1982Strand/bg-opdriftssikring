@@ -15,7 +15,7 @@ for (const width of [1440, 390]) {
     test.setTimeout(60_000);
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/#opdriftssikring');
-    // Standardberegningen regner med GVS i terræn og viser låsebeskeden og kontrolpunktet K-08.
+    // Standardberegningen regner med GVS i terræn og viser låsebeskeden.
     await page.evaluate(() =>
       localStorage.setItem(
         'opdrift.session',
@@ -39,7 +39,6 @@ for (const width of [1440, 390]) {
       ),
     );
     await page.reload();
-    await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toBeVisible();
     for (const knap of await page.locator('[data-slot="accordion-trigger"]').all())
       await knap.click();
     await expect(
@@ -51,6 +50,8 @@ for (const width of [1440, 390]) {
     await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
     await expect(page.getByText(/Beregninger på eget ansvar/)).toBeVisible();
     await expect(page.getByText('Ikke relevant', { exact: true }).first()).toBeVisible();
+    // S₁ ≥ 1 giver kontrolpunktet K-12.
+    await expect(page.getByRole('heading', { name: 'Kontrolpunkter' })).toBeVisible();
     expect(await axe(page)).toEqual([]);
     // Kort 4 med reduktion, længdesnit og udfoldede mellemregninger (K-29), og kort 9 med dybere
     // forankring, advarsler, figur og udfoldede mellemregninger (K-25).

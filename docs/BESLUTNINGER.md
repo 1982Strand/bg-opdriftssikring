@@ -1081,3 +1081,23 @@ Claude beskrev opbygningen og stillede fire spørgsmål i [FORSLAG_REDUKTION_I_B
 - Løsningerne A–D står kun ét sted. Det tidligere kort 8 »Beregning med reduktion for gennemføringer« udgår.
 - Rapporten følger skærmen, og valget af afsnittet med reduktion på rapportsiden udgår.
 - Beregningen og de godkendte kontroltal er uændrede.
+
+## 9. november 2026 — kontrolpunktet K-08 fjernet
+
+Brugerens ønske: »fjern dette kontrolpunkt fra appen. Beskriv bare i mellemregningerne at det bevidst er valgt at kontrollen skal medregne det fulde bidrag«
+
+- Kontrolpunktet K-08 vises ikke længere.
+- Noten under mellemregningerne for løsningerne med omslag og for dybere forankring lyder: »Kontrollen er eftervisningen for løftning med begge netlag. Det er bevidst valgt, at kontrollen medregner det fulde bidrag fra det øverste netlag: F_top over hele L_geonet, også de 0,2 m pr. side, som dimensioneringen lægger til. Forankringslængden dimensioneres med F_top/2 og uden de 0,2 m. Kontrollen viser derfor en større margin end dimensioneringen og er altid opfyldt, når forankringslængden er dimensioneret efter K = F_op,d · S₂.« Afstanden følger værdien i kortet for forankring.
+- Beregningen er uændret.
+
+Valgt af Claude og kan ændres: noten står ikke i rapporten, ligesom noten for kontrollen uden omslag heller ikke gør.
+
+## 9. november 2026 — kraftoverførsel med GVS i terræn i avanceret beregning
+
+Brugerens ønske: »i den avancerede beregning, må du gerne forsimple beregningen for kraftoverførsel i de to net-niveauer, så den svarer til standard beregningen som på billedet fra kort 7, når GVS sættes i terræn.«
+
+- I avanceret beregning med GVS i terræn viser mellemregningerne F_bund = h_bund · γ′_d · μ · tan φ_d og F_top = h_top · γ′_d · μ · tan φ_d som i standardberegningen, uden rækkerne for σ′_v.
+- Noten under mellemregningerne og rapportens afsnit om kraftoverførsel følger standardberegningen i samme tilfælde.
+- Tallene er uændrede, fordi den avancerede spændingsmodel giver σ′_v = h · γ′_d, når GVS ligger i terræn.
+
+Valgt af Claude og kan ændres: mellemregningerne for dybere forankring og for spændingen mellem to ledninger er uændrede.
