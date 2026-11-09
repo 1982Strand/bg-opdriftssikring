@@ -13,7 +13,6 @@ import {
 } from '../components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
-import { beregnDybForankring } from '../engine/dybforankring';
 import { beregnOpdrift } from '../engine/opdrift';
 import type { Losning } from '../engine/figurer';
 import {
@@ -24,7 +23,12 @@ import {
 import { loadPdfCompiler } from '../report/compiler';
 import { employeesForRoster, logoDataUrl, logoExtension } from '../report/company-profile';
 import { formatPhone } from '../report/phone-format';
-import { datoTilVisning, rapportDokument, rapportFilnavn } from '../report/rapport-model';
+import {
+  datoTilVisning,
+  rapportDokument,
+  rapportFilnavn,
+  rapportTilvalg,
+} from '../report/rapport-model';
 import { loadReportAssets, reportDocument, type ReportAssets } from '../report/report-document';
 import layoutSource from '../report/typst/layout.typ?raw';
 import reportSource from '../report/typst/rapport.typ?raw';
@@ -337,14 +341,16 @@ export function Rapport() {
   const ikkeNoedvendig = r?.S1Status === 'OK';
   const viste: Losning[] = ['A', 'C', 'B', 'D'];
   const antalValgte = viste.filter((l) => o.losninger[l] && r?.losninger[l]).length;
-  // Valget af afsnit 8 vises kun, når beregningen er valgt og kan regnes.
-  const dybMulig =
-    !!r &&
-    !ikkeNoedvendig &&
-    !!r.losninger.C &&
-    session.avanceret &&
-    session.inddata.dybForankringAktiv &&
-    beregnDybForankring(r, input, session.inddata.dybForankringL).ok;
+  // Valget af afsnit 8 og 9 vises kun, når beregningerne er slået til og kan regnes.
+  const tilvalg = r ? rapportTilvalg(session, input, r) : null;
+  const redMulig = Boolean(tilvalg?.reduktion);
+  const dybMulig = Boolean(tilvalg?.dyb);
+  // Løsningerne indgår i afsnit 7 og i afsnit 8, også når sikring kun er nødvendig for hele røret.
+  const sikring = !ikkeNoedvendig || redMulig;
+  const valgteTilvalg = [
+    redMulig && o.reduktion ? '8' : null,
+    dybMulig && o.dybForankring ? '9' : null,
+  ].filter(Boolean);
   const harFaner = access.firmaprofil || access.kartotek === 'eget';
   const rapportIndhold = (
     <fieldset className="report-form">
@@ -404,19 +410,32 @@ export function Rapport() {
         nr={2}
         titel="Indhold"
         opsummering={
-          ikkeNoedvendig
+          !sikring
             ? 'Afsnit 1–5'
-            : `${antalValgte} løsninger${dybMulig && o.dybForankring ? ' og afsnit 8' : ''}`
+            : `${antalValgte} løsninger${valgteTilvalg.length ? ` og afsnit ${valgteTilvalg.join(' og ')}` : ''}`
         }
       >
-        {ikkeNoedvendig ? (
+        {!sikring ? (
           <Notice>
             Opdriftssikring er ikke nødvendig, så rapporten slutter efter afsnit 5 uden geonet og
             forankring.
           </Notice>
         ) : (
           <>
-            <p className="calc-note">Løsninger i afsnit 7:</p>
+            {ikkeNoedvendig && (
+              <Notice>
+                Opdriftssikring er ikke nødvendig pr. meter rør, så afsnit 6 og 7 udelades.
+                Beregningen med reduktion for gennemføringer kræver geonet og kan medtages som
+                afsnit 8.
+              </Notice>
+            )}
+            <p className="calc-note">
+              {ikkeNoedvendig
+                ? 'Løsninger i afsnit 8:'
+                : redMulig
+                  ? 'Løsninger i afsnit 7 og 8:'
+                  : 'Løsninger i afsnit 7:'}
+            </p>
             <div className="report-cut-choices">
               {viste.map((l) => {
                 const mulig = Boolean(r?.losninger[l]);
@@ -435,6 +454,21 @@ export function Rapport() {
                 );
               })}
             </div>
+            {redMulig && (
+              <>
+                <p className="calc-note report-dyb-valg">Reduktion for gennemføringer:</p>
+                <div className="setting-checkbox">
+                  <Checkbox
+                    id="rapport-reduktion"
+                    checked={o.reduktion}
+                    onCheckedChange={(checked) => saet({ reduktion: checked === true })}
+                  />
+                  <Label htmlFor="rapport-reduktion">
+                    Medtag beregning med reduktion for gennemføringer som afsnit 8
+                  </Label>
+                </div>
+              </>
+            )}
             {dybMulig && (
               <>
                 <p className="calc-note report-dyb-valg">Dybere forankring:</p>
@@ -445,7 +479,7 @@ export function Rapport() {
                     onCheckedChange={(checked) => saet({ dybForankring: checked === true })}
                   />
                   <Label htmlFor="rapport-dyb">
-                    Medtag dybere forankring ved begrænset plads som afsnit 8
+                    Medtag dybere forankring ved begrænset plads som afsnit 9
                   </Label>
                 </div>
               </>

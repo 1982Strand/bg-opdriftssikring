@@ -6,6 +6,7 @@ import {
   saveSession,
   standardSession,
   tilMotorInput,
+  tilReduktionInput,
   STORAGE_KEY,
 } from '../src/ui/state.ts';
 test('standardsession og motorinput følger arket', () => {
@@ -78,6 +79,32 @@ test('dybere forankring gemmes og indlæses slået fra i ældre beregninger', ()
       .dybForankringL,
     2,
   );
+});
+test('reduktionen indlæses slået fra i ældre beregninger, og kun de valgte ender og gennemføringer regnes med', () => {
+  const gammel = parseSession(JSON.stringify({ inddata: { d: 3 }, rapport: {} })).session;
+  assert.equal(gammel.inddata.reduktionAktiv, false);
+  assert.equal(gammel.rapport.reduktion, false);
+  assert.deepEqual(tilReduktionInput(gammel), {
+    Lroer: 10,
+    ender: [0.6, 0.6],
+    gennemfoeringer: [0.8],
+  });
+  const ny = parseSession(
+    JSON.stringify({
+      inddata: {
+        reduktionAktiv: true,
+        reduktionLroer: 12,
+        antalEnder: 1,
+        ender: [0.9, 0.7],
+        antalGennemfoeringer: 3,
+        gennemfoeringer: [0.6, -1],
+      },
+    }),
+  ).session;
+  // Et ugyldigt antal giver standardværdien; værdierne for ubrugte ender gemmes.
+  assert.deepEqual(tilReduktionInput(ny), { Lroer: 12, ender: [0.9], gennemfoeringer: [0.6] });
+  assert.deepEqual(ny.inddata.ender, [0.9, 0.7]);
+  assert.deepEqual(ny.inddata.gennemfoeringer, [0.6, 0.8]);
 });
 test('alle produkter i listen kan gemmes som manuelt valg', () => {
   for (const uts of [35, 55, 80, 110, 130, 150, 200])

@@ -1,0 +1,173 @@
+{
+  "format": "opdrift-reduktion",
+  "version": 1,
+  "beslutning": "Beregning med reduktion for gennemføringer (fund K-29), besluttet 9. november 2026. Kontroltallene er godkendt af brugeren 9. november 2026, se docs/FORSLAG_SIKRET_LAENGDE.md, afsnit 3.",
+  "beregning": "Regnet uden motoren: O_d og B_d pr. meter efter regnearkets formler. L_sikret = L_rør − ΣL_ende − Σd_g. O_d,tot = O_d · L_rør + Σ π/4 · d_g² · max(0; h₁ − T₂) · γ_w · γ_f. B_d,tot = B_d · (L_rør − Σd_g). O_d,s = O_d,tot/L_sikret og B_d,s = B_d,tot/L_sikret indsættes i formlerne for geonet og løsning A–D. CC2, γ = 17 kN/m³, γ_tør = 16 kN/m³, φ = 35°, rørvægt 340 kg/m, S₂ = 1,05, 0,2 m mellem netlagene. GVS 0 betyder GVS i terræn.",
+  "cases": [
+    {
+      "navn": "Tank 10 m med to ender og én gennemføring",
+      "input": {
+        "d": 2.5,
+        "h1": 1.5,
+        "gvs": 0,
+        "metode": "standard",
+        "Lroer": 10,
+        "ender": [
+          0.6,
+          0.6
+        ],
+        "gennemfoeringer": [
+          0.8
+        ]
+      },
+      "forventet": {
+        "Lsikret": 8.0,
+        "Otot": 548.2550419412228,
+        "Btot": 243.19521885231381,
+        "S1": 0.4435804511550415,
+        "Fs": 38.13247788611362,
+        "uts": 110,
+        "sikkerhed": 1.3693505813772204,
+        "K": 40.0391017804193,
+        "LA": 2.3539662462895556,
+        "LtotA": 8.634923309566354,
+        "kontrolA": 1.027820977442248,
+        "LmellemB": 3.13955221017745,
+        "LC": 1.8082999198251624,
+        "LtotC": 12.76019049628789,
+        "kontrolC": 1.3085585005677498
+      }
+    },
+    {
+      "navn": "Tank 6 m med to ender og én gennemføring",
+      "input": {
+        "d": 2.5,
+        "h1": 1.5,
+        "gvs": 0,
+        "metode": "standard",
+        "Lroer": 6,
+        "ender": [
+          0.6,
+          0.6
+        ],
+        "gennemfoeringer": [
+          0.8
+        ]
+      },
+      "forventet": {
+        "Lsikret": 4.0,
+        "Otot": 332.2705470069246,
+        "Btot": 137.45816717739478,
+        "S1": 0.413693504933286,
+        "Fs": 48.70309495738245,
+        "uts": 110,
+        "sikkerhed": 1.072143994306642,
+        "K": 51.138249705251575,
+        "LA": 3.006503851176763,
+        "LtotA": 9.939998519340769,
+        "kontrolA": 1.0293153247533358,
+        "LmellemB": 4.009860305239034,
+        "LC": 2.2541330660213914,
+        "LtotC": 14.543523081072806,
+        "kontrolC": 1.3032529298254456
+      }
+    },
+    {
+      "navn": "Rør 12 m med én ende og to gennemføringer",
+      "input": {
+        "d": 2.5,
+        "h1": 1.5,
+        "gvs": 0,
+        "metode": "standard",
+        "Lroer": 12,
+        "ender": [
+          0.9
+        ],
+        "gennemfoeringer": [
+          0.6,
+          1.0
+        ]
+      },
+      "forventet": {
+        "Lsikret": 9.5,
+        "Otot": 665.5778195895338,
+        "Btot": 274.91633435478957,
+        "S1": 0.41304912252684783,
+        "Fs": 41.12226160365728,
+        "uts": 110,
+        "sikkerhed": 1.2697922907542543,
+        "K": 43.17837468384015,
+        "LA": 2.5385293889162455,
+        "LtotA": 9.004049594819733,
+        "kontrolA": 1.0293475438736575,
+        "LmellemB": 3.3857093601638915,
+        "LC": 1.934398961371348,
+        "LtotC": 13.264586662472635,
+        "kontrolC": 1.318152292055217
+      }
+    },
+    {
+      "navn": "Avanceret, GVS 0,50 m under terræn",
+      "input": {
+        "d": 2.5,
+        "h1": 1.5,
+        "gvs": 0.5,
+        "metode": "avanceret",
+        "Lroer": 10,
+        "ender": [
+          0.6,
+          0.6
+        ],
+        "gennemfoeringer": [
+          0.8
+        ]
+      },
+      "forventet": {
+        "Lsikret": 8.0,
+        "Otot": 545.4904404060638,
+        "Btot": 347.84521885231374,
+        "S1": 0.6376742708696733,
+        "Fs": 24.705652694218763,
+        "uts": 55,
+        "sikkerhed": 1.0567769936902467,
+        "K": 25.9409353289297,
+        "LA": 1.1622743555462605,
+        "LtotA": 6.251539528079762,
+        "kontrolA": 1.0181162864565163,
+        "LmellemB": 1.5501586004215693,
+        "LC": 0.9894343265496663,
+        "LtotC": 9.484728123185906,
+        "kontrolC": 1.2674581304580717
+      }
+    },
+    {
+      "navn": "Uden ender og gennemføringer",
+      "input": {
+        "d": 2.5,
+        "h1": 1.5,
+        "gvs": 0,
+        "metode": "standard",
+        "Lroer": 8,
+        "ender": [],
+        "gennemfoeringer": []
+      },
+      "forventet": {
+        "Lsikret": 8,
+        "Otot": 431.9689898685966,
+        "Btot": 211.47410334983812,
+        "S1": 0.4895585292225902,
+        "Fs": 27.561860814844813,
+        "uts": 80,
+        "sikkerhed": 1.3778389074007467,
+        "K": 28.939953855587056,
+        "LA": 1.7014286414023498,
+        "LtotA": 7.329848099791941,
+        "kontrolA": 1.0255220735388706,
+        "LmellemB": 2.269244115115867,
+        "LC": 1.3624667736289346,
+        "LtotC": 10.976857911502979,
+        "kontrolC": 1.3167205905977106
+      }
+    }
+  ]
+}

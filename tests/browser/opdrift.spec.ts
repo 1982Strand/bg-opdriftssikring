@@ -234,7 +234,7 @@ test('standardberegningen er låst til GVS i terræn, og S₁ ≥ 1,0 giver »Ik
   await iTerraen.click();
   await expect(gvsFelt).toBeEnabled();
   await saet(page, 'GVS under terræn (m)', '2');
-  // Kort 6, 7 og 8 (avanceret beregning) har samme note, og kort 8 er låst.
+  // Kort 6, 7 og 9 (avanceret beregning) har samme note, og kort 9 er låst.
   await expect(
     page.getByText(
       'S₁ ≥ 1,0: opdriftssikring er ikke nødvendig da ballasten er tilstrækkelig til at modvirke opdriften.',
@@ -526,11 +526,76 @@ test('avanceret beregning gælder kun, når den er valgt', async ({ page }) => {
   await expect(page.getByText(/Beregninger på eget ansvar/)).toHaveCount(0);
 });
 
+test('beregning med reduktion for gennemføringer findes kun i avanceret beregning (K-29)', async ({
+  page,
+}) => {
+  await start(page);
+  const overskrift = page.getByRole('heading', {
+    name: '8 Beregning med reduktion for gennemføringer',
+  });
+  await expect(overskrift).toHaveCount(0);
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  const kort = page.locator('section.calc-card', { has: overskrift });
+  const fliseI = (label: string) =>
+    kort.locator('.m9-result-cards > div', { hasText: label }).first();
+  const laengde = 'Rørets samlede længde Lrør (m)';
+  await expect(kort.getByRole('spinbutton', { name: laengde })).toBeDisabled();
+  await expect(fliseI('Sikret længde')).toHaveCount(0);
+  await kort
+    .getByRole('checkbox', { name: 'Beregn med reduktion for ender og gennemføringer' })
+    .click();
+
+  // Kontroltal: tank 10 m med to ender på 0,60 m og én gennemføring på 0,80 m.
+  await expect(fliseI('Sikret længde').locator('strong')).toHaveText('8,00');
+  await expect(fliseI('Kontrol uden geonet').locator('strong')).toHaveText('0,44');
+  await expect(fliseI('Restopdrift').locator('strong')).toHaveText('38,13');
+  await expect(fliseI('Valgt geonet').locator('strong')).toHaveText('X-GRID 110');
+  await expect(fliseI('Valgt geonet').locator('p')).toHaveText('Pd/Fop,d,s = 1,37, krav > 1,01');
+  await expect(kort.getByRole('img', { name: /Længdesnit/ })).toBeVisible();
+  await expect(
+    kort.getByText(/De afrundede ender regnes med fuldt tværsnit.*på den sikre side/),
+  ).toBeVisible();
+  // Kort 7 er uændret pr. meter rør.
+  await expect(flise(page, 'Kraftoptagelse K').locator('strong')).toHaveText('28,94');
+
+  await kort.getByRole('button', { name: 'Mellemregninger' }).first().click();
+  await mellemregning(kort, 'Længde, hvor geonettet kan lægges', [
+    'Lsikret = Lrør − ΣLende − Σdg = 10,00 − 1,20 − 0,80',
+    '8,00 m',
+  ]);
+  await mellemregning(kort, 'Samlet ballast', [
+    'Bd,tot = Bd · Lballast = 26,43 · 9,20',
+    '243,20 kN',
+  ]);
+  await mellemregning(kort, 'Kraft forankringen skal dimensioneres for', [
+    'Ks = Fop,d,s · S₂ = 38,13 · 1,05',
+    '40,04 kN/m',
+  ]);
+  const a = kort.locator('.solution-card', {
+    has: page.getByRole('heading', { name: 'Uden omslag, én ledning', exact: true }),
+  });
+  await expect(a.getByRole('row', { name: /^Forankring pr. side/ })).toContainText('2,35 m');
+  await expect(a.getByRole('row', { name: /^Samlet netareal/ })).toContainText('69,08 m²');
+
+  // To gennemføringer og én ende; for lang reduktion giver en feltfejl.
+  await kort.getByRole('radio', { name: '1' }).first().click();
+  await kort.getByRole('radio', { name: '2' }).nth(1).click();
+  await saet(page, 'Gennemføring 2, bredde dg,2 (m)', '1');
+  await saet(page, 'Ende 1, vandret udstrækning Lende,1 (m)', '0.9');
+  await saet(page, laengde, '12');
+  await saet(page, 'Gennemføring 1, bredde dg,1 (m)', '0.6');
+  await expect(fliseI('Sikret længde').locator('strong')).toHaveText('9,50');
+  await expect(fliseI('Restopdrift').locator('strong')).toHaveText('41,12');
+  await saet(page, laengde, '2');
+  await expect(kort.getByText(/Den sikrede længde Lsikret = Lrør − ΣLende − Σdg/)).toBeVisible();
+  await expect(fliseI('Sikret længde')).toHaveCount(0);
+});
+
 test('dybere forankring ved begrænset plads findes kun i avanceret beregning (K-25)', async ({
   page,
 }) => {
   await start(page);
-  const overskrift = page.getByRole('heading', { name: '8 Dybere forankring ved begrænset plads' });
+  const overskrift = page.getByRole('heading', { name: '9 Dybere forankring ved begrænset plads' });
   await expect(overskrift).toHaveCount(0);
   await saet(page, 'Rørdiameter d (m)', '4');
   await saet(page, 'Jorddækning h₁ (m)', '0.6');
@@ -705,7 +770,7 @@ test('hjælpeteksten ved avanceret beregning nævner det, der kun kan vælges d�
   await start(page);
   await expect(
     page.getByText(
-      'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag og dybere forankring ved begrænset plads.',
+      'I avanceret beregning kan der regnes med vandspejl under terræn, samt konsekvensklasse 3, manuelt valg af geonet i 2 lag, reduktion for ender og gennemføringer og dybere forankring ved begrænset plads.',
     ),
   ).toHaveCount(1);
 });

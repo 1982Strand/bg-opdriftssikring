@@ -52,7 +52,8 @@ for (const width of [1440, 390]) {
     await expect(page.getByText(/Beregninger på eget ansvar/)).toBeVisible();
     await expect(page.getByText('Ikke relevant', { exact: true }).first()).toBeVisible();
     expect(await axe(page)).toEqual([]);
-    // Kort 8 med dybere forankring, advarsler, figur og udfoldede mellemregninger (K-25).
+    // Kort 8 med reduktion, figur og udfoldede mellemregninger (K-29), og kort 9 med dybere
+    // forankring, advarsler, figur og udfoldede mellemregninger (K-25).
     for (const [navn, vaerdi] of [
       ['GVS under terræn (m)', '0.8'],
       ['Rørdiameter d (m)', '4'],
@@ -62,17 +63,25 @@ for (const width of [1440, 390]) {
       await felt.fill(vaerdi);
       await felt.press('Enter');
     }
+    await page
+      .getByRole('checkbox', { name: 'Beregn med reduktion for ender og gennemføringer' })
+      .click();
+    const kort8 = page.locator('section.calc-card', {
+      has: page.getByRole('heading', { name: '8 Beregning med reduktion for gennemføringer' }),
+    });
+    await kort8.getByRole('button', { name: 'Mellemregninger' }).first().click();
+    await expect(kort8.getByRole('img', { name: /Længdesnit/ })).toBeVisible();
     await page.getByRole('checkbox', { name: 'Beregn nødvendig forankringsdybde' }).click();
     const laengde = page.getByRole('spinbutton', {
       name: 'Mulig forankringslængde pr. side Lgeonet (m)',
     });
     await laengde.fill('1');
     await laengde.press('Enter');
-    const kort8 = page.locator('section.calc-card', {
-      has: page.getByRole('heading', { name: '8 Dybere forankring ved begrænset plads' }),
+    const kort9 = page.locator('section.calc-card', {
+      has: page.getByRole('heading', { name: '9 Dybere forankring ved begrænset plads' }),
     });
-    await kort8.getByRole('button', { name: 'Mellemregninger' }).click();
-    await expect(kort8.getByRole('img', { name: /Dybere forankring med omslag/ })).toBeVisible();
+    await kort9.getByRole('button', { name: 'Mellemregninger' }).click();
+    await expect(kort9.getByRole('img', { name: /Dybere forankring med omslag/ })).toBeVisible();
     expect(await axe(page)).toEqual([]);
 
     for (const side of oevrigeSider) {

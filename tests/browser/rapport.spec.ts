@@ -89,9 +89,28 @@ test('kartoteket kan eksporteres og importeres for sig', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Åbn kartotek (1)' })).toBeVisible();
 });
 
+test('reduktion for gennemføringer kan vælges til rapporten som afsnit 8', async ({ page }) => {
+  await page.goto('/#rapport');
+  const valg = page.getByRole('checkbox', { name: /reduktion for gennemføringer som afsnit 8/ });
+  await expect(valg).toHaveCount(0);
+  await page.goto('/#opdriftssikring');
+  await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();
+  await page
+    .getByRole('checkbox', { name: 'Beregn med reduktion for ender og gennemføringer' })
+    .click();
+  await page.locator('a[href="#rapport"]').first().click();
+  await expect(valg).toBeVisible();
+  await expect(valg).not.toBeChecked();
+  await valg.click();
+  await page.getByRole('button', { name: 'Generér rapport' }).click();
+  await expect(page.getByTestId('compile-state')).toHaveAttribute('data-state', 'ready', {
+    timeout: 60_000,
+  });
+});
+
 test('dybere forankring kan vælges til rapporten, når beregningen er valgt', async ({ page }) => {
   await page.goto('/#rapport');
-  const valg = page.getByRole('checkbox', { name: /som afsnit 8/ });
+  const valg = page.getByRole('checkbox', { name: /som afsnit 9/ });
   await expect(valg).toHaveCount(0);
   await page.goto('/#opdriftssikring');
   await page.getByRole('checkbox', { name: 'Avanceret beregning' }).click();

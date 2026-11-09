@@ -229,6 +229,42 @@ export function beregnOpdrift(
     };
   const B =
     ballastLed.torFyld + ballastLed.vaadFyld - ballastLed.roerHalvdel + ballastLed.egenvaegt;
+
+  return {
+    ok: true,
+    resultat: {
+      T3,
+      partialkoefficienter: {
+        KFI,
+        gammaF,
+        gammaGstb: standarder.gammaGstb,
+        gammaPhi: standarder.gammaPhi,
+      },
+      gammaD,
+      gammaTorD,
+      phiD,
+      gammaEffD,
+      roervaegtD,
+      projektbeskrivelse: { d, h1, gvs: gvs === 0 ? 'i Terræn' : gvs }, // C8:C10
+      metode,
+      gvsZone: zone,
+      ballastLed,
+      ...sikring(input, { T3, gammaTorD, gammaEffD, phiD, gvsZone: zone, metode }, O, B, pi),
+    },
+  };
+}
+
+/** Grundlaget for geonet og forankring, som ikke afhænger af opdrift og ballast. */
+type Grundlag = Pick<
+  OpdriftResultat,
+  'T3' | 'gammaTorD' | 'gammaEffD' | 'phiD' | 'gvsZone' | 'metode'
+>;
+
+/** Opdrift O og ballast B pr. meter og det, der regnes ud fra dem: S₁, restopdrift, geonet,
+ * kraftoverførsel og løsningerne A–D. */
+function sikring(input: OpdriftInput, grundlag: Grundlag, O: number, B: number, pi: number) {
+  const { d, gvs } = input;
+  const { T3, gammaTorD, gammaEffD, phiD, gvsZone: zone, metode } = grundlag;
   const ingenOpdrift = zone?.zone === 4;
   const S1 = ingenOpdrift ? null : B / O; // E167
   const Fopdrift = O - B; // G177
@@ -275,87 +311,80 @@ export function beregnOpdrift(
   const ekstraLodret = omslagAfstand - standarder.omslagAfstand;
 
   return {
-    ok: true,
-    resultat: {
-      T3,
-      partialkoefficienter: {
-        KFI,
-        gammaF,
-        gammaGstb: standarder.gammaGstb,
-        gammaPhi: standarder.gammaPhi,
+    O,
+    B,
+    S1,
+    S1Status: S1 === null ? 'OK' : statusS1(S1), // H167
+    konklusion:
+      S1 === null
+        ? konklusionIngenOpdrift
+        : S1 < krav.S1
+          ? konklusionNoedvendig
+          : konklusionIkkeNoedvendig,
+    Fopdrift,
+    geonet,
+    hBund,
+    hTop,
+    Fbund,
+    Ftop,
+    forankringsspaending,
+    S2,
+    omslagAfstand,
+    K,
+    losninger: {
+      A: {
+        toLBeregnet: toLBeregnetA,
+        toLVist,
+        L: LA,
+        La: LA * 2 + d,
+        Ltot: LA * 2 + (pi * d) / 2,
+        ballastForankring: ballastForankringA,
+        kontrol: kontrolA,
+        status: kontrolA === null ? null : status(kontrolA, krav.kontrol), // H333
       },
-      gammaD,
-      gammaTorD,
-      phiD,
-      gammaEffD,
-      roervaegtD,
-      projektbeskrivelse: { d, h1, gvs: gvs === 0 ? 'i Terræn' : gvs }, // C8:C10
-      metode,
-      gvsZone: zone,
-      O,
-      ballastLed,
-      B,
-      S1,
-      S1Status: S1 === null ? 'OK' : statusS1(S1), // H167
-      konklusion:
-        S1 === null
-          ? konklusionIngenOpdrift
-          : S1 < krav.S1
-            ? konklusionNoedvendig
-            : konklusionIkkeNoedvendig,
-      Fopdrift,
-      geonet,
-      hBund,
-      hTop,
-      Fbund,
-      Ftop,
-      forankringsspaending,
-      S2,
-      omslagAfstand,
-      K,
-      losninger: {
-        A: {
-          toLBeregnet: toLBeregnetA,
-          toLVist,
-          L: LA,
-          La: LA * 2 + d,
-          Ltot: LA * 2 + (pi * d) / 2,
-          ballastForankring: ballastForankringA,
-          kontrol: kontrolA,
-          status: kontrolA === null ? null : status(kontrolA, krav.kontrol), // H333
-        },
-        B: {
-          sigmaV,
-          toLMellemBeregnet,
-          toLMellem,
-          L: LA, // C369 = C315
-          La: 2 * LA + toLMellem + 2 * d,
-          Ltot: 2 * LA + toLMellem + pi * d,
-        },
-        C: omslagMuligt
-          ? {
-              toLBeregnet: x,
-              toL,
-              L: LC,
-              La: LC * 2 + d,
-              Ltot: 4 * (LC + tillaeg) + 2 * ekstraLodret + (pi * d) / 2,
-              ballastForankring: ballastForankringC,
-              kontrol: kontrolC,
-              status: kontrolC === null ? null : status(kontrolC, krav.kontrol), // H427
-            }
-          : null,
-        D: omslagMuligt
-          ? {
-              toLMellem: 2 * LC, // C452
-              L: LC, // C455 = C407
-              La: 2 * (LC * 2 + d),
-              Ltot: 4 * (2 * LC + tillaeg) + 4 * ekstraLodret + pi * d,
-            }
-          : null,
+      B: {
+        sigmaV,
+        toLMellemBeregnet,
+        toLMellem,
+        L: LA, // C369 = C315
+        La: 2 * LA + toLMellem + 2 * d,
+        Ltot: 2 * LA + toLMellem + pi * d,
       },
-      kontrolpunkter: kontrolpunkter(input, metode, S1, kontrolC),
+      C: omslagMuligt
+        ? {
+            toLBeregnet: x,
+            toL,
+            L: LC,
+            La: LC * 2 + d,
+            Ltot: 4 * (LC + tillaeg) + 2 * ekstraLodret + (pi * d) / 2,
+            ballastForankring: ballastForankringC,
+            kontrol: kontrolC,
+            status: kontrolC === null ? null : status(kontrolC, krav.kontrol), // H427
+          }
+        : null,
+      D: omslagMuligt
+        ? {
+            toLMellem: 2 * LC, // C452
+            L: LC, // C455 = C407
+            La: 2 * (LC * 2 + d),
+            Ltot: 4 * (2 * LC + tillaeg) + 4 * ekstraLodret + pi * d,
+          }
+        : null,
     },
-  };
+    kontrolpunkter: kontrolpunkter(input, metode, S1, kontrolC),
+  } satisfies Partial<OpdriftResultat>;
+}
+
+/** Samme beregning med en anden opdrift O og ballast B pr. meter, fx pr. meter sikret længde ved
+ * reduktion for ender og gennemføringer. Ballastens led gælder fortsat røret pr. meter. */
+export function medOpdriftOgBallast(
+  r: OpdriftResultat,
+  input: OpdriftInput,
+  O: number,
+  B: number,
+  { pi }: Konstanter = konstanter,
+): OpdriftResultat {
+  return { ...r, ...sikring(input, r, O, B, pi) };
 }
 
 /** Oplysninger om aktive fund (docs/FUND.md). De ændrer ikke beregningen. */
