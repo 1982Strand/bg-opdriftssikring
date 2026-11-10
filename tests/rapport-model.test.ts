@@ -33,7 +33,7 @@ const samlet = (b: Blok) => JSON.stringify(b).replace(/","sub":(true|false)\},\{
 test('rapporten har case 1-tallene fra beregningen', () => {
   const { model } = dokument();
   const alt = model.afsnit.flatMap((a) => a.blokke.map(samlet)).join(' ');
-  for (const tal of ['54,00', '26,43', '27,56', '37,98', '28,94', '1,70', '2,27', '10,67', '9,78'])
+  for (const tal of ['54,00', '26,43', '27,56', '37,98', '28,94', '1,70', '2,27', '10,67', '10,98'])
     assert.ok(alt.includes(tal), tal);
   assert.ok(alt.includes('X-GRID 80'));
   assert.deepEqual(titler(model).slice(0, 7), [

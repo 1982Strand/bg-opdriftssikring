@@ -1,7 +1,7 @@
 {
   "format": "opdrift-reduktion",
   "version": 1,
-  "beslutning": "Beregning med reduktion for gennemføringer (fund K-29), besluttet 9. november 2026. Kontroltallene er godkendt af brugeren 9. november 2026, se docs/FORSLAG_SIKRET_LAENGDE.md, afsnit 3. LtotC er rettet 10. november 2026 til den geometriske netlængde uden arkets tillæg på 1,2 m (fund K-09, docs/BESLUTNINGER.md): den godkendte værdi − 1,2 m.",
+  "beslutning": "Beregning med reduktion for gennemføringer (fund K-29), besluttet 9. november 2026. Kontroltallene er godkendt af brugeren 9. november 2026, se docs/FORSLAG_SIKRET_LAENGDE.md, afsnit 3.",
   "beregning": "Regnet uden motoren: O_d og B_d pr. meter efter regnearkets formler. L_sikret = L_rør − ΣL_ende − Σd_g. O_d,tot = O_d · L_rør + Σ π/4 · d_g² · max(0; h₁ − T₂) · γ_w · γ_f. B_d,tot = B_d · (L_rør − Σd_g). O_d,s = O_d,tot/L_sikret og B_d,s = B_d,tot/L_sikret indsættes i formlerne for geonet og løsning A–D. CC2, γ = 17 kN/m³, γ_tør = 16 kN/m³, φ = 35°, rørvægt 340 kg/m, S₂ = 1,05, 0,2 m mellem netlagene. GVS 0 betyder GVS i terræn.",
   "cases": [
     {
@@ -34,7 +34,7 @@
         "kontrolA": 1.027820977442248,
         "LmellemB": 3.13955221017745,
         "LC": 1.8082999198251624,
-        "LtotC": 11.560190496287891,
+        "LtotC": 12.76019049628789,
         "kontrolC": 1.3085585005677498
       }
     },
@@ -68,7 +68,7 @@
         "kontrolA": 1.0293153247533358,
         "LmellemB": 4.009860305239034,
         "LC": 2.2541330660213914,
-        "LtotC": 13.343523081072806,
+        "LtotC": 14.543523081072806,
         "kontrolC": 1.3032529298254456
       }
     },
@@ -102,7 +102,7 @@
         "kontrolA": 1.0293475438736575,
         "LmellemB": 3.3857093601638915,
         "LC": 1.934398961371348,
-        "LtotC": 12.064586662472635,
+        "LtotC": 13.264586662472635,
         "kontrolC": 1.318152292055217
       }
     },
@@ -136,7 +136,7 @@
         "kontrolA": 1.0181162864565163,
         "LmellemB": 1.5501586004215693,
         "LC": 0.9894343265496663,
-        "LtotC": 8.284728123185907,
+        "LtotC": 9.484728123185906,
         "kontrolC": 1.2674581304580717
       }
     },
@@ -165,7 +165,7 @@
         "kontrolA": 1.0255220735388706,
         "LmellemB": 2.269244115115867,
         "LC": 1.3624667736289346,
-        "LtotC": 9.77685791150298,
+        "LtotC": 10.976857911502979,
         "kontrolC": 1.3167205905977106
       }
     }

@@ -48,6 +48,7 @@ import {
   toLedningerNote,
   tovkraftNote,
   udfoerselPunkter,
+  tillaegTekst,
   type Mellemregning,
   type Symboler,
 } from '../ui/mellemregninger.ts';
@@ -319,7 +320,7 @@ export function rapportDokument(
             tekst: 'Samlet længde geonet på tværs',
             symbol: dele('L_{geonet,tot}'),
             vaerdi: `${tal(v.Ltot)} m`,
-            note: omslag ? `inkl. ${talKort(rr.omslagAfstand)} m lodret ved hvert omslag` : null,
+            note: omslag ? tillaegTekst : null,
           },
           ...(areal?.resultat
             ? [

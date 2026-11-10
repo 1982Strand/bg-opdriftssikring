@@ -30,7 +30,7 @@ Kontrollen mod arket regner med arkets π = 3,14 (`arketsKonstanter`), mens appe
 
 CC1 er udgået, fordi appen kun regner i CC2 og CC3 (beslutninger 29. og 30. oktober 2026). Casen »CC1: case 1« sammenlignes derfor ikke med arket, men kontrolleres ved, at motoren afviser CC1. Samme input i CC2 er »Case 1«, som sammenlignes med arket.
 
-Bevidste afvigelser fra arket står i `tests/cases/afvigelser.json` med beslutning og en forventning, der er beregnet uden motoren. Excels facit ændres ikke. Afvigelserne er K-21 (produktlisten), K-03 (netvalget med kravet 1,01, 7 cases) og K-09 (netlængden med omslag uden arkets tillæg: B412 − 1,2 og B470 − 0,8).
+Bevidste afvigelser fra arket står i `tests/cases/afvigelser.json` med beslutning og en forventning, der er beregnet uden motoren. Excels facit ændres ikke. Afvigelserne er K-21 (produktlisten) og K-03 (netvalget med kravet 1,01, 7 cases).
 
 Dybere forankring ved begrænset plads (K-25) er ikke i arket. Kontroltallene står i `tests/cases/dyb-forankring.json` og er godkendt af brugeren 31. oktober 2026 (docs/FORSLAG_DYB_FORANKRING.md, afsnit 8). De er regnet uden motoren og omfatter beregningsbeskrivelsens eksempel med π = 3,14, GVS i terræn, over og mellem netlagene, en længde, der er tilstrækkelig ved rørmidten, og en længde under mindstelængden. `tests/dybforankring.test.ts` kontrollerer desuden tilstandene uden sikringsbehov og uden mulighed for omslag, at `beregnOpdrift` er uændret, og at dybden vokser, når længden bliver kortere.
 

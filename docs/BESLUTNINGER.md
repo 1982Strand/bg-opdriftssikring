@@ -1174,3 +1174,13 @@ Brugerens ønske: »I rapporten, skal der lige tilføjes initialer under navn ve
 - Forsiden viser initialerne ud for »Udført af« og »Kvalitetssikring«. Navnene står fortsat nederst på forsiden med telefon og mail.
 
 Valgt af Claude og kan ændres: uden initialer viser forsiden navnet, som i MSL. Beregninger gemt før ændringen indlæses med tomme initialer.
+
+## 10. november 2026 — tillægget i netlængden med omslag tilbage (K-09)
+
+Brugerens svar efter intern afklaring: »Jeg har fået at vide, at det ekstra tillæg med vilje er tilføjet, så der tages højde for spild, håndtering, afskær, etc., således montøren er sikker på at have nok net at arbejde med. Så jeg vil gerne tilbage til den gamle formel, og så kan der bare stå at det er 'inkl. tillæg for omslag og overlængde'«
+
+- Den geometriske netlængde fra tidligere samme dag er tilbageført. Netlængden med omslag regnes igen som arket med tillægget på 1,2 m for én ledning og 0,8 m for to ledninger, og dybere forankring regnes tilsvarende.
+- Ved netlængden står »inkl. tillæg for omslag og overlængde« på skærm og i rapport.
+- Excel-facit, afvigelserne og kontroltallene for dybere forankring og reduktion er de samme som før ændringen.
+
+Valgt af Claude og kan ændres: teksten står uden tal, som brugeren skrev. Mellemregningen for dybere forankring har »inkl. tillæg for omslag og overlængde og sider«. Beslutningerne om den geometriske netlængde er bevaret ovenfor som historik.

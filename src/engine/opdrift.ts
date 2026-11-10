@@ -306,6 +306,9 @@ function sikring(input: OpdriftInput, grundlag: Grundlag, O: number, B: number, 
   const LC = Math.max(min.medOmslag.prSide, toL / 2);
   const ballastForankringC = B + ((Fbund + Ftop) / 2) * LC * 4;
   const kontrolC = ingenOpdrift || !omslagMuligt ? null : ballastForankringC / O;
+  const tillaeg = standarder.netTillaegOmslag; // 0,4 i B412 og B470 (K-09)
+  // Arkets tillæg dækker lodrette stykker på 0,2 m ved hvert omslag; en større afstand forlænger dem.
+  const ekstraLodret = omslagAfstand - standarder.omslagAfstand;
 
   return {
     O,
@@ -353,9 +356,7 @@ function sikring(input: OpdriftInput, grundlag: Grundlag, O: number, B: number, 
             toL,
             L: LC,
             La: LC * 2 + d,
-            // Geometrisk: fire forankringslængder, to lodrette stykker ved omslaget og buen over
-            // røret. Arkets B412 lægger 1,2 m mere til (fund K-09, beslutning 10. november 2026).
-            Ltot: 4 * LC + 2 * omslagAfstand + (pi * d) / 2,
+            Ltot: 4 * (LC + tillaeg) + 2 * ekstraLodret + (pi * d) / 2,
             ballastForankring: ballastForankringC,
             kontrol: kontrolC,
             status: kontrolC === null ? null : status(kontrolC, krav.kontrol), // H427
@@ -366,8 +367,7 @@ function sikring(input: OpdriftInput, grundlag: Grundlag, O: number, B: number, 
             toLMellem: 2 * LC, // C452
             L: LC, // C455 = C407
             La: 2 * (LC * 2 + d),
-            // Geometrisk; arkets B470 lægger 0,8 m mere til (fund K-09).
-            Ltot: 8 * LC + 4 * omslagAfstand + pi * d,
+            Ltot: 4 * (2 * LC + tillaeg) + 4 * ekstraLodret + pi * d,
           }
         : null,
     },
