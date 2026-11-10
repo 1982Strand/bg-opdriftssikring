@@ -882,6 +882,7 @@ export function udfoerselPunkter(r: OpdriftResultat): string[] {
   return [
     'Efter røret er lagt indbygges egnet fyldmateriale til rørmidte, hvor geonettet udlægges på et plant og afrettet planum.',
     'Geonettet rulles ud på tværs af ledningen, føres over røret og lægges ud til begge sider med den forankringslængde L_{geonet}, der er angivet for den valgte løsning, inkl. tillæg for omslag og afstand imellem netlagene.',
+    'Geonettet skal ligge stramt og helt tæt ind til røret, hvor det går fra røret ud i det vandrette plan, så hjørnet bliver så lille som muligt. Slæk i nettet her giver mindre kraftoverførsel end forudsat, fordi trissevirkningen ikke udnyttes fuldt ud.',
     ...(r.losninger.C
       ? [
           `Ved omslag slås geonettet tilbage efter indbygning af ${talKort(r.omslagAfstand)} m fyld mellem det nederste og det øverste netlag.`,
