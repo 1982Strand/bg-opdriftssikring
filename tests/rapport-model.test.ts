@@ -13,7 +13,12 @@ import { parseSession, standardSession, tilMotorInput, type Session } from '../s
 function dokument(aendr: (s: Session) => void = () => {}) {
   const s = standardSession();
   s.rapport.projekt = 'Eksempelprojekt';
-  s.rapport.sagsbehandler = { navn: 'Navn Navnesen', telefon: '12345678', mail: 'n@example.com' };
+  s.rapport.sagsbehandler = {
+    navn: 'Navn Navnesen',
+    initialer: 'NN',
+    telefon: '12345678',
+    mail: 'n@example.com',
+  };
   aendr(s);
   const input = tilMotorInput(s);
   const b = beregnOpdrift(input);
@@ -185,13 +190,20 @@ test('forside og afslutning viser projekt, personer og dato', () => {
     'Jorddækning 1,50 m',
     'GVS i terræn',
   ]);
+  // Initialerne står på forsiden og navnet i afslutningen; uden initialer vises navnet.
+  assert.equal(model.forside.hoejre[0].vaerdi, 'NN');
+  assert.equal(model.forside.forfatter, 'Navn Navnesen');
   assert.deepEqual(model.afslutning, {
     by_og_dato: 'Odense d. 04-11-2026',
     personer: [['Navn Navnesen', '12 34 56 78', 'n@example.com']],
   });
+  const kontrol = dokument((s) => {
+    s.rapport.kontrollant = { navn: 'Anden Person', initialer: '', telefon: '', mail: '' };
+  }).model;
+  assert.equal(kontrol.forside.hoejre[1].vaerdi, 'Anden Person');
   assert.equal(
     dokument((s) => {
-      s.rapport.sagsbehandler = { navn: '', telefon: '', mail: '' };
+      s.rapport.sagsbehandler = { navn: '', initialer: '', telefon: '', mail: '' };
     }).model.afslutning,
     null,
   );

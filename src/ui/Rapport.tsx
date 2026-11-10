@@ -299,6 +299,7 @@ export function Rapport() {
                 if (valgt)
                   saetPerson(rolle, {
                     navn: valgt.navn,
+                    initialer: valgt.initialer,
                     mail: valgt.mail,
                     telefon: formatPhone(valgt.telefon),
                   });
@@ -328,6 +329,12 @@ export function Rapport() {
           label="Navn"
           value={p.navn}
           change={(navn) => saetPerson(rolle, { navn })}
+        />
+        <Tekstfelt
+          id={`${rolle}-initialer`}
+          label="Initialer"
+          value={p.initialer}
+          change={(initialer) => saetPerson(rolle, { initialer })}
         />
         <Tekstfelt
           id={`${rolle}-telefon`}

@@ -1165,3 +1165,12 @@ Brugerens ønske: tredje punkt i Udførsel med teksten »For at sikre den ønske
 
 - Claude foreslog: »Geonettet skal ligge stramt og helt tæt ind til røret, hvor det går fra røret ud i det vandrette plan, så hjørnet bliver så lille som muligt. Slæk i nettet her giver mindre kraftoverførsel end forudsat, fordi trissevirkningen ikke udnyttes fuldt ud.« Brugerens svar: »Brug forslaget«.
 - Punktet står som tredje punkt i Udførsel med den foreslåede tekst.
+
+## 10. november 2026 — initialer på rapportens forside
+
+Brugerens ønske: »I rapporten, skal der lige tilføjes initialer under navn ved projektoplysningerne. Det er initialerne der skal stå ud for 'udført af' og 'kvalitetssikring' i rapporten også. Navnene er dem der bruges nederst hvor resten af kontaktoplysningerne også står«
+
+- Rapportsiden har feltet »Initialer« under »Navn« for »Udført af« og »Kvalitetssikring«. Valg fra kartoteket udfylder også initialerne.
+- Forsiden viser initialerne ud for »Udført af« og »Kvalitetssikring«. Navnene står fortsat nederst på forsiden med telefon og mail.
+
+Valgt af Claude og kan ændres: uden initialer viser forsiden navnet, som i MSL. Beregninger gemt før ændringen indlæses med tomme initialer.
