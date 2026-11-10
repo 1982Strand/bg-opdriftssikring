@@ -1158,3 +1158,10 @@ Brugeren gav de nye tekster til punkterne i Udførsel:
 - »Fyldmaterialet til ballast skal mindst have den rumvægt, og friktionsvinkel der er regnet med. Det er vigtigt, at kravet overholdes, da sikkerheden mod opdrift ellers er mindre end beregnet.« Rumvægtene står ikke længere i teksten.
 
 Valgt af Claude og kan ændres: punktum efter »start og slut«. Teksterne er ellers gengivet ordret.
+
+## 10. november 2026 — stramt net ved overgangen i Udførsel
+
+Brugerens ønske: tredje punkt i Udførsel med teksten »For at sikre den ønskede trissevirkning og optimal kraftoverførsel mellem lodret og vandret plan, er det vigtigt at geonettet ved overgang fra lodret til vandret ligger helt tæt og stramt ind til røret, således der ikke forekommer slæk i nettet i overgangen der kan føre til mindre kraftoverførsel end forventet.« Brugeren bad samtidig om et forslag til en klarere formulering: »Pointen er, at man skal særge for at nettet er helt stramt og hjørnet hvor nettet går fra røret og ud er så lille som muligt«.
+
+- Punktet er indsat som tredje punkt med brugerens tekst.
+- Claudes forslag til klarere formulering afventer brugerens valg.
