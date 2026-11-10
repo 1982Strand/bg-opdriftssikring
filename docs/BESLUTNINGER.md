@@ -1145,3 +1145,16 @@ Valgt af Claude og kan ændres:
 - Mellemregningen viser »inkl. 0,2 m lodret ved hvert omslag« under forklaringen, og rapporten viser det samme ved netlængden.
 - Dybere forankring følger samme geometri, da den havde samme tillæg.
 - De godkendte kontroltal for dybere forankring og reduktion er rettet med − 1,2 m i netlængden. Excel-facit er uændret, og afvigelsen står i `tests/cases/afvigelser.json`.
+
+## 10. november 2026 — nye tekster i Udførsel
+
+Brugeren gav de nye tekster til punkterne i Udførsel:
+
+- »Efter røret er lagt indbygges egnet fyldmateriale til rørmidte, hvor geonettet udlægges på et plant og afrettet planum.«
+- »Geonettet rulles ud på tværs af ledningen, føres over røret og lægges ud til begge sider med den forankringslængde Lgeonet, der er angivet for den valgte løsning, inkl. tillæg for omslag og afstand imellem netlagene.«
+- »Ved omslag slås geonettet tilbage efter indbygning af 0,4 m fyld mellem det nederste og det øverste netlag.« Afstanden følger værdien i kortet for forankring.
+- »Der kræves ikke overlap mellem geonet og nettene skal ikke gå ud over rørender.« Erstatter de to punkter om overlap og rørenden.
+- »Ved rørgennemføringer, der er under 0,40 m brede, skæres der hul i geonettet til gennemføringen. Ved større gennemføringer, føres nettet hen til gennemføringens start og slut«
+- »Fyldmaterialet til ballast skal mindst have den rumvægt, og friktionsvinkel der er regnet med. Det er vigtigt, at kravet overholdes, da sikkerheden mod opdrift ellers er mindre end beregnet.« Rumvægtene står ikke længere i teksten.
+
+Valgt af Claude og kan ændres: punktum efter »start og slut«. Teksterne er ellers gengivet ordret.

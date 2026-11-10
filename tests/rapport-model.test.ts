@@ -132,21 +132,14 @@ test('udførelsen er sidste afsnit, når opdriftssikring er nødvendig', () => {
   const { model, tekst } = dokument();
   assert.equal(titler(model).at(-1), '8. Udførsel');
   for (const del of [
-    'Der laves ikke overlap mellem geonettene.',
-    'Geonettet stopper ved rørenden.',
-    'under 0,40 m brede, skæres der hul i geonettet',
+    'hvor geonettet udlægges på et plant og afrettet planum.',
+    'Ved omslag slås geonettet tilbage efter indbygning af 0,2 m fyld',
+    'Der kræves ikke overlap mellem geonet og nettene skal ikke gå ud over rørender.',
+    'Ved større gennemføringer, føres nettet hen til gennemføringens start og slut.',
+    'mindst have den rumvægt, og friktionsvinkel der er regnet med.',
     'fotodokumentere det udførte arbejde',
   ])
     assert.ok(tekst.includes(del), del);
-  // Rumvægten er den, der er regnet med; den tørre kun med GVS under terræn i avanceret beregning.
-  assert.ok(tekst.includes('17,00 kN/m³. Det er vigtigt'));
-  const avanceret = dokument((s) => {
-    s.avanceret = true;
-    s.inddata.gvsITerraen = false;
-    s.inddata.gvs = 0.5;
-    s.inddata.gamma = 18;
-  }).tekst;
-  assert.ok(avanceret.includes('18,00 kN/m³ under GVS og γ'));
 });
 
 test('noten om at slå geonettet tilbage følger afstanden i kort 7 og kræver omslag', () => {
