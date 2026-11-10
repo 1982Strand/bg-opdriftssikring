@@ -133,7 +133,7 @@ test('udførelsen er sidste afsnit, når opdriftssikring er nødvendig', () => {
   assert.equal(titler(model).at(-1), '8. Udførsel');
   for (const del of [
     'hvor geonettet udlægges på et plant og afrettet planum.',
-    'ligger helt tæt og stramt ind til røret',
+    'Geonettet skal ligge stramt og helt tæt ind til røret',
     'Ved omslag slås geonettet tilbage efter indbygning af 0,2 m fyld',
     'Der kræves ikke overlap mellem geonet og nettene skal ikke gå ud over rørender.',
     'Ved større gennemføringer, føres nettet hen til gennemføringens start og slut.',

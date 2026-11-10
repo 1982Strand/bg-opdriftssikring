@@ -1163,5 +1163,5 @@ Valgt af Claude og kan ændres: punktum efter »start og slut«. Teksterne er el
 
 Brugerens ønske: tredje punkt i Udførsel med teksten »For at sikre den ønskede trissevirkning og optimal kraftoverførsel mellem lodret og vandret plan, er det vigtigt at geonettet ved overgang fra lodret til vandret ligger helt tæt og stramt ind til røret, således der ikke forekommer slæk i nettet i overgangen der kan føre til mindre kraftoverførsel end forventet.« Brugeren bad samtidig om et forslag til en klarere formulering: »Pointen er, at man skal særge for at nettet er helt stramt og hjørnet hvor nettet går fra røret og ud er så lille som muligt«.
 
-- Punktet er indsat som tredje punkt med brugerens tekst.
-- Claudes forslag til klarere formulering afventer brugerens valg.
+- Claude foreslog: »Geonettet skal ligge stramt og helt tæt ind til røret, hvor det går fra røret ud i det vandrette plan, så hjørnet bliver så lille som muligt. Slæk i nettet her giver mindre kraftoverførsel end forudsat, fordi trissevirkningen ikke udnyttes fuldt ud.« Brugerens svar: »Brug forslaget«.
+- Punktet står som tredje punkt i Udførsel med den foreslåede tekst.
