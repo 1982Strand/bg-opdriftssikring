@@ -820,8 +820,13 @@ export function rapportDokument(
           { navn: 'Dato', vaerdi: dato },
         ],
         hoejre: [
-          { navn: 'Udført af', vaerdi: o.sagsbehandler.navn },
-          { navn: 'Kvalitetssikring', vaerdi: o.kontrollant.navn },
+          // Initialerne står på forsiden og navnene i afslutningen; uden initialer vises navnet
+          // som i MSL (beslutning 10. november 2026).
+          { navn: 'Udført af', vaerdi: o.sagsbehandler.initialer.trim() || o.sagsbehandler.navn },
+          {
+            navn: 'Kvalitetssikring',
+            vaerdi: o.kontrollant.initialer.trim() || o.kontrollant.navn,
+          },
           {
             navn: 'Beregning',
             vaerdi: `${avanceret ? 'Avanceret beregning' : 'Standardberegning'}, ${klasse}`,

@@ -4,6 +4,8 @@ import standarder from '../engine/defaults.json' with { type: 'json' };
 
 export interface RapportPerson {
   navn: string;
+  /** Står på forsiden ud for »Udført af« og »Kvalitetssikring«; navnet står i afslutningen. */
+  initialer: string;
   telefon: string;
   mail: string;
 }
@@ -67,7 +69,7 @@ export interface Session {
   rapport: RapportOplysninger;
 }
 export const STORAGE_KEY = 'opdrift.session';
-const tomPerson = (): RapportPerson => ({ navn: '', telefon: '', mail: '' });
+const tomPerson = (): RapportPerson => ({ navn: '', initialer: '', telefon: '', mail: '' });
 export const standardRapport = (): RapportOplysninger => ({
   projekt: '',
   udfoeresFor: '',
@@ -165,7 +167,12 @@ const par = (v: unknown, d: [number, number]): [number, number] =>
   Array.isArray(v) ? [num(v[0], d[0], 0), num(v[1], d[1], 0)] : d;
 const person = (v: unknown): RapportPerson => {
   const p = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>;
-  return { navn: tekst(p.navn), telefon: tekst(p.telefon), mail: tekst(p.mail) };
+  return {
+    navn: tekst(p.navn),
+    initialer: tekst(p.initialer),
+    telefon: tekst(p.telefon),
+    mail: tekst(p.mail),
+  };
 };
 /** Beregninger gemt før rapportsiden indlæses med tomme oplysninger og alle løsninger valgt. */
 function parseRapport(v: unknown): RapportOplysninger {
