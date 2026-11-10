@@ -50,7 +50,7 @@ export const losningTitel: Record<Losning, string> = {
   D: 'Med omslag, to ledninger',
 };
 
-const { mindstelaengder: mindste, faktorMellemRoer } = standarder;
+const { mindstelaengder: mindste, omslagAfstand, netTillaegOmslag, faktorMellemRoer } = standarder;
 
 /** Arkets forskrifter for løsningerne (Rapporten A308, A358:A362, A398:A400 og A440:A449). */
 export const losningNote = (afstand: number): Record<Losning, string> => ({
@@ -59,6 +59,9 @@ export const losningNote = (afstand: number): Record<Losning, string> => ({
   C: `Omslag kan bruges ved pladsproblemer. Der forankres altid med mindst ${tal(mindste.medOmslag.prSide, 1)} m på hver side. Der armeres lige meget i top og bund med ${talKort(afstand)} m mellem lagene.`,
   D: 'Som med omslag ved én ledning. Afstanden mellem rørene L_{mellem} skal være mindst 2 · L_{geonet}.',
 });
+
+/** Teksten ved netlængden med omslag (fund K-09, beslutning 10. november 2026). */
+export const tillaegTekst = 'inkl. tillæg for omslag og overlængde';
 
 /** Noter om kontrollen ved løsningerne med én ledning (fund K-11, beslutning 31. oktober 2026). */
 /** Arkets note i afsnit 5 om kraftens vej (A182:A184 og A186:A191, fund K-27), gengivet ordret
@@ -81,6 +84,12 @@ export const kontrolNoter = (
 });
 export const kontrolNote = kontrolNoter(symbolerPrMeter);
 
+/** Ekstra lodrette stykker i netlængden, når netlagene ligger mere end 0,2 m fra hinanden (K-26). */
+export const lodretTillaegTal = (r: OpdriftResultat, antal: number) =>
+  r.omslagAfstand === standarder.omslagAfstand
+    ? ''
+    : ` + ${antal} · (${talKort(r.omslagAfstand)} − ${talKort(standarder.omslagAfstand)})`;
+
 /** Rækker og mellemregninger for én løsning. null, når omslag ikke er muligt. Med `Lsikret` (kort 8)
  * regnes også det samlede netareal. */
 export function losningIndhold(
@@ -95,16 +104,23 @@ export function losningIndhold(
 } | null {
   const { A, B, C, D } = r.losninger;
   const torTilMidte = r.gvsZone !== null && r.gvsZone.zone >= 3;
-  const a = talKort(r.omslagAfstand);
+  const lodretTillaeg = (antal: number) => lodretTillaegTal(r, antal);
   const d = input.d;
   const T2 = input.gvs;
   const noter = kontrolNoter(sym, r.omslagAfstand);
   // Ved manuelt valg i 2 lag gælder arealet pr. lag.
   const prLag = input.overstyring && input.overstyring.lag > 1 ? ' pr. lag' : '';
   const areal: [string, string][] = [];
-  const faelles = (x: { La: number; Ltot: number }): [string, string][] => [
+  // Med omslag indeholder netlængden arkets tillæg for omslag og overlængde til spild, håndtering
+  // og afskær (fund K-09, beslutning 10. november 2026).
+  const faelles = (x: { La: number; Ltot: number }, omslag = false): [string, string][] => [
     ['Samlet bredde L_{a}', `${tal(x.La)} m`],
-    ['Samlet netlængde L_{geonet,tot}', `${tal(x.Ltot)} m`],
+    [
+      omslag
+        ? `Samlet netlængde L_{geonet,tot} ${tillaegTekst}`
+        : 'Samlet netlængde L_{geonet,tot}',
+      `${tal(x.Ltot)} m`,
+    ],
     ...(Lsikret === undefined
       ? areal
       : [
@@ -231,7 +247,7 @@ export function losningIndhold(
         C && {
           raekker: [
             ['Forankring pr. side L_{geonet}', `${tal(C.L)} m`],
-            ...faelles(C),
+            ...faelles(C, true),
             ['Opdriftskontrol', tal(C.kontrol), C.status],
           ],
           note: C.kontrol === null ? undefined : noter.medOmslag,
@@ -246,9 +262,9 @@ export function losningIndhold(
             bredde(`L_{a} = 2 · L_{geonet} + d = 2 · ${tal(C.L)} + ${tal(d)}`, C.La),
             netlaengde(
               'Samlet længde geonet på tværs af ledningen',
-              `L_{geonet,tot} = 4 · L_{geonet} + 2 · ${a} + π · d/2`,
+              `L_{geonet,tot} = 4 · (L_{geonet} + 0,4) + π · d/2${lodretTillaeg(2)}`,
               C.Ltot,
-              `inkl. ${a} m lodret ved hvert omslag`,
+              tillaegTekst,
             ),
             ...netareal(C.Ltot),
             kontrol(
@@ -264,7 +280,7 @@ export function losningIndhold(
           raekker: [
             ['Forankring yderst L_{geonet}', `${tal(D.L)} m`],
             ['Mellem ledningerne L_{mellem}', `${tal(D.toLMellem)} m`],
-            ...faelles(D),
+            ...faelles(D, true),
           ],
           beregning: [
             {
@@ -276,9 +292,9 @@ export function losningIndhold(
             bredde('L_{a} = 2 · L_{geonet} + L_{mellem} + 2 · d', D.La),
             netlaengde(
               'Samlet længde geonet på tværs af ledningerne',
-              `L_{geonet,tot} = 8 · L_{geonet} + 4 · ${a} + π · d`,
+              `L_{geonet,tot} = 4 · (2 · L_{geonet} + 0,4) + π · d${lodretTillaeg(4)}`,
               D.Ltot,
-              `inkl. ${a} m lodret ved hvert omslag`,
+              tillaegTekst,
             ),
             ...netareal(D.Ltot),
           ],
@@ -693,8 +709,8 @@ export function dybGrupper(
         },
         {
           forklaring: 'Samlet længde geonet på tværs af ledningen',
-          detalje: 'inkl. omslag, overlæg og sider',
-          formel: `L_{geonet,tot} = 4 · L_{geonet} + 2 · ${talKort(r.omslagAfstand)} + π · d/2 + 2 · Δh = 4 · ${tal(dyb.L)} + ${talKort(2 * r.omslagAfstand)} + π · ${tal(d)}/2 + 2 · ${tal(dyb.dh)}`,
+          detalje: `${tillaegTekst} og sider`,
+          formel: `L_{geonet,tot} = 4 · (L_{geonet} + ${tal(netTillaegOmslag, 1)}) + π · d/2 + 2 · Δh = 4 · (${tal(dyb.L)} + ${tal(netTillaegOmslag, 1)}) + π · ${tal(d)}/2 + 2 · ${tal(dyb.dh)}${lodretTillaegTal(r, 2)}`,
           resultat: meter(dyb.Ltot),
         },
         {

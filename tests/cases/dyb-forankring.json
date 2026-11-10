@@ -1,7 +1,7 @@
 {
   "format": "opdrift-dyb-forankring",
   "version": 1,
-  "beslutning": "Dybere forankring ved begrænset plads (fund K-25). Kontroltallene er godkendt af brugeren 31. oktober 2026, se docs/FORSLAG_DYB_FORANKRING.md, afsnit 8. Ltot er rettet 10. november 2026 til den geometriske netlængde uden arkets tillæg på 1,2 m (fund K-09, docs/BESLUTNINGER.md): den godkendte værdi − 1,2 m.",
+  "beslutning": "Dybere forankring ved begrænset plads (fund K-25). Kontroltallene er godkendt af brugeren 31. oktober 2026, se docs/FORSLAG_DYB_FORANKRING.md, afsnit 8.",
   "beregning": "Regnet uden motoren efter regnearkets formler for opdrift, ballast og løsning C og den avancerede spændingsmodel: σ′_v(z) = min(z; T₂) · γ_tør,d + max(0; z − T₂) · γ′_d. Dybden er fundet ved halvering, til F_bund + F_top/2 = K/(2 · L − 2 · 0,2). Avanceret beregning, CC2, γ = 17 kN/m³, γ_tør = 16 kN/m³, φ = 35°, rørvægt 340 kg/m. GVS 0 betyder GVS i terræn.",
   "cases": [
     {
@@ -21,7 +21,7 @@
         "underRoerbund": 1.042654825460522,
         "Fbund": 17.45038004567093,
         "Ftop": 16.831863386919018,
-        "Ltot": 22.765309650921044,
+        "Ltot": 23.965309650921043,
         "kontrol": 1.4204700142078006
       }
     },
@@ -42,7 +42,7 @@
         "underRoerbund": 1.0469337317016674,
         "Fbund": 17.46361291962786,
         "Ftop": 16.84509626087595,
-        "Ltot": 22.777052770582923,
+        "Ltot": 23.977052770582922,
         "kontrol": 1.4205850736690147
       }
     },
@@ -63,7 +63,7 @@
         "underRoerbund": -1.7814938437936823,
         "Fbund": 12.964390783847682,
         "Ftop": 12.34587412509577,
-        "Ltot": 17.120197619592222,
+        "Ltot": 18.32019761959222,
         "kontrol": 1.314875185841343
       }
     },
@@ -84,7 +84,7 @@
         "underRoerbund": -0.03422603011961467,
         "Fbund": 12.264486326078575,
         "Ftop": 11.645969667326666,
-        "Ltot": 10.758538756748012,
+        "Ltot": 11.95853875674801,
         "kontrol": 1.3751945467775992
       }
     },
@@ -119,7 +119,7 @@
         "underRoerbund": 27.55320229061791,
         "Fbund": 99.43645624483632,
         "Ftop": 98.8179395860844,
-        "Ltot": 68.1895898884154,
+        "Ltot": 69.3895898884154,
         "kontrol": 1.900666765374859
       }
     },
@@ -154,7 +154,7 @@
         "underRoerbund": -1.8636297073129642,
         "Fbund": 17.757708122437762,
         "Ftop": 16.270332908457657,
-        "Ltot": 10.755925892553659,
+        "Ltot": 11.955925892553658,
         "kontrol": 1.4274535543641462
       }
     }

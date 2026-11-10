@@ -120,8 +120,7 @@ test('dybere forankring følger afstanden mellem netlagene (K-26)', () => {
   naer(d.resultat.toL / 2, 2.5, 'L igen');
   naer(
     d.resultat.Ltot,
-    // Geometrisk netlængde uden arkets tillæg (fund K-09).
-    4 * 2.5 + 2 * 0.4 + (Math.PI * 4) / 2 + 2 * d.resultat.dh,
+    4 * (2.5 + 0.4) + 2 * (0.4 - 0.2) + (Math.PI * 4) / 2 + 2 * d.resultat.dh,
     'Ltot',
   );
 });
