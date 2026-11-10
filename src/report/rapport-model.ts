@@ -804,7 +804,7 @@ export function rapportDokument(
   if (rv.S1Status !== 'OK')
     nyt(
       `${dyb ? nr(8) + 1 : nr(8)}. Udførsel`,
-      [{ type: 'punkter', punkter: udfoerselPunkter(input, rv).map(dele) }],
+      [{ type: 'punkter', punkter: udfoerselPunkter(rv).map(dele) }],
       { samlet: true },
     );
 

@@ -1342,7 +1342,7 @@ export function Opdriftssikring() {
           <Trin nr={avanceret ? nr(9) : nr(8)} titel="Udførsel" dimmed={ikkeNoedvendig}>
             {ikkeNoedvendig && <Notice>{ikkeNoedvendigNote}</Notice>}
             <ul className="settings-prose forudsaetninger">
-              {udfoerselPunkter(input, rv).map((t) => (
+              {udfoerselPunkter(rv).map((t) => (
                 <li key={t}>
                   <Fmt text={t} />
                 </li>

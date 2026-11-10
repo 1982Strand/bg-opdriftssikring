@@ -876,22 +876,20 @@ export function kontrolUdenGeonetHeleRoeret(red: ReduktionResultat): Mellemregni
       };
 }
 
-/** Det sidste afsnit om udførelsen (beslutning 10. november 2026). Rumvægtene og afstanden mellem
- * netlagene følger beregningen. */
-export function udfoerselPunkter(input: OpdriftInput, r: OpdriftResultat): string[] {
-  const torOverGvs = r.gvsZone !== null && input.gvs > 0;
+/** Det sidste afsnit om udførelsen med brugerens tekster (beslutninger 10. november 2026). Afstanden
+ * mellem netlagene følger beregningen. */
+export function udfoerselPunkter(r: OpdriftResultat): string[] {
   return [
-    'Røret lægges, og der fyldes op med fyldmateriale til rørmidten, hvor geonettet forankres.',
-    'Geonettet rulles ud på tværs af ledningen, føres over røret og lægges ud til begge sider med den forankringslængde L_{geonet}, der er angivet for den valgte løsning.',
+    'Efter røret er lagt indbygges egnet fyldmateriale til rørmidte, hvor geonettet udlægges på et plant og afrettet planum.',
+    'Geonettet rulles ud på tværs af ledningen, føres over røret og lægges ud til begge sider med den forankringslængde L_{geonet}, der er angivet for den valgte løsning, inkl. tillæg for omslag og afstand imellem netlagene.',
     ...(r.losninger.C
       ? [
-          `Ved omslag slås geonettet tilbage med ${talKort(r.omslagAfstand)} m fyld mellem det nederste og det øverste netlag.`,
+          `Ved omslag slås geonettet tilbage efter indbygning af ${talKort(r.omslagAfstand)} m fyld mellem det nederste og det øverste netlag.`,
         ]
       : []),
-    'Der laves ikke overlap mellem geonettene.',
-    'Geonettet stopper ved rørenden.',
-    'Ved rørgennemføringer, der er under 0,40 m brede, skæres der hul i geonettet til gennemføringen.',
-    `Fyldmaterialet til ballast skal mindst have den rumvægt, der er regnet med: γ_{våd} = ${tal(input.gamma)} kN/m³${torOverGvs ? ` under GVS og γ_{tør} = ${tal(input.gammaTor)} kN/m³ over GVS` : ''}. Det er vigtigt, at kravet overholdes, da sikkerheden mod opdrift ellers er mindre end beregnet.`,
+    'Der kræves ikke overlap mellem geonet og nettene skal ikke gå ud over rørender.',
+    'Ved rørgennemføringer, der er under 0,40 m brede, skæres der hul i geonettet til gennemføringen. Ved større gennemføringer, føres nettet hen til gennemføringens start og slut.',
+    'Fyldmaterialet til ballast skal mindst have den rumvægt, og friktionsvinkel der er regnet med. Det er vigtigt, at kravet overholdes, da sikkerheden mod opdrift ellers er mindre end beregnet.',
     'Entreprenøren bør fotodokumentere det udførte arbejde, før geonettet dækkes til.',
   ];
 }
