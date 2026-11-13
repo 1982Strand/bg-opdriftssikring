@@ -1184,3 +1184,15 @@ Brugerens svar efter intern afklaring: »Jeg har fået at vide, at det ekstra ti
 - Excel-facit, afvigelserne og kontroltallene for dybere forankring og reduktion er de samme som før ændringen.
 
 Valgt af Claude og kan ændres: teksten står uden tal, som brugeren skrev. Mellemregningen for dybere forankring har »inkl. tillæg for omslag og overlængde og sider«. Beslutningerne om den geometriske netlængde er bevaret ovenfor som historik.
+
+## 13. november 2026 — firmaprofil og medarbejderkartotek fjernet
+
+Brugerens beslutning: »Jeg vil gerne droppe 'firmaprofil' i min app. både i MSL dimensionering og opdriftssikring. Dvs fanen skal fjernes. Man skal heller ikke længere bruge medarbejder kartotek, så det skal også fjernes fra begge apps.«
+
+- Rapportsiden har ingen faner. Rapportens indhold vises direkte.
+- Rapporten bruger altid appens faste standardprofil og standardlogo i lokal, intern og offentlig udgave. PDF med standardprofil er uændret.
+- Firmaprofilredigering, import og eksport samt medarbejderkartotek, valg fra kartotek og indbygget kartotek er fjernet. Felterne for »Udført af« og »Kvalitetssikring« bevares og udfyldes manuelt med navn, initialer og kontaktoplysninger.
+- Appen læser eller skriver ikke længere firmaprofil eller logo i browserlageret. Tidligere gemte profiler, logoer og kartoteker slettes ikke, men bruges ikke længere.
+- GitHub-hemmeligheden `MEDARBEJDERE_JSON` bruges ikke længere og kan slettes af brugeren.
+
+Denne beslutning afløser de tidligere beslutninger 4. november 2026 om rapportens layout, firmaprofil og kartotek samt 5. november 2026 om kopiering, brug, import/eksport og adskillelse af kartotek og firmaprofil. Historikken ovenfor er bevaret.

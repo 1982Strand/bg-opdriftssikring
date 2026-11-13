@@ -7,8 +7,6 @@ on:
         required: false
       CLOUDFLARE_ACCOUNT_ID:
         required: false
-      MEDARBEJDERE_JSON:
-        required: false
 
 permissions:
   contents: read
@@ -31,11 +29,9 @@ jobs:
       - name: Byg offentlig udgave
         if: env.CF_TOKEN != ''
         run: node tools/build-udgave.ts offentlig
-      - name: Byg intern udgave med kartotek
+      - name: Byg intern udgave
         if: env.CF_TOKEN != ''
         run: node tools/build-udgave.ts intern
-        env:
-          MEDARBEJDERE_JSON: ${{ secrets.MEDARBEJDERE_JSON }}
       - name: Kontrollér filstørrelser for hosting
         if: env.CF_TOKEN != ''
         run: |

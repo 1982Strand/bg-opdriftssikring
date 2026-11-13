@@ -1,10 +1,6 @@
 import type { PdfRequest } from './compile-queue.ts';
 import type { RapportDokument } from './rapport-model.ts';
-import {
-  DEFAULT_COMPANY_PROFILE,
-  REPORT_FONT_FILES,
-  type CompanyProfile,
-} from './profile-defaults.ts';
+import { DEFAULT_COMPANY_PROFILE, REPORT_FONT_FILES } from './profile-defaults.ts';
 
 /** Aktiver indlæses først, når rapporten skal bruges, så de ikke gør appen langsommere at åbne. */
 export interface ReportAssets {
@@ -40,16 +36,12 @@ export async function loadReportAssets(baseUrl: string): Promise<ReportAssets> {
 
 /** main/layout er versionerede aktiver. Brugerfelter og profil indsættes kun i JSON-filer, som
  * compiler.ts sender med mapShadow, aldrig i kildekoden. */
-export function reportDocument(
-  dokument: RapportDokument,
-  assets: ReportAssets,
-  profile: CompanyProfile = DEFAULT_COMPANY_PROFILE,
-): PdfRequest {
+export function reportDocument(dokument: RapportDokument, assets: ReportAssets): PdfRequest {
   const logoPath = `assets/logo.${assets.logoExtension ?? 'jpeg'}`;
   const files: Record<string, string | Uint8Array> = {
     'layout.typ': assets.layout,
     'data.json': JSON.stringify(dokument.model),
-    'profil.json': JSON.stringify({ ...profile, logo: logoPath }),
+    'profil.json': JSON.stringify({ ...DEFAULT_COMPANY_PROFILE, logo: logoPath }),
     [logoPath]: assets.logo,
     ...dokument.figurer,
   };

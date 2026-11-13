@@ -1,14 +1,6 @@
 /** Firmaets standardprofil. Logo, slogan, sidefod og mål er de samme som i MSL Dimensionering. */
 export type ReportFont = 'Carlito' | 'Liberation Sans';
-/** B-048: kartoteket er profildata, ikke rapportens underskrift. */
-export interface Employee {
-  navn: string;
-  initialer: string;
-  mail: string;
-  telefon: string;
-}
 export interface CompanyProfile {
-  medarbejdere: Employee[];
   logo: string;
   logo_bredde_mm: number;
   logo_paa_alle_sider: boolean;
@@ -42,7 +34,6 @@ export interface CompanyProfile {
 }
 
 export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
-  medarbejdere: [],
   logo: 'assets/logo.jpeg',
   logo_bredde_mm: 1534537 / 36000,
   logo_paa_alle_sider: true,

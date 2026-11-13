@@ -17,7 +17,7 @@ npm run preview
 
 ## Online
 
-Cloudflare leverer to udgaver uden login: den offentlige med standardberegningen på https://opdriftssikring.byggros.workers.dev og den interne med avanceret beregning, rapport og kartotek på https://opdriftssikring-intern.byggros.workers.dev. Hver ændring på `main`, der består kontrollen, går online. Se [Cloudflare](docs/CLOUDFLARE.md).
+Cloudflare leverer to udgaver uden login: den offentlige med standardberegningen på https://opdriftssikring.byggros.workers.dev og den interne med avanceret beregning og rapport på https://opdriftssikring-intern.byggros.workers.dev. Hver ændring på `main`, der består kontrollen, går online. Se [Cloudflare](docs/CLOUDFLARE.md).
 
 ## Kontrol
 

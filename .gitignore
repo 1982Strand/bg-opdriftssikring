@@ -26,7 +26,7 @@ reference-private/
 output/
 testrapporter/
 *_brugerdefineret.json
-# Eksporterede firmaprofiler og medarbejderkartoteker indeholder personoplysninger.
+# Ældre eksporterede firmaprofiler og medarbejderkartoteker kan indeholde personoplysninger.
 firmaprofil*.json
 medarbejderkartotek*.json
 ~$*

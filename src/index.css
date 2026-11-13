@@ -541,30 +541,6 @@ button.hint-text {
   cursor: default;
 }
 
-/* Faner (shadcn Tabs) */
-[data-slot='tabs-list'][data-variant='default'] {
-  height: 38px;
-  padding: 3px;
-  background: var(--accent);
-  border: 1px solid var(--border);
-}
-[data-slot='tabs-trigger'] {
-  padding: 0 14px;
-  font-size: var(--fs-small);
-}
-[data-variant='default'] > [data-slot='tabs-trigger'] {
-  color: var(--muted-foreground);
-}
-[data-variant='default'] > [data-slot='tabs-trigger'][data-state='active'] {
-  color: var(--primary);
-  font-weight: 600;
-  background: var(--card);
-  box-shadow: 0 1px 2px rgb(16 36 29 / 12%);
-}
-.report-page [data-slot='tabs-list'] {
-  margin: 4px 0 12px;
-}
-
 /* Mærker */
 .status-badge {
   color: var(--muted-foreground);

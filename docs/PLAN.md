@@ -7,7 +7,7 @@ Status 28. oktober 2026: Spørgsmålene til planen er besvaret, se [BESLUTNINGER
 - Regnearket bliver en webapp. Første version regner præcis som arket. Kortlægningen står i [EXCEL_KORTLAEGNING.md](EXCEL_KORTLAEGNING.md).
 - Fundene i arket er beskrevet med eksempler og muligheder i [FUND.md](FUND.md). De ændres først efter særskilt beslutning.
 - Appen skal ligne MSL Dimensionering (`C:\MSL-dimensionering`), så det er tydeligt for brugeren, at de to værktøjer kommer fra samme firma. Farver, skrift, topbjælke, menu, kort, knapper, beskeder og rapportens sidelayout er de samme.
-- Efter beregningen dannes en PDF-rapport i browseren med samme sidehoved, sidefod og firmaprofil som MSL-rapporten.
+- Efter beregningen dannes en PDF-rapport i browseren med samme sidehoved, sidefod og faste standardprofil som MSL-rapporten.
 - Koden ligger i et offentligt GitHub-repo, `bg-opdriftssikring`.
 
 ## 2. Teknik og genbrug fra MSL
@@ -23,7 +23,7 @@ Følgende kopieres fra MSL og tilpasses:
 | Skal og navigation | `App.tsx`, `page.tsx` (breadcrumb, sidehoved, sidefod, menugrupper) |
 | PDF-motor | `src/report/compiler.ts`, `compile-queue.ts`, `pdf-motor.ts`, `tools/pak-pdf-motor.ts` |
 | Rapportramme | `typst/layout.typ` (logo, slogan, grøn sidefod, Carlito, sidetal), `public/report/fonts`, `public/report/logo` |
-| Firmaprofil og kartotek | `company-profile.ts`, `profile-storage.ts`, `profile-defaults.ts`, `CompanyProfile.tsx`, `text-format.ts`, `phone-format.ts` |
+| Rapportens standardprofil | `profile-defaults.ts`, `phone-format.ts` |
 | Drift | `Start ….cmd`, `VITE_UDGAVE`, GitHub-workflow til kontrol, `AGENTS.md`, `docs/BESLUTNINGER.md` |
 
 Delene kopieres frem for at lave en fælles pakke. To små apps med hver sin udgivelse er nemmest at holde adskilt. En fælles pakke kan oprettes senere, hvis de to apps begynder at glide fra hinanden. I `AGENTS.md` skrives, at designændringer i den ene app skal overvejes i den anden.
@@ -107,7 +107,7 @@ I UPL-tabellen er det kun den ugunstige last, der afhænger af K_FI. Tabel A.3-1
 Beregningssiden viser den valgte klasse i kortet med partialkoefficienterne. Rapporten skriver klassen i Betingelser og i tabellen over partialkoefficienter i stedet for arkets faste »middel konsekvensklasse«.
 ## 6. Rapport
 
-Rapportsiden følger MSL's fire trin: 1 Sagsoplysninger, 2 Indhold, 3 Figurer, 4 Generér. Faner til Rapport og Medarbejdere, og i den lokale udgave også Firmaprofil. PDF'en kompileres i browseren og vises i en forhåndsvisning med »Hent PDF«.
+Rapportsiden viser rapportens indhold direkte uden faner. Projekt- og personoplysninger indtastes i felterne. PDF'en kompileres i browseren med appens faste standardprofil og standardlogo og vises i en forhåndsvisning med »Hent PDF«.
 
 Rapportens indhold følger arkets afsnit og tal:
 
@@ -122,7 +122,7 @@ Rapportens indhold følger arkets afsnit og tal:
 9. Løsningerne. Hvilke af de fire løsninger rapporten tager med, og om nogle kan fravælges, afklares i fase 4.
 10. Kontrolpunkterne. Kritiske kontrolpunkter som K-08 bør følge resultatet i rapporten (forslag fra gennemgangen 30. oktober 2026).
 
-Rapporten skal oplyse, om der er regnet med standardberegningen eller den avancerede beregning, og ved CC3 have noten om særskilt kontrol fra certificeret statiker. Formlerne sættes som matematik i Typst og vises med indsatte tal. Sidefoden får sagsbehandleren fra kartoteket i stedet for »Bruger«.
+Rapporten oplyser, om der er regnet med standardberegningen eller den avancerede beregning, og ved CC3 vises noten om særskilt kontrol fra certificeret statiker. Formlerne sættes som matematik i Typst og vises med indsatte tal. Felterne for sagsbehandler og kvalitetssikring udfyldes manuelt; navn og kontaktoplysninger vises i rapporten.
 
 ## 7. Test og kontrol
 
@@ -148,7 +148,7 @@ Rapporten skal oplyse, om der er regnet med standardberegningen eller den avance
 | 1 | Repo, projektskelet, tema og skal fra MSL, startfil og kontrol i GitHub (afsluttet) | Kopiering og tilpasning |
 | 2 | Kontrolcases fra Excel (køres lokalt af Claude) og beregningsmotor med tests (afsluttet) | Motor og tests |
 | 3 | Siden Opdriftssikring med figurer og kontrolpunkter (afsluttet) | Delvist |
-| 4 | Rapport, firmaprofil og kartotek (afsluttet) | – |
+| 4 | Rapport (afsluttet) | – |
 | 5 | Opslag og hjælp | Tekst og tabeller |
 | 6 | Hosting i Cloudflare, godkendt 4. november 2026 | – |
 | 7 | Ændringer fra fundlisten og mængdeberegning, efter beslutning | – |
