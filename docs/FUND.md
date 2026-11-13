@@ -336,7 +336,7 @@ Rapporten viser altså EJ OK for et net, der ikke er brug for.
 
 **Arket.** Indholdsfortegnelsens sidetal er skrevet ind som tekst og passer ikke med udskriften fra august. Sidefoden siger »Udarbejdet af Bruger«.
 
-**Første version.** Appen danner indholdsfortegnelsen med rigtige sidetal og henter sagsbehandleren fra medarbejderkartoteket. Beregningen påvirkes ikke, så der er ingen beslutning at tage.
+**Første version.** Appen danner indholdsfortegnelsen med rigtige sidetal. Navn og kontaktoplysninger til sagsbehandleren skrives i rapportens felter. Beregningen påvirkes ikke.
 
 ## K-17 Friktion på én side af nettet
 

@@ -7,5 +7,3 @@ const access = ACCESS[udgaveFraMiljoe(import.meta.env.VITE_UDGAVE)];
 export function useAccess(): Access {
   return access;
 }
-
-export const canEditProfile = (a: Access) => a.firmaprofil;

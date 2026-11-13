@@ -1,17 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Building2, Download, FileText, RotateCcw, Users } from 'lucide-react';
+import { Download, FileText, RotateCcw } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Checkbox } from '../components/ui/checkbox';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
 import { beregnOpdrift } from '../engine/opdrift';
 import type { Losning } from '../engine/figurer';
@@ -21,8 +13,8 @@ import {
   type CompileState,
 } from '../report/compile-queue';
 import { loadPdfCompiler } from '../report/compiler';
-import { employeesForRoster, logoDataUrl, logoExtension } from '../report/company-profile';
 import { formatPhone } from '../report/phone-format';
+import { DEFAULT_COMPANY_PROFILE } from '../report/profile-defaults';
 import {
   datoTilVisning,
   rapportDokument,
@@ -32,8 +24,6 @@ import {
 import { loadReportAssets, reportDocument, type ReportAssets } from '../report/report-document';
 import layoutSource from '../report/typst/layout.typ?raw';
 import reportSource from '../report/typst/rapport.typ?raw';
-import { canEditProfile, useAccess } from './access';
-import { CompanyProfile, useCompanyProfile } from './CompanyProfile';
 import { losningTitel } from './mellemregninger';
 import { Notice } from './Notice';
 import { PageFooter, PageHeader } from './page';
@@ -117,14 +107,6 @@ function Tekstfelt({
 
 export function Rapport() {
   const { session, update } = useSession();
-  const access = useAccess();
-  const profileLocked = !canEditProfile(access);
-  const embeddedEmployees = useMemo(
-    () => employeesForRoster(access.kartotek, import.meta.env.VITE_MEDARBEJDERE),
-    [access.kartotek],
-  );
-  const company = useCompanyProfile(profileLocked, embeddedEmployees);
-  const [fane, setFane] = useState('rapport');
   const input = tilMotorInput(session);
   const beregning = useMemo(() => beregnOpdrift(input), [JSON.stringify(input)]);
   const r = beregning.ok ? beregning.resultat : null;
@@ -141,18 +123,12 @@ export function Rapport() {
 
   const dato = idag();
   const dokument = useMemo(
-    () => (r && rv ? rapportDokument(session, input, r, company.state.profile.by, dato) : null),
-    [r, rv, JSON.stringify(session), company.state.profile.by, dato],
+    () => (r && rv ? rapportDokument(session, input, r, DEFAULT_COMPANY_PROFILE.by, dato) : null),
+    [r, rv, JSON.stringify(session), dato],
   );
   const filnavn = rapportFilnavn(o.projekt, datoTilVisning(o.dato || dato));
-  const logoFingerprint = useMemo(
-    () => (company.state.logo ? logoDataUrl(company.state.logo) : null),
-    [company.state.logo],
-  );
   const fingerprint = JSON.stringify({
     dokument,
-    profile: company.state.profile,
-    logo: logoFingerprint,
     layoutSource,
     reportSource,
   });
@@ -200,7 +176,7 @@ export function Rapport() {
   }, []);
 
   useEffect(() => {
-    if (!live || !dokument || !company.ready || company.saving) return;
+    if (!live || !dokument) return;
     let active = true;
     // Saml tastetryk, før rapporten dannes igen.
     const timer = window.setTimeout(() => {
@@ -208,12 +184,7 @@ export function Rapport() {
       void hentAktiver()
         .then((loaded) => {
           if (!active) return;
-          const logo = company.state.logo;
-          const request = reportDocument(
-            dokument,
-            logo ? { ...loaded, logo: logo.bytes, logoExtension: logoExtension(logo) } : loaded,
-            company.state.profile,
-          );
+          const request = reportDocument(dokument, loaded);
           submitted.current = fingerprint;
           queue.current?.request(request);
         })
@@ -225,14 +196,9 @@ export function Rapport() {
       active = false;
       window.clearTimeout(timer);
     };
-  }, [live, fingerprint, attempt, company.ready, company.saving]);
+  }, [live, fingerprint, attempt]);
 
-  const current =
-    !!preview &&
-    preview.fingerprint === fingerprint &&
-    state.status === 'ready' &&
-    company.ready &&
-    !company.saving;
+  const current = !!preview && preview.fingerprint === fingerprint && state.status === 'ready';
 
   function pdfVisning(knap?: ReactNode) {
     return (
@@ -281,49 +247,11 @@ export function Rapport() {
     );
   }
 
-  const medarbejdere = company.state.profile.medarbejdere;
   const person = (rolle: 'sagsbehandler' | 'kontrollant', titel: string) => {
     const p = o[rolle];
     return (
       <fieldset className="report-person" key={rolle}>
         <legend>{titel}</legend>
-        {medarbejdere.length > 0 ? (
-          <div className="setting-field report-field">
-            <label htmlFor={`${rolle}-kartotek`}>Kartotek</label>
-            {/* Valget udfylder felterne; listen står derefter igen på »Vælg fra kartotek …«. */}
-            <Select
-              value=""
-              disabled={!company.ready || company.saving}
-              onValueChange={(value) => {
-                const valgt = medarbejdere[Number(value)];
-                if (valgt)
-                  saetPerson(rolle, {
-                    navn: valgt.navn,
-                    initialer: valgt.initialer,
-                    mail: valgt.mail,
-                    telefon: formatPhone(valgt.telefon),
-                  });
-              }}
-            >
-              <SelectTrigger id={`${rolle}-kartotek`} className="setting-select">
-                <SelectValue placeholder="Vælg fra kartotek …" />
-              </SelectTrigger>
-              <SelectContent>
-                {medarbejdere.map((m, index) => (
-                  <SelectItem key={index} value={String(index)}>
-                    {m.initialer ? `${m.initialer} – ${m.navn}` : m.navn}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        ) : (
-          <p className="report-caption">
-            {access.kartotek === 'eget'
-              ? `Kartoteket er tomt. Tilføj personer under ${profileLocked ? 'Medarbejdere' : 'Firmaprofil → Medarbejdere'}.`
-              : 'Oplysningerne skrives i felterne.'}
-          </p>
-        )}
         <Tekstfelt
           id={`${rolle}-navn`}
           label="Navn"
@@ -358,7 +286,6 @@ export function Rapport() {
   const antalValgte = viste.filter((l) => o.losninger[l] && rv?.losninger[l]).length;
   // Valget af dybere forankring vises kun, når beregningen er slået til og kan regnes.
   const dybMulig = Boolean(r && rapportTilvalg(session, input, r).dyb);
-  const harFaner = access.firmaprofil || access.kartotek === 'eget';
   const rapportIndhold = (
     <fieldset className="report-form">
       <Kort nr={1} titel="Projektoplysninger" opsummering={o.projekt || 'Ikke udfyldt'}>
@@ -501,31 +428,6 @@ export function Rapport() {
             <a href="#opdriftssikring">Gå til Opdriftssikring</a>
           </Button>
         </section>
-      ) : harFaner ? (
-        <Tabs value={fane} onValueChange={setFane}>
-          <TabsList aria-label="Rapport og firmaprofil">
-            <TabsTrigger value="rapport">
-              <FileText aria-hidden="true" />
-              Rapport
-            </TabsTrigger>
-            <TabsTrigger value="profil">
-              {profileLocked ? <Users aria-hidden="true" /> : <Building2 aria-hidden="true" />}
-              {profileLocked ? 'Medarbejdere' : 'Firmaprofil'}
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="rapport">{rapportIndhold}</TabsContent>
-          <TabsContent value="profil">
-            <CompanyProfile
-              controller={company}
-              locked={profileLocked}
-              standardLogo={async () => {
-                const loaded = await hentAktiver();
-                return { mime: 'image/jpeg', bytes: loaded.logo };
-              }}
-              preview={pdfVisning()}
-            />
-          </TabsContent>
-        </Tabs>
       ) : (
         rapportIndhold
       )}
