@@ -115,7 +115,14 @@
 }
 
 /* Topbjælke og navigation */
+/* Topbjælken bliver stående øverst, når siden rulles. */
+html {
+  scroll-padding-top: var(--topbar-height);
+}
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   flex-shrink: 0;
   height: var(--topbar-height);
   background: var(--topbar);
