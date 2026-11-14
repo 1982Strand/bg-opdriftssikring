@@ -1196,3 +1196,9 @@ Brugerens beslutning: »Jeg vil gerne droppe 'firmaprofil' i min app. både i MS
 - GitHub-hemmeligheden `MEDARBEJDERE_JSON` bruges ikke længere og kan slettes af brugeren.
 
 Denne beslutning afløser de tidligere beslutninger 4. november 2026 om rapportens layout, firmaprofil og kartotek samt 5. november 2026 om kopiering, brug, import/eksport og adskillelse af kartotek og firmaprofil. Historikken ovenfor er bevaret.
+
+## 14. november 2026 — topbjælken bliver stående
+
+Brugeren ønskede, at den grønne topbjælke bliver stående, når siderne rulles, i både Opdriftssikring og MSL Dimensionering.
+
+- Topbjælken står fast øverst, og ankerspring lander under topbjælken.
